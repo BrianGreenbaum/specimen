@@ -1,6 +1,8 @@
 ---
 name: Inter
 order: 1
+era: digital
+historyNote: The neutral workhorse of the screen era, drawn pixel-first.
 designer: Rasmus Andersson
 foundry: Independent (open source)
 year: 2016
@@ -41,10 +43,10 @@ openType:
   - { tag: 'case', label: 'Case-sensitive forms', sample: '(¡HOLA!)', on: false }
   - { tag: 'cv05', label: 'Lowercase L with tail', sample: 'Illinois', on: false }
 callouts:
-  - { glyph: 'a', title: 'Double-storey a', body: 'A humanist double-storey a with a generous bowl keeps the texture warm and unmistakably legible at small sizes — the workhorse glyph of a UI face.' }
-  - { glyph: 'x', title: 'Tall x-height', body: 'An unusually large x-height fills each em with ink, so text holds its colour and readability down to the smallest body sizes on a screen.' }
-  - { glyph: 'R', title: 'Open apertures', body: 'Notice how the aperture of letters like c, e and s stays open. Wide apertures resist closing up at low resolution, a deliberate concession to the pixel grid.' }
-  - { glyph: '1', title: 'Disambiguated figures', body: 'Inter ships tabular and slashed-zero options so numbers line up in tables and a zero is never mistaken for a capital O — essential for dashboards and data.' }
+  - { glyph: 'a', title: 'Double-storey a', body: 'A humanist double-storey a with a generous bowl keeps the texture warm and unmistakably legible at small sizes — the workhorse glyph of a UI face.', guides: ['x', 'baseline'], focus: [{ x: 0.5, y: 0.2, r: 0.2, label: 'upper storey' }] }
+  - { glyph: 'x', title: 'Tall x-height', body: 'An unusually large x-height fills each em with ink, so text holds its colour and readability down to the smallest body sizes on a screen.', guides: ['cap', 'x', 'baseline'] }
+  - { glyph: 'e', title: 'Open apertures', body: 'Notice how the aperture of letters like c, e and s stays open. Wide apertures resist closing up at low resolution, a deliberate concession to the pixel grid.', guides: ['x', 'baseline'], focus: [{ x: 0.84, y: 0.6, r: 0.2, label: 'aperture' }] }
+  - { glyph: '1', title: 'Disambiguated figures', body: 'Inter ships tabular and slashed-zero options so numbers line up in tables and a zero is never mistaken for a capital O — essential for dashboards and data.', guides: ['cap', 'baseline'], focus: [{ x: 0.26, y: 0.12, r: 0.18, label: 'flag' }] }
 inUse:
   - { kind: 'app-ui', label: 'Product UI — analytics dashboard' }
   - { kind: 'data', label: 'Data — tabular figures in a table' }

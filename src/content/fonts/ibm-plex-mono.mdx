@@ -1,6 +1,8 @@
 ---
 name: IBM Plex Mono
 order: 4
+era: digital
+historyNote: The typewriter lineage, reborn as a corporate screen monospace.
 designer: Mike Abbink & Bold Monday
 foundry: IBM / Bold Monday
 year: 2017
@@ -37,10 +39,10 @@ openType:
   - { tag: 'sups', label: 'Superiors', sample: 'n2 x3', on: false }
   - { tag: 'subs', label: 'Inferiors', sample: 'H2O CO2', on: false }
 callouts:
-  - { glyph: '0', title: 'The disambiguated zero', body: 'A zero you can never mistake for a capital O — essential when a single wrong character breaks the build. The clarity of code type begins here.' }
-  - { glyph: 'a', title: 'Humanist warmth', body: 'A two-storey a with a soft, almost handwritten curve. Against the rigid monospace grid it is the "man" half of the brief — a deliberate warmth engineered into a technical face.' }
-  - { glyph: 'i', title: 'Engineered spurs', body: 'Tiny flat spurs and finishing strokes anchor the verticals. They borrow from typewriter type and the IBM logotype, the "machine" half of the design speaking quietly through the details.' }
-  - { glyph: 'g', title: 'A real, cursive italic', body: 'Not a slanted roman but a drawn italic, with genuinely cursive forms. Critics singled it out as where Plex Mono’s balance of the technical and the emotional shows best.' }
+  - { glyph: '0', title: 'The disambiguated zero', body: 'A zero you can never mistake for a capital O — essential when a single wrong character breaks the build. The clarity of code type begins here.', guides: ['cap', 'baseline'], focus: [{ x: 0.5, y: 0.5, r: 0.16, label: 'open centre' }] }
+  - { glyph: 'a', title: 'Humanist warmth', body: 'A two-storey a with a soft, almost handwritten curve. Against the rigid monospace grid it is the "man" half of the brief — a deliberate warmth engineered into a technical face.', guides: ['x', 'baseline'], focus: [{ x: 0.72, y: 0.72, r: 0.2, label: 'soft curve' }] }
+  - { glyph: 'i', title: 'Engineered spurs', body: 'Tiny flat spurs and finishing strokes anchor the verticals. They borrow from typewriter type and the IBM logotype, the "machine" half of the design speaking quietly through the details.', guides: ['x', 'baseline'], focus: [{ x: 0.5, y: 0.92, r: 0.24, label: 'flat spur' }] }
+  - { glyph: 'g', title: 'A real, cursive italic', body: 'Not a slanted roman but a drawn italic, with genuinely cursive forms. Critics singled it out as where Plex Mono’s balance of the technical and the emotional shows best.', guides: ['x', 'baseline', 'descender'], focus: [{ x: 0.42, y: 0.84, r: 0.2, label: 'cursive tail' }] }
 inUse:
   - { kind: 'terminal', label: 'Terminal — shell session' }
   - { kind: 'data', label: 'Data — log output' }

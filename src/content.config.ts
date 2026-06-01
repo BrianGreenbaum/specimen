@@ -23,10 +23,20 @@ const otFeature = z.object({
   on: z.boolean().default(false),
 });
 
+const focusSpot = z.object({
+  x: z.number(),            // 0–1 across the glyph ink box
+  y: z.number(),            // 0–1 down the glyph ink box
+  r: z.number().default(0.18), // radius as fraction of ink-box height
+  label: z.string().optional(),
+});
+
 const callout = z.object({
   glyph: z.string(),        // the character(s) to enlarge
   title: z.string(),        // the feature name
   body: z.string(),         // what makes it distinctive
+  weight: z.number().default(400),
+  guides: z.array(z.enum(['ascender', 'cap', 'x', 'baseline', 'descender'])).default([]),
+  focus: z.array(focusSpot).default([]),  // spotlight highlights on the feature
 });
 
 const inUseScene = z.object({
@@ -42,11 +52,13 @@ const fonts = defineCollection({
   schema: z.object({
     name: z.string(),
     order: z.number().default(99),
+    era: z.string().optional(),          // slug of the era this face belongs to
+    historyNote: z.string().optional(),  // one line on its place in history
     designer: z.string(),
     foundry: z.string().optional(),
     year: z.number(),
     classification: z.string(),         // e.g. 'Grotesque Sans'
-    category: z.enum(['Sans', 'Serif', 'Display', 'Monospace']),
+    category: z.enum(['Sans', 'Serif', 'Display', 'Monospace', 'Slab']),
     blurb: z.string(),                   // one-line positioning
     googleFontsUrl: z.string().url(),
     sourceUrl: z.string().url().optional(),
@@ -86,4 +98,26 @@ const fonts = defineCollection({
   }),
 });
 
-export const collections = { fonts };
+const eras = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/eras' }),
+  schema: z.object({
+    name: z.string(),
+    order: z.number(),
+    slug: z.string(),
+    period: z.string(),                  // e.g. '1450–1500'
+    yearAnchor: z.number(),              // for timeline positioning
+    oneLiner: z.string(),
+    evolution: z.string().default(''),   // what happened to the letterform here
+    sample: z.string().default('Handgloves'),
+    // a representative font for the evolution scrubber + chapter showings
+    specimenFont: z.object({ family: z.string(), weight: z.number().default(400) }),
+    characteristics: z.array(z.object({ term: z.string(), detail: z.string() })).default([]),
+    keyFigures: z.array(z.object({ name: z.string(), note: z.string() })).default([]),
+    fonts: z.array(z.string()).default([]),   // slugs of specimens in this era
+    theme: z.object({
+      bg: z.string(), fg: z.string(), accent: z.string(),
+    }),
+  }),
+});
+
+export const collections = { fonts, eras };

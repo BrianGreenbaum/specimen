@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+---
+<div class="iu" style={`--fam:${fam}`}>
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Poster — a Victorian playbill</span></figcaption>
+    <div class="iu__scene playbill-scene">
+      <div class="iu__poster playbill">
+        <p class="pb__l1">POSITIVELY ONE NIGHT ONLY</p>
+        <p class="pb__rule"></p>
+        <p class="pb__l2">THE GRAND</p>
+        <h3 class="pb__head">EXHIBITION</h3>
+        <p class="pb__l3">of MECHANICAL & TYPOGRAPHIC WONDERS</p>
+        <p class="pb__rule"></p>
+        <div class="pb__row"><span>DOORS·VII</span><span class="pb__star">★</span><span>ADMIT ONE</span></div>
+      </div>
+    </div>
+  </figure>
+
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a heritage label</span></figcaption>
+    <div class="iu__scene scene21">
+      <div class="iu__poster label-brand">
+        <span class="lb__est">EST. 1845</span>
+        <div class="lb__name">BESLEY &amp; CO.</div>
+        <div class="lb__sub">FOUNDERS OF FINE SLAB · FANN STREET</div>
+      </div>
+    </div>
+  </figure>
+</div>
+
+<style>
+  .iu__item { margin: 0; }
+  .scene21 { aspect-ratio: 21 / 9; }
+  .playbill-scene { aspect-ratio: 3 / 4; max-width: 440px; }
+
+  .playbill { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 5cqi; gap: 1.6cqi; }
+  .pb__l1 { font-size: 3cqi; letter-spacing: 0.12em; font-weight: 600; }
+  .pb__l2 { font-size: 5cqi; font-weight: 600; letter-spacing: 0.04em; }
+  .pb__head { font-size: 15cqi; line-height: 0.9; font-weight: 800; letter-spacing: -0.01em; }
+  .pb__l3 { font-size: 3.2cqi; font-style: italic; color: var(--fg-2); max-width: 80%; }
+  .pb__rule { width: 86%; height: 0; border-top: 2px solid var(--fg); position: relative; }
+  .pb__rule::after { content: ''; position: absolute; left: 0; right: 0; top: 3px; border-top: 1px solid var(--fg); }
+  .pb__row { display: flex; align-items: center; gap: 4cqi; font-size: 3.4cqi; font-weight: 700; letter-spacing: 0.1em; margin-top: 1cqi; }
+  .pb__star { color: var(--accent); }
+
+  .label-brand { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1cqi; background: var(--accent); color: var(--accent-contrast); }
+  .lb__est { font-size: 2.4cqi; letter-spacing: 0.4em; }
+  .lb__name { font-size: 12cqi; font-weight: 800; letter-spacing: -0.01em; }
+  .lb__sub { font-size: 2.2cqi; letter-spacing: 0.25em; opacity: 0.85; }
+</style>

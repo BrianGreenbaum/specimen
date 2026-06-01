@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+---
+<div class="iu" style={`--fam:${fam}`}>
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
+    <div class="iu__scene cover-scene">
+      <div class="iu__poster cover">
+        <div class="cover__top">
+          <span>№ 04</span><span>Autumn</span><span>$12</span>
+        </div>
+        <h3 class="cover__masthead">MODA</h3>
+        <div class="cover__lines">
+          <span>The Architecture of Elegance</span>
+          <span class="cover__feat">Paris · in 48 hairlines</span>
+          <span>Couture for the Algorithm Age</span>
+        </div>
+        <div class="cover__barcode" aria-hidden="true">
+          {Array.from({length:28}).map((_,i)=>(<i style={`width:${(i%4)+1}px`}></i>))}
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the feature opener</span></figcaption>
+    <div class="iu__scene scene16">
+      <div class="iu__poster spread">
+        <span class="spread__folio">Feature · 064</span>
+        <h3 class="spread__head">The<br/><em>Hairline</em></h3>
+        <p class="spread__deck">On the vanishing stroke, and the two hundred years it took to make a letter this thin.</p>
+      </div>
+    </div>
+  </figure>
+</div>
+
+<style>
+  .iu__item { margin: 0; }
+  .cover-scene { aspect-ratio: 3 / 4; max-width: 460px; }
+
+  .cover { background: var(--bg); display: flex; flex-direction: column; padding: 5cqi; }
+  .cover__top { display: flex; justify-content: space-between; font-size: 2.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 2cqi; }
+  .cover__masthead { font-size: 30cqi; line-height: 0.8; font-weight: 700; text-align: center; letter-spacing: -0.01em; margin: 4cqi 0 3cqi; color: var(--fg); }
+  .cover__lines { display: flex; flex-direction: column; gap: 2cqi; margin-top: auto; }
+  .cover__lines span { font-size: 4cqi; line-height: 1.1; color: var(--fg-2); font-style: italic; }
+  .cover__feat { color: var(--accent) !important; font-style: normal !important; font-weight: 600; }
+  .cover__barcode { display: flex; align-items: flex-end; gap: 2px; height: 8cqi; margin-top: 3cqi; }
+  .cover__barcode i { background: var(--fg-3); height: 100%; }
+
+  .spread { background: var(--bg); padding: 5cqi; display: flex; flex-direction: column; justify-content: center; }
+  .spread__folio { font-size: 2.6cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .spread__head { font-size: 22cqi; line-height: 0.86; font-weight: 700; letter-spacing: -0.02em; margin-top: 2cqi; color: var(--fg); }
+  .spread__head em { font-weight: 400; font-style: italic; color: var(--accent); }
+  .spread__deck { font-size: 3.2cqi; font-style: italic; color: var(--fg-2); max-width: 70%; margin-top: 3cqi; }
+</style>

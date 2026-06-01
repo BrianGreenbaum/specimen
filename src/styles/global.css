@@ -218,3 +218,55 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; }
 }
+
+/* ------------------------------------------------------------
+   IN-USE (shared scaffolding for bespoke per-font scenes)
+   ------------------------------------------------------------ */
+.iu { display: flex; flex-direction: column; gap: var(--sp-6); }
+.iu__cap { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: var(--sp-2); }
+.iu__scene {
+  position: relative;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  container-type: inline-size;
+  background: var(--bg-2);
+}
+/* Poster canvas: type scales with the box via cqi */
+.iu__poster { position: absolute; inset: 0; }
+.iu__poster * { font-family: var(--fam); }
+
+/* Device frame for realistic UI mockups (type stays at real px sizes) */
+.iu__device { background: var(--bg); }
+.iu__chrome {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--fg) 4%, var(--bg));
+}
+.iu__dots { display: flex; gap: 0.4rem; }
+.iu__dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--fg-3); opacity: 0.5; }
+.iu__addr {
+  flex: 1; text-align: center; font-family: var(--font-mono);
+  font-size: 12px; color: var(--fg-3);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 100px;
+  padding: 0.25rem 0.8rem; max-width: 60%; margin-inline: auto;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ------------------------------------------------------------
+   GLYPH DIAGRAM (shared: inspector, anatomy, glossary)
+   ------------------------------------------------------------ */
+.dg-glyph { fill: var(--fg); }
+.dg-glyph--muted { fill: var(--fg-3); opacity: 0.5; }
+.dg-glyph--accent { fill: var(--accent); }
+.dg-guide { stroke: color-mix(in srgb, var(--accent) 42%, transparent); stroke-width: 1.5; }
+.dg-guide--base { stroke: color-mix(in srgb, var(--accent) 75%, transparent); stroke-width: 2; }
+.dg-adv { stroke: color-mix(in srgb, var(--fg-3) 60%, transparent); stroke-width: 1.5; stroke-dasharray: 4 6; }
+.dg-ring { stroke: var(--accent); stroke-width: 2.5; }
+.dg-glabel {
+  fill: var(--accent); font-family: var(--font-mono);
+  font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.dg-flabel {
+  fill: var(--fg); font-family: var(--font-mono);
+  font-size: 24px; letter-spacing: 0.02em;
+}

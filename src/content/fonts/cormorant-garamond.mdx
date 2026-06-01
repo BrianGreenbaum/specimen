@@ -1,6 +1,8 @@
 ---
 name: Cormorant Garamond
 order: 7
+era: old-style
+historyNote: A display Garamond — the old-style tradition pushed to high contrast.
 designer: Christian Thalmann
 foundry: Catharsis Fonts
 year: 2015
@@ -35,10 +37,10 @@ openType:
   - { tag: 'frac', label: 'Fractions', sample: '1/2 3/4', on: false }
   - { tag: 'sups', label: 'Superiors', sample: '1er 2e', on: false }
 callouts:
-  - { glyph: 'A', title: 'Razor-sharp serifs', body: 'Where book Garamonds keep sturdy serifs for ink-spread, Cormorant files them to points. At display size on a high-resolution screen those needle-fine endings read as pure refinement.' }
-  - { glyph: 'e', title: 'Scandalously small counters', body: 'The enclosed whites are squeezed tight and the contrast pushed high — a luxury the metal punchcutters could never risk, because at text size the counters would simply fill with ink and close.' }
-  - { glyph: 'é', title: 'Flamboyantly tall accents', body: 'Diacritics rise high and elegant above the cap line. Set large, they become a flourish in their own right — part of why the face feels so at home on a wedding invitation or a perfume bottle.' }
-  - { glyph: 'Q', title: 'Dangerously smooth curves', body: 'Every bowl and tail is drawn to flow without a single hard inflection. The smoothness is what distils, in the designer’s words, the æsthetic essence of Garamond — released from the limits of metal type.' }
+  - { glyph: 'A', title: 'Razor-sharp serifs', body: 'Where book Garamonds keep sturdy serifs for ink-spread, Cormorant files them to points. At display size on a high-resolution screen those needle-fine endings read as pure refinement.', guides: ['cap', 'baseline'], focus: [{ x: 0.12, y: 0.95, r: 0.13 }, { x: 0.88, y: 0.95, r: 0.13, label: 'razor serif' }] }
+  - { glyph: 'e', title: 'Scandalously small counters', body: 'The enclosed whites are squeezed tight and the contrast pushed high — a luxury the metal punchcutters could never risk, because at text size the counters would simply fill with ink and close.', guides: ['x', 'baseline'], focus: [{ x: 0.46, y: 0.42, r: 0.15, label: 'tight counter' }] }
+  - { glyph: 'é', title: 'Flamboyantly tall accents', body: 'Diacritics rise high and elegant above the cap line. Set large, they become a flourish in their own right — part of why the face feels so at home on a wedding invitation or a perfume bottle.', guides: ['ascender', 'cap', 'x', 'baseline'], focus: [{ x: 0.55, y: 0.08, r: 0.16, label: 'tall accent' }] }
+  - { glyph: 'Q', title: 'Dangerously smooth curves', body: 'Every bowl and tail is drawn to flow without a single hard inflection. The smoothness is what distils, in the designer’s words, the æsthetic essence of Garamond — released from the limits of metal type.', guides: ['cap', 'baseline', 'descender'], focus: [{ x: 0.66, y: 0.9, r: 0.2, label: 'flowing tail' }] }
 inUse:
   - { kind: 'invitation', label: 'Invitation — wedding suite' }
   - { kind: 'brand', label: 'Brand — luxury logotype' }

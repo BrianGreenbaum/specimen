@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EvolutionScrubber from '../../components/history/EvolutionScrubber.astro';
+
+const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
+const fonts = await getCollection('fonts');
+const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
+---
+<Layout title="A History of Typography — Specimen" mode="dark">
+  <SiteHeader current="History" />
+
+  <header class="hist-hero">
+    <div class="container">
+      <p class="label" data-reveal>The story of the letter · {eras.length} chapters</p>
+      <h1 class="hist-hero__title" data-reveal style="--reveal-delay:80ms">
+        A History<br />of <em>Type</em>
+      </h1>
+      <p class="hist-hero__lede" data-reveal style="--reveal-delay:160ms">
+        Two thousand years in one alphabet. From letters carved in Roman stone to fonts that
+        flex live in your browser — drag the slider below and watch a single letter travel the
+        whole history of type, its serifs appearing and vanishing, its contrast swelling and
+        calming, era by era.
+      </p>
+    </div>
+  </header>
+
+  <section class="container hist-evo" data-reveal>
+    <div class="section-head">
+      <span class="index-num">✳</span>
+      <h2>The letter, through time</h2>
+      <span class="label">Scrub the timeline</span>
+    </div>
+    <EvolutionScrubber eras={eras} />
+  </section>
+
+  <section class="container hist-eras">
+    <div class="section-head">
+      <span class="index-num">✳</span>
+      <h2>The eras</h2>
+      <span class="label">Eight chapters</span>
+    </div>
+
+    <ol class="era-list">
+      {eras.map((e) => (
+        <li class="era-row" data-reveal style={`--era-accent:${e.data.theme.accent}`}>
+          <a class="era-row__main" href={`/history/${e.data.slug}`}>
+            <span class="era-row__num index-num">{String(e.data.order).padStart(2, '0')}</span>
+            <div class="era-row__body">
+              <span class="era-row__period label">{e.data.period}</span>
+              <h3 class="era-row__name">{e.data.name}</h3>
+              <p class="era-row__line">{e.data.oneLiner}</p>
+            </div>
+            <span class="era-row__sample" style={`font-family:'${e.data.specimenFont.family}'`}>{e.data.sample}</span>
+          </a>
+          <div class="era-row__fonts">
+            {e.data.fonts.map((slug) => {
+              const f = fontBySlug.get(slug);
+              return f ? (
+                <a class="era-chip" href={`/fonts/${f.id}`} style={`font-family:'${f.data.fontFamily}'`}>{f.data.name}</a>
+              ) : null;
+            })}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .hist-hero { padding-block: clamp(3rem, 10vh, 7rem) clamp(2rem, 5vh, 4rem); border-bottom: 1px solid var(--line); }
+  .hist-hero__title {
+    font-family: var(--font-ui); font-weight: 680; font-size: clamp(3rem, 12vw, 9rem);
+    line-height: 0.9; letter-spacing: -0.03em; margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .hist-hero__title em { font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent); }
+  .hist-hero__lede { max-width: 60ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
+
+  .hist-evo { padding-block: clamp(2.5rem, 6vh, 5rem); }
+  .hist-eras { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
+
+  .era-list { border-top: 1px solid var(--line); }
+  .era-row { border-bottom: 1px solid var(--line); }
+  .era-row__main {
+    display: grid; grid-template-columns: 3.5rem 1fr auto; align-items: center; gap: var(--sp-4);
+    padding-block: clamp(1.2rem, 3vh, 2.2rem); transition: padding-left 0.4s var(--ease);
+  }
+  .era-row__main:hover { padding-left: 1rem; }
+  .era-row__num { color: var(--era-accent); align-self: start; padding-top: 0.4rem; }
+  .era-row__period { color: var(--era-accent); }
+  .era-row__name { font-family: var(--font-ui); font-size: var(--step-2); font-weight: 640; letter-spacing: -0.01em; line-height: 1; margin: 0.2rem 0 0.4rem; }
+  .era-row__line { color: var(--fg-2); max-width: 50ch; }
+  .era-row__sample {
+    font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 0.9; color: var(--fg);
+    transition: color 0.3s var(--ease); white-space: nowrap;
+  }
+  .era-row__main:hover .era-row__sample { color: var(--era-accent); }
+
+  .era-row__fonts { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0 0 var(--sp-4) 5rem; }
+  .era-chip {
+    font-size: var(--step-0); padding: 0.3em 0.7em; border: 1px solid var(--line); border-radius: 100px;
+    color: var(--fg-2); transition: all 0.2s var(--ease);
+  }
+  .era-chip:hover { border-color: var(--era-accent); color: var(--fg); }
+
+  @media (max-width: 760px) {
+    .era-row__main { grid-template-columns: 2.4rem 1fr; }
+    .era-row__sample { display: none; }
+    .era-row__fonts { padding-left: 2.4rem; }
+  }
+</style>

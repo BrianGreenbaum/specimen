@@ -1,6 +1,8 @@
 ---
 name: Libre Baskerville
 order: 6
+era: transitional
+historyNote: Baskerville’s transitional serif, retuned for reading on screens.
 designer: Pablo Impallari & Rodrigo Fuenzalida
 foundry: Impallari Type
 year: 2012
@@ -28,10 +30,10 @@ pairsWith:
 openType:
   - { tag: 'liga', label: 'Standard ligatures', sample: 'fi fl ffi office', on: true }
 callouts:
-  - { glyph: 'a', title: 'A taller x-height', body: 'Compared with the 1941 metal Baskerville it descends from, the x-height is raised noticeably. More of each letter lands in the readable middle band — the first and most important concession to the screen.' }
-  - { glyph: 'e', title: 'Wider counters', body: 'The enclosed white spaces are opened up. Generous counters keep letters from filling in at small sizes and low resolutions, where a tighter design would turn to mud.' }
-  - { glyph: 'o', title: 'Tempered contrast', body: 'The thick-to-thin contrast is gentler than a true Baskerville. Softening the hairlines keeps them from vanishing on a backlit display, trading a little elegance for a lot of durability.' }
-  - { glyph: 'T', title: 'Bracketed serifs', body: 'Sturdy, smoothly bracketed serifs — the transitional hallmark — give the text a firm baseline and an unmistakably bookish, trustworthy texture in a running paragraph.' }
+  - { glyph: 'a', title: 'A taller x-height', body: 'Compared with the 1941 metal Baskerville it descends from, the x-height is raised noticeably. More of each letter lands in the readable middle band — the first and most important concession to the screen.', guides: ['cap', 'x', 'baseline'] }
+  - { glyph: 'e', title: 'Wider counters', body: 'The enclosed white spaces are opened up. Generous counters keep letters from filling in at small sizes and low resolutions, where a tighter design would turn to mud.', guides: ['x', 'baseline'], focus: [{ x: 0.46, y: 0.42, r: 0.18, label: 'open counter' }] }
+  - { glyph: 'o', title: 'Tempered contrast', body: 'The thick-to-thin contrast is gentler than a true Baskerville. Softening the hairlines keeps them from vanishing on a backlit display, trading a little elegance for a lot of durability.', guides: ['x', 'baseline'], focus: [{ x: 0.86, y: 0.5, r: 0.16, label: 'thick side' }] }
+  - { glyph: 'T', title: 'Bracketed serifs', body: 'Sturdy, smoothly bracketed serifs — the transitional hallmark — give the text a firm baseline and an unmistakably bookish, trustworthy texture in a running paragraph.', guides: ['cap', 'baseline'], focus: [{ x: 0.5, y: 0.95, r: 0.16, label: 'bracket' }] }
 inUse:
   - { kind: 'article', label: 'Article — long-form reading' }
   - { kind: 'editorial', label: 'Editorial — pull quote' }

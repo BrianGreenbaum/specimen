@@ -8,9 +8,18 @@ export interface Props {
 const { font } = Astro.props;
 const num = String(font.order).padStart(2, '0');
 const initial = font.name.charAt(0);
+const wghtAxis = font.axes.find((a) => a.tag === 'wght');
 ---
-<header class="hero" style={`--fam:${font.fontFamily}`}>
-  <div class="hero__ghost" aria-hidden="true">{initial}</div>
+<header
+  class="hero"
+  style={`--fam:${font.fontFamily}`}
+  data-hero
+  data-variable={font.isVariable ? 'true' : 'false'}
+  data-wmin={wghtAxis?.min ?? 400}
+  data-wmax={wghtAxis?.max ?? 400}
+  data-wdef={wghtAxis?.default ?? 400}
+>
+  <div class="hero__ghost" aria-hidden="true" data-hero-ghost>{initial}</div>
 
   <div class="container hero__inner">
     <div class="hero__top" data-reveal>
@@ -19,7 +28,7 @@ const initial = font.name.charAt(0);
       <span class="label hero__year">{font.year}</span>
     </div>
 
-    <h1 class="hero__name" data-reveal style="--reveal-delay:80ms">{font.name}</h1>
+    <h1 class="hero__name" data-reveal data-hero-name style="--reveal-delay:80ms">{font.name}</h1>
 
     <p class="hero__headline" data-reveal style="--reveal-delay:160ms">{font.headline}</p>
 
@@ -53,6 +62,44 @@ const initial = font.name.charAt(0);
 
   <div class="hero__scroll label" aria-hidden="true">Scroll to explore ↓</div>
 </header>
+
+<script>
+  // Cursor-reactive hero: the giant name's weight follows the pointer,
+  // the ghost letter parallaxes. Refined, and disabled for reduced-motion.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
+    const name = hero.querySelector('[data-hero-name]') as HTMLElement;
+    const ghost = hero.querySelector('[data-hero-ghost]') as HTMLElement;
+    const isVar = hero.dataset.variable === 'true';
+    const wmin = +(hero.dataset.wmin || 400);
+    const wmax = +(hero.dataset.wmax || 400);
+    const wdef = +(hero.dataset.wdef || 400);
+    if (reduce) return;
+
+    let cx = 0.5, cy = 0.5, curW = Math.max(wmin, 200), tgtW = wdef, gx = 0, gy = 0;
+    let active = false;
+
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      cx = (e.clientX - r.left) / r.width;
+      cy = (e.clientY - r.top) / r.height;
+      active = true;
+      if (isVar && wmax > wmin) tgtW = wmin + Math.min(1, Math.max(0, cx)) * (wmax - wmin);
+    });
+    hero.addEventListener('pointerleave', () => { active = false; tgtW = wdef; });
+
+    const loop = () => {
+      curW += (tgtW - curW) * 0.09;
+      if (isVar && wmax > wmin) name.style.fontVariationSettings = `'wght' ${curW.toFixed(0)}`;
+      const tgx = active ? (cx - 0.5) * -34 : 0;
+      const tgy = active ? (cy - 0.5) * -22 : 0;
+      gx += (tgx - gx) * 0.06; gy += (tgy - gy) * 0.06;
+      if (ghost) ghost.style.transform = `translate(${gx.toFixed(2)}px, ${gy.toFixed(2)}px)`;
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  });
+</script>
 
 <style>
   .hero {
@@ -101,9 +148,10 @@ const initial = font.name.charAt(0);
     animation: heroWeight 1.4s var(--ease) both;
   }
   @keyframes heroWeight {
-    from { font-variation-settings: 'wght' 200; opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: none; }
   }
+  .hero__ghost { transition: transform 0.1s linear; will-change: transform; }
 
   .hero__headline {
     font-family: var(--fam);

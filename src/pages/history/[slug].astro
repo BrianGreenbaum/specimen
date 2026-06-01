@@ -1,0 +1,162 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import Glossary from '../../components/Glossary.astro';
+import { eraThemeStyle, luminance } from '../../lib/theme';
+
+export async function getStaticPaths() {
+  const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
+  const fonts = await getCollection('fonts');
+  return eras.map((entry, i) => ({
+    params: { slug: entry.data.slug },
+    props: {
+      entry,
+      prev: eras[(i - 1 + eras.length) % eras.length],
+      next: eras[(i + 1) % eras.length],
+      eraFonts: entry.data.fonts
+        .map((s) => fonts.find((f) => f.id === s))
+        .filter(Boolean),
+    },
+  }));
+}
+
+const { entry, prev, next, eraFonts } = Astro.props;
+const e = entry.data;
+const { Content } = await render(entry);
+const themeStyle = eraThemeStyle(e.theme);
+const mode = luminance(e.theme.bg) < 0.5 ? 'dark' : 'light';
+const fam = e.specimenFont.family;
+---
+<Layout title={`${e.name} — A History of Type`} description={e.oneLiner} themeStyle={themeStyle} mode={mode}>
+  <SiteHeader current={e.name} />
+
+  <header class="era-hero" style={`--fam:${fam}`}>
+    <div class="era-hero__ghost" aria-hidden="true" style={`font-family:'${fam}'`}>{e.sample.charAt(0)}</div>
+    <div class="container era-hero__inner">
+      <a href="/history" class="era-hero__back label" data-reveal>← The history of type</a>
+      <div class="era-hero__top" data-reveal style="--reveal-delay:60ms">
+        <span class="index-num">{String(e.order).padStart(2, '0')} / 08</span>
+        <span class="label">{e.period}</span>
+      </div>
+      <h1 class="era-hero__name" data-reveal style="--reveal-delay:120ms">{e.name}</h1>
+      <p class="era-hero__line" data-reveal style="--reveal-delay:180ms">{e.oneLiner}</p>
+      <p class="era-hero__sample" data-reveal style={`--reveal-delay:240ms; font-family:'${fam}'`}>{e.sample}</p>
+    </div>
+  </header>
+
+  <main class="container era-main">
+    <div class="era-grid">
+      <div class="era-story prose" data-glossary style={`--term-fam:'${fam}'`}>
+        <Content />
+      </div>
+
+      <aside class="era-side">
+        <div class="era-card" data-reveal>
+          <div class="label era-card__h">Defining traits</div>
+          <ul class="era-traits" data-glossary style={`--term-fam:'${fam}'`}>
+            {e.characteristics.map((c) => (
+              <li><strong>{c.term}</strong><span>{c.detail}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="era-card" data-reveal>
+          <div class="label era-card__h">Key figures</div>
+          <ul class="era-figures">
+            {e.keyFigures.map((k) => (
+              <li><strong>{k.name}</strong><span>{k.note}</span></li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    {eraFonts.length > 0 && (
+      <section class="era-faces">
+        <div class="section-head">
+          <span class="index-num">✳</span>
+          <h2>Faces from this era</h2>
+          <span class="label">In the collection</span>
+        </div>
+        <div class="era-faces__grid">
+          {eraFonts.map((f: any) => (
+            <a class="era-face" href={`/fonts/${f.id}`} data-reveal>
+              <span class="era-face__name" style={`font-family:'${f.data.fontFamily}'`}>{f.data.name}</span>
+              <span class="era-face__meta label">{f.data.designer} · {f.data.year}</span>
+              <span class="era-face__note">{f.data.historyNote}</span>
+              <span class="era-face__cta label">Open specimen →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <nav class="era-nav">
+      <a href={`/history/${prev.data.slug}`} class="era-nav__link">
+        <span class="label">← {String(prev.data.order).padStart(2, '0')}</span>
+        <span class="era-nav__name">{prev.data.name}</span>
+      </a>
+      <a href={`/history/${next.data.slug}`} class="era-nav__link era-nav__link--right">
+        <span class="label">{String(next.data.order).padStart(2, '0')} →</span>
+        <span class="era-nav__name">{next.data.name}</span>
+      </a>
+    </nav>
+  </main>
+
+  <SiteFooter />
+  <Glossary />
+</Layout>
+
+<style>
+  .era-hero { position: relative; overflow: clip; padding-block: clamp(2rem, 6vh, 4rem) clamp(2.5rem, 7vh, 5rem); border-bottom: 1px solid var(--line); }
+  .era-hero__ghost {
+    position: absolute; right: -0.06em; bottom: -0.28em; z-index: 0;
+    font-size: clamp(24rem, 60vw, 52rem); line-height: 0.7; color: var(--accent);
+    opacity: 0.08; pointer-events: none; user-select: none;
+  }
+  .era-hero__inner { position: relative; z-index: 1; }
+  .era-hero__back { display: inline-block; margin-bottom: var(--sp-5); }
+  .era-hero__back:hover { color: var(--fg); }
+  .era-hero__top { display: flex; align-items: baseline; gap: var(--sp-4); margin-bottom: var(--sp-3); }
+  .era-hero__top .index-num { color: var(--accent); }
+  .era-hero__name { font-family: var(--font-ui); font-size: clamp(2.6rem, 9vw, 7rem); font-weight: 680; letter-spacing: -0.03em; line-height: 0.92; }
+  .era-hero__line { font-size: var(--step-2); color: var(--accent); margin-top: var(--sp-3); max-width: 24ch; line-height: 1.1; font-family: var(--fam); }
+  .era-hero__sample { font-size: clamp(3rem, 14vw, 11rem); line-height: 1; margin-top: var(--sp-4); color: var(--fg); }
+
+  .era-main { padding-block: clamp(2.5rem, 6vh, 5rem); }
+  .era-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--sp-7); align-items: start; }
+  .era-story { font-size: var(--step-1); }
+  .era-story :global(p:first-of-type)::first-letter {
+    font-size: 3.4em; line-height: 0.72; float: left; font-weight: 600;
+    padding: 0.06em 0.12em 0 0; color: var(--accent); font-family: var(--fam);
+  }
+
+  .era-side { display: flex; flex-direction: column; gap: var(--sp-4); position: sticky; top: 90px; }
+  .era-card { border: 1px solid var(--line); padding: var(--sp-4); }
+  .era-card__h { display: block; padding-bottom: var(--sp-2); margin-bottom: var(--sp-3); border-bottom: 1px solid var(--fg); }
+  .era-traits li, .era-figures li { display: flex; flex-direction: column; gap: 2px; padding-block: 0.7rem; border-top: 1px solid var(--line-soft); }
+  .era-traits li:first-child, .era-figures li:first-child { border-top: 0; }
+  .era-traits strong, .era-figures strong { font-size: var(--step-0); }
+  .era-traits span, .era-figures span { color: var(--fg-2); font-size: var(--step--1); line-height: 1.45; }
+
+  .era-faces { padding-top: var(--sp-7); }
+  .era-faces__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .era-face { display: flex; flex-direction: column; gap: 0.4rem; padding: var(--sp-4); background: var(--bg); transition: background 0.25s var(--ease); }
+  .era-face:hover { background: var(--bg-2); }
+  .era-face__name { font-size: var(--step-3); line-height: 0.95; }
+  .era-face__meta { margin-top: 0.2rem; }
+  .era-face__note { color: var(--fg-2); font-size: var(--step-0); line-height: 1.45; margin-top: 0.3rem; }
+  .era-face__cta { color: var(--accent); margin-top: var(--sp-2); }
+
+  .era-nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); padding-top: var(--sp-7); margin-top: var(--sp-6); border-top: 1px solid var(--fg); }
+  .era-nav__link { display: flex; flex-direction: column; gap: 0.3rem; }
+  .era-nav__link--right { text-align: right; }
+  .era-nav__name { font-family: var(--font-ui); font-size: var(--step-2); font-weight: 600; transition: color 0.2s var(--ease); }
+  .era-nav__link:hover .era-nav__name { color: var(--accent); }
+
+  @media (max-width: 860px) {
+    .era-grid { grid-template-columns: 1fr; gap: var(--sp-5); }
+    .era-side { position: static; }
+  }
+</style>

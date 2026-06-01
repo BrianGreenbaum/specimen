@@ -22,45 +22,103 @@ const id = `glyphs-${font.name.replace(/\s+/g, '-').toLowerCase()}`;
   ))}
 </div>
 
-<div class="glyph-inspector" id={id} data-inspector hidden>
+<div
+  class="glyph-inspector"
+  id={id}
+  data-inspector
+  data-family={font.fontFamily}
+  data-variable={font.isVariable ? 'true' : 'false'}
+  hidden
+>
   <button class="glyph-inspector__backdrop" data-close aria-label="Close"></button>
   <div class="glyph-inspector__panel" role="dialog" aria-modal="true">
-    <button class="glyph-inspector__close" data-close aria-label="Close inspector">✕</button>
-    <div class="glyph-inspector__big" data-big>A</div>
+    <header class="glyph-inspector__bar">
+      <span class="label">Glyph inspector</span>
+      <div class="glyph-inspector__nav">
+        <button class="gi-btn" data-prev aria-label="Previous glyph">←</button>
+        <button class="gi-btn" data-next aria-label="Next glyph">→</button>
+        <button class="gi-btn gi-btn--close" data-close aria-label="Close inspector">✕</button>
+      </div>
+    </header>
+
+    <div class="glyph-inspector__stage">
+      <svg class="glyph-inspector__diagram" data-diagram preserveAspectRatio="xMidYMid meet" role="img" aria-label="Glyph anatomy diagram"></svg>
+    </div>
+
+    {font.isVariable && (
+      <label class="glyph-inspector__wght">
+        <span class="label">Weight <output data-wval>400</output></span>
+        <input type="range" data-wght min="100" max="900" step="1" value="400" />
+      </label>
+    )}
+
     <dl class="glyph-inspector__meta">
       <div><dt class="label">Character</dt><dd data-charname>A</dd></div>
       <div><dt class="label">Unicode</dt><dd data-code>U+0041</dd></div>
+      <div><dt class="label">Advance</dt><dd data-advance>—</dd></div>
       <div><dt class="label">Family</dt><dd>{font.fontFamily.replace(' Variable', '')}</dd></div>
     </dl>
   </div>
 </div>
 
 <script>
+  import { renderGlyphDiagram } from '../../lib/diagram';
+  import { measureGlyph } from '../../lib/metrics';
+
   document.querySelectorAll('[data-glyphroot]').forEach((root) => {
     const wrap = root.nextElementSibling as HTMLElement;
     if (!wrap?.matches('[data-inspector]')) return;
-    const big = wrap.querySelector('[data-big]') as HTMLElement;
+    const family = wrap.dataset.family!;
+    const isVar = wrap.dataset.variable === 'true';
+    const svg = wrap.querySelector('[data-diagram]') as SVGElement;
     const charname = wrap.querySelector('[data-charname]') as HTMLElement;
     const code = wrap.querySelector('[data-code]') as HTMLElement;
-    big.style.fontFamily = (root as HTMLElement).style.getPropertyValue('--fam');
+    const advance = wrap.querySelector('[data-advance]') as HTMLElement;
+    const wght = wrap.querySelector('[data-wght]') as HTMLInputElement | null;
+    const wval = wrap.querySelector('[data-wval]') as HTMLElement | null;
+
+    const glyphs = Array.from(root.querySelectorAll('[data-glyph]')).map(
+      (c) => (c as HTMLElement).dataset.glyph!
+    );
+    let idx = 0;
+
+    const draw = async () => {
+      const g = glyphs[idx];
+      const weight = wght ? +wght.value : 400;
+      charname.textContent = g;
+      code.textContent = 'U+' + (g.codePointAt(0)?.toString(16).toUpperCase().padStart(4, '0') ?? '');
+      await renderGlyphDiagram(svg, {
+        family, glyph: g, weight,
+        guides: ['ascender', 'cap', 'x', 'baseline', 'descender'],
+        showAdvance: true, showGuideLabels: true, fill: 0.52,
+      });
+      const m = measureGlyph(family, g, weight);
+      advance.textContent = Math.round(m.advance * 1000) + ' u/em';
+    };
 
     const open = (g: string) => {
-      big.textContent = g;
-      charname.textContent = g;
-      const cp = g.codePointAt(0)?.toString(16).toUpperCase().padStart(4, '0') ?? '';
-      code.textContent = 'U+' + cp;
+      idx = Math.max(0, glyphs.indexOf(g));
       wrap.hidden = false;
       document.body.style.overflow = 'hidden';
+      draw();
     };
-    const close = () => {
-      wrap.hidden = true;
-      document.body.style.overflow = '';
-    };
+    const close = () => { wrap.hidden = true; document.body.style.overflow = ''; };
+    const step = (d: number) => { idx = (idx + d + glyphs.length) % glyphs.length; draw(); };
+
     root.querySelectorAll('[data-glyph]').forEach((cell) =>
       cell.addEventListener('click', () => open((cell as HTMLElement).dataset.glyph!))
     );
     wrap.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    wrap.querySelector('[data-prev]')?.addEventListener('click', () => step(-1));
+    wrap.querySelector('[data-next]')?.addEventListener('click', () => step(1));
+    wght?.addEventListener('input', () => { if (wval) wval.textContent = wght.value; draw(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (wrap.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') step(-1);
+      if (e.key === 'ArrowRight') step(1);
+    });
   });
 </script>
 
@@ -105,30 +163,54 @@ const id = `glyphs-${font.name.replace(/\s+/g, '-').toLowerCase()}`;
     position: relative;
     background: var(--bg);
     border: 1px solid var(--fg);
-    padding: clamp(1.5rem, 4vw, 3rem);
-    width: min(440px, 90vw);
+    padding: clamp(1.2rem, 2.5vw, 2rem);
+    width: min(620px, 92vw);
     box-shadow: 0 40px 120px -30px #00000066;
   }
-  .glyph-inspector__close {
-    position: absolute; top: 0.8rem; right: 1rem;
-    font-family: var(--font-mono); color: var(--fg-3); font-size: 1rem;
+  .glyph-inspector__bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: var(--sp-3); border-bottom: 1px solid var(--line);
   }
-  .glyph-inspector__close:hover { color: var(--fg); }
-  .glyph-inspector__big {
-    font-family: var(--fam);
-    font-size: clamp(9rem, 30vw, 15rem);
-    line-height: 1;
-    text-align: center;
-    margin-bottom: var(--sp-4);
-    color: var(--fg);
+  .glyph-inspector__nav { display: flex; gap: 0.4rem; }
+  .gi-btn {
+    width: 32px; height: 32px; display: grid; place-items: center;
+    border: 1px solid var(--line); border-radius: 2px; color: var(--fg-2);
+    font-family: var(--font-mono); transition: all 0.2s var(--ease);
   }
+  .gi-btn:hover { border-color: var(--fg); color: var(--fg); }
+  .gi-btn--close:hover { background: var(--fg); color: var(--bg); }
+
+  .glyph-inspector__stage {
+    aspect-ratio: 1 / 1;
+    max-height: 56vh;
+    margin-inline: auto;
+    display: grid; place-items: center;
+  }
+  .glyph-inspector__diagram { width: 100%; height: 100%; }
+
+  .glyph-inspector__wght { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: var(--sp-3); }
+  .glyph-inspector__wght .label { display: flex; justify-content: space-between; }
+  .glyph-inspector__wght output { color: var(--accent); }
+  .glyph-inspector__wght input {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--fg-3); cursor: pointer;
+  }
+  .glyph-inspector__wght input::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+
   .glyph-inspector__meta {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--sp-3);
     border-top: 1px solid var(--line);
     padding-top: var(--sp-3);
   }
   .glyph-inspector__meta dt { margin-bottom: 4px; }
   .glyph-inspector__meta dd { font-family: var(--font-mono); font-size: var(--step--1); }
+
+  @media (max-width: 540px) {
+    .glyph-inspector__meta { grid-template-columns: repeat(2, 1fr); gap: var(--sp-2); }
+    .glyph-inspector__stage { max-height: 42vh; }
+  }
 </style>

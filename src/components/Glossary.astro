@@ -1,0 +1,166 @@
+---
+// Drop this once per page. It auto-links known typographic terms inside any
+// [data-glossary] container with a subtle dotted underline + hover definition
+// (and a live mini glyph-diagram for visual terms).
+---
+<div class="glossary-pop" data-glossary-pop hidden role="tooltip">
+  <div class="glossary-pop__head">
+    <span class="glossary-pop__name" data-gp-name></span>
+    <span class="label">term</span>
+  </div>
+  <svg class="glossary-pop__svg" data-gp-svg preserveAspectRatio="xMidYMid meet" hidden></svg>
+  <div class="glossary-pop__sample" data-gp-sample hidden></div>
+  <p class="glossary-pop__def" data-gp-def></p>
+</div>
+
+<script>
+  import { glossary } from '../lib/glossary';
+  import { renderGlyphDiagram } from '../lib/diagram';
+
+  const keys = Object.keys(glossary).sort((a, b) => b.length - a.length);
+  const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  function wrapTerm(container: Element, key: string) {
+    const re = new RegExp(`\\b${esc(key)}(s|es)?\\b`, 'i');
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    const nodes: Text[] = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+    for (const node of nodes) {
+      const txt = node.nodeValue || '';
+      if (!txt.trim() || !node.parentElement) continue;
+      if (node.parentElement.closest('.term, a, code, .label, h1, h2, h3, .index-num')) continue;
+      const m = txt.match(re);
+      if (!m || m.index == null) continue;
+      const i = m.index;
+      const span = document.createElement('span');
+      span.className = 'term';
+      span.dataset.key = key;
+      span.tabIndex = 0;
+      span.setAttribute('role', 'button');
+      span.setAttribute('aria-label', `Definition: ${glossary[key].term}`);
+      span.textContent = txt.slice(i, i + m[0].length);
+      const frag = document.createDocumentFragment();
+      if (i > 0) frag.appendChild(document.createTextNode(txt.slice(0, i)));
+      frag.appendChild(span);
+      const rest = txt.slice(i + m[0].length);
+      if (rest) frag.appendChild(document.createTextNode(rest));
+      node.parentElement.replaceChild(frag, node);
+      return; // first occurrence only
+    }
+  }
+
+  const pop = document.querySelector('[data-glossary-pop]') as HTMLElement;
+  const nameEl = pop.querySelector('[data-gp-name]') as HTMLElement;
+  const defEl = pop.querySelector('[data-gp-def]') as HTMLElement;
+  const svgEl = pop.querySelector('[data-gp-svg]') as SVGElement;
+  const sampleEl = pop.querySelector('[data-gp-sample]') as HTMLElement;
+  let hideTimer: number | undefined;
+
+  async function show(term: HTMLElement) {
+    const key = term.dataset.key!;
+    const e = glossary[key];
+    if (!e) return;
+    window.clearTimeout(hideTimer);
+    nameEl.textContent = e.term;
+    defEl.textContent = e.definition;
+
+    if (e.glyph) {
+      svgEl.hidden = false;
+      sampleEl.hidden = true;
+      const fam =
+        e.family ||
+        getComputedStyle(term).getPropertyValue('--term-fam').trim().replace(/['"]/g, '') ||
+        'Fraunces Variable';
+      renderGlyphDiagram(svgEl, { family: fam, glyph: e.glyph, guides: e.guides || [], focus: e.focus || [], fill: 0.6 });
+    } else if (e.sample) {
+      svgEl.hidden = true;
+      sampleEl.hidden = false;
+      sampleEl.textContent = e.sample;
+      sampleEl.style.fontFamily = `'${e.sampleFamily || 'Fraunces Variable'}'`;
+    } else {
+      svgEl.hidden = true;
+      sampleEl.hidden = true;
+    }
+
+    pop.hidden = false;
+    const r = term.getBoundingClientRect();
+    const pw = pop.offsetWidth;
+    let left = r.left + r.width / 2 - pw / 2;
+    left = Math.max(12, Math.min(left, window.innerWidth - pw - 12));
+    const top = r.top - pop.offsetHeight - 12;
+    const below = top < 8;
+    pop.style.left = `${left}px`;
+    pop.style.top = `${below ? r.bottom + 12 : top}px`;
+    pop.dataset.dir = below ? 'below' : 'above';
+    pop.classList.add('is-visible');
+  }
+  function hide() {
+    hideTimer = window.setTimeout(() => {
+      pop.classList.remove('is-visible');
+      pop.hidden = true;
+    }, 120);
+  }
+
+  function init() {
+    document.querySelectorAll('[data-glossary]').forEach((c) => {
+      if ((c as HTMLElement).dataset.glossaryDone) return;
+      (c as HTMLElement).dataset.glossaryDone = '1';
+      for (const k of keys) wrapTerm(c, k);
+    });
+    document.querySelectorAll<HTMLElement>('.term').forEach((t) => {
+      if (t.dataset.bound) return;
+      t.dataset.bound = '1';
+      t.addEventListener('mouseenter', () => show(t));
+      t.addEventListener('mouseleave', hide);
+      t.addEventListener('focus', () => show(t));
+      t.addEventListener('blur', hide);
+      t.addEventListener('click', (ev) => { ev.stopPropagation(); show(t); });
+    });
+    pop.addEventListener('mouseenter', () => window.clearTimeout(hideTimer));
+    pop.addEventListener('mouseleave', hide);
+  }
+
+  init();
+  document.addEventListener('astro:after-swap', init);
+</script>
+
+<style is:global>
+  .term {
+    cursor: help;
+    text-decoration: none;
+    background-image: radial-gradient(currentColor 30%, transparent 30%);
+    background-size: 4px 4px;
+    background-repeat: repeat-x;
+    background-position: 0 1.05em;
+    padding-bottom: 0.08em;
+    color: inherit;
+    transition: color 0.2s var(--ease);
+  }
+  .term:hover, .term:focus-visible { color: var(--accent); outline: none; }
+
+  .glossary-pop {
+    position: fixed;
+    z-index: 500;
+    width: min(300px, 88vw);
+    background: var(--bg);
+    border: 1px solid var(--fg);
+    box-shadow: 0 24px 70px -24px #00000055;
+    padding: var(--sp-3);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+  }
+  .glossary-pop.is-visible { opacity: 1; transform: none; }
+  .glossary-pop__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-2); }
+  .glossary-pop__name { font-family: var(--font-ui); font-weight: 650; font-size: var(--step-0); }
+  .glossary-pop__svg {
+    width: 100%; aspect-ratio: 16 / 9; display: block;
+    background: var(--bg-2); border: 1px solid var(--line); margin-bottom: var(--sp-2);
+  }
+  .glossary-pop__sample {
+    font-size: 2.4rem; line-height: 1; text-align: center; padding: var(--sp-3) 0;
+    border: 1px solid var(--line); background: var(--bg-2); margin-bottom: var(--sp-2); color: var(--fg);
+  }
+  .glossary-pop__def { font-size: var(--step--1); line-height: 1.5; color: var(--fg-2); }
+  @media (prefers-reduced-motion: reduce) { .glossary-pop { transition: none; } }
+</style>

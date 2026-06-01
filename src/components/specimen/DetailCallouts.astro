@@ -5,18 +5,22 @@ export interface Props {
 }
 const { font } = Astro.props;
 ---
-<div class="callouts" style={`--fam:${font.fontFamily}`}>
+<div class="callouts" data-glossary style={`--fam:${font.fontFamily}; --term-fam:'${font.fontFamily}'`}>
   {font.callouts.map((c, i) => (
     <article class="callout" data-reveal style={`--reveal-delay:${i * 80}ms`}>
       <div class="callout__plate">
-        <div class="callout__guides" aria-hidden="true">
-          <span class="gl gl--cap"><i class="gl__tag">cap</i></span>
-          <span class="gl gl--x"><i class="gl__tag">x</i></span>
-          <span class="gl gl--base"><i class="gl__tag">base</i></span>
-        </div>
-        <span class="callout__glyph">{c.glyph}</span>
+        <svg
+          class="callout__diagram"
+          data-callout
+          data-glyph={c.glyph}
+          data-weight={c.weight}
+          data-guides={JSON.stringify(c.guides)}
+          data-focus={JSON.stringify(c.focus)}
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label={`${c.glyph} — ${c.title}`}
+        ></svg>
         <span class="callout__marker">{String(i + 1).padStart(2, '0')}</span>
-        <span class="callout__loupe" aria-hidden="true"></span>
       </div>
       <div class="callout__text">
         <h3 class="callout__title">{c.title}</h3>
@@ -26,6 +30,31 @@ const { font } = Astro.props;
   ))}
 </div>
 
+<script>
+  import { renderGlyphDiagram } from '../../lib/diagram';
+
+  const draw = () => {
+    document.querySelectorAll<SVGElement>('[data-callout]').forEach((svg) => {
+      if (svg.dataset.drawn) return;
+      const root = svg.closest('.callouts') as HTMLElement;
+      const fam = root?.style.getPropertyValue('--fam').trim();
+      if (!fam) return;
+      svg.dataset.drawn = '1';
+      renderGlyphDiagram(svg, {
+        family: fam,
+        glyph: svg.dataset.glyph!,
+        weight: +(svg.dataset.weight || 400),
+        guides: JSON.parse(svg.dataset.guides || '[]'),
+        focus: JSON.parse(svg.dataset.focus || '[]'),
+        fill: 0.62,
+      });
+    });
+  };
+  // Fonts must be ready for accurate measurement
+  (document as any).fonts?.ready.then(draw);
+  draw();
+</script>
+
 <style>
   .callouts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .callout { background: var(--bg); display: flex; flex-direction: column; }
@@ -34,50 +63,16 @@ const { font } = Astro.props;
     position: relative;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    display: grid;
-    place-items: center;
     background:
       radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
       var(--bg-2);
   }
-  .callout__guides { position: absolute; inset: 0; pointer-events: none; }
-  .gl { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent); }
-  .gl--cap { top: 16%; }
-  .gl--x { top: 47%; }
-  .gl--base { top: 82%; border-top-style: solid; border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
-  .gl__tag {
-    position: absolute; right: 10px; top: -0.5rem;
-    font-family: var(--font-mono); font-size: 0.56rem; font-style: normal;
-    letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--accent); background: var(--bg-2); padding: 0 0.35em;
-  }
-
-  .callout__glyph {
-    position: relative;
-    font-family: var(--fam);
-    font-size: clamp(8rem, 22vw, 16rem);
-    line-height: 1;
-    color: var(--fg);
-    z-index: 1;
-    transition: transform 0.6s var(--ease);
-  }
-  .callout:hover .callout__glyph { transform: scale(1.05); }
+  .callout__diagram { width: 100%; height: 100%; display: block; }
 
   .callout__marker {
     position: absolute; top: 0.9rem; left: 1rem; z-index: 2;
     font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
     color: var(--accent);
-  }
-  .callout__loupe {
-    position: absolute; z-index: 2;
-    right: 1.1rem; bottom: 1rem;
-    width: clamp(40px, 6vw, 64px); aspect-ratio: 1; border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  }
-  .callout__loupe::after {
-    content: ''; position: absolute; right: -8px; bottom: -4px;
-    width: 16px; height: 1px; background: color-mix(in srgb, var(--accent) 55%, transparent);
-    transform: rotate(45deg); transform-origin: right;
   }
 
   .callout__text { padding: var(--sp-4); border-top: 1px solid var(--line); }

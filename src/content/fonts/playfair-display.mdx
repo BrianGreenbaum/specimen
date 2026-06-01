@@ -1,6 +1,8 @@
 ---
 name: Playfair Display
 order: 5
+era: didone
+historyNote: An Enlightenment-era high-contrast serif, redrawn for the web.
 designer: Claus Eggers Sørensen
 foundry: Independent (open source)
 year: 2011
@@ -37,10 +39,10 @@ openType:
   - { tag: 'sups', label: 'Superiors', sample: '1er 2e No', on: false }
   - { tag: 'ordn', label: 'Ordinals', sample: '1a 2o', on: false }
 callouts:
-  - { glyph: 'g', title: 'Extreme contrast', body: 'Hairlines thin almost to disappearance against heavy vertical stems. This dramatic thick-to-thin contrast is the signature of the Didone era — fashionable, delicate, and built for large sizes where the fine strokes survive.' }
-  - { glyph: 'a', title: 'Ball terminals', body: 'Strokes finish in crisp, round ball terminals rather than tapered points — on the a, c, f and r. They are a flourish lifted straight from late-eighteenth-century engraving and pointed-pen practice.' }
-  - { glyph: 'o', title: 'A vertical axis', body: 'The thinnest points of the round letters sit at the top and bottom, giving an upright, rational stress. It is what separates a transitional design from the angled stress of older old-style romans.' }
-  - { glyph: 'T', title: 'Fine bracketed serifs', body: 'The serifs are thin, flat and delicately bracketed — refined rather than sturdy. They make Playfair sing in a headline and warn you, gently, against setting long body text in it.' }
+  - { glyph: 'g', title: 'Extreme contrast', body: 'Hairlines thin almost to disappearance against heavy vertical stems. This dramatic thick-to-thin contrast is the signature of the Didone era — fashionable, delicate, and built for large sizes where the fine strokes survive.', guides: ['x', 'baseline', 'descender'], focus: [{ x: 0.34, y: 0.34, r: 0.13, label: 'hairline' }, { x: 0.62, y: 0.34, r: 0.13, label: 'thick stem' }] }
+  - { glyph: 'a', title: 'Ball terminals', body: 'Strokes finish in crisp, round ball terminals rather than tapered points — on the a, c, f and r. They are a flourish lifted straight from late-eighteenth-century engraving and pointed-pen practice.', guides: ['x', 'baseline'], focus: [{ x: 0.7, y: 0.12, r: 0.14, label: 'ball terminal' }] }
+  - { glyph: 'o', title: 'A vertical axis', body: 'The thinnest points of the round letters sit at the top and bottom, giving an upright, rational stress. It is what separates a transitional design from the angled stress of older old-style romans.', guides: ['x', 'baseline'], focus: [{ x: 0.5, y: 0.07, r: 0.13 }, { x: 0.5, y: 0.93, r: 0.13, label: 'vertical stress' }] }
+  - { glyph: 'T', title: 'Fine bracketed serifs', body: 'The serifs are thin, flat and delicately bracketed — refined rather than sturdy. They make Playfair sing in a headline and warn you, gently, against setting long body text in it.', guides: ['cap', 'baseline'], focus: [{ x: 0.5, y: 0.95, r: 0.15, label: 'bracketed serif' }] }
 inUse:
   - { kind: 'magazine', label: 'Magazine — fashion feature' }
   - { kind: 'editorial', label: 'Editorial — title page' }

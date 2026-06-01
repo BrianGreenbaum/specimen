@@ -1,0 +1,179 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+const rows = [
+  { src: 'Direct', v: 18420, c: '4.8%', r: 92840 },
+  { src: 'Organic search', v: 12950, c: '3.1%', r: 41200 },
+  { src: 'Referral', v: 8310, c: '5.2%', r: 38760 },
+  { src: 'Social', v: 6740, c: '1.9%', r: 12030 },
+  { src: 'Email', v: 4980, c: '6.4%', r: 28590 },
+];
+---
+<div class="iu" style={`--fam:${fam}`}>
+  <!-- 01 — realistic, interactive product dashboard -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — a real analytics dashboard</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device dash" data-dash>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">app.northwind.io/analytics</span>
+        </div>
+        <div class="dash__bar">
+          <span class="dash__logo">◆ Northwind</span>
+          <nav class="dash__tabs">
+            <button class="is-on" data-tab="overview">Overview</button>
+            <button data-tab="audience">Audience</button>
+            <button data-tab="revenue">Revenue</button>
+          </nav>
+          <span class="dash__search">⌕ Search…</span>
+          <span class="dash__avatar">RA</span>
+        </div>
+        <div class="dash__body">
+          <div class="dash__kpis">
+            <div class="dash__kpi"><span class="dash__k">Visitors</span><b data-kpi="v">51,400</b><i class="up">▲ 12.4%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Conversion</span><b data-kpi="c">4.18%</b><i class="up">▲ 0.6%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Revenue</span><b data-kpi="r">$213,420</b><i class="up">▲ 8.1%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Churn</span><b data-kpi="x">1.08%</b><i class="dn">▼ 0.3%</i></div>
+          </div>
+          <div class="dash__chart" aria-hidden="true">
+            {[42,60,38,72,55,81,64,90,48,76,58,96,70,84].map((h)=>(<span style={`height:${h}%`}></span>))}
+          </div>
+          <table class="dash__table" data-table>
+            <thead>
+              <tr>
+                <th data-sort="src">Source</th>
+                <th data-sort="v" class="num">Visitors</th>
+                <th data-sort="c" class="num">Conv.</th>
+                <th data-sort="r" class="num">Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r)=>(
+                <tr data-v={r.v} data-c={parseFloat(r.c)} data-r={r.r}>
+                  <td>{r.src}</td>
+                  <td class="num">{r.v.toLocaleString()}</td>
+                  <td class="num">{r.c}</td>
+                  <td class="num">${r.r.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Switch tabs, sort the table — Inter at real interface sizes.</p>
+  </figure>
+
+  <!-- 02 — product / brand poster -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — product launch wall</span></figcaption>
+    <div class="iu__scene scene16">
+      <div class="iu__poster iposter">
+        <div class="iposter__top"><span>Northwind OS</span><span>v3.0</span></div>
+        <h3 class="iposter__head">Clarity,<br/>by default.</h3>
+        <p class="iposter__sub">A workspace that gets out of the way. Set in Inter — the typeface drawn for the screens you read all day.</p>
+        <div class="iposter__row">
+          <span class="iposter__chip">Download</span>
+          <span class="iposter__meta">Free · macOS · Windows · Web</span>
+        </div>
+      </div>
+    </div>
+  </figure>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-dash]').forEach((dash) => {
+    // tabs
+    const kpis: Record<string, string[]> = {
+      overview: ['51,400', '4.18%', '$213,420', '1.08%'],
+      audience: ['38,910', '3.04%', '$148,210', '1.41%'],
+      revenue: ['51,400', '5.92%', '$402,880', '0.76%'],
+    };
+    const order = ['v', 'c', 'r', 'x'];
+    dash.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) =>
+      b.addEventListener('click', () => {
+        dash.querySelectorAll('[data-tab]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        const vals = kpis[b.dataset.tab!] || kpis.overview;
+        order.forEach((k, i) => {
+          const el = dash.querySelector(`[data-kpi="${k}"]`);
+          if (el) el.textContent = vals[i];
+        });
+        const bars = dash.querySelectorAll<HTMLElement>('.dash__chart span');
+        bars.forEach((s) => (s.style.height = 30 + ((Math.sin(b.dataset.tab!.length + Array.from(bars).indexOf(s)) + 1) * 33) + '%'));
+      })
+    );
+    // sortable table
+    const table = dash.querySelector('[data-table]') as HTMLTableElement;
+    const tbody = table.querySelector('tbody')!;
+    let asc = false;
+    table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort!;
+        asc = !asc;
+        table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+        th.setAttribute('data-active', asc ? 'asc' : 'desc');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const av = key === 'src' ? a.children[0].textContent! : +a.dataset[key]!;
+          const bv = key === 'src' ? b.children[0].textContent! : +b.dataset[key]!;
+          return (av < bv ? -1 : av > bv ? 1 : 0) * (asc ? 1 : -1);
+        });
+        rows.forEach((r) => tbody.appendChild(r));
+      })
+    );
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .scene16 { aspect-ratio: 16 / 9; }
+
+  /* ---- Dashboard (realistic px sizing) ---- */
+  .dash { font-size: 13px; line-height: 1.4; }
+  .dash__bar { display: flex; align-items: center; gap: 1.2rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); }
+  .dash__logo { font-weight: 700; color: var(--accent); font-size: 14px; }
+  .dash__tabs { display: flex; gap: 0.3rem; }
+  .dash__tabs button { font-size: 12.5px; color: var(--fg-3); padding: 0.3rem 0.6rem; border-radius: 6px; }
+  .dash__tabs button:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .dash__tabs button.is-on { color: var(--fg); font-weight: 600; background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .dash__search { margin-left: auto; color: var(--fg-3); font-size: 12px; border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.7rem; }
+  .dash__avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 11px; font-weight: 600; }
+  .dash__body { padding: 1.1rem; display: grid; gap: 1.1rem; }
+  .dash__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
+  .dash__kpi { border: 1px solid var(--line); border-radius: 8px; padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .dash__k { color: var(--fg-3); font-size: 11.5px; }
+  .dash__kpi b { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; font-feature-settings: 'tnum'; }
+  .dash__kpi i { font-size: 11.5px; font-style: normal; }
+  .dash__kpi .up { color: #1f9d57; } .dash__kpi .dn { color: #d3402f; }
+  .dash__chart { display: flex; align-items: flex-end; gap: 4px; height: 90px; padding: 0.4rem 0; }
+  .dash__chart span { flex: 1; background: var(--accent); opacity: 0.85; border-radius: 2px 2px 0 0; transition: height 0.5s var(--ease); }
+  .dash__chart span:nth-child(even) { opacity: 0.4; }
+  .dash__table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .dash__table th { text-align: left; color: var(--fg-3); font-weight: 500; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--fg); cursor: pointer; user-select: none; white-space: nowrap; }
+  .dash__table th:hover { color: var(--fg); }
+  .dash__table th[data-active]::after { content: ' ↓'; color: var(--accent); }
+  .dash__table th[data-active='asc']::after { content: ' ↑'; }
+  .dash__table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line-soft); }
+  .dash__table .num { text-align: right; font-feature-settings: 'tnum'; }
+  .dash__table tbody tr { transition: background 0.15s var(--ease); cursor: default; }
+  .dash__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+
+  @container (max-width: 640px) {
+    .dash__kpis { grid-template-columns: repeat(2, 1fr); }
+    .dash__search { display: none; }
+  }
+
+  /* ---- Product poster ---- */
+  .iposter { background: var(--fg); color: var(--bg); padding: 5cqi; display: flex; flex-direction: column; }
+  .iposter__top { display: flex; justify-content: space-between; font-size: 2.4cqi; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
+  .iposter__head { font-size: 15cqi; line-height: 0.92; font-weight: 700; letter-spacing: -0.03em; margin: auto 0 0; }
+  .iposter__sub { font-size: 3cqi; line-height: 1.4; max-width: 60%; margin-top: 3cqi; opacity: 0.8; }
+  .iposter__row { display: flex; align-items: center; gap: 3cqi; margin-top: 4cqi; }
+  .iposter__chip { background: var(--accent); color: var(--accent-contrast); font-size: 2.8cqi; font-weight: 600; padding: 1.4cqi 3cqi; border-radius: 100px; }
+  .iposter__meta { font-size: 2.4cqi; opacity: 0.7; }
+</style>

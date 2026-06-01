@@ -14,24 +14,31 @@ import InUse from '../../components/specimen/InUse.astro';
 import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
 import OpenTypeFeatures from '../../components/specimen/OpenTypeFeatures.astro';
 import TechSpecs from '../../components/specimen/TechSpecs.astro';
+import Glossary from '../../components/Glossary.astro';
 import { themeToStyle } from '../../lib/theme';
 
 export async function getStaticPaths() {
   const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+  const eras = await getCollection('eras');
   return fonts.map((entry, i) => ({
     params: { slug: entry.id },
     props: {
       entry,
       prev: fonts[(i - 1 + fonts.length) % fonts.length],
       next: fonts[(i + 1) % fonts.length],
+      era: eras.find((e) => e.data.slug === entry.data.era) ?? null,
     },
   }));
 }
 
-const { entry, prev, next } = Astro.props;
+const { entry, prev, next, era } = Astro.props;
 const font = entry.data;
 const { Content } = await render(entry);
 const themeStyle = themeToStyle(font.theme);
+
+// Bespoke per-font In-Use scene (falls back to the generic InUse component)
+const inUseComponents = import.meta.glob('../../components/specimen/inuse/*.astro', { eager: true });
+const BespokeInUse = (inUseComponents[`../../components/specimen/inuse/${entry.id}.astro`] as any)?.default;
 
 const sections = [
   { id: 'tester', label: 'Type Tester' },
@@ -53,6 +60,18 @@ const sections = [
 >
   <SiteHeader current={font.name} />
   <Hero font={font} />
+
+  {era && (
+    <a class="era-band" href={`/history/${era.data.slug}`} style={`--era-accent:${era.data.theme.accent}`}>
+      <div class="container era-band__inner">
+        <span class="label era-band__kicker">In the history of type</span>
+        <span class="era-band__era">{String(era.data.order).padStart(2, '0')} · {era.data.name}</span>
+        <span class="era-band__note">{font.historyNote}</span>
+        <span class="era-band__cta label">Explore the era →</span>
+      </div>
+    </a>
+  )}
+
   <JumpNav sections={sections} />
 
   <main>
@@ -73,7 +92,7 @@ const sections = [
     </Section>
 
     <Section id="in-use" num="05" title="In use" note="Built live with the real webfont.">
-      <InUse font={font} />
+      {BespokeInUse ? <BespokeInUse font={font} /> : <InUse font={font} />}
     </Section>
 
     <Section id="glyphs" num="06" title="Character set" note="Click any glyph to inspect.">
@@ -87,7 +106,7 @@ const sections = [
     )}
 
     <Section id="story" num={font.openType.length > 0 ? '08' : '07'} title="The story">
-      <div class="story-prose prose">
+      <div class="story-prose prose" data-glossary style={`--term-fam:'${font.fontFamily}'`}>
         <Content />
       </div>
     </Section>
@@ -98,9 +117,27 @@ const sections = [
   </main>
 
   <SiteFooter prev={prev} next={next} />
+  <Glossary />
 </Layout>
 
 <style>
+  .era-band {
+    display: block;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.3s var(--ease);
+  }
+  .era-band:hover { background: color-mix(in srgb, var(--era-accent) 10%, var(--bg-2)); }
+  .era-band__inner {
+    display: flex; align-items: baseline; gap: var(--sp-4); flex-wrap: wrap;
+    padding-block: var(--sp-3);
+  }
+  .era-band__kicker { color: var(--era-accent); }
+  .era-band__era { font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1); letter-spacing: -0.01em; }
+  .era-band__note { color: var(--fg-2); flex: 1; min-width: 12ch; }
+  .era-band__cta { color: var(--era-accent); white-space: nowrap; }
+  @media (max-width: 640px) { .era-band__note { display: none; } }
+
   .story-prose {
     font-size: var(--step-1);
     columns: 2;

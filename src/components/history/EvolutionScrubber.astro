@@ -1,0 +1,171 @@
+---
+// The wow centrepiece: one capital letter rendered across every era.
+// Scrub the timeline and watch serifs appear, contrast grow, the stress
+// straighten, the serifs vanish — the whole history of the letter, live.
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  eras: CollectionEntry<'eras'>[];
+}
+const { eras } = Astro.props;
+const data = eras.map((e) => ({
+  slug: e.data.slug,
+  name: e.data.name,
+  period: e.data.period,
+  family: e.data.specimenFont.family,
+  weight: e.data.specimenFont.weight,
+  evolution: e.data.evolution,
+  accent: e.data.theme.accent,
+}));
+const letters = ['R', 'G', 'A', 'E', 'Q', 'M'];
+---
+<section class="evo" data-evo data-eras={JSON.stringify(data)}>
+  <div class="evo__grid">
+    <div class="evo__stage">
+      <svg class="evo__svg" data-evo-svg preserveAspectRatio="xMidYMid meet" role="img" aria-label="Letter shown across type history"></svg>
+    </div>
+
+    <div class="evo__readout">
+      <div class="evo__letters" role="group" aria-label="Choose a letter">
+        {letters.map((l, i) => (
+          <button class:list={['evo__letter', { 'is-on': i === 0 }]} data-evo-letter={l}>{l}</button>
+        ))}
+      </div>
+      <span class="evo__period label" data-evo-period></span>
+      <h3 class="evo__name" data-evo-name></h3>
+      <p class="evo__note" data-evo-note></p>
+      <a class="evo__link" data-evo-link>Read the chapter →</a>
+    </div>
+  </div>
+
+  <div class="evo__timeline">
+    <input class="evo__range" type="range" min="0" max={data.length - 1} value="0" step="1" data-evo-range aria-label="Scrub through type history" />
+    <ol class="evo__stops">
+      {data.map((e, i) => (
+        <li>
+          <button class:list={['evo__stop', { 'is-on': i === 0 }]} data-evo-stop={i}>
+            <span class="evo__stop-name">{e.name}</span>
+            <span class="evo__stop-period">{e.period}</span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  import { renderGlyphDiagram } from '../../lib/diagram';
+
+  document.querySelectorAll<HTMLElement>('[data-evo]').forEach((root) => {
+    const eras = JSON.parse(root.dataset.eras || '[]');
+    const svg = root.querySelector('[data-evo-svg]') as SVGElement;
+    const period = root.querySelector('[data-evo-period]') as HTMLElement;
+    const name = root.querySelector('[data-evo-name]') as HTMLElement;
+    const note = root.querySelector('[data-evo-note]') as HTMLElement;
+    const link = root.querySelector('[data-evo-link]') as HTMLAnchorElement;
+    const range = root.querySelector('[data-evo-range]') as HTMLInputElement;
+    const stops = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-evo-stop]'));
+    const letterBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-evo-letter]'));
+
+    let idx = 0;
+    let letter = 'R';
+
+    const render = () => {
+      const e = eras[idx];
+      root.style.setProperty('--accent', e.accent);
+      period.textContent = `${String(idx + 1).padStart(2, '0')} · ${e.period}`;
+      name.textContent = e.name;
+      note.textContent = e.evolution;
+      link.href = `/history/${e.slug}`;
+      stops.forEach((s, i) => s.classList.toggle('is-on', i === idx));
+      range.value = String(idx);
+      svg.classList.remove('is-in');
+      renderGlyphDiagram(svg, {
+        family: e.family, glyph: letter, weight: e.weight,
+        guides: ['cap', 'baseline'], fill: 0.74,
+      }).then(() => requestAnimationFrame(() => svg.classList.add('is-in')));
+    };
+
+    range.addEventListener('input', () => { idx = +range.value; render(); });
+    stops.forEach((s, i) => s.addEventListener('click', () => { idx = i; render(); }));
+    letterBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        letter = b.dataset.evoLetter!;
+        letterBtns.forEach((x) => x.classList.toggle('is-on', x === b));
+        render();
+      })
+    );
+
+    if (document.fonts && (document as any).fonts.ready) (document as any).fonts.ready.then(render);
+    else render();
+  });
+</script>
+
+<style>
+  .evo { border: 1px solid var(--line); background: var(--bg); }
+  .evo__grid { display: grid; grid-template-columns: 1.1fr 1fr; }
+  .evo__stage {
+    aspect-ratio: 1 / 1;
+    border-right: 1px solid var(--line);
+    display: grid; place-items: center;
+    background: radial-gradient(120% 120% at 30% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 60%), var(--bg-2);
+    transition: background 0.6s var(--ease);
+  }
+  .evo__svg { width: 100%; height: 100%; }
+  .evo__svg .dg-glyph { fill: var(--fg); transition: opacity 0.45s var(--ease); }
+  .evo__svg { opacity: 0.3; }
+  .evo__svg.is-in { opacity: 1; transition: opacity 0.45s var(--ease); }
+
+  .evo__readout { padding: clamp(1.5rem, 4vw, 3rem); display: flex; flex-direction: column; gap: var(--sp-3); justify-content: center; }
+  .evo__letters { display: flex; gap: 0.3rem; margin-bottom: var(--sp-2); }
+  .evo__letter {
+    width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 2px;
+    font-family: var(--font-mono); font-size: 0.9rem; color: var(--fg-3);
+    transition: all 0.2s var(--ease);
+  }
+  .evo__letter:hover { border-color: var(--fg); color: var(--fg); }
+  .evo__letter.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+
+  .evo__period { color: var(--accent); }
+  .evo__name { font-family: var(--font-ui); font-size: var(--step-2); font-weight: 650; letter-spacing: -0.02em; line-height: 1; }
+  .evo__note { color: var(--fg-2); font-size: var(--step-0); line-height: 1.55; max-width: 40ch; }
+  .evo__link {
+    font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.04em; margin-top: var(--sp-2);
+    width: fit-content; border-bottom: 1px solid transparent; transition: border-color 0.2s var(--ease);
+  }
+  .evo__link:hover { border-color: var(--accent); }
+
+  .evo__timeline { border-top: 1px solid var(--line); padding: var(--sp-4); }
+  .evo__range {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
+    background: var(--line); cursor: pointer; margin-bottom: var(--sp-3);
+  }
+  .evo__range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+    transition: transform 0.15s var(--ease);
+  }
+  .evo__range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .evo__range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); }
+
+  .evo__stops { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
+  .evo__stop {
+    display: flex; flex-direction: column; gap: 2px; text-align: left;
+    padding: 0.5rem 0.4rem; border-top: 2px solid transparent; color: var(--fg-3);
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .evo__stop-name { font-size: 0.66rem; line-height: 1.1; font-weight: 600; color: inherit; }
+  .evo__stop-period { font-family: var(--font-mono); font-size: 0.56rem; }
+  .evo__stop:hover { color: var(--fg-2); }
+  .evo__stop.is-on { color: var(--fg); border-color: var(--accent); }
+
+  @media (max-width: 860px) {
+    .evo__grid { grid-template-columns: 1fr; }
+    .evo__stage { border-right: 0; border-bottom: 1px solid var(--line); aspect-ratio: 4 / 3; }
+    .evo__stops { grid-template-columns: repeat(4, 1fr); }
+    .evo__stop-name { font-size: 0.6rem; }
+  }
+  @media (max-width: 480px) {
+    .evo__stops { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
