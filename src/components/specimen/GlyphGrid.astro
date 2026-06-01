@@ -1,0 +1,134 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { glyphCategories } from '../../lib/glyphs';
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+const id = `glyphs-${font.name.replace(/\s+/g, '-').toLowerCase()}`;
+---
+<div class="glyphs" style={`--fam:${font.fontFamily}`} data-glyphroot>
+  {glyphCategories.map((cat) => (
+    <div class="glyphs__cat">
+      <div class="glyphs__catlabel label">{cat.name} <span>· {cat.glyphs.length}</span></div>
+      <div class="glyphs__grid">
+        {cat.glyphs.map((g) => (
+          <button class="glyphs__cell" data-glyph={g} type="button" aria-label={`Inspect ${g}`}>
+            <span class="glyphs__char">{g}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+
+<div class="glyph-inspector" id={id} data-inspector hidden>
+  <button class="glyph-inspector__backdrop" data-close aria-label="Close"></button>
+  <div class="glyph-inspector__panel" role="dialog" aria-modal="true">
+    <button class="glyph-inspector__close" data-close aria-label="Close inspector">✕</button>
+    <div class="glyph-inspector__big" data-big>A</div>
+    <dl class="glyph-inspector__meta">
+      <div><dt class="label">Character</dt><dd data-charname>A</dd></div>
+      <div><dt class="label">Unicode</dt><dd data-code>U+0041</dd></div>
+      <div><dt class="label">Family</dt><dd>{font.fontFamily.replace(' Variable', '')}</dd></div>
+    </dl>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-glyphroot]').forEach((root) => {
+    const wrap = root.nextElementSibling as HTMLElement;
+    if (!wrap?.matches('[data-inspector]')) return;
+    const big = wrap.querySelector('[data-big]') as HTMLElement;
+    const charname = wrap.querySelector('[data-charname]') as HTMLElement;
+    const code = wrap.querySelector('[data-code]') as HTMLElement;
+    big.style.fontFamily = (root as HTMLElement).style.getPropertyValue('--fam');
+
+    const open = (g: string) => {
+      big.textContent = g;
+      charname.textContent = g;
+      const cp = g.codePointAt(0)?.toString(16).toUpperCase().padStart(4, '0') ?? '';
+      code.textContent = 'U+' + cp;
+      wrap.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+    const close = () => {
+      wrap.hidden = true;
+      document.body.style.overflow = '';
+    };
+    root.querySelectorAll('[data-glyph]').forEach((cell) =>
+      cell.addEventListener('click', () => open((cell as HTMLElement).dataset.glyph!))
+    );
+    wrap.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  });
+</script>
+
+<style>
+  .glyphs__cat { margin-bottom: var(--sp-5); }
+  .glyphs__catlabel { margin-bottom: var(--sp-2); }
+  .glyphs__catlabel span { color: var(--fg-3); }
+  .glyphs__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(48px, 7vw, 76px), 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .glyphs__cell {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--fg);
+    transition: background-color 0.18s var(--ease), color 0.18s var(--ease);
+    position: relative;
+  }
+  .glyphs__char {
+    font-family: var(--fam);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    line-height: 1;
+  }
+  .glyphs__cell:hover { background: var(--accent); color: var(--accent-contrast); }
+  .glyphs__cell:hover .glyphs__char { transform: scale(1.06); }
+
+  /* Inspector */
+  .glyph-inspector { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; }
+  .glyph-inspector[hidden] { display: none; }
+  .glyph-inspector__backdrop {
+    position: absolute; inset: 0;
+    background: color-mix(in srgb, var(--bg) 70%, #000 30%);
+    backdrop-filter: blur(6px);
+    border: 0;
+  }
+  .glyph-inspector__panel {
+    position: relative;
+    background: var(--bg);
+    border: 1px solid var(--fg);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    width: min(440px, 90vw);
+    box-shadow: 0 40px 120px -30px #00000066;
+  }
+  .glyph-inspector__close {
+    position: absolute; top: 0.8rem; right: 1rem;
+    font-family: var(--font-mono); color: var(--fg-3); font-size: 1rem;
+  }
+  .glyph-inspector__close:hover { color: var(--fg); }
+  .glyph-inspector__big {
+    font-family: var(--fam);
+    font-size: clamp(9rem, 30vw, 15rem);
+    line-height: 1;
+    text-align: center;
+    margin-bottom: var(--sp-4);
+    color: var(--fg);
+  }
+  .glyph-inspector__meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-3);
+    border-top: 1px solid var(--line);
+    padding-top: var(--sp-3);
+  }
+  .glyph-inspector__meta dt { margin-bottom: 4px; }
+  .glyph-inspector__meta dd { font-family: var(--font-mono); font-size: var(--step--1); }
+</style>

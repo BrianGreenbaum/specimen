@@ -1,0 +1,73 @@
+---
+import ColorModeToggle from './ColorModeToggle.astro';
+export interface Props {
+  current?: string; // current font name, shown as breadcrumb
+}
+const { current } = Astro.props;
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="wordmark" aria-label="Specimen — home">
+      <span class="wordmark__mark">Specimen</span>
+      <span class="wordmark__sub label">Type, in detail</span>
+    </a>
+
+    {current && (
+      <div class="breadcrumb">
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span class="breadcrumb__name">{current}</span>
+      </div>
+    )}
+
+    <nav class="site-header__nav">
+      <a href="/#index" class="header-link label">Index</a>
+      <ColorModeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-height: 64px;
+    padding-block: 0.6rem;
+  }
+  .wordmark { display: flex; flex-direction: column; line-height: 1; }
+  .wordmark__mark {
+    font-family: var(--font-ui);
+    font-weight: 650;
+    font-size: 1.12rem;
+    letter-spacing: -0.02em;
+  }
+  .wordmark__sub { font-size: 0.62rem; margin-top: 3px; }
+
+  .breadcrumb { display: flex; align-items: center; gap: 0.6rem; }
+  .breadcrumb__sep { color: var(--fg-3); font-family: var(--font-mono); }
+  .breadcrumb__name {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.02em;
+    color: var(--fg-2);
+  }
+
+  .site-header__nav { margin-left: auto; display: flex; align-items: center; gap: var(--sp-4); }
+  .header-link { transition: color 0.2s var(--ease); }
+  .header-link:hover { color: var(--fg); }
+
+  @media (max-width: 640px) {
+    .wordmark__sub { display: none; }
+    .breadcrumb { display: none; }
+    .site-header__inner { gap: var(--sp-2); }
+  }
+</style>

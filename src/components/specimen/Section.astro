@@ -1,0 +1,27 @@
+---
+export interface Props {
+  id: string;
+  num: string;
+  title: string;
+  note?: string;
+}
+const { id, num, title, note } = Astro.props;
+---
+<section id={id} class="spec-section">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="index-num">{num}</span>
+      <h2>{title}</h2>
+      {note && <span class="label spec-section__note">{note}</span>}
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .spec-section { padding-block: clamp(2.5rem, 6vh, 5rem); scroll-margin-top: 120px; }
+  .spec-section__note { align-self: center; text-align: right; max-width: 22ch; }
+  @media (max-width: 640px) {
+    .spec-section__note { display: none; }
+  }
+</style>

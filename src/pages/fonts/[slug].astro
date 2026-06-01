@@ -1,0 +1,122 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import Hero from '../../components/specimen/Hero.astro';
+import JumpNav from '../../components/specimen/JumpNav.astro';
+import Section from '../../components/specimen/Section.astro';
+import TypeTester from '../../components/specimen/TypeTester.astro';
+import WeightsShowcase from '../../components/specimen/WeightsShowcase.astro';
+import Waterfall from '../../components/specimen/Waterfall.astro';
+import DetailCallouts from '../../components/specimen/DetailCallouts.astro';
+import InUse from '../../components/specimen/InUse.astro';
+import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
+import OpenTypeFeatures from '../../components/specimen/OpenTypeFeatures.astro';
+import TechSpecs from '../../components/specimen/TechSpecs.astro';
+import { themeToStyle } from '../../lib/theme';
+
+export async function getStaticPaths() {
+  const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+  return fonts.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prev: fonts[(i - 1 + fonts.length) % fonts.length],
+      next: fonts[(i + 1) % fonts.length],
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const font = entry.data;
+const { Content } = await render(entry);
+const themeStyle = themeToStyle(font.theme);
+
+const sections = [
+  { id: 'tester', label: 'Type Tester' },
+  { id: 'weights', label: 'Weights' },
+  { id: 'sizes', label: 'Sizes' },
+  { id: 'anatomy', label: 'Anatomy' },
+  { id: 'in-use', label: 'In Use' },
+  { id: 'glyphs', label: 'Glyphs' },
+  ...(font.openType.length > 0 ? [{ id: 'features', label: 'OpenType' }] : []),
+  { id: 'story', label: 'Story' },
+  { id: 'specs', label: 'Specs' },
+];
+---
+<Layout
+  title={`${font.name} — Specimen`}
+  description={font.blurb}
+  themeStyle={themeStyle}
+  mode={font.theme.mode}
+>
+  <SiteHeader current={font.name} />
+  <Hero font={font} />
+  <JumpNav sections={sections} />
+
+  <main>
+    <Section id="tester" num="01" title="Type tester" note="Edit the text. Drag the axes.">
+      <TypeTester font={font} />
+    </Section>
+
+    <Section id="weights" num="02" title="Weights & styles" note={`${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}`}>
+      <WeightsShowcase font={font} />
+    </Section>
+
+    <Section id="sizes" num="03" title="Size waterfall" note="The same words, ramped down.">
+      <Waterfall font={font} />
+    </Section>
+
+    <Section id="anatomy" num="04" title="Details & anatomy" note="The marks that make it unmistakable.">
+      <DetailCallouts font={font} />
+    </Section>
+
+    <Section id="in-use" num="05" title="In use" note="Built live with the real webfont.">
+      <InUse font={font} />
+    </Section>
+
+    <Section id="glyphs" num="06" title="Character set" note="Click any glyph to inspect.">
+      <GlyphGrid font={font} />
+    </Section>
+
+    {font.openType.length > 0 && (
+      <Section id="features" num="07" title="OpenType features" note="Typographic refinements, on demand.">
+        <OpenTypeFeatures font={font} />
+      </Section>
+    )}
+
+    <Section id="story" num={font.openType.length > 0 ? '08' : '07'} title="The story">
+      <div class="story-prose prose">
+        <Content />
+      </div>
+    </Section>
+
+    <Section id="specs" num={font.openType.length > 0 ? '09' : '08'} title="Technical specifications">
+      <TechSpecs font={font} />
+    </Section>
+  </main>
+
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<style>
+  .story-prose {
+    font-size: var(--step-1);
+    columns: 2;
+    column-gap: var(--sp-7);
+    max-width: none;
+  }
+  .story-prose :global(p) { break-inside: avoid-column; margin-bottom: 1.1em; }
+  .story-prose :global(p:first-of-type)::first-letter {
+    font-size: 3.2em;
+    line-height: 0.8;
+    float: left;
+    font-weight: 600;
+    padding: 0.05em 0.12em 0 0;
+    color: var(--accent);
+  }
+  @media (max-width: 760px) {
+    .story-prose { columns: 1; }
+  }
+</style>

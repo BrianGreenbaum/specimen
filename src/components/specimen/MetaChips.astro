@@ -1,0 +1,20 @@
+---
+export interface Props {
+  classification: string;
+  isVariable: boolean;
+  category: string;
+  feelings: string[];
+}
+const { classification, isVariable, category, feelings } = Astro.props;
+---
+<div class="chips">
+  <span class="pill" data-accent>{category}</span>
+  <span class="pill">{classification}</span>
+  <span class="pill">{isVariable ? 'Variable' : 'Static'}</span>
+  {feelings.map((f) => <span class="pill chips__feeling">{f}</span>)}
+</div>
+
+<style>
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chips__feeling { color: var(--fg-3); }
+</style>

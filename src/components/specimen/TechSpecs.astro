@@ -1,0 +1,103 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+
+const rows: { k: string; v: string }[] = [
+  { k: 'Designer', v: font.designer },
+  ...(font.foundry ? [{ k: 'Foundry', v: font.foundry }] : []),
+  { k: 'Released', v: String(font.year) },
+  { k: 'Classification', v: font.classification },
+  { k: 'Technology', v: font.isVariable ? 'Variable font' : 'Static (multiple files)' },
+  { k: 'Styles', v: `${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}` },
+  { k: 'Languages', v: font.languages.join(', ') },
+  { k: 'License', v: font.license },
+];
+---
+<div class="specs">
+  <dl class="specs__list" data-reveal>
+    {rows.map((r) => (
+      <div class="specs__row">
+        <dt class="label">{r.k}</dt>
+        <dd>{r.v}</dd>
+      </div>
+    ))}
+  </dl>
+
+  {font.isVariable && font.axes.length > 0 && (
+    <div class="specs__axes" data-reveal>
+      <div class="label specs__axes-title">Variable axes</div>
+      <ul class="specs__axes-list">
+        {font.axes.map((a) => (
+          <li class="specs__axis">
+            <span class="specs__axis-tag">{a.tag}</span>
+            <span class="specs__axis-name">{a.name}</span>
+            <span class="specs__axis-range">{a.min} → {a.max}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {font.pairsWith.length > 0 && (
+    <div class="specs__pairs" data-reveal>
+      <div class="label specs__axes-title">Pairs well with</div>
+      <ul class="specs__pair-list">
+        {font.pairsWith.map((p) => (
+          <li class="specs__pair">
+            <span class="specs__pair-name">{p.name}</span>
+            <span class="specs__pair-role label">{p.role}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<style>
+  .specs {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--sp-6) var(--sp-7);
+    align-items: start;
+  }
+  .specs__list { grid-row: span 2; }
+  .specs__row {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: var(--sp-3);
+    padding-block: 0.8rem;
+    border-top: 1px solid var(--line-soft);
+    align-items: baseline;
+  }
+  .specs__row:first-child { border-top: 1px solid var(--fg); }
+  .specs__row dd { font-size: var(--step-0); }
+
+  .specs__axes-title { margin-bottom: var(--sp-2); padding-bottom: var(--sp-2); border-bottom: 1px solid var(--fg); }
+  .specs__axes-list, .specs__pair-list { display: flex; flex-direction: column; }
+  .specs__axis {
+    display: grid;
+    grid-template-columns: 4rem 1fr auto;
+    gap: var(--sp-2);
+    align-items: baseline;
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--line-soft);
+  }
+  .specs__axis-tag { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+  .specs__axis-range { font-family: var(--font-mono); font-size: var(--step--1); color: var(--fg-3); }
+
+  .specs__pair { padding-block: 0.6rem; border-top: 1px solid var(--line-soft); }
+  .specs__pair-name { font-size: var(--step-1); display: block; }
+  .specs__pair-role { font-size: 0.7rem; }
+
+  @media (max-width: 860px) {
+    .specs { grid-template-columns: 1fr; }
+    .specs__list { grid-row: auto; }
+    .specs__row { grid-template-columns: 9rem 1fr; }
+  }
+  @media (max-width: 480px) {
+    .specs__row { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>

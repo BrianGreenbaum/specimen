@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+---
+<Layout title="Specimen — A living library of type">
+  <SiteHeader />
+
+  <header class="home-hero">
+    <div class="container">
+      <p class="home-hero__eyebrow label" data-reveal>The type specimen library · {fonts.length} faces</p>
+      <h1 class="home-hero__title" data-reveal style="--reveal-delay:80ms">
+        Specimen<span class="home-hero__period">.</span>
+      </h1>
+      <p class="home-hero__lede" data-reveal style="--reveal-delay:160ms">
+        In-depth, interactive specimens for the best open-source typefaces on the web.
+        Drag the axes, test the glyphs, read the story behind every letter — each face
+        self-hosted, free, and shown at the standard it deserves.
+      </p>
+      <p class="home-hero__cue label" data-reveal style="--reveal-delay:240ms" id="index">The collection ↓</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <ul class="index-list">
+      {fonts.map((f) => (
+        <li
+          class="index-row"
+          style={`--row-accent:${f.data.theme.accent}; --fam:${f.data.fontFamily}`}
+        >
+          <a href={`/fonts/${f.id}`} class="index-row__link" data-reveal>
+            <span class="index-row__num index-num">{String(f.data.order).padStart(2, '0')}</span>
+            <span class="index-row__name">{f.data.name}</span>
+            <span class="index-row__meta">
+              <span class="index-row__cat label">{f.data.category}</span>
+              <span class="index-row__designer">{f.data.designer}</span>
+              <span class="index-row__year label">{f.data.year}</span>
+            </span>
+            <span class="index-row__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <section class="home-about">
+      <div class="section-head" data-reveal>
+        <span class="index-num">✳</span>
+        <h2>About this library</h2>
+      </div>
+      <div class="home-about__grid">
+        <p class="home-about__lead prose" data-reveal>
+          Every typeface here is studied the way the best foundries present their own:
+          a giant showing, a live tester wired to each variable axis, a ramp of sizes,
+          a full character set, the OpenType refinements, the letterform details that
+          make it unmistakable, and the story of how it came to be.
+        </p>
+        <dl class="home-about__facts" data-reveal>
+          <div><dt class="label">Built with</dt><dd>Astro · self-hosted fonts</dd></div>
+          <div><dt class="label">Licensing</dt><dd>All faces free &amp; open source</dd></div>
+          <div><dt class="label">Growing</dt><dd>New specimens added over time</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .home-hero {
+    padding-block: clamp(3rem, 12vh, 9rem) clamp(2rem, 6vh, 5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .home-hero__eyebrow { display: block; margin-bottom: var(--sp-4); }
+  .home-hero__title {
+    font-family: var(--font-ui);
+    font-weight: 680;
+    font-size: clamp(3.5rem, 16vw, 13rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .home-hero__period { color: var(--accent); }
+  .home-hero__lede {
+    max-width: 54ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--fg-2);
+    margin-top: var(--sp-5);
+  }
+  .home-hero__cue { display: block; margin-top: var(--sp-6); }
+
+  /* Index list */
+  .index-list { border-bottom: 1px solid var(--line); }
+  .index-row { border-top: 1px solid var(--line); }
+  .index-row__link {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr auto 2rem;
+    align-items: center;
+    gap: var(--sp-4);
+    padding-block: clamp(1.2rem, 3.5vh, 2.6rem);
+    position: relative;
+    transition: padding-left 0.4s var(--ease);
+  }
+  .index-row__num { align-self: center; color: var(--fg-3); transition: color 0.3s var(--ease); }
+  .index-row__name {
+    font-family: var(--fam);
+    font-size: clamp(2.6rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    transition: color 0.3s var(--ease);
+  }
+  .index-row__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.2rem;
+    text-align: right;
+  }
+  .index-row__designer { font-size: var(--step-0); color: var(--fg-2); }
+  .index-row__arrow {
+    font-family: var(--font-mono);
+    color: var(--row-accent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+    font-size: 1.4rem;
+  }
+  .index-row:hover .index-row__name { color: var(--row-accent); }
+  .index-row:hover .index-row__num { color: var(--row-accent); }
+  .index-row:hover .index-row__link { padding-left: 1rem; }
+  .index-row:hover .index-row__arrow { opacity: 1; transform: none; }
+
+  /* About */
+  .home-about { padding-block: clamp(3rem, 8vh, 6rem); }
+  .home-about__grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--sp-7); align-items: start; }
+  .home-about__lead { font-size: var(--step-1); }
+  .home-about__facts div { padding-block: 0.8rem; border-top: 1px solid var(--line-soft); }
+  .home-about__facts div:first-child { border-top: 1px solid var(--fg); }
+  .home-about__facts dt { margin-bottom: 3px; }
+  .home-about__facts dd { font-size: var(--step-0); }
+
+  @media (max-width: 760px) {
+    .index-row__link { grid-template-columns: 2.2rem 1fr; gap: var(--sp-2); }
+    .index-row__meta { display: none; }
+    .index-row__arrow { display: none; }
+    .home-about__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
+  }
+</style>

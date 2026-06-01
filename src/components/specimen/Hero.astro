@@ -1,0 +1,152 @@
+---
+import MetaChips from './MetaChips.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+const num = String(font.order).padStart(2, '0');
+const initial = font.name.charAt(0);
+---
+<header class="hero" style={`--fam:${font.fontFamily}`}>
+  <div class="hero__ghost" aria-hidden="true">{initial}</div>
+
+  <div class="container hero__inner">
+    <div class="hero__top" data-reveal>
+      <span class="index-num">{num}</span>
+      <span class="label">{font.category} · {font.classification}</span>
+      <span class="label hero__year">{font.year}</span>
+    </div>
+
+    <h1 class="hero__name" data-reveal style="--reveal-delay:80ms">{font.name}</h1>
+
+    <p class="hero__headline" data-reveal style="--reveal-delay:160ms">{font.headline}</p>
+
+    <div class="hero__meta" data-reveal style="--reveal-delay:240ms">
+      <p class="hero__blurb">{font.blurb}</p>
+      <p class="hero__credit label">
+        Designed by <strong>{font.designer}</strong>
+        {font.foundry && <> · {font.foundry}</>}
+      </p>
+    </div>
+
+    <div class="hero__chips" data-reveal style="--reveal-delay:320ms">
+      <MetaChips
+        classification={font.classification}
+        isVariable={font.isVariable}
+        category={font.category}
+        feelings={font.feelings}
+      />
+    </div>
+
+    <div class="hero__actions" data-reveal style="--reveal-delay:400ms">
+      <a class="btn btn--accent" href={font.googleFontsUrl} target="_blank" rel="noopener">
+        Get on Google Fonts ↗
+      </a>
+      {font.sourceUrl && (
+        <a class="btn" href={font.sourceUrl} target="_blank" rel="noopener">Source ↗</a>
+      )}
+      <span class="hero__license label">{font.license}</span>
+    </div>
+  </div>
+
+  <div class="hero__scroll label" aria-hidden="true">Scroll to explore ↓</div>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: clip;
+    padding-block: clamp(3rem, 8vh, 7rem) clamp(2.5rem, 6vh, 5rem);
+    border-bottom: 1px solid var(--line);
+    min-height: min(92vh, 900px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero__ghost {
+    position: absolute;
+    font-family: var(--fam);
+    font-weight: 900;
+    font-size: clamp(30rem, 80vw, 64rem);
+    line-height: 0.7;
+    right: -0.08em;
+    bottom: -0.22em;
+    color: var(--accent);
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  .hero__inner { position: relative; z-index: 1; }
+
+  .hero__top {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-4);
+    padding-bottom: var(--sp-4);
+  }
+  .hero__year { margin-left: auto; }
+
+  .hero__name {
+    font-family: var(--fam);
+    font-weight: 600;
+    font-size: var(--display);
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+    margin-block: 0.1em 0.08em;
+    animation: heroWeight 1.4s var(--ease) both;
+  }
+  @keyframes heroWeight {
+    from { font-variation-settings: 'wght' 200; opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .hero__headline {
+    font-family: var(--fam);
+    font-size: var(--step-3);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    margin-bottom: var(--sp-5);
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3) var(--sp-6);
+    align-items: baseline;
+    max-width: 60ch;
+    margin-bottom: var(--sp-4);
+  }
+  .hero__blurb { font-size: var(--step-1); color: var(--fg-2); max-width: 44ch; }
+  .hero__credit { font-size: var(--step--1); }
+  .hero__credit strong { color: var(--fg); }
+
+  .hero__chips { margin-bottom: var(--sp-5); }
+
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); }
+  .hero__license { margin-left: 0.5rem; }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: var(--sp-4);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    animation: bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(5px); } }
+
+  @media (max-width: 640px) {
+    .hero { min-height: auto; }
+    .hero__name { font-size: clamp(3.5rem, 20vw, 6rem); }
+    .hero__scroll { display: none; }
+    .hero__year { margin-left: 0; }
+    .hero__top { flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+const sizes = [120, 80, 56, 40, 28, 21, 16, 13];
+const text = font.pangram;
+---
+<div class="waterfall" style={`--fam:${font.fontFamily}`}>
+  {sizes.map((px) => (
+    <div class="waterfall__row" data-reveal>
+      <span class="waterfall__size">{px}<span class="waterfall__unit">px</span></span>
+      <p class="waterfall__line" style={`font-size:${px}px`}>{text}</p>
+    </div>
+  ))}
+</div>
+
+<style>
+  .waterfall { display: flex; flex-direction: column; }
+  .waterfall__row {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    align-items: baseline;
+    gap: var(--sp-4);
+    padding-block: clamp(0.5rem, 1.4vh, 1.1rem);
+    border-top: 1px solid var(--line-soft);
+  }
+  .waterfall__row:first-child { border-top: 0; }
+  .waterfall__size {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .waterfall__unit { color: var(--fg-3); font-weight: 400; margin-left: 1px; }
+  .waterfall__line {
+    font-family: var(--fam);
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+    color: var(--fg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .waterfall__row { grid-template-columns: 3.2rem 1fr; gap: var(--sp-2); }
+  }
+</style>

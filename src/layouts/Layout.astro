@@ -1,0 +1,102 @@
+---
+// Base HTML shell for every page.
+// Loads global styles + all seven self-hosted specimen typefaces.
+import '../styles/global.css';
+
+// --- Variable specimen fonts (full axis sets) ---
+import '@fontsource-variable/inter/opsz.css';
+import '@fontsource-variable/inter/opsz-italic.css';
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/fraunces/full-italic.css';
+import '@fontsource-variable/space-grotesk/index.css';
+import '@fontsource-variable/playfair-display/wght.css';
+import '@fontsource-variable/playfair-display/wght-italic.css';
+
+// --- Static specimen fonts (weights we showcase) ---
+import '@fontsource/ibm-plex-mono/100.css';
+import '@fontsource/ibm-plex-mono/200.css';
+import '@fontsource/ibm-plex-mono/300.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/ibm-plex-mono/700.css';
+import '@fontsource/ibm-plex-mono/400-italic.css';
+import '@fontsource/ibm-plex-mono/500-italic.css';
+import '@fontsource/ibm-plex-mono/700-italic.css';
+
+import '@fontsource/libre-baskerville/400.css';
+import '@fontsource/libre-baskerville/700.css';
+import '@fontsource/libre-baskerville/400-italic.css';
+
+import '@fontsource/cormorant-garamond/300.css';
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/cormorant-garamond/700.css';
+import '@fontsource/cormorant-garamond/400-italic.css';
+import '@fontsource/cormorant-garamond/600-italic.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  /** Inline CSS custom properties for per-font theming */
+  themeStyle?: string;
+  mode?: 'light' | 'dark';
+}
+
+const {
+  title,
+  description = 'A living library of beautiful, in-depth type specimens for the web.',
+  themeStyle,
+  mode = 'light',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-mode={mode}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body style={themeStyle}>
+    <slot />
+
+    <script>
+      // --- Color-mode persistence ---
+      const KEY = 'specimen-mode';
+      const saved = localStorage.getItem(KEY);
+      if (saved === 'light' || saved === 'dark') {
+        document.documentElement.setAttribute('data-mode', saved);
+      }
+      document.addEventListener('click', (e) => {
+        const t = (e.target as HTMLElement).closest('[data-mode-toggle]');
+        if (!t) return;
+        const cur = document.documentElement.getAttribute('data-mode') === 'dark' ? 'dark' : 'light';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-mode', next);
+        localStorage.setItem(KEY, next);
+      });
+
+      // --- Scroll reveal ---
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+      );
+      const watch = () =>
+        document.querySelectorAll('[data-reveal]:not(.is-visible)').forEach((el) => io.observe(el));
+      watch();
+      document.addEventListener('astro:after-swap', watch);
+    </script>
+  </body>
+</html>

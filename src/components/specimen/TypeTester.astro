@@ -1,0 +1,291 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { showWords, showPhrases } from '../../lib/corpus';
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+const shufflePool = [...showPhrases, ...showWords];
+const initialVar = font.isVariable
+  ? font.axes.map((a) => `'${a.tag}' ${a.default}`).join(', ')
+  : '';
+---
+<div
+  class="tester"
+  data-tester
+  style={`--fam:${font.fontFamily}`}
+  data-variable={font.isVariable ? 'true' : 'false'}
+  data-pool={JSON.stringify(shufflePool)}
+>
+  <div class="tester__bar">
+    <!-- Font controls -->
+    <div class="tester__group tester__group--font">
+      {font.isVariable ? (
+        font.axes.map((a) => (
+          <label class="ctl ctl--axis">
+            <span class="ctl__top">
+              <span class="ctl__name">{a.name}</span>
+              <output class="ctl__val" data-axisval={a.tag}>{a.default}</output>
+            </span>
+            <input
+              class="ctl__range"
+              type="range"
+              data-axis={a.tag}
+              min={a.min}
+              max={a.max}
+              step={a.step}
+              value={a.default}
+            />
+          </label>
+        ))
+      ) : (
+        <label class="ctl ctl--select">
+          <span class="ctl__top"><span class="ctl__name">Weight</span></span>
+          <select class="ctl__sel" data-weight>
+            {font.weights.map((w) => (
+              <option value={w.weight} selected={w.weight === 400}>{w.name} · {w.weight}</option>
+            ))}
+          </select>
+        </label>
+      )}
+    </div>
+
+    <!-- Layout controls -->
+    <div class="tester__group tester__group--layout">
+      <label class="ctl">
+        <span class="ctl__top"><span class="ctl__name">Size</span><output class="ctl__val" data-out="size">96px</output></span>
+        <input class="ctl__range" type="range" data-ctl="size" min="12" max="240" step="1" value="96" />
+      </label>
+      <label class="ctl">
+        <span class="ctl__top"><span class="ctl__name">Leading</span><output class="ctl__val" data-out="leading">1.05</output></span>
+        <input class="ctl__range" type="range" data-ctl="leading" min="0.8" max="2" step="0.01" value="1.05" />
+      </label>
+      <label class="ctl">
+        <span class="ctl__top"><span class="ctl__name">Tracking</span><output class="ctl__val" data-out="tracking">0</output></span>
+        <input class="ctl__range" type="range" data-ctl="tracking" min="-0.05" max="0.3" step="0.005" value="0" />
+      </label>
+    </div>
+
+    <!-- Toggles -->
+    <div class="tester__group tester__group--toggles">
+      <div class="seg" role="group" aria-label="Alignment">
+        <button class="seg__btn is-on" data-align="left" aria-label="Align left">↤</button>
+        <button class="seg__btn" data-align="center" aria-label="Align center">↔</button>
+        <button class="seg__btn" data-align="right" aria-label="Align right">↦</button>
+      </div>
+      {font.hasItalic && (
+        <button class="tgl" data-italic aria-pressed="false"><em>Italic</em></button>
+      )}
+      <button class="tgl tgl--action" data-shuffle>⤮ Shuffle</button>
+      <button class="tgl tgl--action" data-reset>↺ Reset</button>
+    </div>
+  </div>
+
+  {font.openType.length > 0 && (
+    <div class="tester__features">
+      <span class="label tester__features-label">OpenType</span>
+      {font.openType.map((f) => (
+        <button data-feature={f.tag} aria-pressed={f.on ? 'true' : 'false'} class:list={['feat', { 'is-on': f.on }]}>
+          <span class="feat__tag">{f.tag}</span>{f.label}
+        </button>
+      ))}
+    </div>
+  )}
+
+  <div class="tester__stage">
+    <div
+      class="tester__preview"
+      data-preview
+      contenteditable="true"
+      spellcheck="false"
+      role="textbox"
+      aria-label="Editable type preview"
+      style={`font-size:96px; line-height:1.05; ${initialVar ? `font-variation-settings:${initialVar};` : ''}`}
+    >{font.sampleText}</div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tester]').forEach((root) => {
+    const preview = root.querySelector<HTMLElement>('[data-preview]')!;
+    const isVar = root.dataset.variable === 'true';
+    const pool: string[] = JSON.parse(root.dataset.pool || '[]');
+    const defaultText = preview.textContent || '';
+
+    const axisInputs = Array.from(root.querySelectorAll<HTMLInputElement>('[data-axis]'));
+    const weightSel = root.querySelector<HTMLSelectElement>('[data-weight]');
+    const features = new Map<string, boolean>();
+    root.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((b) => {
+      features.set(b.dataset.feature!, b.getAttribute('aria-pressed') === 'true');
+    });
+
+    const applyVariation = () => {
+      if (isVar) {
+        const v = axisInputs.map((i) => `'${i.dataset.axis}' ${i.value}`).join(', ');
+        preview.style.fontVariationSettings = v;
+        root.querySelectorAll<HTMLElement>('[data-axisval]').forEach((o) => {
+          const inp = axisInputs.find((i) => i.dataset.axis === o.dataset.axisval);
+          if (inp) o.textContent = inp.value;
+        });
+      } else if (weightSel) {
+        preview.style.fontWeight = weightSel.value;
+      }
+    };
+    const applyFeatures = () => {
+      const on = [...features.entries()].filter(([, v]) => v).map(([t]) => `'${t}' 1`);
+      const off = [...features.entries()].filter(([, v]) => !v).map(([t]) => `'${t}' 0`);
+      preview.style.fontFeatureSettings = [...on, ...off].join(', ');
+    };
+
+    axisInputs.forEach((i) => i.addEventListener('input', applyVariation));
+    weightSel?.addEventListener('change', applyVariation);
+
+    // Layout sliders
+    const out = (k: string) => root.querySelector<HTMLElement>(`[data-out="${k}"]`);
+    root.querySelectorAll<HTMLInputElement>('[data-ctl]').forEach((i) => {
+      i.addEventListener('input', () => {
+        const v = i.value;
+        if (i.dataset.ctl === 'size') { preview.style.fontSize = v + 'px'; out('size')!.textContent = v + 'px'; }
+        if (i.dataset.ctl === 'leading') { preview.style.lineHeight = v; out('leading')!.textContent = v; }
+        if (i.dataset.ctl === 'tracking') { preview.style.letterSpacing = v + 'em'; out('tracking')!.textContent = (+v).toFixed(3); }
+      });
+    });
+
+    // Alignment
+    root.querySelectorAll<HTMLButtonElement>('[data-align]').forEach((b) => {
+      b.addEventListener('click', () => {
+        root.querySelectorAll('[data-align]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        preview.style.textAlign = b.dataset.align!;
+      });
+    });
+
+    // Italic
+    const italicBtn = root.querySelector<HTMLButtonElement>('[data-italic]');
+    italicBtn?.addEventListener('click', () => {
+      const on = italicBtn.getAttribute('aria-pressed') === 'true';
+      italicBtn.setAttribute('aria-pressed', String(!on));
+      italicBtn.classList.toggle('is-on', !on);
+      preview.style.fontStyle = on ? 'normal' : 'italic';
+    });
+
+    // Features
+    root.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const t = b.dataset.feature!;
+        const next = !features.get(t);
+        features.set(t, next);
+        b.setAttribute('aria-pressed', String(next));
+        b.classList.toggle('is-on', next);
+        applyFeatures();
+      });
+    });
+
+    // Shuffle + reset
+    let shuffleIdx = 0;
+    root.querySelector('[data-shuffle]')?.addEventListener('click', () => {
+      shuffleIdx = (shuffleIdx + 1 + Math.floor(Math.random() * (pool.length - 1))) % pool.length;
+      preview.textContent = pool[shuffleIdx];
+    });
+    root.querySelector('[data-reset]')?.addEventListener('click', () => {
+      preview.textContent = defaultText;
+    });
+
+    applyFeatures();
+  });
+</script>
+
+<style>
+  .tester {
+    border: 1px solid var(--fg);
+    background: var(--bg);
+  }
+  .tester__bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-4) var(--sp-5);
+    padding: var(--sp-3) var(--sp-4);
+    border-bottom: 1px solid var(--line);
+    align-items: flex-end;
+  }
+  .tester__group { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-4); align-items: flex-end; }
+  .tester__group--font { flex: 1 1 260px; }
+  .tester__group--layout { flex: 2 1 360px; }
+  .tester__group--toggles { margin-left: auto; align-items: center; }
+
+  .ctl { display: flex; flex-direction: column; gap: 0.35rem; min-width: 7rem; flex: 1; }
+  .ctl--axis { min-width: 8.5rem; }
+  .ctl__top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+  .ctl__name {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--fg-2);
+  }
+  .ctl__val { font-family: var(--font-mono); font-size: 0.66rem; color: var(--accent); }
+
+  .ctl__range { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--fg-3); cursor: pointer; }
+  .ctl__range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+    transition: transform 0.15s var(--ease);
+  }
+  .ctl__range::-webkit-slider-thumb:hover { transform: scale(1.25); }
+  .ctl__range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+
+  .ctl__sel {
+    font-family: var(--font-mono); font-size: 0.8rem;
+    background: var(--bg); color: var(--fg);
+    border: 1px solid var(--line); border-radius: 2px; padding: 0.4rem 0.5rem;
+  }
+
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+  .seg__btn {
+    padding: 0.4rem 0.6rem; color: var(--fg-3); font-size: 0.9rem;
+    border-right: 1px solid var(--line);
+  }
+  .seg__btn:last-child { border-right: 0; }
+  .seg__btn.is-on { background: var(--fg); color: var(--bg); }
+
+  .tgl {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em;
+    text-transform: uppercase; padding: 0.45rem 0.7rem;
+    border: 1px solid var(--line); border-radius: 2px; color: var(--fg-2);
+    transition: all 0.2s var(--ease);
+  }
+  .tgl:hover { border-color: var(--fg); color: var(--fg); }
+  .tgl.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .tgl--action:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  .tester__features {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+    padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--line);
+  }
+  .tester__features-label { margin-right: 0.5rem; }
+  .feat {
+    display: inline-flex; align-items: center; gap: 0.45em;
+    font-size: 0.74rem; padding: 0.35rem 0.6rem;
+    border: 1px solid var(--line); border-radius: 100px; color: var(--fg-2);
+    transition: all 0.2s var(--ease);
+  }
+  .feat__tag { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-3); text-transform: uppercase; }
+  .feat:hover { border-color: var(--fg-3); color: var(--fg); }
+  .feat.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .feat.is-on .feat__tag { color: var(--accent-contrast); opacity: 0.8; }
+
+  .tester__stage { padding: clamp(1.2rem, 4vw, 2.5rem); min-height: 240px; display: flex; align-items: center; }
+  .tester__preview {
+    font-family: var(--fam);
+    width: 100%;
+    color: var(--fg);
+    line-height: 1.05;
+    outline: none;
+    word-break: break-word;
+    transition: font-variation-settings 0.05s linear;
+  }
+  .tester__preview:focus { caret-color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .tester__group--toggles { margin-left: 0; width: 100%; }
+    .tester__preview { font-size: 48px !important; }
+  }
+</style>

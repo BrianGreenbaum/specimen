@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+const fam = font.fontFamily;
+---
+<div class="weights" style={`--fam:${fam}`}>
+  {font.weights.map((w) => (
+    <div class="weights__row" data-reveal>
+      <div class="weights__label">
+        <span class="weights__num">{w.weight}</span>
+        <span class="label">{w.name}</span>
+      </div>
+      <div
+        class="weights__sample"
+        style={
+          font.isVariable
+            ? `font-variation-settings:'wght' ${w.weight}`
+            : `font-weight:${w.weight}`
+        }
+      >{w.name}</div>
+    </div>
+  ))}
+
+  {font.hasItalic && (
+    <div class="weights__row weights__row--italic" data-reveal>
+      <div class="weights__label">
+        <span class="weights__num">400</span>
+        <span class="label">Italic</span>
+      </div>
+      <div class="weights__sample" style="font-style:italic">Italic</div>
+    </div>
+  )}
+</div>
+
+<style>
+  .weights { display: flex; flex-direction: column; }
+  .weights__row {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    align-items: baseline;
+    gap: var(--sp-4);
+    padding-block: clamp(0.4rem, 1.2vh, 1rem);
+    border-top: 1px solid var(--line-soft);
+  }
+  .weights__row:first-child { border-top: 0; }
+  .weights__label { display: flex; flex-direction: column; gap: 2px; padding-top: 0.6em; }
+  .weights__num {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .weights__sample {
+    font-family: var(--fam);
+    font-size: clamp(2.2rem, 7vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    transition: font-variation-settings 0.3s var(--ease);
+  }
+  @media (max-width: 640px) {
+    .weights__row { grid-template-columns: 4.5rem 1fr; gap: var(--sp-2); }
+    .weights__sample { font-size: clamp(1.8rem, 11vw, 3rem); }
+  }
+</style>
