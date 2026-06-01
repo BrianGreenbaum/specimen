@@ -18,15 +18,31 @@ npm run preview  # preview the built site
 ```
 src/
 ├─ content/fonts/<slug>.mdx     ← ONE file per typeface: metadata (frontmatter) + story (body)
-├─ content.config.ts            ← the schema every font file is validated against
+├─ content/eras/<slug>.mdx      ← ONE file per type-history era (the /history chapters)
+├─ content.config.ts            ← the schemas every font + era file is validated against
 ├─ pages/
 │  ├─ index.astro               ← the gallery / index
-│  └─ fonts/[slug].astro        ← the specimen template (one page per font, auto-generated)
+│  ├─ fonts/[slug].astro        ← the specimen template (one page per font, auto-generated)
+│  └─ history/                  ← the History of Typography hub + per-era chapters
 ├─ components/specimen/         ← the reusable specimen sections (Hero, TypeTester, …)
+│  └─ inuse/<slug>.astro        ← OPTIONAL bespoke In-Use scenes for a font (falls back to InUse.astro)
+├─ components/history/          ← the evolution scrubber + history pieces
+├─ components/Glossary.astro    ← auto-links typographic terms → hover definitions
 ├─ layouts/Layout.astro         ← base HTML shell; imports every self-hosted font
-├─ lib/                         ← glyph sets, the shuffle corpus, theme helper
-└─ styles/global.css            ← design tokens, type scale, grid, motion
+├─ lib/                         ← metrics (Canvas), glyph diagram, glyph sets, corpus, glossary, theme
+└─ styles/global.css            ← design tokens, type scale, grid, motion, shared diagram + in-use CSS
 ```
+
+### The History of Typography
+`/history` is an interactive timeline (the letterform-evolution scrubber) plus one designed
+chapter per era. Eras are a content collection just like fonts: add `src/content/eras/<slug>.mdx`
+(see `content.config.ts` for the schema) and list a font's `era:` slug in its frontmatter to wire
+the bidirectional links (era → its faces, and each specimen → its era band).
+
+### Bespoke In-Use scenes
+Each font may have its own `src/components/specimen/inuse/<slug>.astro` for unique, art-directed
+"in use" scenes. The route renders it automatically if present, else falls back to the generic
+`InUse.astro`. Keep functional/UI mockups at realistic px sizes; posters can scale with `cqi`.
 
 The guiding principle: **one font = one content file + its font package.** Everything
 else (layout, components, interactivity, responsiveness) is shared.
