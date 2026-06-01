@@ -8,6 +8,27 @@ oneLiner: The Enlightenment draws the letter, rather than writing it.
 evolution: Contrast rises, the stress straightens toward vertical, and the letter is drawn rather than written.
 sample: Baskerville
 specimenFont: { family: 'Libre Baskerville', weight: 400 }
+traits: { serif: 0.5, contrast: 0.6, stress: 0.4, terminals: 0.6 }
+spotlightGlyph: R
+spotlightFocus:
+  - { x: 0.5, y: 0.2, r: 0.16, label: 'upright axis' }
+traitCallouts:
+  - glyph: a
+    title: Vertical stress
+    body: The pen’s slant gives way to the ruler — the thinnest points rotate toward a true vertical axis.
+    guides: [x, baseline]
+    focus:
+      - { x: 0.5, y: 0.2, r: 0.16, label: 'upright axis' }
+  - glyph: T
+    title: Crisper serif
+    body: Serifs grow finer and more refined than the old-style, yet keep just enough bracket to read at length.
+    guides: [cap, baseline]
+    focus:
+      - { x: 0.5, y: 0.92, r: 0.14, label: 'fine serif' }
+  - glyph: g
+    title: Rising contrast
+    body: Smoother paper and blacker ink let Baskerville cut a sharper difference between thick and thin.
+    guides: [x, baseline, descender]
 characteristics:
   - { term: 'Higher contrast', detail: 'A sharper difference between thick and thin strokes.' }
   - { term: 'Near-vertical stress', detail: 'The pen’s slant gives way to the ruler.' }

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import BrandScene from '../BrandScene.astro';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
@@ -20,19 +21,16 @@ const fam = font.fontFamily;
   </figure>
 
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a friendly identity</span></figcaption>
-    <div class="iu__scene scene21">
-      <div class="iu__poster jam">
-        <div class="jam__logo">Marmalade <em>&amp;</em> Co.</div>
-        <div class="jam__tag">SMALL-BATCH · MADE BY HAND</div>
-      </div>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a modernist lockup</span></figcaption>
+    <div class="iu__scene brand-scene">
+      <BrandScene font={font} variant="stack" />
     </div>
   </figure>
 </div>
 
 <style>
   .iu__item { margin: 0; }
-  .scene21 { aspect-ratio: 21 / 9; }
+  .brand-scene { aspect-ratio: 16 / 9; }
   .scene-sq { aspect-ratio: 4 / 5; max-width: 460px; }
 
   .showcard { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6cqi; gap: 2cqi; }
@@ -44,9 +42,4 @@ const fam = font.fontFamily;
   .sc__head em { font-style: italic; color: var(--accent); }
   .sc__sub { font-size: 3.4cqi; font-style: italic; color: var(--fg-2); }
   .sc__foot { font-size: 2.8cqi; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-top: 1cqi; }
-
-  .jam { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1cqi; background: var(--accent); color: var(--accent-contrast); }
-  .jam__logo { font-size: 11cqi; font-weight: 600; }
-  .jam__logo em { font-style: italic; }
-  .jam__tag { font-size: 2.4cqi; letter-spacing: 0.3em; opacity: 0.9; }
 </style>

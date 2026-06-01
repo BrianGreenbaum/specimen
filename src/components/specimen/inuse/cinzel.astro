@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import BrandScene from '../BrandScene.astro';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
@@ -20,12 +21,8 @@ const fam = font.fontFamily;
 
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a luxury monogram</span></figcaption>
-    <div class="iu__scene scene21">
-      <div class="iu__poster mono">
-        <div class="mono__mark">A&middot;C</div>
-        <div class="mono__name">ATELIER CINZEL</div>
-        <div class="mono__sub">PARFUMEUR · DEPUIS MMXII</div>
-      </div>
+    <div class="iu__scene brand-scene">
+      <BrandScene font={font} variant="monogram" />
     </div>
   </figure>
 </div>
@@ -33,7 +30,7 @@ const fam = font.fontFamily;
 <style>
   .iu__item { margin: 0; }
   .scene16 { aspect-ratio: 16 / 9; }
-  .scene21 { aspect-ratio: 21 / 9; }
+  .brand-scene { aspect-ratio: 16 / 9; }
 
   .monument {
     display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
@@ -48,9 +45,4 @@ const fam = font.fontFamily;
   .monument__head { font-size: 11cqi; line-height: 0.95; font-weight: 700; letter-spacing: 0.04em; }
   .monument__rule { width: 30%; height: 2px; background: var(--accent); opacity: 0.6; margin: 1cqi 0; }
   .monument__date { font-size: 3.4cqi; letter-spacing: 0.3em; color: var(--accent); }
-
-  .mono { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.5cqi; background: var(--fg); color: var(--bg); }
-  .mono__mark { font-size: 16cqi; font-weight: 600; letter-spacing: 0.05em; }
-  .mono__name { font-size: 4cqi; letter-spacing: 0.4em; }
-  .mono__sub { font-size: 2cqi; letter-spacing: 0.3em; color: var(--accent); }
 </style>
