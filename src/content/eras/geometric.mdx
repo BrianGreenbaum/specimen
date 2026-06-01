@@ -8,6 +8,30 @@ oneLiner: The Bauhaus rebuilds the letter from pure geometry.
 evolution: The letter is rebuilt from the circle, the triangle and the line, with a single-storey a and near-monoline strokes.
 sample: BAUHAUS
 specimenFont: { family: 'Jost Variable', weight: 500 }
+traits: { serif: 0, contrast: 0.05, stress: 0, terminals: 0.1 }
+spotlightGlyph: R
+spotlightFocus:
+  - { x: 0.5, y: 0.5, r: 0.18, label: 'even stroke' }
+traitCallouts:
+  - glyph: o
+    title: Built from the circle
+    body: The o is very nearly a perfect circle, drawn on the drafting table from elementary geometry.
+    weight: 500
+    guides: [x, baseline]
+    focus:
+      - { x: 0.5, y: 0.5, r: 0.22, label: 'compass curve' }
+  - glyph: a
+    title: Single-storey a
+    body: The double-storey a is stripped to one storey — a circle and a stem, constructed rather than written.
+    weight: 500
+    guides: [x, baseline]
+    focus:
+      - { x: 0.45, y: 0.6, r: 0.2, label: 'one storey' }
+  - glyph: R
+    title: Monoline strokes
+    body: Near-perfect even weight throughout — the grotesque’s drawn-by-eye irregularity rejected for pure design.
+    weight: 500
+    guides: [cap, baseline]
 characteristics:
   - { term: 'Geometric construction', detail: 'Built from circles and straight lines.' }
   - { term: 'Monoline', detail: 'Near-even stroke weight throughout.' }

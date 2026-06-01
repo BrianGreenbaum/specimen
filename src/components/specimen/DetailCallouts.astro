@@ -1,12 +1,15 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+// Shared annotated-glyph grid. Used by font Anatomy (font.callouts) and by
+// era chapters (era.traitCallouts) — both carry the same callout shape.
 export interface Props {
-  font: CollectionEntry<'fonts'>['data'];
+  callouts: CollectionEntry<'fonts'>['data']['callouts'];
+  family: string;
 }
-const { font } = Astro.props;
+const { callouts, family } = Astro.props;
 ---
-<div class="callouts" data-glossary style={`--fam:${font.fontFamily}; --term-fam:'${font.fontFamily}'`}>
-  {font.callouts.map((c, i) => (
+<div class="callouts" data-glossary style={`--fam:${family}; --term-fam:'${family}'`}>
+  {callouts.map((c, i) => (
     <article class="callout" data-reveal style={`--reveal-delay:${i * 80}ms`}>
       <div class="callout__plate">
         <svg

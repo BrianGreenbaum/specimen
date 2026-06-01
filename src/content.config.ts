@@ -45,6 +45,8 @@ const inUseScene = z.object({
     'article', 'magazine', 'brand', 'data',
   ]),
   label: z.string(),        // caption, e.g. 'Editorial — magazine spread'
+  // For kind:'brand' — pick a BrandScene layout. Omitted → chosen deterministically.
+  variant: z.enum(['wordmark', 'monogram', 'seal', 'stack', 'grid']).optional(),
 });
 
 const fonts = defineCollection({
@@ -111,6 +113,19 @@ const eras = defineCollection({
     sample: z.string().default('Handgloves'),
     // a representative font for the evolution scrubber + chapter showings
     specimenFont: z.object({ family: z.string(), weight: z.number().default(400) }),
+    // Where this era sits on four letterform dimensions (0–1). Drives the
+    // animated "what changes" readout in the Evolution scrubber.
+    traits: z.object({
+      serif: z.number().min(0).max(1),      // 0 none/sans → 1 heavy slab
+      contrast: z.number().min(0).max(1),   // 0 monoline → 1 extreme thick/thin
+      stress: z.number().min(0).max(1),     // 0 vertical/none → 1 diagonal humanist
+      terminals: z.number().min(0).max(1),  // 0 blunt/cut → 1 ball/flared
+    }).optional(),
+    // Accent spotlights drawn on the letter in the scrubber (pinned to one glyph).
+    spotlightGlyph: z.string().default('R'),
+    spotlightFocus: z.array(focusSpot).default([]),
+    // Annotated glyph plates shown on the era chapter ("traits, drawn").
+    traitCallouts: z.array(callout).default([]),
     characteristics: z.array(z.object({ term: z.string(), detail: z.string() })).default([]),
     keyFigures: z.array(z.object({ name: z.string(), note: z.string() })).default([]),
     fonts: z.array(z.string()).default([]),   // slugs of specimens in this era

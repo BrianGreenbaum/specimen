@@ -3,28 +3,72 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import EvolutionScrubber from '../components/history/EvolutionScrubber.astro';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
 ---
 <Layout title="Specimen — A living library of type">
   <SiteHeader />
 
   <header class="home-hero">
     <div class="container">
-      <p class="home-hero__eyebrow label" data-reveal>The type specimen library · {fonts.length} faces</p>
+      <p class="home-hero__eyebrow label" data-reveal>The type specimen library · {fonts.length} faces · {eras.length} chapters</p>
       <h1 class="home-hero__title" data-reveal style="--reveal-delay:80ms">
         Specimen<span class="home-hero__period">.</span>
       </h1>
       <p class="home-hero__lede" data-reveal style="--reveal-delay:160ms">
-        In-depth, interactive specimens for the best open-source typefaces on the web.
-        Drag the axes, test the glyphs, read the story behind every letter — each face
-        self-hosted, free, and shown at the standard it deserves.
+        Two thousand years of the alphabet, and the best open-source typefaces on the web,
+        in one place. Trace a single letter through the whole history of type, then drag the
+        axes and read the story behind every face — each one self-hosted, free, and shown at
+        the standard it deserves.
       </p>
-      <p class="home-hero__cue label" data-reveal style="--reveal-delay:240ms" id="index">The collection ↓</p>
+      <p class="home-hero__cue label" data-reveal style="--reveal-delay:240ms">Scroll to begin ↓</p>
     </div>
   </header>
 
   <main class="container">
+    <section class="home-history" aria-labelledby="history-head">
+      <div class="section-head" data-reveal>
+        <span class="index-num">✳</span>
+        <h2 id="history-head">The letter, through time</h2>
+        <a class="home-history__more label" href="/history">A history of type →</a>
+      </div>
+
+      <div data-reveal style="--reveal-delay:80ms">
+        <EvolutionScrubber eras={eras} compact />
+      </div>
+
+      <ol class="era-strip" aria-label="The eight chapters">
+        {eras.map((e, i) => (
+          <li class="era-strip__item" data-reveal style={`--era-accent:${e.data.theme.accent}; --reveal-delay:${i * 40}ms`}>
+            <a class="era-strip__link" href={`/history/${e.data.slug}`}>
+              <span class="era-strip__top">
+                <span class="era-strip__num index-num">{String(e.data.order).padStart(2, '0')}</span>
+                <span class="era-strip__swatch" aria-hidden="true"></span>
+              </span>
+              <span class="era-strip__period label">{e.data.period}</span>
+              <span class="era-strip__name">{e.data.name}</span>
+            </a>
+          </li>
+        ))}
+        <li class="era-strip__item era-strip__item--all" data-reveal style={`--reveal-delay:${eras.length * 40}ms`}>
+          <a class="era-strip__link era-strip__link--all" href="/history">
+            <span class="era-strip__all-num index-num">↗</span>
+            <span class="era-strip__name">All eight<br />chapters</span>
+            <span class="label era-strip__period">Enter the history →</span>
+          </a>
+        </li>
+      </ol>
+    </section>
+
+    <section class="home-fonts" aria-labelledby="fonts-head">
+      <div class="section-head" id="index">
+        <span class="index-num">✳</span>
+        <h2 id="fonts-head">The collection</h2>
+        <span class="label">{fonts.length} faces</span>
+      </div>
+
     <ul class="index-list">
       {fonts.map((f) => (
         <li
@@ -44,6 +88,7 @@ const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.dat
         </li>
       ))}
     </ul>
+    </section>
 
     <section class="home-about">
       <div class="section-head" data-reveal>
@@ -91,6 +136,52 @@ const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.dat
     margin-top: var(--sp-5);
   }
   .home-hero__cue { display: block; margin-top: var(--sp-6); }
+
+  /* History feature */
+  .home-history { padding-block: clamp(2.5rem, 7vh, 5rem) clamp(2rem, 5vh, 4rem); }
+  .home-history__more { margin-left: auto; color: var(--accent); transition: opacity 0.2s var(--ease); }
+  .home-history__more:hover { opacity: 0.7; }
+
+  /* Eras strip */
+  .era-strip {
+    margin-top: var(--sp-4);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .era-strip__item { background: var(--bg); }
+  .era-strip__link {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    height: 100%; padding: var(--sp-4);
+    transition: background 0.25s var(--ease);
+  }
+  .era-strip__link:hover { background: color-mix(in srgb, var(--era-accent) 9%, var(--bg)); }
+  .era-strip__top { display: flex; align-items: center; justify-content: space-between; }
+  .era-strip__num { color: var(--era-accent); }
+  .era-strip__swatch { width: 11px; height: 11px; border-radius: 50%; background: var(--era-accent); }
+  .era-strip__period { color: var(--fg-3); }
+  .era-strip__name {
+    font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1);
+    letter-spacing: -0.01em; line-height: 1.05; margin-top: auto;
+    transition: color 0.2s var(--ease);
+  }
+  .era-strip__link:hover .era-strip__name { color: var(--era-accent); }
+
+  .era-strip__link--all {
+    background: var(--accent); color: var(--accent-contrast);
+    justify-content: space-between;
+  }
+  .era-strip__link--all:hover { filter: brightness(1.06); background: var(--accent); }
+  .era-strip__link--all .index-num,
+  .era-strip__link--all .label { color: var(--accent-contrast); }
+  .era-strip__all-num { font-size: var(--step-2); line-height: 1; }
+  .era-strip__link--all .era-strip__name { color: var(--accent-contrast); }
+
+  /* Fonts section */
+  .home-fonts { padding-block: clamp(2rem, 5vh, 4rem) 0; }
+  .home-fonts .section-head { scroll-margin-top: 80px; }
 
   /* Index list */
   .index-list { border-bottom: 1px solid var(--line); }
@@ -147,5 +238,18 @@ const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.dat
     .index-row__meta { display: none; }
     .index-row__arrow { display: none; }
     .home-about__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
+
+    /* Eras become a horizontal snap scroller */
+    .era-strip {
+      display: flex; overflow-x: auto; gap: var(--sp-2);
+      border: 0; background: transparent; padding-bottom: var(--sp-2);
+      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    }
+    .era-strip__item {
+      scroll-snap-align: start; flex: 0 0 auto;
+      min-width: clamp(200px, 64vw, 250px);
+      border: 1px solid var(--line);
+    }
+    .era-strip__link { min-height: 150px; }
   }
 </style>

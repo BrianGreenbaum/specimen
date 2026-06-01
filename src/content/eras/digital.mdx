@@ -8,6 +8,30 @@ oneLiner: Letters drawn for the pixel — and a single file that flexes live.
 evolution: Type is drawn for the screen and the pixel grid — tall x-heights, open apertures, and one variable file that flexes live.
 sample: Pixels
 specimenFont: { family: 'Inter Variable', weight: 500 }
+traits: { serif: 0, contrast: 0.15, stress: 0.05, terminals: 0.25 }
+spotlightGlyph: R
+spotlightFocus:
+  - { x: 0.82, y: 0.88, r: 0.16, label: 'open terminal' }
+traitCallouts:
+  - glyph: a
+    title: Tall x-height
+    body: The lowercase is raised so more of each letter lands in the readable band — tuned for small sizes on screen.
+    weight: 500
+    guides: [x, cap, baseline]
+    focus:
+      - { x: 0.5, y: 0.5, r: 0.2, label: 'large x-height' }
+  - glyph: e
+    title: Open aperture
+    body: The curves open up so they don’t clog when rendered out of a handful of pixels.
+    weight: 500
+    guides: [x, baseline]
+    focus:
+      - { x: 0.8, y: 0.62, r: 0.16, label: 'open aperture' }
+  - glyph: g
+    title: Screen-first neutrality
+    body: A face you read all day without noticing — even spacing, even colour, drawn and tested on the grid first.
+    weight: 500
+    guides: [x, baseline, descender]
 characteristics:
   - { term: 'Screen-first', detail: 'Drawn for the pixel grid and the interface.' }
   - { term: 'Variable fonts', detail: 'One file holding a continuous range of styles.' }

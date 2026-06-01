@@ -1,5 +1,4 @@
 ---
-import MetaChips from './MetaChips.astro';
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
@@ -40,16 +39,7 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
       </p>
     </div>
 
-    <div class="hero__chips" data-reveal style="--reveal-delay:320ms">
-      <MetaChips
-        classification={font.classification}
-        isVariable={font.isVariable}
-        category={font.category}
-        feelings={font.feelings}
-      />
-    </div>
-
-    <div class="hero__actions" data-reveal style="--reveal-delay:400ms">
+    <div class="hero__actions" data-reveal style="--reveal-delay:320ms">
       <a class="btn btn--accent" href={font.googleFontsUrl} target="_blank" rel="noopener">
         Get on Google Fonts ↗
       </a>
@@ -175,9 +165,7 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
   .hero__credit { font-size: var(--step--1); }
   .hero__credit strong { color: var(--fg); }
 
-  .hero__chips { margin-bottom: var(--sp-5); }
-
-  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); margin-top: var(--sp-2); }
   .hero__license { margin-left: 0.5rem; }
 
   .hero__scroll {
