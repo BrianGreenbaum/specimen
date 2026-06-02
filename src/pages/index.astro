@@ -7,6 +7,7 @@ import EvolutionScrubber from '../components/history/EvolutionScrubber.astro';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
+const firstEra = eras[0];
 ---
 <Layout title="Specimen — A living library of type">
   <SiteHeader />
@@ -35,9 +36,22 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
         <a class="home-history__more label" href="/history">A history of type →</a>
       </div>
 
+      <p class="home-history__intro prose" data-reveal>
+        This library begins with a story two thousand years long. Grab the letter and drag it
+        through the eras — then read the whole history as a guided journey, one chapter at a time.
+      </p>
+
       <div data-reveal style="--reveal-delay:80ms">
         <EvolutionScrubber eras={eras} compact />
       </div>
+
+      <a class="home-begin" href={`/history/${firstEra.data.slug}`} style={`--era-accent:${firstEra.data.theme.accent}`} data-reveal>
+        <span class="home-begin__text">
+          <span class="home-begin__label label">Begin the journey</span>
+          <span class="home-begin__name">Chapter 01 · {firstEra.data.name}</span>
+        </span>
+        <span class="home-begin__arrow" aria-hidden="true">→</span>
+      </a>
 
       <ol class="era-strip" aria-label="The eight chapters">
         {eras.map((e, i) => (
@@ -65,8 +79,8 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
     <section class="home-fonts" aria-labelledby="fonts-head">
       <div class="section-head" id="index">
         <span class="index-num">✳</span>
-        <h2 id="fonts-head">The collection</h2>
-        <span class="label">{fonts.length} faces</span>
+        <h2 id="fonts-head">The faces behind the story</h2>
+        <span class="label">{fonts.length} specimens · each its own chapter</span>
       </div>
 
     <ul class="index-list">
@@ -141,6 +155,24 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
   .home-history { padding-block: clamp(2.5rem, 7vh, 5rem) clamp(2rem, 5vh, 4rem); }
   .home-history__more { margin-left: auto; color: var(--accent); transition: opacity 0.2s var(--ease); }
   .home-history__more:hover { opacity: 0.7; }
+  .home-history__intro { font-size: var(--step-1); margin-bottom: var(--sp-5); color: var(--fg-2); max-width: 60ch; }
+
+  .home-begin {
+    display: flex; align-items: center; gap: var(--sp-4);
+    margin-top: var(--sp-4);
+    padding: clamp(1.2rem, 3vw, 1.8rem) clamp(1.4rem, 4vw, 2.4rem);
+    background:
+      radial-gradient(120% 160% at 6% 0%, color-mix(in srgb, var(--era-accent) 24%, transparent), transparent 58%),
+      color-mix(in srgb, var(--era-accent) 9%, var(--bg));
+    border: 1px solid color-mix(in srgb, var(--era-accent) 38%, var(--line));
+    transition: transform 0.4s var(--ease), border-color 0.3s var(--ease);
+  }
+  .home-begin:hover { transform: translateY(-2px); border-color: var(--era-accent); }
+  .home-begin__text { display: flex; flex-direction: column; gap: 0.25rem; }
+  .home-begin__label { color: var(--era-accent); }
+  .home-begin__name { font-family: var(--font-ui); font-weight: 660; font-size: var(--step-1); letter-spacing: -0.01em; }
+  .home-begin__arrow { margin-left: auto; font-size: var(--step-2); color: var(--era-accent); transition: transform 0.4s var(--ease); }
+  .home-begin:hover .home-begin__arrow { transform: translateX(0.4rem); }
 
   /* Eras strip */
   .era-strip {

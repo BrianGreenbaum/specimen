@@ -6,12 +6,16 @@ period: late 1700s
 yearAnchor: 1790
 oneLiner: The modern serif takes contrast to a glamorous extreme.
 evolution: Contrast explodes — heavy stems, vanishing hairlines, a strict vertical axis and flat, unbracketed serifs.
+diffNote: Reason tips into spectacle. The thick stems swell, the thins fade to hairlines, the stress locks dead vertical, and the bracket vanishes — the serif snapped on flat at a right angle.
 sample: Moderne
 specimenFont: { family: 'Bodoni Moda Variable', weight: 500 }
 traits: { serif: 0.5, contrast: 1, stress: 0.05, terminals: 0.85 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.66, y: 0.32, r: 0.15, label: 'hairline thin' }
+epigraph:
+  text: The look of luxury, two centuries on, is still a hairline away from vanishing.
+  attribution: On the Didone masthead
 traitCallouts:
   - glyph: a
     title: Extreme contrast
@@ -41,10 +45,82 @@ characteristics:
 keyFigures:
   - { name: 'Giambattista Bodoni', note: 'Parma — printer to the Duke.' }
   - { name: 'Firmin Didot', note: 'Paris — the French “modern”.' }
+people:
+  - name: Giambattista Bodoni
+    role: Printer · Type founder
+    dates: 1740–1813
+    place: Parma
+    initial: B
+    quote: Type should have regularity, cleanliness, good taste, and charm.
+    story: >
+      Printer to the Duke of Parma, Bodoni was hailed in his own lifetime as the “King of
+      Printers and Printer of Kings.” He cut hundreds of types of breathtaking contrast and
+      set them with vast margins and lordly spacing, treating the page as a stage. His
+      posthumous Manuale Tipografico (1818) remains one of the most beautiful type specimens
+      ever made. Bodoni cared less about easy reading than about magnificence — and in that
+      shift, type design quietly became a fine art.
+  - name: Firmin Didot
+    role: Punchcutter · Type founder
+    dates: 1764–1836
+    place: Paris
+    initial: D
+    story: >
+      While Bodoni worked in Parma, the Didot dynasty was perfecting the same idea in
+      Paris — and naming it. Firmin Didot cut the crisp, austere “modern” faces that became
+      the French national style under Napoleon, and refined Fournier’s measurements into the
+      Didot point still used across Europe. The genre’s very name, Didone, fuses Didot and
+      Bodoni: two rival cities, one ruthless vision of the letter.
+  - name: Morris Fuller Benton
+    role: Type designer
+    dates: 1872–1948
+    place: New Jersey, USA
+    initial: B
+    story: >
+      The Didone might have stayed an antique had Benton, the prolific chief designer at
+      American Type Founders, not revived Bodoni for the twentieth century around 1909. His
+      clean, manufacturable interpretation put the high-contrast serif into the hands of
+      every advertiser and magazine in America — and set the stage for its second life as
+      the universal language of glamour.
+  - name: The Fashion Masthead
+    role: Vogue · Harper’s Bazaar · the luxury brand
+    dates: 1920s–today
+    place: New York · Paris · Milan
+    initial: V
+    story: >
+      Why does the Didone still rule the cover of every fashion magazine and the logo of
+      every perfume? Because its vanishing hairlines say, at a glance, expensive. They demand
+      perfect printing, generous size and flawless paper — exactly the conditions luxury
+      wants to advertise. From Vogue to Harper’s Bazaar to a thousand cosmetics bottles, the
+      look of money is a thick stroke dropping to a thread. The face on this page,
+      Bodoni Moda, is built precisely for that stage.
+timelineFaces:
+  - { name: 'DM Serif Display', family: 'DM Serif Display', weight: 400, designer: 'Colophon Foundry for Google', year: '2014', note: 'A high-contrast display serif in the Didot–Bodoni tradition, tuned for headlines.' }
 fonts: ['bodoni-moda', 'playfair-display']
 theme: { bg: '#0e0d0c', fg: '#f2ece1', accent: '#e8384f' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-By the 1790s, paper, ink and steel had all improved enough to let printers do something previously impossible: cut letters of breathtaking **contrast**. **Giambattista Bodoni** in Parma and **Firmin Didot** in Paris pushed the transitional serif to its logical extreme — massive vertical stems dropping to **hairlines** so fine they look engraved, finished with flat, **unbracketed serifs** that meet the stem at a perfect right angle.
+By the 1790s, paper, ink and steel had all improved enough to let printers do something previously impossible: cut letters of breathtaking **contrast** and have them survive the press. **Giambattista Bodoni** in Parma and **Firmin Didot** in Paris seized the chance and pushed the transitional serif clean off its hinge — into pure spectacle.
 
-The result, the **Didone** or "modern" serif, traded warmth for drama. It is harder to read in long passages — those hairlines flicker and break up — but at large sizes it is pure glamour. That is exactly why, two centuries later, it still rules the fashion masthead: from *Vogue* to *Harper’s Bazaar*, the look of luxury is a Didone. It is the moment the rational serif stopped being about reading and became about *style*.
+The result was the **Didone**, or “modern,” serif: massive vertical stems dropping to **hairlines** so fine they look engraved, a stress locked dead **vertical**, and flat, **unbracketed serifs** that meet the stem at a perfect right angle, with no softening curve at all. It is the most dramatic letter our alphabet had ever seen, and it announced that type had ambitions beyond the quiet service of reading.
+
+<PullQuote cite="Bodoni Moda" family="Bodoni Moda Variable">
+  Glamour is a thick stroke, a hairline away from vanishing.
+</PullQuote>
+
+It paid for that drama in legibility. Set a paragraph of Didone at reading size and the hairlines flicker and break apart; the eye tires fast. Bodoni did not especially mind — he printed for dukes and display, not for the pocket. In trading warmth for magnificence, he and Didot turned the printer’s craft toward something closer to a fine art, and the page into a performance.
+
+<Divider label="IV" />
+
+<Spread tone="accent">
+And then, two centuries later, the Didone found its true and permanent home: the **fashion masthead**. Those vanishing hairlines demand perfect printing, generous size and flawless paper — precisely the luxury the magazine wants to sell. From *Vogue* to *Harper’s Bazaar* to the logotype on a perfume bottle, the visual shorthand for expensive has been, ever since, a thick stroke falling away to a thread.
+</Spread>
+
+<BigType family="Playfair Display Variable" caption="Playfair Display · a Didone built for the screen headline" italic={true}>
+Moderne
+</BigType>
+
+The Didone marks the furthest the serif would ever travel from the humble pen. But the nineteenth century had no patience for hairlines. The factory was about to demand a letter that could be printed three feet tall on a wall and read from a moving carriage — and the delicate modern serif was about to be shouted down.

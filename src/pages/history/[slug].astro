@@ -5,49 +5,94 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import Glossary from '../../components/Glossary.astro';
 import DetailCallouts from '../../components/specimen/DetailCallouts.astro';
+import ChapterNav from '../../components/history/ChapterNav.astro';
+import EraDiff from '../../components/history/EraDiff.astro';
+import EraPeople from '../../components/history/EraPeople.astro';
 import { eraThemeStyle, luminance } from '../../lib/theme';
 
 export async function getStaticPaths() {
   const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
   const fonts = await getCollection('fonts');
-  return eras.map((entry, i) => ({
-    params: { slug: entry.data.slug },
-    props: {
-      entry,
-      prev: eras[(i - 1 + eras.length) % eras.length],
-      next: eras[(i + 1) % eras.length],
-      eraFonts: entry.data.fonts
-        .map((s) => fonts.find((f) => f.id === s))
-        .filter(Boolean),
-    },
-  }));
+  const total = eras.length;
+  const ref = (e: typeof eras[number]) => ({
+    slug: e.data.slug, name: e.data.name, order: e.data.order,
+    period: e.data.period, accent: e.data.theme.accent,
+  });
+  const all = eras.map(ref);
+  return eras.map((entry, i) => {
+    const prevByOrder = i > 0 ? eras[i - 1] : null;
+    return {
+      params: { slug: entry.data.slug },
+      props: {
+        entry,
+        total,
+        all,
+        prev: ref(eras[(i - 1 + total) % total]),
+        next: ref(eras[(i + 1) % total]),
+        prevByOrder: prevByOrder
+          ? {
+              name: prevByOrder.data.name,
+              period: prevByOrder.data.period,
+              family: prevByOrder.data.specimenFont.family,
+              weight: prevByOrder.data.specimenFont.weight,
+              glyph: entry.data.spotlightGlyph || 'R',
+              traits: prevByOrder.data.traits ?? { serif: 0, contrast: 0, stress: 0, terminals: 0 },
+            }
+          : null,
+        eraFonts: entry.data.fonts
+          .map((s) => fonts.find((f) => f.id === s))
+          .filter(Boolean),
+      },
+    };
+  });
 }
 
-const { entry, prev, next, eraFonts } = Astro.props;
+const { entry, total, all, prev, next, prevByOrder, eraFonts } = Astro.props;
 const e = entry.data;
 const { Content } = await render(entry);
 const themeStyle = eraThemeStyle(e.theme);
 const mode = luminance(e.theme.bg) < 0.5 ? 'dark' : 'light';
 const fam = e.specimenFont.family;
+const people = e.people ?? [];
+const timelineFaces = e.timelineFaces ?? [];
+const diffCopy = e.diffNote || e.evolution;
+const hasFaces = eraFonts.length > 0 || timelineFaces.length > 0;
 ---
 <Layout title={`${e.name} — A History of Type`} description={e.oneLiner} themeStyle={themeStyle} mode={mode}>
   <SiteHeader current={e.name} />
+  <ChapterNav variant="rail" index={e.order} total={total} all={all} prev={prev} next={next} />
 
-  <header class="era-hero" style={`--fam:${fam}`}>
-    <div class="era-hero__ghost" aria-hidden="true" style={`font-family:'${fam}'`}>{e.sample.charAt(0)}</div>
+  <header class="era-hero" style={`--fam:${fam}`} data-era-hero>
+    <div class="era-hero__ghost" aria-hidden="true" style={`font-family:'${fam}'`} data-parallax>{e.sample.charAt(0)}</div>
     <div class="container era-hero__inner">
-      <a href="/history" class="era-hero__back label" data-reveal>← The history of type</a>
-      <div class="era-hero__top" data-reveal style="--reveal-delay:60ms">
-        <span class="index-num">{String(e.order).padStart(2, '0')} / 08</span>
+      <div class="era-hero__top" data-reveal>
+        <span class="index-num">{String(e.order).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
         <span class="label">{e.period}</span>
       </div>
       <h1 class="era-hero__name" data-reveal style="--reveal-delay:120ms">{e.name}</h1>
       <p class="era-hero__line" data-reveal style="--reveal-delay:180ms">{e.oneLiner}</p>
-      <p class="era-hero__sample" data-reveal style={`--reveal-delay:240ms; font-family:'${fam}'`}>{e.sample}</p>
+      {e.epigraph && (
+        <figure class="era-hero__epigraph" data-reveal style="--reveal-delay:260ms">
+          <blockquote style={`font-family:'${fam}'`}>“{e.epigraph.text}”</blockquote>
+          {e.epigraph.attribution && <figcaption class="label">— {e.epigraph.attribution}</figcaption>}
+        </figure>
+      )}
     </div>
   </header>
 
   <main class="container era-main">
+    {prevByOrder && (
+      <EraDiff
+        prev={prevByOrder}
+        current={{
+          name: e.name, period: e.period, family: fam,
+          weight: e.specimenFont.weight, glyph: e.spotlightGlyph || 'R',
+          traits: e.traits ?? { serif: 0, contrast: 0, stress: 0, terminals: 0 },
+        }}
+        copy={diffCopy}
+      />
+    )}
+
     <div class="era-grid">
       <div class="era-story prose" data-glossary style={`--term-fam:'${fam}'`}>
         <Content />
@@ -62,14 +107,16 @@ const fam = e.specimenFont.family;
             ))}
           </ul>
         </div>
-        <div class="era-card" data-reveal>
-          <div class="label era-card__h">Key figures</div>
-          <ul class="era-figures">
-            {e.keyFigures.map((k) => (
-              <li><strong>{k.name}</strong><span>{k.note}</span></li>
-            ))}
-          </ul>
-        </div>
+        {people.length === 0 && e.keyFigures.length > 0 && (
+          <div class="era-card" data-reveal>
+            <div class="label era-card__h">Key figures</div>
+            <ul class="era-figures">
+              {e.keyFigures.map((k) => (
+                <li><strong>{k.name}</strong><span>{k.note}</span></li>
+              ))}
+            </ul>
+          </div>
+        )}
       </aside>
     </div>
 
@@ -84,12 +131,14 @@ const fam = e.specimenFont.family;
       </section>
     )}
 
-    {eraFonts.length > 0 && (
+    {people.length > 0 && <EraPeople people={people} defaultFamily={fam} />}
+
+    {hasFaces && (
       <section class="era-faces">
         <div class="section-head">
           <span class="index-num">✳</span>
-          <h2>Faces from this era</h2>
-          <span class="label">In the collection</span>
+          <h2>Faces of the era</h2>
+          <span class="label">In the collection &amp; the timeline</span>
         </div>
         <div class="era-faces__grid">
           {eraFonts.map((f: any) => (
@@ -100,52 +149,94 @@ const fam = e.specimenFont.family;
               <span class="era-face__cta label">Open specimen →</span>
             </a>
           ))}
+          {timelineFaces.map((tf) => (
+            <div class="era-face era-face--timeline" data-reveal>
+              <span class="era-face__name" style={`font-family:'${tf.family}'; font-weight:${tf.weight}`}>{tf.name}</span>
+              <span class="era-face__meta label">
+                {tf.designer}{tf.designer && tf.year ? ' · ' : ''}{tf.year}
+              </span>
+              {tf.note && <span class="era-face__note">{tf.note}</span>}
+              <span class="era-face__cta label era-face__cta--mute">In the timeline ✳</span>
+            </div>
+          ))}
         </div>
       </section>
     )}
-
-    <nav class="era-nav">
-      <a href={`/history/${prev.data.slug}`} class="era-nav__link">
-        <span class="label">← {String(prev.data.order).padStart(2, '0')}</span>
-        <span class="era-nav__name">{prev.data.name}</span>
-      </a>
-      <a href={`/history/${next.data.slug}`} class="era-nav__link era-nav__link--right">
-        <span class="label">{String(next.data.order).padStart(2, '0')} →</span>
-        <span class="era-nav__name">{next.data.name}</span>
-      </a>
-    </nav>
   </main>
+
+  <div class="container">
+    <ChapterNav variant="footer" index={e.order} total={total} all={all} prev={prev} next={next} />
+  </div>
 
   <SiteFooter />
   <Glossary />
+
+  <script>
+    // Viewport-relative parallax (passive, rAF, reduced-motion aware).
+    // Bounded by the viewport so layers never slide out of their frames,
+    // however far down the page they sit.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) {
+      const layers = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
+      let ticking = false;
+      const apply = () => {
+        const vh = window.innerHeight;
+        for (const el of layers) {
+          const speed = Number(el.dataset.speed ?? 0.12);
+          const rect = el.getBoundingClientRect();
+          const center = rect.top + rect.height / 2;
+          const offset = (center - vh / 2) * speed;
+          el.style.transform = `translate3d(0, ${(-offset).toFixed(1)}px, 0)`;
+        }
+        ticking = false;
+      };
+      window.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+      }, { passive: true });
+      window.addEventListener('resize', apply, { passive: true });
+      apply();
+    }
+  </script>
 </Layout>
 
 <style>
-  .era-hero { position: relative; overflow: clip; padding-block: clamp(2rem, 6vh, 4rem) clamp(2.5rem, 7vh, 5rem); border-bottom: 1px solid var(--line); }
+  .era-hero {
+    position: relative; overflow: clip;
+    padding-block: clamp(2.5rem, 8vh, 5rem) clamp(3rem, 9vh, 6rem);
+    border-bottom: 1px solid var(--line);
+  }
   .era-hero__ghost {
-    position: absolute; right: -0.06em; bottom: -0.28em; z-index: 0;
-    font-size: clamp(24rem, 60vw, 52rem); line-height: 0.7; color: var(--accent);
-    opacity: 0.08; pointer-events: none; user-select: none;
+    position: absolute; right: -0.06em; bottom: -0.3em; z-index: 0;
+    font-size: clamp(24rem, 62vw, 56rem); line-height: 0.7; color: var(--accent);
+    opacity: 0.1; pointer-events: none; user-select: none; will-change: transform;
+    text-shadow:
+      0.04em 0.04em 0 color-mix(in srgb, var(--accent) 30%, transparent),
+      0.08em 0.08em 0 color-mix(in srgb, var(--accent) 18%, transparent),
+      0.12em 0.12em 0 color-mix(in srgb, var(--accent) 9%, transparent);
+    transform-style: preserve-3d;
   }
   .era-hero__inner { position: relative; z-index: 1; }
-  .era-hero__back { display: inline-block; margin-bottom: var(--sp-5); }
-  .era-hero__back:hover { color: var(--fg); }
   .era-hero__top { display: flex; align-items: baseline; gap: var(--sp-4); margin-bottom: var(--sp-3); }
   .era-hero__top .index-num { color: var(--accent); }
-  .era-hero__name { font-family: var(--font-ui); font-size: clamp(2.6rem, 9vw, 7rem); font-weight: 680; letter-spacing: -0.03em; line-height: 0.92; }
-  .era-hero__line { font-size: var(--step-2); color: var(--accent); margin-top: var(--sp-3); max-width: 24ch; line-height: 1.1; font-family: var(--fam); }
-  .era-hero__sample { font-size: clamp(3rem, 14vw, 11rem); line-height: 1; margin-top: var(--sp-4); color: var(--fg); }
+  .era-hero__name {
+    font-family: var(--font-ui); font-size: clamp(2.8rem, 10vw, 8rem);
+    font-weight: 680; letter-spacing: -0.035em; line-height: 0.9;
+  }
+  .era-hero__line { font-size: var(--step-2); color: var(--accent); margin-top: var(--sp-3); max-width: 22ch; line-height: 1.08; font-family: var(--fam); }
+  .era-hero__epigraph { margin-top: var(--sp-5); max-width: 34ch; }
+  .era-hero__epigraph blockquote { font-size: var(--step-1); line-height: 1.3; color: var(--fg-2); font-style: italic; }
+  .era-hero__epigraph figcaption { margin-top: var(--sp-2); }
 
   .era-main { padding-block: clamp(2.5rem, 6vh, 5rem); }
-  .era-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--sp-7); align-items: start; }
+  .era-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--sp-7); align-items: start; margin-top: var(--sp-6); }
   .era-story { font-size: var(--step-1); }
   .era-story :global(p:first-of-type)::first-letter {
     font-size: 3.4em; line-height: 0.72; float: left; font-weight: 600;
     padding: 0.06em 0.12em 0 0; color: var(--accent); font-family: var(--fam);
   }
 
-  .era-side { display: flex; flex-direction: column; gap: var(--sp-4); position: sticky; top: 90px; }
-  .era-card { border: 1px solid var(--line); padding: var(--sp-4); }
+  .era-side { display: flex; flex-direction: column; gap: var(--sp-4); position: sticky; top: 132px; }
+  .era-card { border: 1px solid var(--line); padding: var(--sp-4); background: color-mix(in srgb, var(--accent) 3%, var(--bg)); }
   .era-card__h { display: block; padding-bottom: var(--sp-2); margin-bottom: var(--sp-3); border-bottom: 1px solid var(--fg); }
   .era-traits li, .era-figures li { display: flex; flex-direction: column; gap: 2px; padding-block: 0.7rem; border-top: 1px solid var(--line-soft); }
   .era-traits li:first-child, .era-figures li:first-child { border-top: 0; }
@@ -157,16 +248,12 @@ const fam = e.specimenFont.family;
   .era-faces__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .era-face { display: flex; flex-direction: column; gap: 0.4rem; padding: var(--sp-4); background: var(--bg); transition: background 0.25s var(--ease); }
   .era-face:hover { background: var(--bg-2); }
+  .era-face--timeline { background: color-mix(in srgb, var(--accent) 4%, var(--bg)); }
   .era-face__name { font-size: var(--step-3); line-height: 0.95; }
   .era-face__meta { margin-top: 0.2rem; }
   .era-face__note { color: var(--fg-2); font-size: var(--step-0); line-height: 1.45; margin-top: 0.3rem; }
   .era-face__cta { color: var(--accent); margin-top: var(--sp-2); }
-
-  .era-nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); padding-top: var(--sp-7); margin-top: var(--sp-6); border-top: 1px solid var(--fg); }
-  .era-nav__link { display: flex; flex-direction: column; gap: 0.3rem; }
-  .era-nav__link--right { text-align: right; }
-  .era-nav__name { font-family: var(--font-ui); font-size: var(--step-2); font-weight: 600; transition: color 0.2s var(--ease); }
-  .era-nav__link:hover .era-nav__name { color: var(--accent); }
+  .era-face__cta--mute { color: var(--fg-3); }
 
   @media (max-width: 860px) {
     .era-grid { grid-template-columns: 1fr; gap: var(--sp-5); }

@@ -12,6 +12,9 @@ traits: { serif: 0.55, contrast: 0.45, stress: 0.35, terminals: 0.7 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.2, y: 0.9, r: 0.16, label: 'flared serif' }
+epigraph:
+  text: Carved into a wall, a letter stops being a sign for a sound and becomes a piece of architecture.
+  attribution: On the capitalis monumentalis
 traitCallouts:
   - glyph: R
     title: Flared serif
@@ -39,10 +42,77 @@ characteristics:
 keyFigures:
   - { name: 'Trajan’s Column', note: 'c. 113 AD — the model inscription.' }
   - { name: 'Roman stone-cutters', note: 'Anonymous masters of the capitalis monumentalis.' }
+people:
+  - name: The Ordinator
+    role: Brush-writer · Imperial Rome
+    dates: 1st–2nd c. AD
+    place: Rome
+    initial: O
+    story: >
+      Before any chisel touched the stone, a signwriter the Romans called the ordinator
+      climbed the scaffold with a flat, square-cut brush and laid the letters out in red
+      paint. His hand set everything that matters: the slight lean of the brush that thins
+      each curve on the diagonal, the confident flick that becomes a serif, the spacing
+      judged by eye against the architecture below. The carver who came after was, in a
+      sense, only tracing. We do not know a single one of their names — yet their muscle
+      memory is encoded in nearly every serif you will read today.
+  - name: Felice Feliciano
+    role: Humanist · Antiquary
+    dates: 1433–1479
+    place: Verona
+    initial: F
+    quote: The Roman letter is built, not merely written.
+    story: >
+      Fourteen centuries later, a Veronese scholar went hunting through the ruins, copying
+      inscriptions and asking a radical question: could the perfect capital be reconstructed
+      by rule? In a manuscript of around 1460, Feliciano drew each letter inside a square
+      and a circle, deriving its proportions from geometry. He was wrong about the method —
+      the Romans worked by eye, not compass — but he lit the fuse. Every Renaissance attempt
+      to systematise the alphabet, from Pacioli to Dürer to Geofroy Tory, descends from his
+      obsession.
+  - name: Father Edward Catich
+    role: Priest · Sign-painter · Scholar
+    dates: 1906–1979
+    place: Iowa, USA
+    initial: C
+    story: >
+      The argument was finally settled by a man who had painted shop windows in Chicago
+      before he took holy orders. Catich knew brushes the way few scholars ever could, and
+      in The Origin of the Serif (1968) he demonstrated, stroke by stroke, that the serifs
+      on Trajan’s Column were not chisel artefacts but the natural product of a flat brush in
+      a skilled hand. It was a working signwriter, not an academic, who proved where our
+      serifs really came from — and his reconstruction underlies the revival faces, like the
+      Cinzel on this page, that we still set today.
+timelineFaces:
+  - { name: 'Marcellus', family: 'Marcellus', designer: 'Astigmatic', year: '2009', note: 'A refined revival of the Roman inscriptional capital, named for the Theatre of Marcellus.' }
 fonts: ['cinzel']
 theme: { bg: '#efe9dd', fg: '#211b12', accent: '#8a6a34' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-The story of our alphabet does not begin in a print shop. It begins on the side of a building. The capital letters we still use were brought to their highest resolution by the carvers of Imperial Rome, whose monumental inscriptions set proportions so complete that every typographer since has been, in some sense, copying them.
+The story of our alphabet does not begin in a print shop. It begins on the side of a building. The capital letters we still use were brought to their highest resolution not by scribes but by the carvers of Imperial Rome, whose monumental inscriptions set proportions so complete that every typographer since has been, in some quiet sense, copying them.
 
-The technique left its fingerprints. Letters were first painted onto the stone with a flat brush, which naturally swelled and thinned the strokes and flicked out a small serif at each end; the chisel then followed the paint. That is why these forms have **contrast** and flared serifs at all — not as decoration, but as the honest trace of the tools. There was no lowercase and no italic. This was the alphabet as architecture: upright, formal, and built to last two thousand years.
+Stand at the foot of **Trajan's Column** in Rome and look up at the dedication panel carved around 113 AD. The letters are barely a hand high, yet they read cleanly from the pavement — wide, balanced, serene. For two millennia, designers have measured their own work against this single inscription. When you reach for the word *classic*, this is, almost literally, what you are reaching for.
+
+<PullQuote cite="Father Edward Catich, The Origin of the Serif" family="Cinzel Variable">
+  The serif was born of the brush, not the chisel.
+</PullQuote>
+
+The technique left its fingerprints all over the form. Letters were first painted onto the stone with a flat, square-cut brush, which naturally swelled and thinned the strokes and flicked out a small **serif** at each end; only then did the chisel follow the paint. That is why these forms have **contrast** and flared serifs at all — not as decoration, but as the honest trace of the tools. The diagonal thinning of the round **O**, the flick at the foot of the **R**: each is a brushstroke, frozen in marble.
+
+<Divider label="I" />
+
+<Spread tone="dark">
+There was no lowercase. There was no italic. There were no spaces between words, no question marks, no numerals as we know them — just twenty-odd **capitals**, cut in rows and read aloud. This was the alphabet as **architecture**: upright, formal, monumental, and built, quite deliberately, to outlast the people who made it.
+
+What the Romans could not have known is how completely they were setting the defaults. The proportions they tuned by eye — the narrow **E**, the wide **O**, the generous **M** — became the skeleton beneath the printed capital a thousand years before anyone dreamed of movable type.
+</Spread>
+
+<BigType family="Cinzel Variable" caption="Cinzel · a modern revival of the capitalis monumentalis">
+SPQR
+</BigType>
+
+When printers finally came, in the 1450s, they would spend decades trying to give the lowercase the same dignity these capitals already had. That is the next chapter. But the capital arrived first, arrived complete, and has barely changed since. Everything that follows in this history is, in one way or another, a negotiation with Rome.

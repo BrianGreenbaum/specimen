@@ -1,0 +1,28 @@
+---
+// An oversized drop-figure / section marker for editorial rhythm — a big numeral
+// or short label that sits in the margin of a long chapter.
+//   <Folio n="III" label="The industrial shout" />
+export interface Props { n: string; label?: string; }
+const { n, label } = Astro.props;
+---
+<div class="folio" aria-hidden="true">
+  <span class="folio__n">{n}</span>
+  {label && <span class="folio__label">{label}</span>}
+</div>
+
+<style>
+  .folio {
+    display: flex; align-items: baseline; gap: var(--sp-4);
+    margin-block: clamp(2.4rem, 7vw, 4rem) clamp(1rem, 3vw, 2rem);
+  }
+  .folio__n {
+    font-family: var(--font-ui); font-weight: 700;
+    font-size: clamp(3.5rem, 12vw, 8rem); line-height: 0.8;
+    letter-spacing: -0.04em; color: var(--accent);
+    -webkit-text-stroke: 1px var(--accent);
+  }
+  .folio__label {
+    font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+</style>

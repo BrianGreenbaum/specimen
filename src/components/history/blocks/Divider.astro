@@ -1,0 +1,29 @@
+---
+// A centred ✳ section divider with hairlines. Marks a beat in a long chapter.
+//   <Divider />            → plain sextile
+//   <Divider label="II" /> → with a small roman/section label
+export interface Props { label?: string; }
+const { label } = Astro.props;
+---
+<div class="divider" role="separator">
+  <span class="divider__rule" aria-hidden="true"></span>
+  <span class="divider__mark">✳{label && <em class="divider__label">{label}</em>}</span>
+  <span class="divider__rule" aria-hidden="true"></span>
+</div>
+
+<style>
+  .divider {
+    display: flex; align-items: center; gap: var(--sp-4);
+    margin-block: clamp(2.4rem, 7vw, 4.5rem);
+    max-width: var(--measure);
+  }
+  .divider__rule { flex: 1; height: 1px; background: var(--line); }
+  .divider__mark {
+    display: inline-flex; align-items: baseline; gap: 0.6rem;
+    color: var(--accent); font-size: 1rem;
+  }
+  .divider__label {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--fg-3); font-style: normal;
+  }
+</style>

@@ -6,12 +6,16 @@ period: 1700s
 yearAnchor: 1757
 oneLiner: The Enlightenment draws the letter, rather than writing it.
 evolution: Contrast rises, the stress straightens toward vertical, and the letter is drawn rather than written.
+diffNote: The pen is set down for the ruler. The stress swings upright, the contrast climbs, the serifs sharpen — the warm humanist hand cools into Enlightenment reason.
 sample: Baskerville
 specimenFont: { family: 'Libre Baskerville', weight: 400 }
 traits: { serif: 0.5, contrast: 0.6, stress: 0.4, terminals: 0.6 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.5, y: 0.2, r: 0.16, label: 'upright axis' }
+epigraph:
+  text: I formed to myself ideas of greater accuracy than had yet appeared, and had endeavoured to produce a Set of Types according to what I conceived to be their true proportion.
+  attribution: John Baskerville, 1758
 traitCallouts:
   - glyph: a
     title: Vertical stress
@@ -36,10 +40,85 @@ characteristics:
 keyFigures:
   - { name: 'John Baskerville', note: 'Birmingham, 1750s — smoother paper, blacker ink.' }
   - { name: 'Pierre Simon Fournier', note: 'France — early modern refinement.' }
-fonts: ['libre-baskerville']
+people:
+  - name: John Baskerville
+    role: Printer · Type designer
+    dates: 1706–1775
+    place: Birmingham
+    initial: B
+    quote: Whatever passes through the press should be as perfect as it can be made.
+    story: >
+      Baskerville made his fortune japanning tin trays before he ever set a line of type,
+      and he brought a lacquerer’s obsession with surface to printing. He devised a smoother,
+      hot-pressed paper, a blacker, glossier ink, and presses tuned to take a finer
+      impression — all so that sharper, higher-contrast letters could survive the squeeze.
+      An outspoken atheist in a pious age, he asked to be buried upright in his own garden,
+      and was. His type was called cold, even painful to read, by rivals who had a stake in
+      the old way. Posterity sided with Baskerville.
+  - name: John Handy
+    role: Punchcutter
+    dates: fl. 1750s–1770s
+    place: Birmingham
+    initial: H
+    story: >
+      Behind every famous type designer of this age stands a punchcutter, and Baskerville’s
+      was John Handy. For nearly thirty years Handy cut the steel punches that turned
+      Baskerville’s drawings into metal — filing each letter, at actual size, by eye and by
+      hand. The crisp, even serifs we admire as “Baskerville” are as much Handy’s craft as
+      his master’s vision. It is a recurring truth of this history: the name on the type is
+      rarely the only hand that shaped it.
+  - name: Benjamin Franklin
+    role: Printer · Statesman · Champion
+    dates: 1706–1790
+    place: Philadelphia · London
+    initial: F
+    story: >
+      Few people loved Baskerville’s work more than Benjamin Franklin, himself a printer.
+      When a London gentleman complained that Baskerville’s sharp letters strained the eyes
+      and would ruin English reading, Franklin played a trick: he handed the man a specimen
+      he claimed was Baskerville’s, and watched him condemn its painful thinness line by
+      line. It was, in fact, set in an ordinary old face. The eye, Franklin proved, was
+      reacting to fashion and rumour, not to the type. Baskerville’s letters became a
+      foundation of American printing.
+  - name: Pierre-Simon Fournier
+    role: Type founder · Theorist
+    dates: 1712–1768
+    place: Paris
+    initial: F
+    story: >
+      Across the Channel, Fournier was pushing the same refinement and doing something just
+      as lasting: bringing order to type sizes. His point system — later perfected by the
+      Didots — replaced a chaos of named sizes with measured, divisible units, and gave
+      typography its first real ruler. Much of how we still talk about type, in points and
+      picas, begins with him.
+fonts: ['libre-baskerville', 'newsreader']
 theme: { bg: '#f3efe6', fg: '#1a1813', accent: '#2c4a6b' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-By the mid-1700s, the Enlightenment’s appetite for precision reached the printed page. In Birmingham, **John Baskerville** — a writing master turned printer — smoothed his paper, blackened his ink and sharpened his presses so that finer letters would survive the impression. His type marked a turn: away from the calligraphic old-style and toward something drawn with reason and a ruler.
+By the middle of the eighteenth century, the Enlightenment’s appetite for precision had reached the printed page. The warm, pen-drawn old-style had served the book for nearly three hundred years; now a generation raised on reason and measurement wanted letters that looked *designed* rather than written — and the technology had finally caught up enough to let them have it.
 
-It is called **transitional** because it sits exactly between two worlds. The **stress** straightens toward vertical, the **contrast** rises, the **serifs** grow crisper — yet the letters keep enough warmth to read comfortably at length. Baskerville’s contemporaries thought it almost too sharp on the eye; today it reads as calm, rational and quietly authoritative. It is the hinge on which the serif swings from the pen toward the machine.
+In Birmingham, **John Baskerville** — a writing master and japanner turned printer — set out to make the most perfect book ever printed. He smoothed and hot-pressed his paper, blackened his ink until it gleamed, and rebuilt his presses so the finest strokes would survive the impression. The type he produced in the 1750s marked a clear turn: away from the calligraphic hand, toward something drawn with a ruler and an idea.
+
+<PullQuote cite="Libre Baskerville, after John Baskerville" family="Libre Baskerville">
+  Drawn with a ruler, not a pen.
+</PullQuote>
+
+It is called **transitional** because it stands exactly between two worlds. The **stress** straightens toward vertical, the **contrast** rises, the **serifs** grow crisper and finer — yet the letters keep just enough warmth and bracketing to read comfortably across a whole book. It is the hinge on which the serif swings from the pen toward the machine.
+
+<Divider label="III" />
+
+<Spread tone="paper-2">
+Baskerville’s contemporaries did not all thank him. Rivals complained that his glittering, high-contrast letters were too sharp — that they would, quite literally, damage the eyes of English readers. The objection was really about fashion and commerce, as **Benjamin Franklin** delighted in proving. Today the very qualities they feared read as calm, rational and quietly authoritative. Baskerville is the sound of an argument being made well.
+</Spread>
+
+The contemporary face beside Baskerville on this page, **Newsreader**, shows how alive this tradition still is: a screen-native text serif, built by Production Type, that keeps the upright stress and reading colour of the eighteenth century while adding a modern optical-size axis. The transitional temper — literate, measured, trustworthy — never went out of print.
+
+<BigType family="Newsreader Variable" caption="Newsreader · the transitional temper, drawn for the screen">
+Reason
+</BigType>
+
+But reason, pushed hard enough, becomes spectacle. Within a single generation, printers in Parma and Paris would take Baskerville’s rising contrast and run with it — until the thick strokes turned to slabs and the thin ones nearly vanished. The serif was about to stop being about reading at all.

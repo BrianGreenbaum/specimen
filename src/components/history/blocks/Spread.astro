@@ -1,0 +1,49 @@
+---
+// A full-bleed editorial band that re-tints its local background, so a long
+// chapter can alternate "flavours" (paper → tinted → dark → accent). Used
+// inside an era .mdx body. Content is the default slot.
+//   <Spread tone="dark">…markdown / components…</Spread>
+export interface Props {
+  tone?: 'paper' | 'paper-2' | 'tint' | 'dark' | 'accent';
+  align?: 'wide' | 'prose';   // 'prose' constrains inner width like body copy
+}
+const { tone = 'paper-2', align = 'wide' } = Astro.props;
+---
+<div class:list={['spread', `spread--${tone}`]}>
+  <div class:list={['spread__inner', `spread__inner--${align}`]}>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .spread {
+    /* break out of the .prose measure to full chapter width */
+    width: 100%;
+    margin-block: clamp(2rem, 5vw, 3.5rem);
+    padding-block: clamp(2rem, 6vw, 4rem);
+    padding-inline: clamp(1.4rem, 4vw, 3.5rem);
+  }
+  .spread__inner--wide { max-width: 64rem; margin-inline: auto; }
+  .spread__inner--prose { max-width: var(--measure); margin-inline: auto; }
+
+  .spread--paper { background: var(--bg); }
+  .spread--paper-2 { background: var(--bg-2); }
+  .spread--tint {
+    background:
+      radial-gradient(120% 130% at 12% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+      color-mix(in srgb, var(--accent) 7%, var(--bg-2));
+  }
+  .spread--dark {
+    background: color-mix(in srgb, #000 84%, var(--accent));
+    color: color-mix(in srgb, var(--bg) 88%, #fff);
+    --fg: color-mix(in srgb, var(--bg) 92%, #fff);
+    --fg-2: color-mix(in srgb, var(--bg) 70%, transparent);
+  }
+  .spread--accent {
+    background: var(--accent); color: var(--accent-contrast);
+    --fg: var(--accent-contrast); --fg-2: color-mix(in srgb, var(--accent-contrast) 80%, transparent);
+  }
+  /* dark / accent spreads recolour their slotted text */
+  .spread--dark :global(p), .spread--accent :global(p) { color: inherit; }
+  .spread--dark :global(strong), .spread--accent :global(strong) { color: inherit; }
+</style>

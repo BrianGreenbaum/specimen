@@ -128,6 +128,32 @@ const eras = defineCollection({
     traitCallouts: z.array(callout).default([]),
     characteristics: z.array(z.object({ term: z.string(), detail: z.string() })).default([]),
     keyFigures: z.array(z.object({ name: z.string(), note: z.string() })).default([]),
+    // Editorial, long-form people profiles ("portraits as typography").
+    // Supersedes keyFigures on the chapter when present; keyFigures stays as fallback.
+    people: z.array(z.object({
+      name: z.string(),
+      role: z.string().optional(),          // 'Punchcutter · Venice'
+      dates: z.string().optional(),         // '1420–1480'
+      place: z.string().optional(),
+      initial: z.string().optional(),       // glyph used as the portrait (defaults to name[0])
+      portraitFamily: z.string().optional(),// family for the big initial (defaults to specimenFont.family)
+      quote: z.string().optional(),
+      story: z.string(),                    // 1–2 paragraph bio
+    })).default([]),
+    // Faces shown in the chapter timeline that have NO specimen page.
+    // family must be imported in Layout.astro.
+    timelineFaces: z.array(z.object({
+      name: z.string(),
+      family: z.string(),
+      weight: z.number().default(400),
+      designer: z.string().optional(),
+      year: z.string().optional(),          // string to allow ranges / 'c. 1470'
+      note: z.string().optional(),
+    })).default([]),
+    // Hero epigraph (editorial pull quote).
+    epigraph: z.object({ text: z.string(), attribution: z.string().optional() }).optional(),
+    // Optional override for the "what changed since last era" headline copy.
+    diffNote: z.string().optional(),
     fonts: z.array(z.string()).default([]),   // slugs of specimens in this era
     theme: z.object({
       bg: z.string(), fg: z.string(), accent: z.string(),

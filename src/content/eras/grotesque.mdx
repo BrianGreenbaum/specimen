@@ -6,12 +6,16 @@ period: 1810s–1950s
 yearAnchor: 1900
 oneLiner: The serifs fall away, and the sans-serif is born.
 evolution: The serifs vanish entirely. The first sans-serifs are sturdy, a little irregular, and called “grotesque.”
+diffNote: Now the serif goes too. Strip the slabs clean off and only the bare stroke-ends remain — the sans-serif, so alien to Victorian eyes that they called it grotesque.
 sample: Gothic
 specimenFont: { family: 'Space Grotesk Variable', weight: 500 }
 traits: { serif: 0.05, contrast: 0.25, stress: 0.1, terminals: 0.2 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.8, y: 0.9, r: 0.16, label: 'bare stroke end' }
+epigraph:
+  text: A letter so plain that for a hundred years no one could see it was the future.
+  attribution: On the grotesque sans
 traitCallouts:
   - glyph: R
     title: Serifs removed
@@ -37,10 +41,83 @@ characteristics:
 keyFigures:
   - { name: 'William Caslon IV', note: '1816 — the first printed sans-serif.' }
   - { name: 'Akzidenz-Grotesk', note: 'Berthold, 1898 — the great grotesque.' }
+people:
+  - name: William Caslon IV
+    role: Type founder
+    dates: 1781–1869
+    place: London
+    initial: C
+    story: >
+      Great-grandson of the most famous name in English type, Caslon IV did something his
+      illustrious ancestor would never have dared: in his 1816 specimen he showed a line of
+      capitals with the serifs simply gone, labelled “Two Lines English Egyptian.” It was a
+      throwaway novelty, buried among the era’s display oddities, and almost nobody noticed.
+      He had, without quite meaning to, printed the first sans-serif — the seed of the most
+      important typographic idea of the next two hundred years.
+  - name: The Berthold Punchcutters
+    role: H. Berthold AG · Akzidenz-Grotesk
+    dates: '1898'
+    place: Berlin
+    initial: A
+    quote: The plain jobbing type that became a movement.
+    story: >
+      Through the nineteenth century the sans crept from posters into commercial “jobbing”
+      work — tickets, forms, labels. In 1898 the Berthold foundry in Berlin gathered the
+      style into Akzidenz-Grotesk (literally “jobbing grotesque”), an even, businesslike sans
+      with no author’s name attached. Anonymous and utilitarian, it would become the single
+      most influential sans-serif ever cut: the direct model, half a century later, for
+      Helvetica and the whole Swiss school.
+  - name: Max Miedinger & Eduard Hoffmann
+    role: Designer & foundry director · Helvetica
+    dates: '1957'
+    place: Münchenstein, Switzerland
+    initial: H
+    story: >
+      In 1957, at the Haas foundry, Hoffmann set Miedinger to refine Akzidenz-Grotesk into
+      something flawlessly neutral. The result, first called Neue Haas Grotesk and soon
+      renamed Helvetica — “the Swiss” — became the voice of postwar modernism and, eventually,
+      of corporations, airports and governments worldwide. Its ruthless neutrality is the
+      grotesque idea perfected: a letter that tries to carry meaning while adding none of its
+      own.
+  - name: Florian Karsten
+    role: Type designer
+    dates: b. 1991
+    place: Berlin · Prague
+    initial: K
+    story: >
+      The face on this page, Space Grotesk, is a knowing modern twist on the genre. Karsten
+      drew it in 2018 by taking Colophon’s monospaced Space Mono and freeing it into a
+      proportional sans — keeping a few of its odd, mechanical quirks. It wears the
+      grotesque’s sturdy neutrality with a slightly futuristic accent: the nineteenth-century
+      rebel, dressed for a design studio in the twenty-first.
+timelineFaces:
+  - { name: 'Oswald', family: 'Oswald Variable', weight: 500, designer: 'Vernon Adams', year: '2011', note: 'A reworking of the classic condensed gothic, in the Alternate Gothic tradition of the American poster.' }
 fonts: ['space-grotesk']
 theme: { bg: '#0b0d0c', fg: '#e9efe9', accent: '#caff48' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-Around 1816, a strange new letter appeared in a type catalogue: a roman with its **serifs** simply removed. It looked so odd to eyes raised on serifs that the style was called *grotesque* — and, in Britain, *gothic*. For decades it was treated as a novelty, fit only for the odd line of emphasis. Then the industrial poster discovered it, and the sans-serif began its long climb to dominance.
+Around 1816, a strange new letter appeared, almost as an afterthought, in a London type catalogue: a row of capitals with the **serifs** simply removed. To eyes raised on three centuries of serifs it looked crude, even ugly — and the trade gave it a telling name. In Germany it was *grotesk*; in Britain, *gothic*. Both words meant roughly the same thing: *barbarous*. Nobody imagined they were looking at the future.
 
-These early sans faces were drawn by eye, not by system. They keep a faint **contrast** and a slightly irregular, hand-felt quality — sturdy, neutral and a touch awkward in the best way. **Akzidenz-Grotesk**, cut in Berlin in 1898, became the template the whole genre would later refine. It is the rough, confident ancestor of every clean sans-serif that followed — including the neo-grotesques and screen faces at the end of this story.
+For decades the sans-serif lived as a novelty, useful only for a stray line of emphasis on a poster. But it had one quality the industrial world increasingly prized — it was *plain*. No history, no ornament, no calligraphic baggage; just the bare bones of the letter. Slowly, through tickets and timetables and shopfronts, the plain letter spread.
+
+<PullQuote cite="Space Grotesk" family="Space Grotesk Variable">
+  Strip away the serif, and what remains is the modern world.
+</PullQuote>
+
+These early grotesques were still drawn by eye, not by system. Look closely and you find a faint **contrast**, a slight unevenness, a hand-felt quality — sturdy, neutral and just a touch awkward, in the best way. **Akzidenz-Grotesk**, gathered together in Berlin in 1898, distilled all of it into one workmanlike face and, in doing so, wrote the template the entire twentieth century would refine.
+
+<Divider label="VI" />
+
+<Spread tone="dark">
+That refinement reached its peak in 1957, in a small Swiss town, when **Max Miedinger** and **Eduard Hoffmann** sanded Akzidenz-Grotesk into something flawlessly even and called it **Helvetica** — “the Swiss.” Within a generation it was everywhere: the typeface of airlines, governments, the New York subway and a thousand logos. The barbarous letter of 1816 had become the most trusted voice of modern life, precisely because it seemed to have no voice at all.
+</Spread>
+
+<BigType family="Oswald Variable" caption="Oswald · the condensed gothic of the American poster">
+GOTHIC
+</BigType>
+
+The grotesque had won by subtraction — by taking things away. But a second group of modernists, working at the very same time, distrusted the hand that had drawn even these plain letters. They wanted to throw out the eye altogether and rebuild the alphabet from pure geometry. Their letter would be designed, not drawn — and it is where we go next.

@@ -8,6 +8,7 @@ import EvolutionScrubber from '../../components/history/EvolutionScrubber.astro'
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
 const fonts = await getCollection('fonts');
 const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
+const first = eras[0];
 ---
 <Layout title="A History of Typography — Specimen" mode="dark">
   <SiteHeader current="History" />
@@ -19,10 +20,9 @@ const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
         A History<br />of <em>Type</em>
       </h1>
       <p class="hist-hero__lede" data-reveal style="--reveal-delay:160ms">
-        Two thousand years in one alphabet. From letters carved in Roman stone to fonts that
-        flex live in your browser — drag the slider below and watch a single letter travel the
-        whole history of type, its serifs appearing and vanishing, its contrast swelling and
-        calming, era by era.
+        Two thousand years in a single alphabet. From letters chiselled into Roman marble to
+        fonts that flex live in your browser — grab the letter below and drag it through time,
+        and watch its serifs grow and vanish, its contrast swell and calm, era by era.
       </p>
     </div>
   </header>
@@ -31,7 +31,7 @@ const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
     <div class="section-head">
       <span class="index-num">✳</span>
       <h2>The letter, through time</h2>
-      <span class="label">Scrub the timeline</span>
+      <span class="label">Drag the letter ⟷</span>
     </div>
     <EvolutionScrubber eras={eras} />
   </section>
@@ -42,6 +42,12 @@ const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
       <h2>The eras</h2>
       <span class="label">Eight chapters</span>
     </div>
+
+    <a class="hist-begin" href={`/history/${first.data.slug}`} style={`--era-accent:${first.data.theme.accent}`} data-reveal>
+      <span class="hist-begin__label label">Begin the journey</span>
+      <span class="hist-begin__name">Chapter 01 · {first.data.name}</span>
+      <span class="hist-begin__cue">Read it as one continuous story, or skip to any era below <span aria-hidden="true">→</span></span>
+    </a>
 
     <ol class="era-list">
       {eras.map((e) => (
@@ -82,6 +88,24 @@ const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
 
   .hist-evo { padding-block: clamp(2.5rem, 6vh, 5rem); }
   .hist-eras { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
+
+  .hist-begin {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding: clamp(1.4rem, 4vw, 2.4rem);
+    margin-bottom: var(--sp-5);
+    background:
+      radial-gradient(120% 130% at 8% 0%, color-mix(in srgb, var(--era-accent) 22%, transparent), transparent 60%),
+      color-mix(in srgb, var(--era-accent) 8%, var(--bg));
+    border: 1px solid color-mix(in srgb, var(--era-accent) 35%, var(--line));
+    transition: transform 0.4s var(--ease), border-color 0.3s var(--ease);
+  }
+  .hist-begin:hover { transform: translateY(-2px); border-color: var(--era-accent); }
+  .hist-begin__label { color: var(--era-accent); }
+  .hist-begin__name {
+    font-family: var(--font-ui); font-weight: 660; font-size: var(--step-2);
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .hist-begin__cue { color: var(--fg-2); font-size: var(--step-0); margin-top: 0.3rem; }
 
   .era-list { border-top: 1px solid var(--line); }
   .era-row { border-bottom: 1px solid var(--line); }

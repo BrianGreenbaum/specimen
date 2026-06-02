@@ -6,12 +6,16 @@ period: 1450–1600
 yearAnchor: 1500
 oneLiner: The Renaissance brings the pen — and the lowercase — to printed type.
 evolution: 'The pen returns — lowercase letters, a slanted stress, gentle contrast and bracketed serifs.'
+diffNote: Rome gave us the capital. Now the scribe’s broad-nib pen gives us the lowercase — and with it a slanted stress, gentle contrast, and serifs that flow rather than snap.
 sample: Humanist
 specimenFont: { family: 'EB Garamond Variable', weight: 400 }
 traits: { serif: 0.5, contrast: 0.3, stress: 0.9, terminals: 0.6 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.62, y: 0.24, r: 0.17, label: 'angled stress' }
+epigraph:
+  text: A type so right that, four centuries on, “a Garamond” still means the classic book.
+  attribution: On the old-style serif
 traitCallouts:
   - glyph: a
     title: Angled stress
@@ -37,10 +41,84 @@ keyFigures:
   - { name: 'Nicolas Jenson', note: 'Venice, c. 1470 — the first great roman.' }
   - { name: 'Claude Garamont', note: 'Paris, 1530s — the definitive old-style.' }
   - { name: 'Robert Granjon', note: 'The flowing italic counterpart.' }
+people:
+  - name: Nicolas Jenson
+    role: Punchcutter · Printer
+    dates: c. 1420–1480
+    place: Venice
+    initial: J
+    quote: The first roman a reader could love.
+    story: >
+      A Frenchman trained at the royal mint, Jenson settled in Venice and, around 1470, cut
+      a roman type of such even colour and quiet authority that scholars still call it the
+      first truly beautiful printed letter. He took the humanist scholars’ rounded
+      book-hand — itself a Renaissance revival of Carolingian script — and disciplined it
+      into type. Five centuries later, designers from William Morris to the present have
+      gone back to Jenson’s page when they wanted to remember what warmth on paper looks like.
+  - name: Francesco Griffo
+    role: Punchcutter
+    dates: c. 1450–1518
+    place: Bologna · Venice
+    initial: G
+    story: >
+      Working for the great publisher Aldus Manutius, Griffo cut the roman used in the 1499
+      Hypnerotomachia Poliphili and, soon after, the very first italic — a slanted,
+      space-saving face based on the cursive chancery hand, made to fit Aldus’s pocket-sized
+      classics. He effectively invented two of the three styles in your font menu. He also
+      quarrelled bitterly with Aldus over who owned the designs: the first recorded fight
+      about type ownership, a dispute we have never really stopped having.
+  - name: Claude Garamont
+    role: Punchcutter · Type founder
+    dates: c. 1510–1561
+    place: Paris
+    initial: G
+    story: >
+      Garamont refined the Venetian roman into the definitive old-style: a little more
+      contrast, a touch more elegance, letters tuned so exquisitely for the book that
+      “a Garamond” became shorthand for the classic page. He was also among the first to
+      sell type as an independent foundry rather than working for a single printer —
+      separating the design of letters from their use. The EB Garamond on this page is an
+      open-source revival drawn directly from his surviving specimens.
+  - name: Robert Granjon
+    role: Punchcutter
+    dates: c. 1513–1590
+    place: Paris · Antwerp · Rome
+    initial: R
+    story: >
+      If Garamont perfected the roman, Granjon perfected its companion. His italics flow
+      with the grace of a master scribe’s hand, and pairing his slanted lowercase with an
+      upright roman established the convention — roman for the body, italic for emphasis —
+      that still governs every document you write.
+timelineFaces:
+  - { name: 'Spectral', family: 'Spectral', weight: 400, designer: 'Production Type for Google', year: '2017', note: 'A contemporary text serif in the humanist lineage, drawn for screens and the printed page alike.' }
 fonts: ['eb-garamond', 'cormorant-garamond', 'fraunces']
 theme: { bg: '#f0ebe1', fg: '#1b160f', accent: '#6f3120' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-When printing arrived in the 1450s, the first types imitated the dense gothic handwriting of northern Europe. But in Italy, humanist scholars were reading classical texts in a rounder, clearer hand — and printers like **Nicolas Jenson** in Venice cut type to match it. For the first time, the lowercase letter and the capital met on equal terms, and the **old-style** serif was born.
+When printing arrived in Europe in the 1450s, the first types imitated the dense, thorny gothic handwriting of the north — Gutenberg’s Bible is set in it. But in Italy, humanist scholars rummaging through monastic libraries were reading the classics in a rounder, clearer, altogether sunnier hand. They believed it was the script of ancient Rome. It was actually Carolingian, four centuries old — but the mistake was a gift, because it sent the Renaissance reaching for a letter as open and rational as its ideals.
 
-Its character comes straight from the broad-nib pen that the scribes used. Hold such a pen at a slant and the thinnest part of every round letter falls on a diagonal — the **stress** leans. The **contrast** between thick and thin stays gentle, the **serifs** are bracketed, and the whole page reads warm and even. **Claude Garamont** perfected the form in the 1500s so thoroughly that "a Garamond" still means *the* classic book face, four centuries on.
+In Venice, printers like **Nicolas Jenson** cut type to match that humanist hand, and for the first time the **lowercase** met the Roman capital on equal terms. The **old-style** serif was born — and with it, very nearly the whole alphabet you are reading now.
+
+<PullQuote cite="EB Garamond, after Claude Garamont" family="EB Garamond Variable">
+  The hand returns to the letter, and the letter learns to breathe.
+</PullQuote>
+
+Its character comes straight from the broad-nib pen the scribes used. Hold such a pen at a slant and the thinnest part of every round letter falls on a diagonal — the **stress** leans. The **contrast** between thick and thin stays gentle, the **serifs** are bracketed, flowing into the stem on a soft curve, and the whole page reads warm and even, almost like breathing. It is the most comfortable text colour our alphabet has ever produced; we have spent five hundred years failing to improve on it for the reading of long books.
+
+<Divider label="II" />
+
+<Spread tone="tint">
+Venice gave the era a second invention, too. To fit cheap, portable editions of the classics, the publisher **Aldus Manutius** had **Francesco Griffo** cut a slanted, cursive type based on the chancery hand — the first **italic**. It began as a way to save space; it became the universal mark of emphasis and the voice of the aside. Three of the styles in your font menu — roman, italic, and the capital itself — were essentially settled in a single Venetian generation.
+</Spread>
+
+Then **Claude Garamont** in Paris brought it all to its peak. His romans were so exquisitely judged that *Garamond* became a synonym for the classic book, and his decision to sell type as an independent **foundry** — rather than cutting it for one printer’s exclusive use — quietly split the design of letters from their use, and invented the type business as we know it.
+
+<BigType family="Cormorant Garamond" caption="Cormorant Garamond · the old-style, drawn fine for display">
+Aa
+</BigType>
+
+For two and a half centuries this warm, humane letter was simply what type *was*. It would take the Enlightenment — and a writing master in Birmingham with a grudge against soft edges — to start drawing the letter with a ruler instead of a pen. That is where we go next.

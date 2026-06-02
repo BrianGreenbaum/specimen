@@ -6,12 +6,16 @@ period: 1980s–today
 yearAnchor: 2010
 oneLiner: Letters drawn for the pixel — and a single file that flexes live.
 evolution: Type is drawn for the screen and the pixel grid — tall x-heights, open apertures, and one variable file that flexes live.
+diffNote: The drafting table gives way to the pixel grid. X-heights rise, apertures open, contrast returns a touch — the letter re-tuned for light, then freed into a single file that flexes live in the browser.
 sample: Pixels
 specimenFont: { family: 'Inter Variable', weight: 500 }
 traits: { serif: 0, contrast: 0.15, stress: 0.05, terminals: 0.25 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.82, y: 0.88, r: 0.16, label: 'open terminal' }
+epigraph:
+  text: Five hundred years after Garamont cut a punch one immovable size at a time, the letter has finally come unstuck.
+  attribution: On the variable font
 traitCallouts:
   - glyph: a
     title: Tall x-height
@@ -39,10 +43,81 @@ characteristics:
 keyFigures:
   - { name: 'Rasmus Andersson', note: 'Inter — the UI workhorse.' }
   - { name: 'IBM & Bold Monday', note: 'Plex — the corporate monospace.' }
-fonts: ['inter', 'ibm-plex-mono']
+people:
+  - name: Susan Kare
+    role: Designer · Pixel pioneer
+    dates: b. 1954
+    place: California
+    initial: K
+    quote: I drew the first screen fonts on graph paper, one square at a time.
+    story: >
+      When the screen could spare only a handful of dots per letter, the alphabet had to be
+      rebuilt yet again — this time inside a grid. For the original Macintosh in 1984, Susan
+      Kare drew its bitmap typefaces by hand on graph paper, each glyph a tiny mosaic of black
+      squares, and named them after stops on the Chicago commuter line: Chicago, Geneva,
+      Monaco. It was the most literal pixel grid imaginable, and it taught type designers a
+      lesson the next forty years would build on: the screen is not paper, and the letter must
+      respect it.
+  - name: Matthew Carter
+    role: Type designer
+    dates: b. 1937
+    place: London · Boston
+    initial: C
+    story: >
+      Carter learned to cut punches by hand in the age of metal, then spent his career
+      carrying the letter across every new technology. His Verdana and Georgia, drawn for
+      Microsoft in 1996, were the first great faces designed from the pixel up for the
+      low-resolution screen — tall x-heights, open shapes, spacing tuned so the letters would
+      not collide when rendered out of almost nothing. Half the web grew up reading them.
+  - name: Rasmus Andersson
+    role: Type designer · Engineer
+    dates: b. 1983
+    place: Stockholm · San Francisco
+    initial: A
+    story: >
+      Inter, the face on this page, began as a side project to make a screen interface more
+      legible and grew into the default sans of modern software. Andersson released it free
+      and open-source, with a tall x-height, open apertures and a vast variable range — a
+      neo-grotesque tuned, pixel by pixel, for the place we now do most of our reading: a
+      glowing rectangle held at arm’s length.
+  - name: The Variable Font
+    role: OpenType 1.8 · An industry truce
+    dates: '2016'
+    place: Everywhere
+    initial: f
+    story: >
+      The deepest change of the era was not a typeface but a file. In 2016, Apple, Google,
+      Microsoft and Adobe — rivals in almost everything — jointly announced the variable font,
+      a single file that holds an entire family along continuous axes of weight, width and
+      optical size. For five hundred years a typeface meant a fixed set of shapes. Now the
+      letter could flex, stretch and animate live in the browser. The whole of this collection
+      is built on it.
+fonts: ['inter', 'ibm-plex-mono', 'source-sans-3']
 theme: { bg: '#eef0f4', fg: '#0d1014', accent: '#2f5cff' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-Every era before this one designed type for ink on paper. Ours designs it for light on a grid. When letters had to survive being rendered out of a handful of pixels, type designers went back to fundamentals: raise the **x-height** so more of each letter lands in the readable band, open the **apertures** so curves don’t clog, even the spacing, and test everything on screen first. The result is a new kind of neutrality — faces like **Inter** that you read all day without ever noticing.
+Every era before this one designed type for ink on paper. Ours designs it for **light on a grid**. It is the most fundamental change of surface since the chisel gave way to the printing press — and, like that earlier shift, it sent designers back to first principles to ask what a letter even is when its medium changes underneath it.
 
-The deeper revolution is technical. The **variable font** packs an entire family — every weight, width and **optical size** — into a single file whose axes you can set live in the browser, even animate. It is the idea that runs through this whole collection: type as something fluid and responsive rather than fixed in metal. Five hundred years after Garamont cut his punches one immovable size at a time, the letter has finally come unstuck — free to flex, in real time, to fit the screen in front of you.
+The first answer was brutal arithmetic. Early screens could spare only a handful of glowing squares per character, so the alphabet was rebuilt, pixel by pixel, inside a grid — **Susan Kare** drawing the first Macintosh fonts on graph paper, one black square at a time. There was no room for hairlines, brackets or grace; there was barely room for the letter.
+
+<PullQuote cite="Inter, by Rasmus Andersson" family="Inter Variable">
+  A face you read all day without ever noticing it.
+</PullQuote>
+
+As screens sharpened, the craft matured into a discipline. To survive rendering, designers raised the **x-height** so more of each letter lands in the readable band, opened the **apertures** so curves would not clog, evened the spacing and tested everything on the grid first. The result is a new kind of neutrality — faces like **Inter** and **Source Sans** that disappear into the interface, asking nothing of you but to be read, all day, without fatigue or notice.
+
+<Divider label="VIII" />
+
+<Spread tone="dark">
+The deepest revolution, though, is not any single typeface — it is a *file*. The **variable font** packs an entire family — every weight, width and **optical size** — into one document whose axes you can set live, even animate, in the browser. For five centuries a typeface was a fixed thing, cut once in metal. Now it bends in real time to the screen in front of you. Every tester, waterfall and morphing letter in this library runs on that single idea.
+</Spread>
+
+<BigType family="Source Sans 3 Variable" caption="Source Sans 3 · the humanist sans, at home on the screen">
+Light
+</BigType>
+
+And so the long journey closes a circle. Five hundred years after **Garamont** cut his punches one immovable size at a time, the letter has finally come unstuck — fluid, responsive, free. Drag the letter at the start of this history back and forth and you are not just scrubbing a timeline; you are doing the thing the whole story was secretly about. From Roman stone to the variable font, the alphabet has been waiting, all along, to move.

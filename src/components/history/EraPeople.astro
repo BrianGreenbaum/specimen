@@ -1,0 +1,108 @@
+---
+// "The people" — editorial profiles of the figures behind an era. With no
+// photographs to lean on, each portrait is typographic: a giant initial set in
+// the person's representative face, paired with a short story and an optional
+// quote. Cards alternate sides for a magazine rhythm; initials drift on scroll.
+export interface Person {
+  name: string;
+  role?: string;
+  dates?: string;
+  place?: string;
+  initial?: string;
+  portraitFamily?: string;
+  quote?: string;
+  story: string;
+}
+export interface Props {
+  people: Person[];
+  defaultFamily: string;   // era specimen family, used when a person omits one
+}
+const { people, defaultFamily } = Astro.props;
+---
+<section class="people">
+  <div class="section-head">
+    <span class="index-num">✳</span>
+    <h2>The people</h2>
+    <span class="label">Hands behind the letters</span>
+  </div>
+
+  <div class="people__list">
+    {people.map((p, i) => {
+      const fam = p.portraitFamily ?? defaultFamily;
+      const initial = p.initial ?? p.name.charAt(0);
+      return (
+        <article class:list={['person', { 'person--flip': i % 2 === 1 }]} data-reveal>
+          <div class="person__portrait" aria-hidden="true">
+            <span class="person__initial" style={`font-family:'${fam}'`} data-parallax>{initial}</span>
+            <span class="person__mark">✳</span>
+          </div>
+          <div class="person__body">
+            <div class="person__meta">
+              <span class="person__num index-num">{String(i + 1).padStart(2, '0')}</span>
+              {p.dates && <span class="label">{p.dates}</span>}
+              {p.place && <span class="label person__place">{p.place}</span>}
+            </div>
+            <h3 class="person__name">{p.name}</h3>
+            {p.role && <p class="person__role">{p.role}</p>}
+            {p.quote && (
+              <blockquote class="person__quote" style={`font-family:'${fam}'`}>
+                <span aria-hidden="true">“</span>{p.quote}<span aria-hidden="true">”</span>
+              </blockquote>
+            )}
+            <p class="person__story">{p.story}</p>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .people { padding-top: var(--sp-7); }
+  .people__list { display: grid; gap: clamp(2.4rem, 6vw, 4.5rem); }
+
+  .person {
+    display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(1.4rem, 4vw, 3rem); align-items: center;
+  }
+  .person--flip { direction: rtl; }
+  .person--flip > * { direction: ltr; }
+
+  .person__portrait {
+    position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+    display: grid; place-items: center;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(130% 100% at 30% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 62%),
+      var(--bg-2);
+  }
+  .person__initial {
+    font-size: clamp(11rem, 30vw, 22rem); line-height: 0.74; color: var(--fg);
+    font-weight: 500; will-change: transform;
+  }
+  .person--flip .person__initial { color: var(--accent); }
+  .person__mark {
+    position: absolute; top: var(--sp-3); left: var(--sp-3);
+    color: var(--accent); font-size: 0.9rem;
+  }
+
+  .person__meta { display: flex; align-items: baseline; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-2); }
+  .person__place { color: var(--fg-3); }
+  .person__name {
+    font-family: var(--font-ui); font-size: var(--step-3); font-weight: 660;
+    letter-spacing: -0.02em; line-height: 0.98;
+  }
+  .person__role { font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent); margin-top: 0.4rem; letter-spacing: 0.02em; }
+  .person__quote {
+    font-size: var(--step-2); line-height: 1.18; color: var(--fg);
+    margin: var(--sp-4) 0; padding-left: var(--sp-4);
+    border-left: 2px solid var(--accent); font-style: italic;
+  }
+  .person__story { color: var(--fg-2); font-size: var(--step-1); line-height: 1.6; max-width: 56ch; margin-top: var(--sp-3); }
+
+  @media (max-width: 760px) {
+    .person, .person--flip { grid-template-columns: 1fr; direction: ltr; }
+    .person__portrait { aspect-ratio: 16 / 10; }
+    .person__initial { font-size: clamp(8rem, 38vw, 14rem); }
+  }
+</style>

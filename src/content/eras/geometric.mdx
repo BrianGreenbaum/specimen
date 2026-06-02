@@ -6,12 +6,16 @@ period: 1920s
 yearAnchor: 1927
 oneLiner: The Bauhaus rebuilds the letter from pure geometry.
 evolution: The letter is rebuilt from the circle, the triangle and the line, with a single-storey a and near-monoline strokes.
+diffNote: The grotesque was still drawn by eye. Now the modernists throw out the hand entirely and rebuild the letter from the compass and ruler — a true circle, a single-storey a, strokes of dead-even weight.
 sample: BAUHAUS
 specimenFont: { family: 'Jost Variable', weight: 500 }
 traits: { serif: 0, contrast: 0.05, stress: 0, terminals: 0.1 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.5, y: 0.5, r: 0.18, label: 'even stroke' }
+epigraph:
+  text: The hand is a relic. The future will be constructed — from the circle, the triangle and the line.
+  attribution: After Die Neue Typographie
 traitCallouts:
   - glyph: o
     title: Built from the circle
@@ -39,10 +43,82 @@ characteristics:
 keyFigures:
   - { name: 'Paul Renner', note: 'Futura, 1927 — the geometric masterpiece.' }
   - { name: 'The Bauhaus', note: 'Die Neue Typographie.' }
-fonts: ['jost']
+people:
+  - name: Paul Renner
+    role: Type designer · Teacher
+    dates: 1878–1956
+    place: Munich
+    initial: R
+    quote: The type of our age must be the expression of our own ideas, not a copy of the past.
+    story: >
+      Renner drew Futura between 1924 and 1927 as the embodiment of a modern idea: the letter
+      rebuilt from the circle, the triangle and the line. It made him famous — and a target.
+      A committed anti-Nazi, he published an attack on the regime’s cultural politics, was
+      arrested and stripped of his teaching post in 1933, and watched the same authorities
+      who denounced modernism quietly keep using his thoroughly modern type. Futura outlasted
+      them all; it later went to the Moon, printed on the plaque Apollo 11 left behind.
+  - name: Herbert Bayer
+    role: Bauhaus master
+    dates: 1900–1985
+    place: Dessau
+    initial: a
+    story: >
+      At the Bauhaus, Bayer pushed geometric logic to its limit with his 1925 “universal”
+      alphabet: a single set of lowercase letters, built from arcs and straight lines, with no
+      capitals at all. Why, the Bauhaus asked, should we carry two alphabets and a shift key
+      inherited from Rome? The experiment never became a working font, but its reasoning —
+      strip the letter to its rational minimum — runs through the whole geometric school.
+  - name: Jan Tschichold
+    role: Typographer · Author
+    dates: 1902–1974
+    place: Leipzig · Basel
+    initial: T
+    story: >
+      Tschichold gave the movement its manifesto. Die Neue Typographie (1928) argued for
+      asymmetry, the grid, generous white space and the sans-serif as the only honest modern
+      letter. It reprogrammed graphic design across Europe. In a famous reversal, he later
+      renounced its dogmatism as authoritarian and returned to classical, centred typography —
+      proof that even the modernists eventually argued with the modernists.
+  - name: Owen Earl
+    role: Type designer
+    dates: contemporary
+    place: USA
+    initial: E
+    story: >
+      The face on this page, Jost, is Earl’s open-source love letter to Futura, drawn for the
+      web through his Indestructible Type project. It captures Renner’s sharp apexes and
+      compass-drawn bowls while quietly fixing the things that make a purely geometric face
+      tiring to read — and it puts a century-old Bauhaus dream one click from anyone’s browser.
+timelineFaces:
+  - { name: 'Outfit', family: 'Outfit Variable', weight: 500, designer: 'Rodrigo Fuenzalida', year: '2021', note: 'The geometric sans, rounded and warmed for contemporary brands. Explore its full specimen in the collection.' }
+fonts: ['jost', 'outfit']
 theme: { bg: '#eeeae1', fg: '#15130d', accent: '#2440b8' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-In the 1920s a generation of modernists decided the alphabet should be redesigned from first principles. The hand was a relic; the future would be **constructed**. At the Bauhaus and in the orbit of *Die Neue Typographie*, the new letter was assembled from the elementary shapes of geometry — the circle, the triangle, the straight line — as rationally as a building.
+In the 1920s, a generation of modernists looked at the alphabet and decided it was overdue for demolition. The hand that had shaped every letter since Rome was, to them, a relic of a dead world. The future would not be *written* — it would be **constructed**, drawn on a drafting table from the elementary shapes of geometry, as rationally and as honestly as a steel-and-glass building.
 
-The masterpiece was **Futura**, drawn by **Paul Renner** in 1927: an o that is almost a perfect circle, an a stripped to a single storey, strokes of near-perfect **monoline** evenness. It rejected the **grotesque’s** drawn-by-eye irregularity in favour of pure design, on a drafting table, from ideas. Crisp, optimistic and unmistakably *modern*, the geometric sans became the voice of the twentieth century — and the direct ancestor of a hundred years of clean, confident brand type.
+At the Bauhaus and in the circle around *Die Neue Typographie*, the new letter took shape: an **o** that is very nearly a perfect circle, an **a** stripped to a single storey, strokes of dead-even **monoline** weight with every trace of the eye’s irregularity engineered out. Where the grotesque had been plain by accident of craft, the geometric sans was plain on purpose, by design.
+
+<PullQuote cite="Jost, after Paul Renner" family="Jost Variable">
+  Not written. Constructed.
+</PullQuote>
+
+The masterpiece was **Futura**, drawn by **Paul Renner** between 1924 and 1927. Crisp, optimistic and unmistakably *modern*, it became the visual signature of the century — on book jackets and brand marks, in Stanley Kubrick’s films, and finally on the commemorative plaque Apollo 11 left on the Moon. Few letters have travelled further from the chisel.
+
+<Divider label="VII" />
+
+<Spread tone="tint">
+The movement was as political as it was formal. Renner’s anti-Nazi stand cost him his post in 1933; the Bauhaus itself was forced to close. Yet the regimes that denounced “degenerate” modern design kept reaching for its clean, efficient letters, and after the war the geometric sans became the global language of confidence and progress — the look of the airline, the bank, the world’s fair.
+</Spread>
+
+A century on, that dream simply refuses to age. The warm, rounded **Outfit** beside Jost on this page shows the geometric idea remade for today’s screens and brands — the same circle and line, smiling a little more easily.
+
+<BigType family="Outfit Variable" caption="Outfit · the Bauhaus circle, warmed for the present">
+FORM
+</BigType>
+
+The geometric sans is where the alphabet travels furthest from the hand. But one frontier remained that none of these designers could have imagined — a surface made not of paper but of light, divided into a grid of glowing squares. The letter was about to be reinvented one more time, for the screen.

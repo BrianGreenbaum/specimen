@@ -1,0 +1,172 @@
+---
+// "What changed" — compares this era to the one before it. A ghost of the
+// previous era's letterform sits behind the current one, and the four trait
+// bars animate from the previous era's values to this era's on scroll-in.
+export interface EraSnapshot {
+  name: string;
+  period: string;
+  family: string;
+  weight: number;
+  glyph: string;
+  traits: { serif: number; contrast: number; stress: number; terminals: number };
+}
+export interface Props {
+  prev: EraSnapshot;
+  current: EraSnapshot;
+  copy: string;          // the "what changed" prose (evolution / diffNote)
+}
+const { prev, current, copy } = Astro.props;
+const dims = [
+  { key: 'serif', label: 'Serif' },
+  { key: 'contrast', label: 'Contrast' },
+  { key: 'stress', label: 'Stress' },
+  { key: 'terminals', label: 'Terminals' },
+] as const;
+const word = (v: number) =>
+  v < 0.12 ? 'none' : v < 0.34 ? 'low' : v < 0.62 ? 'mid' : v < 0.85 ? 'high' : 'max';
+// Use the current era's spotlight glyph (fall back to a shared 'R').
+const glyph = current.glyph || 'R';
+const payload = JSON.stringify({ prev, current, glyph });
+---
+<section class="diff" data-diff={payload}>
+  <div class="diff__head">
+    <span class="index-num">✳</span>
+    <span class="label">What changed · since {prev.name}</span>
+  </div>
+
+  <div class="diff__grid">
+    <div class="diff__stage" aria-label={`The letter ${glyph}, ${prev.name} behind ${current.name}`}>
+      <svg class="diff__svg diff__svg--ghost" data-diff-ghost preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      <svg class="diff__svg diff__svg--now" data-diff-now preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      <span class="diff__tag diff__tag--ghost" style={`font-family:'${prev.family}'`}>{prev.name}</span>
+      <span class="diff__tag diff__tag--now">{current.name}</span>
+    </div>
+
+    <div class="diff__body">
+      <p class="diff__copy">{copy}</p>
+      <ul class="diff__dims">
+        {dims.map((d) => (
+          <li class="diff__dim" data-diff-dim={d.key}>
+            <div class="diff__dim-head">
+              <span class="diff__dim-label">{d.label}</span>
+              <span class="diff__dim-delta" data-diff-delta>
+                {word(prev.traits[d.key])} <span class="diff__arrow">→</span> {word(current.traits[d.key])}
+              </span>
+            </div>
+            <div class="diff__dim-track">
+              <span class="diff__dim-fill" data-diff-fill></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { renderGlyphDiagram } from '../../lib/diagram';
+  const pct = (v: number) => `${(Math.max(0, Math.min(1, v)) * 100).toFixed(1)}%`;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-diff]').forEach((root) => {
+    const { prev, current, glyph } = JSON.parse(root.dataset.diff || '{}');
+    const ghost = root.querySelector('[data-diff-ghost]') as SVGElement;
+    const now = root.querySelector('[data-diff-now]') as SVGElement;
+
+    renderGlyphDiagram(ghost, { family: prev.family, glyph, weight: prev.weight, fill: 0.82 });
+    renderGlyphDiagram(now, { family: current.family, glyph, weight: current.weight, guides: ['cap', 'baseline'], fill: 0.82 });
+
+    const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-diff-dim]'));
+    // start each fill at the previous era's value
+    rows.forEach((row) => {
+      const key = row.dataset.diffDim as 'serif' | 'contrast' | 'stress' | 'terminals';
+      const fill = row.querySelector('[data-diff-fill]') as HTMLElement;
+      fill.style.width = reduce ? pct(current.traits[key]) : pct(prev.traits[key]);
+    });
+
+    if (reduce) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        rows.forEach((row) => {
+          const key = row.dataset.diffDim as 'serif' | 'contrast' | 'stress' | 'terminals';
+          const fill = row.querySelector('[data-diff-fill]') as HTMLElement;
+          const up = current.traits[key] >= prev.traits[key];
+          row.classList.add(up ? 'is-up' : 'is-down');
+          // animate to the new value after a beat
+          requestAnimationFrame(() => { fill.style.width = pct(current.traits[key]); });
+        });
+        root.classList.add('is-live');
+        io.disconnect();
+      }
+    }, { rootMargin: '0px 0px -18% 0px', threshold: 0.2 });
+    io.observe(root);
+  });
+</script>
+
+<style>
+  .diff { padding-top: var(--sp-6); }
+  .diff__head { display: flex; align-items: baseline; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+  .diff__head .index-num { color: var(--accent); }
+
+  .diff__grid {
+    display: grid; grid-template-columns: 0.85fr 1.15fr; gap: var(--sp-6); align-items: center;
+    border: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, transparent), transparent 40%),
+      var(--bg-2);
+    padding: clamp(1.4rem, 3.5vw, 2.6rem);
+  }
+
+  .diff__stage {
+    position: relative; aspect-ratio: 1 / 1; perspective: 1000px;
+    display: grid; place-items: center;
+  }
+  .diff__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .diff__svg--ghost {
+    opacity: 0.16; transform: translate(-6%, 2%) scale(0.97);
+    transition: transform 1.1s var(--ease), opacity 1.1s var(--ease);
+  }
+  .diff__svg--ghost :global(.dg-glyph) { fill: var(--fg-3); }
+  .is-live .diff__svg--ghost { transform: translate(-11%, 3%) scale(0.95); opacity: 0.2; }
+  .diff__svg--now :global(.dg-glyph) { fill: var(--fg); }
+
+  .diff__tag {
+    position: absolute; bottom: 0; font-family: var(--font-mono);
+    font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .diff__tag--ghost { left: 0; color: var(--fg-3); }
+  .diff__tag--now { right: 0; color: var(--accent); }
+
+  .diff__copy {
+    font-family: var(--font-ui); font-size: var(--step-1); line-height: 1.4;
+    color: var(--fg); letter-spacing: -0.01em; margin-bottom: var(--sp-4); max-width: 40ch;
+  }
+  .diff__dims { display: grid; gap: var(--sp-3); }
+  .diff__dim-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.4rem; }
+  .diff__dim-label {
+    font-family: var(--font-mono); font-size: var(--step--1); font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .diff__dim-delta {
+    font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--fg-2);
+  }
+  .diff__arrow { color: var(--accent); padding: 0 0.15em; }
+  .diff__dim-track {
+    position: relative; height: 6px; border-radius: 100px;
+    background: color-mix(in srgb, var(--fg) 8%, transparent); overflow: hidden;
+  }
+  .diff__dim-fill {
+    position: absolute; left: 0; top: 0; height: 100%; width: 0; border-radius: 100px;
+    background: var(--accent); transition: width 0.9s var(--ease);
+  }
+
+  @media (max-width: 760px) {
+    .diff__grid { grid-template-columns: 1fr; gap: var(--sp-4); }
+    .diff__stage { aspect-ratio: 3 / 2; width: 100%; max-width: 20rem; margin-inline: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .diff__svg--ghost, .diff__dim-fill { transition: none; }
+  }
+</style>

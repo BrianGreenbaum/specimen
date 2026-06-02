@@ -1,0 +1,31 @@
+---
+// A giant specimen word, set in any face — lets a chapter show a timeline face
+// at scale inline, with an optional caption.
+//   <BigType family="Marcellus" caption="Marcellus · Roman capitals, revived">
+//     SENATVS
+//   </BigType>
+export interface Props {
+  family: string;
+  caption?: string;
+  italic?: boolean;
+}
+const { family, caption, italic = false } = Astro.props;
+---
+<figure class="bigtype">
+  <div class="bigtype__word" style={`font-family:'${family}'; font-style:${italic ? 'italic' : 'normal'}`}>
+    <slot />
+  </div>
+  {caption && <figcaption class="bigtype__cap label">{caption}</figcaption>}
+</figure>
+
+<style>
+  .bigtype {
+    margin-block: clamp(2rem, 6vw, 3.5rem);
+    width: 100%;
+  }
+  .bigtype__word {
+    font-size: clamp(3rem, 15vw, 11rem); line-height: 0.92; letter-spacing: -0.01em;
+    color: var(--fg); overflow-wrap: anywhere;
+  }
+  .bigtype__cap { display: block; margin-top: var(--sp-3); color: var(--fg-3); }
+</style>

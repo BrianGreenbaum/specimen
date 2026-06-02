@@ -6,12 +6,16 @@ period: 1800s
 yearAnchor: 1845
 oneLiner: The machine age needs letters that can shout from a wall.
 evolution: Serifs thicken into heavy slabs and contrast flattens — type built to be huge, black and seen from across a street.
+diffNote: The hairline is the first casualty. Contrast collapses to almost nothing, the serifs swell into heavy rectangular blocks, and the letter is rebuilt to be huge, black, and read from a moving carriage.
 sample: EGYPTIAN
 specimenFont: { family: 'Besley Variable', weight: 600 }
 traits: { serif: 1, contrast: 0.25, stress: 0.15, terminals: 0.4 }
 spotlightGlyph: R
 spotlightFocus:
   - { x: 0.2, y: 0.9, r: 0.18, label: 'slab serif' }
+epigraph:
+  text: The first letters designed not to be read, but to be seen — and to sell.
+  attribution: On the slab serif
 traitCallouts:
   - glyph: R
     title: Slab serif
@@ -39,10 +43,81 @@ characteristics:
 keyFigures:
   - { name: 'Vincent Figgins', note: 'c. 1817 — the first “Antique” slabs.' }
   - { name: 'Robert Besley', note: 'Clarendon, 1845 — the bracketed slab.' }
-fonts: ['besley']
+people:
+  - name: Vincent Figgins
+    role: Type founder
+    dates: 1766–1844
+    place: London
+    initial: F
+    story: >
+      Around 1817, Figgins issued a type he called Antique — a roman whose serifs had
+      swollen into heavy, squared-off blocks. It looked unlike anything the book world had
+      produced, because it was not made for books. The advertising age was dawning, and it
+      needed letters with the sheer black mass to survive being printed enormous on a
+      handbill. Figgins gave it muscle, and the slab serif was born.
+  - name: Darius Wells
+    role: Inventor · Wood-type maker
+    dates: 1800–1875
+    place: New York, USA
+    initial: W
+    quote: Big type, cut from wood, cheap enough to cover a wall.
+    story: >
+      Metal type cast large is heavy, costly and prone to crack. In 1827 Darius Wells solved
+      the problem from the other direction, adapting the lateral router so letters could be
+      mass-produced from end-grain wood — light, durable and vast. Suddenly a printer could
+      set a poster in letters a foot high. Wells did not draw the era’s great faces, but he
+      built the machine that let them shout, and the American broadside was the result.
+  - name: Robert Besley
+    role: Type founder
+    dates: 1794–1876
+    place: London
+    initial: B
+    story: >
+      In 1845, at the Fann Street Foundry, Besley refined the brutal slab into something
+      poised: Clarendon, whose heavy serifs are joined to the stems by a gentle curved
+      bracket — strong without being savage. It was so successful, and so copied, that
+      Besley registered it under Britain’s new Ornamental Designs Act, making Clarendon one
+      of the first typefaces ever legally protected. The Besley on this page revives it
+      directly; you have seen its descendants on every dictionary entry and national-park sign.
+  - name: Christian Robertson
+    role: Type designer
+    dates: b. 1979
+    place: USA
+    initial: R
+    story: >
+      The slab never retired; it was rebuilt for the screen. Robertson drew Roboto Slab as
+      the bracketed-serif sibling of Android’s Roboto family, trading Victorian rowdiness for
+      an even, drafted calm while keeping the block feet intact. Released open-source by
+      Google, it carries the industrial poster’s DNA straight into the interface — proof that
+      a letter built to be seen still knows how to hold a screen.
+fonts: ['besley', 'roboto-slab']
 theme: { bg: '#14110d', fg: '#ece3d2', accent: '#d9692f' }
 ---
+import Spread from '../../components/history/blocks/Spread.astro';
+import PullQuote from '../../components/history/blocks/PullQuote.astro';
+import Divider from '../../components/history/blocks/Divider.astro';
+import BigType from '../../components/history/blocks/BigType.astro';
 
-For three hundred years, type had one job: the book. The Industrial Revolution gave it a dozen new ones. Posters, handbills, packaging and advertisements needed letters that could be set enormous and black, and read at a glance from across a busy street. The delicate book faces were hopeless for it, so the 19th century invented the **slab serif** — a sturdy letter with heavy, rectangular **serifs** bolted on, low in **contrast** and built to survive at any size.
+For three hundred years, type had essentially one job: the book. The Industrial Revolution handed it a dozen new ones at once. Railways, factories and mass markets filled the streets with posters, handbills, packaging and advertisements — and all of them needed letters that could be set enormous and black, and read at a glance by someone hurrying past. The delicate book faces, and the flickering hairlines of the Didone, were hopeless for it.
 
-The Victorians, swept up in the era’s Egyptomania, nicknamed the loudest of them *Egyptians*. The most refined branch, **Clarendon** — cut by **Robert Besley** in 1845 — softened the slabs with gentle brackets, making them strong without being brutal. This was the first typography designed for selling rather than reading, and its DNA runs straight through every bold headline and display face that followed.
+So the nineteenth century built a new kind of letter from scratch. The **slab serif** kept the serif but thickened it into a heavy rectangular block, flattened the **contrast** until the strokes were nearly even, and piled on weight until the whole letter read as a solid mass of ink. It was loud, blunt and entirely unliterary — and it was exactly what the new economy demanded.
+
+<PullQuote cite="Besley · Clarendon, revived" family="Besley Variable">
+  Built to be read from a moving carriage.
+</PullQuote>
+
+The Victorians, in the grip of the era’s **Egyptomania** after Napoleon’s campaigns on the Nile, nicknamed the loudest of these faces *Egyptians* — a name with nothing to do with Egypt and everything to do with fashion. They came in fat versions and condensed versions, shadowed and outlined and three-dimensional, anything to win a few more inches of attention on a crowded wall.
+
+<Divider label="V" />
+
+<Spread tone="paper-2">
+The most refined branch was **Clarendon**, cut by **Robert Besley** in 1845. By joining its heavy serifs to the stems with a soft curved **bracket**, Clarendon found a sweet spot — strong enough to anchor a headline, even enough to read in a caption. It became the workhorse of the genre, and you still meet its descendants every day, on dictionary entries, emergency signage and the typography of the American West.
+</Spread>
+
+This was, in a real sense, the first typography designed for **selling** rather than reading — the birth of advertising type — and its DNA runs straight through every bold headline since.
+
+<BigType family="Roboto Slab Variable" caption="Roboto Slab · the industrial slab, rebuilt for the screen">
+SHOUT
+</BigType>
+
+But the slab had only removed the hairline. The truly radical move — taking the serif off altogether — was already sitting, ignored, in a London type catalogue from 1816. The nineteenth century had printed it and walked past it. It would take the modern world a century to understand what it had.
