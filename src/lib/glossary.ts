@@ -123,10 +123,12 @@ export const glossary: Record<string, GlossaryEntry> = {
   grotesque: {
     term: 'Grotesque',
     definition: 'The first sans-serifs of the 19th century. Sturdy and a little irregular, with some stroke-weight variation — the ancestors of Helvetica.',
+    sample: 'Grotesque', sampleFamily: 'Space Grotesk Variable',
   },
   'neo-grotesque': {
     term: 'Neo-grotesque',
     definition: 'The mid-20th-century refinement of the grotesque: cleaner, more even, more neutral. Helvetica and Inter live here.',
+    sample: 'Neutral', sampleFamily: 'Inter Variable',
   },
   geometric: {
     term: 'Geometric',
@@ -136,6 +138,7 @@ export const glossary: Record<string, GlossaryEntry> = {
   humanist: {
     term: 'Humanist',
     definition: 'A typeface that keeps the traces of the hand — calligraphic stroke modulation and pen-made proportions — whether serif or sans.',
+    sample: 'Humanist', sampleFamily: 'Source Sans 3 Variable',
   },
   'old-style': {
     term: 'Old-style',

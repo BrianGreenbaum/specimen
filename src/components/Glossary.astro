@@ -64,22 +64,27 @@
     nameEl.textContent = e.term;
     defEl.textContent = e.definition;
 
+    // NB: use the attribute, not the `.hidden` IDL prop — `hidden` only reflects
+    // to the attribute on HTMLElement, so `svgEl.hidden = …` is a no-op on the
+    // SVG and the `[hidden]` styling would never apply.
+    const setHidden = (el: Element, v: boolean) => el.toggleAttribute('hidden', v);
+
     if (e.glyph) {
-      svgEl.hidden = false;
-      sampleEl.hidden = true;
+      setHidden(svgEl, false);
+      setHidden(sampleEl, true);
       const fam =
         e.family ||
         getComputedStyle(term).getPropertyValue('--term-fam').trim().replace(/['"]/g, '') ||
         'Fraunces Variable';
-      renderGlyphDiagram(svgEl, { family: fam, glyph: e.glyph, guides: e.guides || [], focus: e.focus || [], fill: 0.6 });
+      renderGlyphDiagram(svgEl, { family: fam, glyph: e.glyph, guides: e.guides || [], focus: e.focus || [], fill: 0.72 });
     } else if (e.sample) {
-      svgEl.hidden = true;
-      sampleEl.hidden = false;
+      setHidden(svgEl, true);
+      setHidden(sampleEl, false);
       sampleEl.textContent = e.sample;
       sampleEl.style.fontFamily = `'${e.sampleFamily || 'Fraunces Variable'}'`;
     } else {
-      svgEl.hidden = true;
-      sampleEl.hidden = true;
+      setHidden(svgEl, true);
+      setHidden(sampleEl, true);
     }
 
     pop.hidden = false;
@@ -141,7 +146,7 @@
   .glossary-pop {
     position: fixed;
     z-index: 500;
-    width: min(300px, 88vw);
+    width: min(360px, 92vw);
     background: var(--bg);
     border: 1px solid var(--fg);
     box-shadow: 0 24px 70px -24px #00000055;
@@ -152,15 +157,24 @@
   }
   .glossary-pop.is-visible { opacity: 1; transform: none; }
   .glossary-pop__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--sp-2); }
-  .glossary-pop__name { font-family: var(--font-ui); font-weight: 650; font-size: var(--step-0); }
+  .glossary-pop__name { font-family: var(--font-ui); font-weight: 650; font-size: var(--step-1); }
+  /* Near-square box so the square diagram viewBox fills it instead of
+     letterboxing into a thin strip (which shrank the glyph + labels). */
   .glossary-pop__svg {
-    width: 100%; aspect-ratio: 16 / 9; display: block;
+    width: 100%; aspect-ratio: 1 / 1; display: block;
     background: var(--bg-2); border: 1px solid var(--line); margin-bottom: var(--sp-2);
   }
+  /* `display:block` above would otherwise defeat the `hidden` attribute, so
+     terms with no glyph/sample kept showing an empty (or stale) box. */
+  .glossary-pop [hidden] { display: none !important; }
+  /* The in-SVG focus labels are sized in 1000-unit viewBox space; bump them
+     up here so they stay legible at the popup's render size. */
+  .glossary-pop__svg .dg-flabel { font-size: 42px; }
+  .glossary-pop__svg .dg-ring { stroke-width: 3.5; }
   .glossary-pop__sample {
-    font-size: 2.4rem; line-height: 1; text-align: center; padding: var(--sp-3) 0;
+    font-size: clamp(2.8rem, 9vw, 3.4rem); line-height: 1.05; text-align: center; padding: var(--sp-3) 0;
     border: 1px solid var(--line); background: var(--bg-2); margin-bottom: var(--sp-2); color: var(--fg);
   }
-  .glossary-pop__def { font-size: var(--step--1); line-height: 1.5; color: var(--fg-2); }
+  .glossary-pop__def { font-size: var(--step-0); line-height: 1.55; color: var(--fg-2); }
   @media (prefers-reduced-motion: reduce) { .glossary-pop { transition: none; } }
 </style>
