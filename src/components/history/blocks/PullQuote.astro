@@ -33,8 +33,10 @@ const famStyle = family ? `font-family:'${family}'` : '';
     font-style: italic;
   }
   .pq__cite { display: block; margin-top: var(--sp-3); color: var(--fg-3); font-style: normal; }
-  /* float it to the side on wide screens for a magazine feel */
+  /* float it to the side on wide screens for a magazine feel.
+     NB: stays within the text column — no negative right margin, so it never
+     bleeds into the sticky "Defining traits" sidebar on era pages. */
   @media (min-width: 1024px) {
-    .pq { float: right; width: 30ch; margin-left: var(--sp-6); margin-right: calc(-1 * clamp(0rem, 6vw, 6rem)); }
+    .pq { float: right; width: 28ch; margin-left: var(--sp-6); margin-right: 0; }
   }
 </style>

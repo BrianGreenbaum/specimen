@@ -2,8 +2,8 @@
 // "The Letter, Through Time" — one letter rendered across every era, with a
 // read-only readout of the four dimensions that actually change (serif, contrast,
 // stress, terminals). Grab the letter and DRAG it left/right to travel the
-// timeline; or click an era on the rail beneath. No sliders, no fake-draggable
-// dots — the letter itself is the control.
+// timeline; a slim scrub track beneath shows where you are. The letter itself
+// is the control — no sliders, no labelled rail.
 import type { CollectionEntry } from 'astro:content';
 export interface Props {
   eras: CollectionEntry<'eras'>[];
@@ -17,10 +17,7 @@ const data = eras.map((e) => ({
   family: e.data.specimenFont.family,
   weight: e.data.specimenFont.weight,
   evolution: e.data.evolution,
-  accent: e.data.theme.accent,
   traits: e.data.traits ?? { serif: 0, contrast: 0, stress: 0, terminals: 0 },
-  spotlightGlyph: e.data.spotlightGlyph,
-  spotlightFocus: e.data.spotlightFocus,
 }));
 const letters = ['R', 'G', 'A', 'E', 'Q', 'M'];
 const dims = [
@@ -49,7 +46,7 @@ const n = data.length;
       data-evo-stage
     >
       <span class="evo__stage-tag" data-evo-tag aria-hidden="true"></span>
-      <svg class="evo__svg" data-evo-svg preserveAspectRatio="xMidYMid meet" role="img" aria-label="A letter shown across the history of type"></svg>
+      <svg class="evo__svg" data-evo-svg preserveAspectRatio="xMidYMid meet" role="img" aria-label="A letter shown across the history of type" draggable="false"></svg>
       <span class="evo__hint" data-evo-hint aria-hidden="true">
         <span class="evo__hint-arrow">←</span> drag <span class="evo__hint-arrow">→</span>
       </span>
@@ -91,20 +88,19 @@ const n = data.length;
     </div>
   </div>
 
-  <!-- The era rail: clickable jump targets + a travelling ✳ marker. -->
-  <div class="evo__rail" data-evo-rail style={`--cols:${n}`}>
-    <div class="evo__rail-track" aria-hidden="true">
-      <span class="evo__rail-line"></span>
-      <span class="evo__rail-mark" data-evo-mark>✳</span>
-    </div>
-    <ol class="evo__segs">
+  <!-- Refined scrub track: position only, no labels, no per-era colour wash. -->
+  <div class="evo__scrub" data-evo-scrub>
+    <ol class="evo__ticks">
+      <span class="evo__scrub-line" aria-hidden="true"></span>
+      <span class="evo__scrub-fill" data-evo-fill aria-hidden="true"></span>
       {data.map((e, i) => (
-        <li class="evo__seg" style={`--i:${i}`}>
-          <button class:list={['evo__seg-btn', { 'is-on': i === 0 }]} data-evo-seg={i} aria-label={`${e.name} — ${e.period}`}>
-            <span class="evo__seg-num">{String(i + 1).padStart(2, '0')}</span>
-            <span class="evo__seg-name">{e.name}</span>
-            <span class="evo__seg-period">{e.period}</span>
-          </button>
+        <li>
+          <button
+            class:list={['evo__tick', { 'is-on': i === 0 }]}
+            data-evo-tick={i}
+            title={`${e.name} — ${e.period}`}
+            aria-label={`${e.name} — ${e.period}`}
+          ></button>
         </li>
       ))}
     </ol>
@@ -124,14 +120,12 @@ const n = data.length;
     const stage = root.querySelector('[data-evo-stage]') as HTMLElement;
     const svg = root.querySelector('[data-evo-svg]') as SVGElement;
     const tag = root.querySelector('[data-evo-tag]') as HTMLElement;
-    const hint = root.querySelector('[data-evo-hint]') as HTMLElement;
     const period = root.querySelector('[data-evo-period]') as HTMLElement;
     const name = root.querySelector('[data-evo-name]') as HTMLElement;
     const note = root.querySelector('[data-evo-note]') as HTMLElement;
     const link = root.querySelector('[data-evo-link]') as HTMLAnchorElement;
-    const rail = root.querySelector('[data-evo-rail]') as HTMLElement;
-    const mark = root.querySelector('[data-evo-mark]') as HTMLElement;
-    const segBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-evo-seg]'));
+    const fill = root.querySelector('[data-evo-fill]') as HTMLElement;
+    const tickBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-evo-tick]'));
     const letterBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-evo-letter]'));
     const dimRows = Array.from(root.querySelectorAll<HTMLElement>('.evo__dim'));
 
@@ -154,7 +148,9 @@ const n = data.length;
     const render = (animate = true) => {
       const e = eras[idx];
       const prev = eras[prevIdx];
-      root.style.setProperty('--accent', e.accent);
+      // NB: the scrub UI keeps the page's own accent — we deliberately do NOT
+      // repaint it with each era's colour, which both flashed badly while
+      // dragging and broke contrast (e.g. a light accent on the light home).
       const num = String(idx + 1).padStart(2, '0');
       period.textContent = `${num} · ${e.period}`;
       tag.textContent = `${num} / ${String(n).padStart(2, '0')}`;
@@ -162,30 +158,29 @@ const n = data.length;
       note.textContent = e.evolution;
       link.href = `/history/${e.slug}`;
 
-      segBtns.forEach((s, i) => {
-        const on = i === idx;
-        s.classList.toggle('is-on', on);
-        s.setAttribute('aria-pressed', on ? 'true' : 'false');
+      tickBtns.forEach((t, i) => {
+        t.classList.toggle('is-on', i === idx);
+        t.classList.toggle('is-past', i < idx);
       });
+      // fill spans between the first and last tick centres (each tick is 26px wide)
+      const frac = n > 1 ? idx / (n - 1) : 0;
+      fill.style.width = `calc((100% - 26px) * ${frac})`;
+
       stage.setAttribute('aria-valuenow', String(idx));
       stage.setAttribute('aria-valuetext', `${e.name}, ${e.period}`);
-      // travelling ✳ marker, aligned to the centre of segment `idx`
-      mark.style.left = `${((idx + 0.5) / n) * 100}%`;
 
       setDims(e, prev);
 
-      const annotated = letter === e.spotlightGlyph;
-      letterBtns.forEach((b) => b.classList.toggle('is-annotated', b.dataset.evoLetter === e.spotlightGlyph));
-
       const dir = idx >= prevIdx ? 1 : -1;
-      svg.classList.remove('is-in');
-      if (animate && !reduce) svg.style.transform = `rotateY(${dir * -7}deg) translateZ(-30px)`;
+      if (animate && !reduce) {
+        svg.classList.remove('is-in');
+        svg.style.transform = `translateX(${dir * 14}px)`;
+      }
       renderGlyphDiagram(svg, {
         family: e.family,
         glyph: letter,
         weight: e.weight,
         guides: ['cap', 'baseline'],
-        focus: annotated ? e.spotlightFocus : [],
         fill: 0.74,
       }).then(() => requestAnimationFrame(() => {
         svg.classList.add('is-in');
@@ -201,14 +196,15 @@ const n = data.length;
       render(animate);
     };
 
-    // Click an era on the rail
-    segBtns.forEach((s, i) => s.addEventListener('click', () => setIdx(i)));
+    // Click a tick on the scrub track to jump
+    tickBtns.forEach((t, i) => t.addEventListener('click', () => setIdx(i)));
 
     // Drag the letter through time
     let dragging = false;
     let startX = 0;
     let startIdx = 0;
     const onDown = (ev: PointerEvent) => {
+      ev.preventDefault(); // no text/image selection, no native image-drag
       dragging = true;
       startX = ev.clientX;
       startIdx = idx;
@@ -221,7 +217,7 @@ const n = data.length;
       const span = stage.getBoundingClientRect().width;
       // a full sweep across the stage covers the whole timeline
       const delta = ((ev.clientX - startX) / span) * (n - 1) * 1.25;
-      setIdx(startIdx + delta);
+      setIdx(startIdx + delta, false); // instant during a drag — no flip stutter
     };
     const onUp = (ev: PointerEvent) => {
       dragging = false;
@@ -232,6 +228,9 @@ const n = data.length;
     stage.addEventListener('pointermove', onMove);
     stage.addEventListener('pointerup', onUp);
     stage.addEventListener('pointercancel', onUp);
+    // Belt and braces: never let a drag start a selection on the stage.
+    stage.addEventListener('dragstart', (e) => e.preventDefault());
+    stage.addEventListener('selectstart', (e) => e.preventDefault());
 
     // Keyboard on the stage
     stage.addEventListener('keydown', (ev) => {
@@ -267,6 +266,10 @@ const n = data.length;
     background: var(--evo-bg);
     display: grid;
     grid-template-rows: 1fr auto;
+    /* the whole widget is a control — never let a drag select its text/glyphs */
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 0.6s var(--ease);
   }
   .evo__grid {
     display: grid;
@@ -285,9 +288,8 @@ const n = data.length;
     overflow: hidden;
     cursor: grab;
     touch-action: none;
-    perspective: 1100px;
     background:
-      radial-gradient(125% 125% at 28% 0%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 60%),
+      radial-gradient(120% 120% at 30% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 62%),
       var(--bg-2);
     transition: background 0.6s var(--ease);
   }
@@ -300,11 +302,11 @@ const n = data.length;
     color: var(--accent); font-weight: 600;
   }
   .evo__svg {
-    width: 100%; height: 100%; opacity: 0.25;
-    transform-style: preserve-3d;
+    width: 100%; height: 100%; opacity: 0.001;
+    pointer-events: none; /* clicks/drag belong to the stage, not the glyph */
     transition: transform 0.5s var(--ease);
   }
-  .evo__svg.is-in { opacity: 1; transition: opacity 0.45s var(--ease), transform 0.5s var(--ease); }
+  .evo__svg.is-in { opacity: 1; transition: opacity 0.4s var(--ease), transform 0.5s var(--ease); }
   .evo__svg .dg-glyph { fill: var(--fg); }
 
   .evo__hint {
@@ -337,11 +339,6 @@ const n = data.length;
   }
   .evo__letter:hover { border-color: var(--fg); color: var(--fg); }
   .evo__letter.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
-  .evo__letter.is-annotated::after {
-    content: ''; position: absolute; top: 5px; right: 5px;
-    width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
-  }
-  .evo__letter.is-annotated.is-on::after { background: var(--accent-contrast); }
 
   .evo__period { color: var(--accent); }
   .evo__name {
@@ -393,66 +390,50 @@ const n = data.length;
   }
   .evo__link:hover { border-color: var(--accent); }
 
-  /* ---------- Era rail ---------- */
-  .evo__rail {
+  /* ---------- Scrub track (position only) ---------- */
+  .evo__scrub {
     position: relative;
     border-top: 1px solid var(--line);
-    padding: var(--sp-4) clamp(1.4rem, 3.4vw, 2.6rem) var(--sp-4);
+    padding: var(--sp-4) clamp(1.4rem, 3.4vw, 2.6rem);
+    min-height: 1px;
   }
-  .evo__rail-track { position: relative; height: 1px; }
-  .evo__rail-line { position: absolute; inset: 0; background: var(--line); }
-  .evo__rail-mark {
-    position: absolute; top: 50%; left: 6.25%;
-    transform: translate(-50%, -50%);
-    color: var(--accent); font-size: 0.9rem; line-height: 1;
-    background: var(--evo-bg); padding: 0 0.2em;
-    transition: left 0.55s var(--ease);
-    pointer-events: none;
+  .evo__ticks {
+    position: relative; display: flex; justify-content: space-between; align-items: center;
   }
-  .evo__segs {
-    display: grid; grid-template-columns: repeat(var(--cols, 8), 1fr);
-    gap: 0; margin-top: var(--sp-3);
+  /* line + fill ride between the first and last tick centres (13px inset = half a tick) */
+  .evo__scrub-line {
+    position: absolute; left: 13px; right: 13px; top: 50%; height: 2px; transform: translateY(-50%);
+    background: color-mix(in srgb, var(--fg) 12%, transparent); border-radius: 100px;
   }
-  .evo__seg { display: flex; }
-  .evo__seg-btn {
-    display: flex; flex-direction: column; gap: 0.15rem; align-items: flex-start;
-    width: 100%; padding: 0.6rem 0.5rem 0.4rem 0; text-align: left;
-    border-top: 2px solid transparent; margin-top: -1px;
-    transition: border-color 0.25s var(--ease), color 0.25s var(--ease);
+  .evo__scrub-fill {
+    position: absolute; left: 13px; top: 50%; height: 2px; width: 0; transform: translateY(-50%);
+    background: color-mix(in srgb, var(--accent) 70%, transparent); border-radius: 100px;
+    transition: width 0.45s var(--ease);
   }
-  .evo__seg-num {
-    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em;
-    color: var(--fg-3); transition: color 0.2s var(--ease);
+  .evo__tick {
+    position: relative; width: 26px; height: 26px;
+    display: grid; place-items: center;
   }
-  .evo__seg-name {
-    font-family: var(--font-ui); font-size: var(--step--1); font-weight: 600;
-    line-height: 1.1; color: var(--fg-2); letter-spacing: -0.01em;
-    transition: color 0.2s var(--ease);
+  .evo__tick::after {
+    content: ''; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--bg); border: 1.5px solid color-mix(in srgb, var(--fg) 28%, transparent);
+    transition: transform 0.25s var(--ease), background-color 0.25s var(--ease), border-color 0.25s var(--ease);
   }
-  .evo__seg-period { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-3); }
-  .evo__seg-btn:hover { border-top-color: color-mix(in srgb, var(--accent) 45%, transparent); }
-  .evo__seg-btn:hover .evo__seg-name { color: var(--fg); }
-  .evo__seg-btn.is-on { border-top-color: var(--accent); }
-  .evo__seg-btn.is-on .evo__seg-num,
-  .evo__seg-btn.is-on .evo__seg-name { color: var(--accent); }
-
-  .evo--compact .evo__seg-period { display: none; }
-
+  .evo__tick:hover::after { border-color: var(--accent); transform: scale(1.18); }
+  .evo__tick.is-past::after { background: color-mix(in srgb, var(--fg) 30%, transparent); border-color: transparent; }
+  .evo__tick.is-on::after {
+    background: var(--accent); border-color: var(--accent);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+  }
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
     .evo__grid { grid-template-columns: 1fr; }
     .evo__stage { border-right: 0; border-bottom: 1px solid var(--line); aspect-ratio: 4 / 3; max-height: 42vh; }
     .evo--compact .evo__stage { aspect-ratio: 4 / 3; max-height: 38vh; }
   }
-  @media (max-width: 640px) {
-    .evo__segs { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(7.5rem, 1fr);
-      overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-    .evo__seg { scroll-snap-align: start; }
-    .evo__rail-mark { display: none; }
-    .evo__seg-period { display: none; }
-  }
   @media (prefers-reduced-motion: reduce) {
     .evo__hint-arrow { animation: none; }
-    .evo__svg, .evo__dim-fill, .evo__dim-ghost, .evo__rail-mark { transition: none; }
+    .evo__svg, .evo__dim-fill, .evo__dim-ghost, .evo__scrub-fill, .evo__tick::after { transition: none; }
   }
 </style>
