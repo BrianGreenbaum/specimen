@@ -2,8 +2,9 @@
 import ColorModeToggle from './ColorModeToggle.astro';
 export interface Props {
   current?: string; // current font name, shown as breadcrumb
+  showToggle?: boolean; // hidden on fixed-theme (font/era) pages
 }
-const { current } = Astro.props;
+const { current, showToggle = true } = Astro.props;
 ---
 <header class="site-header">
   <div class="container site-header__inner">
@@ -22,7 +23,7 @@ const { current } = Astro.props;
     <nav class="site-header__nav">
       <a href="/history" class="header-link label">History</a>
       <a href="/#index" class="header-link label">Fonts</a>
-      <ColorModeToggle />
+      {showToggle && <ColorModeToggle />}
     </nav>
   </div>
 </header>
@@ -63,8 +64,9 @@ const { current } = Astro.props;
   }
 
   .site-header__nav { margin-left: auto; display: flex; align-items: center; gap: var(--sp-4); }
-  .header-link { transition: color 0.2s var(--ease); }
-  .header-link:hover { color: var(--fg); }
+  /* legible by default (not the faint --fg-3 the .label utility ships with) */
+  .header-link { color: var(--fg-2); transition: color 0.2s var(--ease); }
+  .header-link:hover { color: var(--accent); }
 
   @media (max-width: 640px) {
     .wordmark__sub { display: none; }

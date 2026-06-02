@@ -71,6 +71,8 @@ export interface Props {
   /** Inline CSS custom properties for per-font theming */
   themeStyle?: string;
   mode?: 'light' | 'dark';
+  /** Fixed-art-direction pages (font/era specimens) ignore the global toggle. */
+  fixedTheme?: boolean;
 }
 
 const {
@@ -78,11 +80,12 @@ const {
   description = 'A living library of beautiful, in-depth type specimens for the web.',
   themeStyle,
   mode = 'light',
+  fixedTheme = false,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-mode={mode}>
+<html lang="en" data-mode={mode} data-fixed-theme={fixedTheme ? '' : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -96,10 +99,15 @@ const {
 
     <script>
       // --- Color-mode persistence ---
+      // Fixed-theme pages (font/era specimens) carry their own art direction and
+      // must NOT be repainted by the global toggle — skip the override there.
       const KEY = 'specimen-mode';
-      const saved = localStorage.getItem(KEY);
-      if (saved === 'light' || saved === 'dark') {
-        document.documentElement.setAttribute('data-mode', saved);
+      const fixed = document.documentElement.hasAttribute('data-fixed-theme');
+      if (!fixed) {
+        const saved = localStorage.getItem(KEY);
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-mode', saved);
+        }
       }
       document.addEventListener('click', (e) => {
         const t = (e.target as HTMLElement).closest('[data-mode-toggle]');

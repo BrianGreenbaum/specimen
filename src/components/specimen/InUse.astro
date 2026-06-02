@@ -3,15 +3,17 @@ import type { CollectionEntry } from 'astro:content';
 import BrandScene from './BrandScene.astro';
 export interface Props {
   font: CollectionEntry<'fonts'>['data'];
+  /** Caption numbering offset, so generic scenes can follow bespoke ones. */
+  startIndex?: number;
 }
-const { font } = Astro.props;
+const { font, startIndex = 1 } = Astro.props;
 const fam = font.fontFamily;
 ---
 <div class="inuse" style={`--fam:${fam}`}>
   {font.inUse.map((scene, i) => (
     <figure class="inuse__item" data-reveal style={`--reveal-delay:${i * 60}ms`}>
       <figcaption class="inuse__cap">
-        <span class="index-num">{String(i + 1).padStart(2, '0')}</span>
+        <span class="index-num">{String(i + startIndex).padStart(2, '0')}</span>
         <span class="label">{scene.label}</span>
       </figcaption>
 
@@ -209,7 +211,7 @@ const fam = font.fontFamily;
   .s-invite { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2cqi; padding: 5cqi; }
   .s-invite__eyebrow { font-size: 2.6cqi; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); }
   .s-invite__pre { font-size: 3cqi; font-style: italic; color: #5a5240; max-width: 60%; }
-  .s-invite__names { font-size: 13cqi; line-height: 0.95; font-weight: 500; }
+  .s-invite__names { font-size: 10cqi; line-height: 0.98; font-weight: 500; overflow-wrap: anywhere; }
   .s-invite__names .amp { font-style: italic; color: var(--accent); }
   .s-invite__rule { display: flex; align-items: center; gap: 2cqi; width: 40%; color: var(--accent); }
   .s-invite__rule::before, .s-invite__rule::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: 0.5; }
@@ -220,8 +222,8 @@ const fam = font.fontFamily;
   .scene--editorial { background: var(--bg); }
   .s-edit { position: absolute; inset: 0; padding: 5cqi; display: flex; flex-direction: column; justify-content: center; gap: 3cqi; }
   .s-edit__kicker { font-size: 2.4cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-  .s-edit__head { font-size: 13cqi; line-height: 0.92; font-weight: 600; letter-spacing: -0.02em; }
-  .s-edit__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5cqi; font-size: 2.7cqi; line-height: 1.6; color: var(--fg-2); max-width: 88%; }
+  .s-edit__head { font-size: 9.5cqi; line-height: 0.95; font-weight: 600; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+  .s-edit__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5cqi; font-size: 2.6cqi; line-height: 1.55; color: var(--fg-2); max-width: 88%; }
 
   /* ---------- POSTER ---------- */
   .scene--poster { background: var(--accent); color: var(--accent-contrast); }
@@ -229,9 +231,9 @@ const fam = font.fontFamily;
   .s-poster__edge { position: absolute; top: 50%; font-size: 2.3cqi; letter-spacing: 0.2em; text-transform: uppercase; }
   .s-poster__edge--l { left: 3cqi; transform: rotate(-90deg) translateX(50%); transform-origin: left; }
   .s-poster__edge--r { right: 3cqi; transform: rotate(90deg) translateX(-50%); transform-origin: right; }
-  .s-poster__center { margin: auto; text-align: center; display: flex; flex-direction: column; gap: 2cqi; }
+  .s-poster__center { margin: auto; text-align: center; display: flex; flex-direction: column; gap: 2cqi; max-width: 82%; }
   .s-poster__small { font-size: 2.8cqi; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; }
-  .s-poster__title { font-size: 17cqi; line-height: 0.86; font-weight: 700; letter-spacing: -0.02em; }
+  .s-poster__title { font-size: 11cqi; line-height: 0.92; font-weight: 700; letter-spacing: -0.02em; overflow-wrap: anywhere; }
   .s-poster__meta { font-size: 3.4cqi; letter-spacing: 0.04em; }
   .s-poster__foot { text-align: center; font-size: 2.3cqi; opacity: 0.8; border-top: 1px solid currentColor; padding-top: 2cqi; }
 
@@ -242,7 +244,7 @@ const fam = font.fontFamily;
   .s-mag__folio { font-size: 2.4cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
   .s-mag__issue { font-size: 2.4cqi; color: var(--fg-3); }
   .s-mag__right { padding: 4cqi; display: flex; flex-direction: column; gap: 2cqi; }
-  .s-mag__head { font-size: 12cqi; line-height: 0.9; font-weight: 700; letter-spacing: -0.02em; }
+  .s-mag__head { font-size: 9.5cqi; line-height: 0.92; font-weight: 700; letter-spacing: -0.02em; overflow-wrap: anywhere; }
   .s-mag__head em { font-style: italic; color: var(--accent); font-weight: 400; }
   .s-mag__deck { font-size: 3cqi; font-style: italic; color: var(--fg-2); }
   .s-mag__body { columns: 2; column-gap: 4cqi; font-size: 2.4cqi; line-height: 1.55; color: var(--fg-2); }
@@ -250,13 +252,13 @@ const fam = font.fontFamily;
 
   /* ---------- ARTICLE ---------- */
   .scene--article { background: var(--bg); }
-  .s-article { position: absolute; inset: 0; padding: 5cqi 7cqi; display: flex; flex-direction: column; gap: 1.6cqi; justify-content: center; }
-  .s-article__kicker { font-size: 2.3cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-  .s-article__head { font-size: 8cqi; line-height: 1; font-weight: 700; letter-spacing: -0.01em; }
-  .s-article__byline { font-size: 2.5cqi; font-style: italic; color: var(--fg-3); }
-  .s-article__body { font-size: 2.8cqi; line-height: 1.62; color: var(--fg-2); max-width: 64ch; margin-top: 1cqi; }
-  .s-article__drop { float: left; font-size: 9cqi; line-height: 0.74; font-weight: 700; padding: 0.4cqi 1.4cqi 0 0; color: var(--fg); }
-  .s-article__quote { font-size: 3.6cqi; line-height: 1.3; font-style: italic; color: var(--fg); border-left: 2px solid var(--accent); padding-left: 3cqi; margin-top: 1cqi; max-width: 80%; }
+  .s-article { position: absolute; inset: 0; padding: 4.5cqi 7cqi; display: flex; flex-direction: column; gap: 1.2cqi; justify-content: center; }
+  .s-article__kicker { font-size: 2.2cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .s-article__head { font-size: 6.5cqi; line-height: 1.02; font-weight: 700; letter-spacing: -0.01em; }
+  .s-article__byline { font-size: 2.4cqi; font-style: italic; color: var(--fg-3); }
+  .s-article__body { font-size: 2.5cqi; line-height: 1.55; color: var(--fg-2); max-width: 66ch; margin-top: 0.6cqi; }
+  .s-article__drop { float: left; font-size: 8cqi; line-height: 0.72; font-weight: 700; padding: 0.4cqi 1.2cqi 0 0; color: var(--fg); }
+  .s-article__quote { font-size: 3cqi; line-height: 1.28; font-style: italic; color: var(--fg); border-left: 2px solid var(--accent); padding-left: 3cqi; margin-top: 0.6cqi; max-width: 84%; }
 
   @media (max-width: 600px) {
     .scene { aspect-ratio: 4 / 5; }

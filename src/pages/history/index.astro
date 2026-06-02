@@ -100,7 +100,9 @@ const first = eras[0];
     transition: transform 0.4s var(--ease), border-color 0.3s var(--ease);
   }
   .hist-begin:hover { transform: translateY(-2px); border-color: var(--era-accent); }
-  .hist-begin__label { color: var(--era-accent); }
+  /* brand accent for text — a few era accents are too dark on the dark index
+     (and too bright on the light one); keep era colour only in the tints. */
+  .hist-begin__label { color: var(--accent); }
   .hist-begin__name {
     font-family: var(--font-ui); font-weight: 660; font-size: var(--step-2);
     letter-spacing: -0.02em; line-height: 1;
@@ -114,22 +116,22 @@ const first = eras[0];
     padding-block: clamp(1.2rem, 3vh, 2.2rem); transition: padding-left 0.4s var(--ease);
   }
   .era-row__main:hover { padding-left: 1rem; }
-  .era-row__num { color: var(--era-accent); align-self: start; padding-top: 0.4rem; }
-  .era-row__period { color: var(--era-accent); }
+  .era-row__num { color: var(--accent); align-self: start; padding-top: 0.4rem; }
+  .era-row__period { color: var(--accent); }
   .era-row__name { font-family: var(--font-ui); font-size: var(--step-2); font-weight: 640; letter-spacing: -0.01em; line-height: 1; margin: 0.2rem 0 0.4rem; }
   .era-row__line { color: var(--fg-2); max-width: 50ch; }
   .era-row__sample {
     font-size: clamp(2.5rem, 7vw, 5.5rem); line-height: 0.9; color: var(--fg);
     transition: color 0.3s var(--ease); white-space: nowrap;
   }
-  .era-row__main:hover .era-row__sample { color: var(--era-accent); }
+  .era-row__main:hover .era-row__sample { color: var(--accent); }
 
   .era-row__fonts { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0 0 var(--sp-4) 5rem; }
   .era-chip {
     font-size: var(--step-0); padding: 0.3em 0.7em; border: 1px solid var(--line); border-radius: 100px;
     color: var(--fg-2); transition: all 0.2s var(--ease);
   }
-  .era-chip:hover { border-color: var(--era-accent); color: var(--fg); }
+  .era-chip:hover { border-color: var(--accent); color: var(--fg); }
 
   @media (max-width: 760px) {
     .era-row__main { grid-template-columns: 2.4rem 1fr; }

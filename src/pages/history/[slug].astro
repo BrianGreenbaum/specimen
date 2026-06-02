@@ -58,8 +58,8 @@ const timelineFaces = e.timelineFaces ?? [];
 const diffCopy = e.diffNote || e.evolution;
 const hasFaces = eraFonts.length > 0 || timelineFaces.length > 0;
 ---
-<Layout title={`${e.name} — A History of Type`} description={e.oneLiner} themeStyle={themeStyle} mode={mode}>
-  <SiteHeader current={e.name} />
+<Layout title={`${e.name} — A History of Type`} description={e.oneLiner} themeStyle={themeStyle} mode={mode} fixedTheme>
+  <SiteHeader current={e.name} showToggle={false} />
   <ChapterNav variant="rail" index={e.order} total={total} all={all} prev={prev} next={next} />
 
   <header class="era-hero" style={`--fam:${fam}`} data-era-hero>

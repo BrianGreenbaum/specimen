@@ -57,8 +57,9 @@ const sections = [
   description={font.blurb}
   themeStyle={themeStyle}
   mode={font.theme.mode}
+  fixedTheme
 >
-  <SiteHeader current={font.name} />
+  <SiteHeader current={font.name} showToggle={false} />
   <Hero font={font} />
 
   {era && (
@@ -92,7 +93,12 @@ const sections = [
     </Section>
 
     <Section id="in-use" num="05" title="In use" note="Built live with the real webfont.">
-      {BespokeInUse ? <BespokeInUse font={font} /> : <InUse font={font} />}
+      {BespokeInUse && <BespokeInUse font={font} />}
+      {font.inUse.length > 0 && (
+        <div class:list={{ 'inuse-after': BespokeInUse }}>
+          <InUse font={font} startIndex={BespokeInUse ? 3 : 1} />
+        </div>
+      )}
     </Section>
 
     <Section id="glyphs" num="06" title="Character set" note="Click any glyph to inspect.">
@@ -137,6 +143,9 @@ const sections = [
   .era-band__note { color: var(--fg-2); flex: 1; min-width: 12ch; }
   .era-band__cta { color: var(--era-accent); white-space: nowrap; }
   @media (max-width: 640px) { .era-band__note { display: none; } }
+
+  /* space between bespoke scenes and the shared generic scenes that follow */
+  .inuse-after { margin-top: var(--sp-6); }
 
   .story-prose {
     font-size: var(--step-1);

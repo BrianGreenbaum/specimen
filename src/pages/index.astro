@@ -191,15 +191,15 @@ const firstEra = eras[0];
   }
   .era-strip__link:hover { background: color-mix(in srgb, var(--era-accent) 9%, var(--bg)); }
   .era-strip__top { display: flex; align-items: center; justify-content: space-between; }
-  .era-strip__num { color: var(--era-accent); }
-  .era-strip__swatch { width: 11px; height: 11px; border-radius: 50%; background: var(--era-accent); }
+  .era-strip__num { color: var(--accent); }
+  .era-strip__swatch { width: 11px; height: 11px; border-radius: 50%; background: var(--era-accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent); }
   .era-strip__period { color: var(--fg-3); }
   .era-strip__name {
     font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1);
     letter-spacing: -0.01em; line-height: 1.05; margin-top: auto;
     transition: color 0.2s var(--ease);
   }
-  .era-strip__link:hover .era-strip__name { color: var(--era-accent); }
+  .era-strip__link:hover .era-strip__name { color: var(--accent); }
 
   .era-strip__link--all {
     background: var(--accent); color: var(--accent-contrast);
@@ -245,14 +245,16 @@ const firstEra = eras[0];
   .index-row__designer { font-size: var(--step-0); color: var(--fg-2); }
   .index-row__arrow {
     font-family: var(--font-mono);
-    color: var(--row-accent);
+    color: var(--accent);
     opacity: 0;
     transform: translateX(-8px);
     transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
     font-size: 1.4rem;
   }
-  .index-row:hover .index-row__name { color: var(--row-accent); }
-  .index-row:hover .index-row__num { color: var(--row-accent); }
+  /* hover uses the brand accent (legible in both modes) — a font's own accent
+     can be a bright lime/amber that's unreadable on the neutral home. */
+  .index-row:hover .index-row__name { color: var(--accent); }
+  .index-row:hover .index-row__num { color: var(--accent); }
   .index-row:hover .index-row__link { padding-left: 1rem; }
   .index-row:hover .index-row__arrow { opacity: 1; transform: none; }
 

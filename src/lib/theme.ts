@@ -11,34 +11,43 @@ export function luminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
+// NB: these set the SEMANTIC tokens (--bg, --fg, --line…) directly rather than
+// the --paper/--ink palette aliases. The aliases are resolved once at :root
+// (`--bg: var(--paper)`), so setting --paper on <body> never reaches --bg.
+// Setting the semantic tokens straight on <body> makes each font/era theme
+// apply in full — and makes the page immune to the global light/dark toggle,
+// which is exactly what we want for these fixed-art-direction pages.
+
 /** Build a full palette from just bg / fg / accent (used by era chapters). */
 export function eraThemeStyle(t: { bg: string; fg: string; accent: string }): string {
   const { bg, fg, accent } = t;
   const dark = luminance(bg) < 0.5;
   return [
-    `--paper:${bg}`,
-    `--paper-2:color-mix(in srgb, ${bg} 90%, ${fg} 10%)`,
-    `--ink:${fg}`,
-    `--ink-2:color-mix(in srgb, ${fg} 72%, ${bg} 28%)`,
-    `--ink-3:color-mix(in srgb, ${fg} 48%, ${bg} 52%)`,
+    `--bg:${bg}`,
+    `--bg-2:color-mix(in srgb, ${bg} 90%, ${fg} 10%)`,
+    `--fg:${fg}`,
+    `--fg-2:color-mix(in srgb, ${fg} 72%, ${bg} 28%)`,
+    `--fg-3:color-mix(in srgb, ${fg} 48%, ${bg} 52%)`,
     `--accent:${accent}`,
-    `--accent-contrast:${dark ? bg : bg}`,
-    `--hairline:color-mix(in srgb, ${fg} 14%, transparent)`,
-    `--hairline-2:color-mix(in srgb, ${fg} 7%, transparent)`,
+    `--accent-contrast:${bg}`,
+    `--line:color-mix(in srgb, ${fg} 14%, transparent)`,
+    `--line-soft:color-mix(in srgb, ${fg} 7%, transparent)`,
+    `color-scheme:${dark ? 'dark' : 'light'}`,
   ].join(';');
 }
 
 /** Build the inline style string that overrides palette tokens per font. */
 export function themeToStyle(theme: Theme): string {
   return [
-    `--paper:${theme.bg}`,
-    `--paper-2:${theme.bg2}`,
-    `--ink:${theme.fg}`,
-    `--ink-2:${theme.fg2}`,
-    `--ink-3:${theme.fg3}`,
+    `--bg:${theme.bg}`,
+    `--bg-2:${theme.bg2}`,
+    `--fg:${theme.fg}`,
+    `--fg-2:${theme.fg2}`,
+    `--fg-3:${theme.fg3}`,
     `--accent:${theme.accent}`,
     `--accent-contrast:${theme.accentContrast}`,
-    `--hairline:${theme.line}`,
-    `--hairline-2:${theme.lineSoft}`,
+    `--line:${theme.line}`,
+    `--line-soft:${theme.lineSoft}`,
+    `color-scheme:${theme.mode}`,
   ].join(';');
 }

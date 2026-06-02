@@ -79,7 +79,7 @@ const v = variant ?? VARIANTS[hash % VARIANTS.length];
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3cqi;
   }
   .brand__mark { color: var(--accent); font-size: 7cqi; }
-  .brand__word { font-size: 16cqi; font-weight: 600; line-height: 0.9; letter-spacing: -0.02em; text-align: center; }
+  .brand__word { font-size: 12cqi; font-weight: 600; line-height: 0.92; letter-spacing: -0.02em; text-align: center; max-width: 92%; overflow-wrap: anywhere; }
   .brand__tag { font-size: 3cqi; opacity: 0.7; letter-spacing: 0.02em; }
   .brand__lockups { display: flex; gap: 4cqi; margin-top: 1cqi; font-size: 3cqi; opacity: 0.55; border-top: 1px solid currentColor; padding-top: 2cqi; }
 
@@ -143,7 +143,7 @@ const v = variant ?? VARIANTS[hash % VARIANTS.length];
     gap: 1px;
   }
   .brand__cell { background: var(--bg); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 3cqi; }
-  .brand__cell--word { font-size: 11cqi; font-weight: 600; letter-spacing: -0.02em; line-height: 0.9; text-align: center; color: var(--fg); }
+  .brand__cell--word { font-size: 8.5cqi; font-weight: 600; letter-spacing: -0.02em; line-height: 0.92; text-align: center; color: var(--fg); overflow-wrap: anywhere; }
   .brand__cell--mono { background: var(--fg); color: var(--bg); font-size: 26cqi; font-weight: 600; }
   .brand__cell--swatch { background: var(--accent); }
   .brand__cell-tag { color: var(--accent-contrast); font-size: 3cqi; letter-spacing: 0.18em; text-transform: uppercase; }
