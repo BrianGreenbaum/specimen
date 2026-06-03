@@ -3,11 +3,9 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import EvolutionScrubber from '../components/history/EvolutionScrubber.astro';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
-const firstEra = eras[0];
 ---
 <Layout title="Specimen — A living library of type">
   <SiteHeader />
@@ -24,7 +22,6 @@ const firstEra = eras[0];
         axes and read the story behind every face — each one self-hosted, free, and shown at
         the standard it deserves.
       </p>
-      <p class="home-hero__cue label" data-reveal style="--reveal-delay:240ms">Scroll to begin ↓</p>
     </div>
   </header>
 
@@ -32,48 +29,37 @@ const firstEra = eras[0];
     <section class="home-history" aria-labelledby="history-head">
       <div class="section-head" data-reveal>
         <span class="index-num">✳</span>
-        <h2 id="history-head">The letter, through time</h2>
+        <h2 id="history-head">Two thousand years, eight chapters</h2>
         <a class="home-history__more label" href="/history">A history of type →</a>
       </div>
 
       <p class="home-history__intro prose" data-reveal>
-        This library begins with a story two thousand years long. Grab the letter and drag it
-        through the eras — then read the whole history as a guided journey, one chapter at a time.
+        Before the faces, the story: how the letter travelled from Roman marble to the
+        variable fonts in your browser. A teaser of the eight eras — read the whole journey
+        when you’re ready, or compare the faces themselves side by side.
       </p>
 
-      <div data-reveal style="--reveal-delay:80ms">
-        <EvolutionScrubber eras={eras} compact />
-      </div>
-
-      <a class="home-begin" href={`/history/${firstEra.data.slug}`} style={`--era-accent:${firstEra.data.theme.accent}`} data-reveal>
-        <span class="home-begin__text">
-          <span class="home-begin__label label">Begin the journey</span>
-          <span class="home-begin__name">Chapter 01 · {firstEra.data.name}</span>
-        </span>
-        <span class="home-begin__arrow" aria-hidden="true">→</span>
-      </a>
-
-      <ol class="era-strip" aria-label="The eight chapters">
+      <div class="era-frame" data-reveal>
+      <ol class="era-timeline" aria-label="The eight chapters">
         {eras.map((e, i) => (
-          <li class="era-strip__item" data-reveal style={`--era-accent:${e.data.theme.accent}; --reveal-delay:${i * 40}ms`}>
-            <a class="era-strip__link" href={`/history/${e.data.slug}`}>
-              <span class="era-strip__top">
-                <span class="era-strip__num index-num">{String(e.data.order).padStart(2, '0')}</span>
-                <span class="era-strip__swatch" aria-hidden="true"></span>
-              </span>
-              <span class="era-strip__period label">{e.data.period}</span>
-              <span class="era-strip__name">{e.data.name}</span>
+          <li
+            class:list={['era-timeline__item', i % 2 === 0 ? 'era-timeline__item--left' : 'era-timeline__item--right']}
+            style={`--era-accent:${e.data.theme.accent}`}
+          >
+            <a class="era-timeline__link" href={`/history/${e.data.slug}`}>
+              <span class="era-timeline__dot" aria-hidden="true"></span>
+              <span class="era-timeline__meta label">{String(e.data.order).padStart(2, '0')} · {e.data.period}</span>
+              <span class="era-timeline__name" style={`font-family:'${e.data.specimenFont.family}'`}>{e.data.name}</span>
             </a>
           </li>
         ))}
-        <li class="era-strip__item era-strip__item--all" data-reveal style={`--reveal-delay:${eras.length * 40}ms`}>
-          <a class="era-strip__link era-strip__link--all" href="/history">
-            <span class="era-strip__all-num index-num">↗</span>
-            <span class="era-strip__name">All eight<br />chapters</span>
-            <span class="label era-strip__period">Enter the history →</span>
-          </a>
-        </li>
       </ol>
+      </div>
+
+      <div class="home-history__links" data-reveal>
+        <a class="home-history__cta" href="/history">Read the full history <span aria-hidden="true">→</span></a>
+        <a class="home-history__cta home-history__cta--alt" href="/compare">Compare the type <span aria-hidden="true">→</span></a>
+      </div>
     </section>
 
     <section class="home-fonts" aria-labelledby="fonts-head">
@@ -103,26 +89,6 @@ const firstEra = eras[0];
       ))}
     </ul>
     </section>
-
-    <section class="home-about">
-      <div class="section-head" data-reveal>
-        <span class="index-num">✳</span>
-        <h2>About this library</h2>
-      </div>
-      <div class="home-about__grid">
-        <p class="home-about__lead prose" data-reveal>
-          Every typeface here is studied the way the best foundries present their own:
-          a giant showing, a live tester wired to each variable axis, a ramp of sizes,
-          a full character set, the OpenType refinements, the letterform details that
-          make it unmistakable, and the story of how it came to be.
-        </p>
-        <dl class="home-about__facts" data-reveal>
-          <div><dt class="label">Built with</dt><dd>Astro · self-hosted fonts</dd></div>
-          <div><dt class="label">Licensing</dt><dd>All faces free &amp; open source</dd></div>
-          <div><dt class="label">Growing</dt><dd>New specimens added over time</dd></div>
-        </dl>
-      </div>
-    </section>
   </main>
 
   <SiteFooter />
@@ -149,67 +115,61 @@ const firstEra = eras[0];
     color: var(--fg-2);
     margin-top: var(--sp-5);
   }
-  .home-hero__cue { display: block; margin-top: var(--sp-6); }
 
-  /* History feature */
-  .home-history { padding-block: clamp(2.5rem, 7vh, 5rem) clamp(2rem, 5vh, 4rem); }
+  /* History teaser — slim, so the specimens stay high on the page */
+  .home-history { padding-block: clamp(2.5rem, 7vh, 4.5rem) clamp(1.5rem, 4vh, 3rem); }
   .home-history__more { margin-left: auto; color: var(--accent); transition: opacity 0.2s var(--ease); }
   .home-history__more:hover { opacity: 0.7; }
-  .home-history__intro { font-size: var(--step-1); margin-bottom: var(--sp-5); color: var(--fg-2); max-width: 60ch; }
+  .home-history__intro { font-size: var(--step-1); margin-bottom: var(--sp-4); color: var(--fg-2); max-width: 64ch; }
 
-  .home-begin {
-    display: flex; align-items: center; gap: var(--sp-4);
-    margin-top: var(--sp-4);
-    padding: clamp(1.2rem, 3vw, 1.8rem) clamp(1.4rem, 4vw, 2.4rem);
-    background:
-      radial-gradient(120% 160% at 6% 0%, color-mix(in srgb, var(--era-accent) 24%, transparent), transparent 58%),
-      color-mix(in srgb, var(--era-accent) 9%, var(--bg));
-    border: 1px solid color-mix(in srgb, var(--era-accent) 38%, var(--line));
-    transition: transform 0.4s var(--ease), border-color 0.3s var(--ease);
-  }
-  .home-begin:hover { transform: translateY(-2px); border-color: var(--era-accent); }
-  .home-begin__text { display: flex; flex-direction: column; gap: 0.25rem; }
-  .home-begin__label { color: var(--era-accent); }
-  .home-begin__name { font-family: var(--font-ui); font-weight: 660; font-size: var(--step-1); letter-spacing: -0.01em; }
-  .home-begin__arrow { margin-left: auto; font-size: var(--step-2); color: var(--era-accent); transition: transform 0.4s var(--ease); }
-  .home-begin:hover .home-begin__arrow { transform: translateX(0.4rem); }
-
-  /* Eras strip */
-  .era-strip {
-    margin-top: var(--sp-4);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--line);
+  /* Framed mat around the timeline, matching the in-use examples */
+  .era-frame {
+    margin-top: var(--sp-5);
+    background: var(--bg-2);
     border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.2rem, 4vw, 3rem);
   }
-  .era-strip__item { background: var(--bg); }
-  .era-strip__link {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    height: 100%; padding: var(--sp-4);
-    transition: background 0.25s var(--ease);
-  }
-  .era-strip__link:hover { background: color-mix(in srgb, var(--era-accent) 9%, var(--bg)); }
-  .era-strip__top { display: flex; align-items: center; justify-content: space-between; }
-  .era-strip__num { color: var(--accent); }
-  .era-strip__swatch { width: 11px; height: 11px; border-radius: 50%; background: var(--era-accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent); }
-  .era-strip__period { color: var(--fg-3); }
-  .era-strip__name {
-    font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1);
-    letter-spacing: -0.01em; line-height: 1.05; margin-top: auto;
-    transition: color 0.2s var(--ease);
-  }
-  .era-strip__link:hover .era-strip__name { color: var(--accent); }
 
-  .era-strip__link--all {
-    background: var(--accent); color: var(--accent-contrast);
-    justify-content: space-between;
+  /* Vertical timeline with a central spine; eras alternate left/right */
+  .era-timeline { position: relative; }
+  .era-timeline::before {
+    content: ''; position: absolute; left: 50%; top: 10px; bottom: 10px;
+    width: 1px; background: var(--line); transform: translateX(-50%);
   }
-  .era-strip__link--all:hover { filter: brightness(1.06); background: var(--accent); }
-  .era-strip__link--all .index-num,
-  .era-strip__link--all .label { color: var(--accent-contrast); }
-  .era-strip__all-num { font-size: var(--step-2); line-height: 1; }
-  .era-strip__link--all .era-strip__name { color: var(--accent-contrast); }
+  .era-timeline__item { position: relative; width: 50%; padding-block: clamp(1rem, 2.6vh, 2rem); }
+  .era-timeline__item--left { text-align: right; padding-right: clamp(1.6rem, 4vw, 3.2rem); }
+  .era-timeline__item--right { margin-left: 50%; text-align: left; padding-left: clamp(1.6rem, 4vw, 3.2rem); }
+
+  .era-timeline__link { display: block; }
+  .era-timeline__dot {
+    position: absolute; top: clamp(1.3rem, 3vh, 2.4rem);
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--era-accent);
+    box-shadow: 0 0 0 4px var(--bg-2), 0 0 0 5px var(--line);
+    transition: transform 0.25s var(--ease);
+  }
+  .era-timeline__item--left .era-timeline__dot { right: -7px; }
+  .era-timeline__item--right .era-timeline__dot { left: -7px; }
+  .era-timeline__link:hover .era-timeline__dot { transform: scale(1.35); }
+
+  .era-timeline__meta { display: block; color: var(--accent); margin-bottom: 0.4rem; }
+  .era-timeline__name {
+    font-size: clamp(1.9rem, 4.5vw, 3.4rem);
+    line-height: 1.0; letter-spacing: -0.01em; color: var(--fg);
+    transition: color 0.25s var(--ease);
+  }
+  .era-timeline__link:hover .era-timeline__name { color: var(--accent); }
+
+  .home-history__links { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-5); margin-top: var(--sp-4); }
+  .home-history__cta {
+    font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 1px solid transparent; transition: border-color 0.2s var(--ease);
+  }
+  .home-history__cta:hover { border-color: var(--accent); }
+  .home-history__cta--alt { color: var(--fg-2); }
+  .home-history__cta--alt:hover { color: var(--fg); border-color: var(--fg); }
 
   /* Fonts section */
   .home-fonts { padding-block: clamp(2rem, 5vh, 4rem) 0; }
@@ -223,14 +183,14 @@ const firstEra = eras[0];
     grid-template-columns: 3.5rem 1fr auto 2rem;
     align-items: center;
     gap: var(--sp-4);
-    padding-block: clamp(1.2rem, 3.5vh, 2.6rem);
+    padding-block: clamp(1.7rem, 4.5vh, 3.4rem);
     position: relative;
     transition: padding-left 0.4s var(--ease);
   }
   .index-row__num { align-self: center; color: var(--fg-3); transition: color 0.3s var(--ease); }
   .index-row__name {
     font-family: var(--fam);
-    font-size: clamp(2.6rem, 8vw, 6.5rem);
+    font-size: clamp(2rem, 5.2vw, 4.4rem);
     line-height: 0.95;
     letter-spacing: -0.02em;
     transition: color 0.3s var(--ease);
@@ -258,32 +218,19 @@ const firstEra = eras[0];
   .index-row:hover .index-row__link { padding-left: 1rem; }
   .index-row:hover .index-row__arrow { opacity: 1; transform: none; }
 
-  /* About */
-  .home-about { padding-block: clamp(3rem, 8vh, 6rem); }
-  .home-about__grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--sp-7); align-items: start; }
-  .home-about__lead { font-size: var(--step-1); }
-  .home-about__facts div { padding-block: 0.8rem; border-top: 1px solid var(--line-soft); }
-  .home-about__facts div:first-child { border-top: 1px solid var(--fg); }
-  .home-about__facts dt { margin-bottom: 3px; }
-  .home-about__facts dd { font-size: var(--step-0); }
-
   @media (max-width: 760px) {
     .index-row__link { grid-template-columns: 2.2rem 1fr; gap: var(--sp-2); }
     .index-row__meta { display: none; }
     .index-row__arrow { display: none; }
-    .home-about__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
-
-    /* Eras become a horizontal snap scroller */
-    .era-strip {
-      display: flex; overflow-x: auto; gap: var(--sp-2);
-      border: 0; background: transparent; padding-bottom: var(--sp-2);
-      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    /* timeline collapses to a single column with the spine on the left */
+    .era-timeline::before { left: 6px; transform: none; }
+    .era-timeline__item,
+    .era-timeline__item--left,
+    .era-timeline__item--right {
+      width: 100%; margin-left: 0; text-align: left;
+      padding-left: var(--sp-5); padding-right: 0;
     }
-    .era-strip__item {
-      scroll-snap-align: start; flex: 0 0 auto;
-      min-width: clamp(200px, 64vw, 250px);
-      border: 1px solid var(--line);
-    }
-    .era-strip__link { min-height: 150px; }
+    .era-timeline__item--left .era-timeline__dot,
+    .era-timeline__item--right .era-timeline__dot { left: 0; right: auto; }
   }
 </style>

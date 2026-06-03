@@ -8,7 +8,7 @@ const fam = font.fontFamily;
 <div class="iu" style={`--fam:${fam}`}>
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Poster — a Bauhaus composition</span></figcaption>
-    <div class="iu__scene scene-sq">
+    <div class="iu__scene scene-sq iu__scene--portrait">
       <div class="iu__poster bau">
         <span class="bau__circle" aria-hidden="true"></span>
         <span class="bau__tri" aria-hidden="true"></span>
@@ -30,7 +30,7 @@ const fam = font.fontFamily;
 
 <style>
   .iu__item { margin: 0; }
-  .scene-sq { aspect-ratio: 4 / 5; max-width: 460px; }
+  .scene-sq { --card-ar: 4 / 5; }
   .brand-scene { aspect-ratio: 16 / 9; }
 
   .bau { background: var(--bg); overflow: hidden; padding: 5cqi; }

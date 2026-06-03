@@ -87,19 +87,20 @@ const v = variant ?? VARIANTS[hash % VARIANTS.length];
   .brand--monogram { background: var(--bg-2); color: var(--fg); }
   .brand__monogram {
     position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3cqi;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4cqi;
   }
+  /* sized so the whole lockup clears the 16/9 frame (and its mat) without clipping */
   .brand__mono-frame {
-    width: 44cqi; height: 44cqi; display: grid; place-items: center;
+    width: 34cqi; height: 34cqi; display: grid; place-items: center;
     border: 1.5px solid var(--accent); border-radius: 50%;
     position: relative;
   }
   .brand__mono-frame::after {
-    content: ''; position: absolute; inset: 2.4cqi; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 50%;
+    content: ''; position: absolute; inset: 1.8cqi; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 50%;
   }
-  .brand__mono-letter { font-size: 26cqi; font-weight: 600; line-height: 1; color: var(--accent); }
-  .brand__mono-name { font-size: 5cqi; letter-spacing: 0.3em; text-transform: uppercase; }
-  .brand__mono-sub { font-size: 2.4cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
+  .brand__mono-letter { font-size: 20cqi; font-weight: 600; line-height: 1; color: var(--accent); }
+  .brand__mono-name { font-size: 4cqi; letter-spacing: 0.3em; text-transform: uppercase; }
+  .brand__mono-sub { font-size: 2.2cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
 
   /* ---------- SEAL ---------- */
   .brand--seal { background: var(--accent); color: var(--accent-contrast); }

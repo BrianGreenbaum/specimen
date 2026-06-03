@@ -98,6 +98,23 @@ const {
     <slot />
 
     <script>
+      // Dev-only visual feedback overlay (agentation). The `import.meta.env.DEV`
+      // guard is statically false in production, so Vite dead-code-eliminates this
+      // whole block — agentation and React never enter the prod bundle.
+      if (import.meta.env.DEV) {
+        const [{ createRoot }, { createElement }, { Agentation }] = await Promise.all([
+          import('react-dom/client'),
+          import('react'),
+          import('agentation'),
+        ]);
+        const host = document.createElement('div');
+        host.id = 'agentation-root';
+        document.body.appendChild(host);
+        createRoot(host).render(createElement(Agentation));
+      }
+    </script>
+
+    <script>
       // --- Color-mode persistence ---
       // Fixed-theme pages (font/era specimens) carry their own art direction and
       // must NOT be repainted by the global toggle — skip the override there.

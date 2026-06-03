@@ -72,18 +72,18 @@ export const glossary: Record<string, GlossaryEntry> = {
   'ball terminal': {
     term: 'Ball terminal',
     definition: 'A stroke that ends in a small circular blob rather than a point — a hallmark flourish of Didone and many display serifs.',
-    glyph: 'f', family: DIDONE, guides: ['ascender', 'x', 'baseline'], focus: [{ x: 0.62, y: 0.1, r: 0.16, label: 'ball' }],
+    glyph: 'f', family: DIDONE, guides: ['ascender', 'x', 'baseline'], focus: [{ x: 0.66, y: 0.05, r: 0.13, label: 'ball' }],
   },
   stem: {
     term: 'Stem',
     definition: 'The main vertical or diagonal stroke of a letter — its load-bearing “spine”.',
-    glyph: 'n', guides: ['x', 'baseline'], focus: [{ x: 0.18, y: 0.5, r: 0.16, label: 'stem' }],
+    glyph: 'n', guides: ['x', 'baseline'], focus: [{ x: 0.12, y: 0.5, r: 0.14, label: 'stem' }],
   },
   contrast: {
     term: 'Contrast',
     definition: 'The difference between a letter’s thick and thin strokes. Low contrast feels even and sturdy; high contrast feels elegant and dramatic.',
     glyph: 'o', family: DIDONE, guides: ['x', 'baseline'],
-    focus: [{ x: 0.5, y: 0.08, r: 0.12 }, { x: 0.9, y: 0.5, r: 0.14, label: 'thick vs thin' }],
+    focus: [{ x: 0.5, y: 0.07, r: 0.1, label: 'thin' }, { x: 0.92, y: 0.5, r: 0.12, label: 'thick' }],
   },
   stress: {
     term: 'Stress',
@@ -99,7 +99,7 @@ export const glossary: Record<string, GlossaryEntry> = {
   ear: {
     term: 'Ear',
     definition: 'The small stroke that projects from the top-right of a double-storey lowercase g — a quiet place for personality.',
-    glyph: 'g', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.82, y: 0.1, r: 0.14, label: 'ear' }],
+    glyph: 'g', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.64, y: 0.1, r: 0.11, label: 'ear' }],
   },
   ligature: {
     term: 'Ligature',

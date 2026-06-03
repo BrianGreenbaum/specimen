@@ -87,17 +87,48 @@
       setHidden(sampleEl, true);
     }
 
+    place(term);
+  }
+
+  // Anchor the (already-populated, visible) popup to an element, keeping it in
+  // the viewport — it can be tall, so clamp vertically as well as horizontally.
+  function place(anchor: HTMLElement) {
     pop.hidden = false;
-    const r = term.getBoundingClientRect();
+    const r = anchor.getBoundingClientRect();
     const pw = pop.offsetWidth;
+    const ph = pop.offsetHeight;
+    const M = 12; // viewport margin
+
     let left = r.left + r.width / 2 - pw / 2;
-    left = Math.max(12, Math.min(left, window.innerWidth - pw - 12));
-    const top = r.top - pop.offsetHeight - 12;
-    const below = top < 8;
+    left = Math.max(M, Math.min(left, window.innerWidth - pw - M));
+
+    const spaceAbove = r.top - M;
+    const spaceBelow = window.innerHeight - r.bottom - M;
+    const below = ph > spaceAbove && spaceBelow > spaceAbove;
+    let top = below ? r.bottom + M : r.top - ph - M;
+    top = Math.max(M, Math.min(top, window.innerHeight - ph - M));
+
     pop.style.left = `${left}px`;
-    pop.style.top = `${below ? r.bottom + 12 : top}px`;
+    pop.style.top = `${top}px`;
     pop.dataset.dir = below ? 'below' : 'above';
     pop.classList.add('is-visible');
+  }
+
+  // Inline glyph reference: a bolded single letter in the prose (e.g. "the m
+  // could finally breathe") shows that glyph rendered in the running typeface.
+  function showGlyph(el: HTMLElement) {
+    const g = el.dataset.glyph!;
+    window.clearTimeout(hideTimer);
+    const fam =
+      getComputedStyle(el).getPropertyValue('--term-fam').trim().replace(/['"]/g, '') ||
+      'Fraunces Variable';
+    nameEl.textContent = `The ‘${g}’`;
+    defEl.textContent = `The letter as drawn in ${fam.replace(' Variable', '')}.`;
+    svgEl.toggleAttribute('hidden', true);
+    sampleEl.toggleAttribute('hidden', false);
+    sampleEl.textContent = g;
+    sampleEl.style.fontFamily = `'${fam}'`;
+    place(el);
   }
   function hide() {
     hideTimer = window.setTimeout(() => {
@@ -121,6 +152,24 @@
       t.addEventListener('blur', hide);
       t.addEventListener('click', (ev) => { ev.stopPropagation(); show(t); });
     });
+
+    // A bolded single letter inside prose becomes an inline glyph reference.
+    document.querySelectorAll<HTMLElement>('[data-glossary] strong, [data-glossary] b').forEach((s) => {
+      if (s.dataset.bound) return;
+      const txt = (s.textContent || '').trim();
+      if (!/^[A-Za-z]$/.test(txt)) return; // exactly one Latin letter
+      s.dataset.bound = '1';
+      s.classList.add('glyph-ref');
+      s.dataset.glyph = txt;
+      s.tabIndex = 0;
+      s.setAttribute('role', 'button');
+      s.setAttribute('aria-label', `The letter ${txt}, shown in the specimen typeface`);
+      s.addEventListener('mouseenter', () => showGlyph(s));
+      s.addEventListener('mouseleave', hide);
+      s.addEventListener('focus', () => showGlyph(s));
+      s.addEventListener('blur', hide);
+      s.addEventListener('click', (ev) => { ev.stopPropagation(); showGlyph(s); });
+    });
     pop.addEventListener('mouseenter', () => window.clearTimeout(hideTimer));
     pop.addEventListener('mouseleave', hide);
   }
@@ -142,6 +191,14 @@
     transition: color 0.2s var(--ease);
   }
   .term:hover, .term:focus-visible { color: var(--accent); outline: none; }
+
+  /* Inline glyph reference — a bolded single letter you can hover to see drawn. */
+  .glyph-ref {
+    cursor: help;
+    border-bottom: 1.5px dotted color-mix(in srgb, var(--accent) 55%, transparent);
+    transition: color 0.2s var(--ease);
+  }
+  .glyph-ref:hover, .glyph-ref:focus-visible { color: var(--accent); outline: none; }
 
   .glossary-pop {
     position: fixed;

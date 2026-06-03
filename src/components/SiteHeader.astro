@@ -1,16 +1,20 @@
 ---
+import { getCollection } from 'astro:content';
 import ColorModeToggle from './ColorModeToggle.astro';
 export interface Props {
   current?: string; // current font name, shown as breadcrumb
   showToggle?: boolean; // hidden on fixed-theme (font/era) pages
 }
 const { current, showToggle = true } = Astro.props;
+
+// Menus shown on hover/focus under the History and Fonts links.
+const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 ---
 <header class="site-header">
   <div class="container site-header__inner">
     <a href="/" class="wordmark" aria-label="Specimen — home">
       <span class="wordmark__mark">Specimen</span>
-      <span class="wordmark__sub label">Type, in detail</span>
     </a>
 
     {current && (
@@ -21,8 +25,33 @@ const { current, showToggle = true } = Astro.props;
     )}
 
     <nav class="site-header__nav">
-      <a href="/history" class="header-link label">History</a>
-      <a href="/#index" class="header-link label">Fonts</a>
+      <div class="navitem">
+        <a href="/history" class="header-link label">History</a>
+        <div class="dropdown dropdown--list" role="menu" aria-label="Timeline sets">
+          {eras.map((e) => (
+            <a class="dropdown__item" role="menuitem" href={`/history/${e.data.slug}`}>
+              <span class="dropdown__idx">{String(e.data.order).padStart(2, '0')}</span>
+              <span class="dropdown__name">{e.data.name}</span>
+              <span class="dropdown__meta">{e.data.period}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="navitem">
+        <a href="/#index" class="header-link label">Fonts</a>
+        <div class="dropdown dropdown--grid" role="menu" aria-label="Font specimens">
+          {fonts.map((f) => (
+            <a class="dropdown__item" role="menuitem" href={`/fonts/${f.id}`}>
+              <span class="dropdown__name" style={`font-family:${f.data.fontFamily}`}>{f.data.name}</span>
+              <span class="dropdown__meta">{f.data.category}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <a href="/compare" class="header-link label">Compare</a>
+
       {showToggle && <ColorModeToggle />}
     </nav>
   </div>
@@ -52,7 +81,6 @@ const { current, showToggle = true } = Astro.props;
     font-size: 1.12rem;
     letter-spacing: -0.02em;
   }
-  .wordmark__sub { font-size: 0.62rem; margin-top: 3px; }
 
   .breadcrumb { display: flex; align-items: center; gap: 0.6rem; }
   .breadcrumb__sep { color: var(--fg-3); font-family: var(--font-mono); }
@@ -68,9 +96,80 @@ const { current, showToggle = true } = Astro.props;
   .header-link { color: var(--fg-2); transition: color 0.2s var(--ease); }
   .header-link:hover { color: var(--accent); }
 
+  /* --- Hover/focus dropdown menus --- */
+  .navitem { position: relative; display: flex; align-items: center; }
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.6rem;
+    max-height: min(74vh, 36rem);
+    overflow-y: auto;
+    padding: var(--sp-3);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    box-shadow: 0 14px 36px -12px rgba(0, 0, 0, 0.38);
+    /* hidden until the nav item is hovered or focused */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.18s var(--ease), transform 0.18s var(--ease), visibility 0.18s;
+    z-index: 120;
+  }
+  /* a small invisible bridge so the cursor can cross the gap without closing */
+  .dropdown::before {
+    content: '';
+    position: absolute;
+    top: -0.6rem; left: 0; right: 0; height: 0.6rem;
+  }
+  .navitem:hover .dropdown,
+  .navitem:focus-within .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  /* History — single column, wide enough that names never wrap and the
+     period stays aligned to the right edge */
+  .dropdown--list {
+    width: min(92vw, 28rem);
+  }
+  .dropdown--list .dropdown__name { white-space: nowrap; }
+
+  /* Fonts — two roomy columns; the wide cells keep names on one line and
+     the category labels aligned right */
+  .dropdown--grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 2rem;
+    width: min(92vw, 42rem);
+  }
+
+  .dropdown__item {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 4px;
+    color: var(--fg-2);
+    transition: background 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .dropdown__item:hover { background: var(--bg-2); color: var(--fg); }
+  .dropdown__idx { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); }
+  .dropdown__name { font-size: var(--step-0); line-height: 1.25; margin-right: auto; }
+  .dropdown__meta {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    white-space: nowrap;
+  }
+
   @media (max-width: 640px) {
-    .wordmark__sub { display: none; }
     .breadcrumb { display: none; }
     .site-header__inner { gap: var(--sp-2); }
+    /* touch devices can't hover — fall back to the plain links */
+    .dropdown { display: none; }
   }
 </style>

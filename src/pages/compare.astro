@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import TypeComparison from '../components/TypeComparison.astro';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+---
+<Layout title="Compare Type — Specimen" description="Drag one slider to set the same word in every typeface in the library, side by side through time.">
+  <SiteHeader current="Compare" />
+
+  <header class="cmp-hero">
+    <div class="container">
+      <p class="label" data-reveal>Compare · {fonts.length} faces</p>
+      <h1 class="cmp-hero__title" data-reveal style="--reveal-delay:80ms">Compare<br />the <em>type</em></h1>
+      <p class="cmp-hero__lede" data-reveal style="--reveal-delay:160ms">
+        One word, every face in the library. Drag the slider and watch the same letters re-cut from
+        face to face — serifs come and go, contrast swells and calms, character shifts. Find the voice
+        you’re after, then open its full specimen.
+      </p>
+    </div>
+  </header>
+
+  <section class="container cmp-section" data-reveal>
+    <TypeComparison fonts={fonts} />
+  </section>
+
+  <SiteFooter />
+</Layout>
+
+<style>
+  .cmp-hero { padding-block: clamp(3rem, 10vh, 6rem) clamp(2rem, 5vh, 3.5rem); border-bottom: 1px solid var(--line); }
+  .cmp-hero__title {
+    font-family: var(--font-ui); font-weight: 680; font-size: clamp(3rem, 12vw, 8.5rem);
+    line-height: 0.9; letter-spacing: -0.03em; margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .cmp-hero__title em { font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent); }
+  .cmp-hero__lede { max-width: 60ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
+  .cmp-section { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
+</style>

@@ -3,12 +3,10 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
-import EvolutionScrubber from '../../components/history/EvolutionScrubber.astro';
 
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
 const fonts = await getCollection('fonts');
 const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
-const first = eras[0];
 ---
 <Layout title="A History of Typography — Specimen" mode="dark">
   <SiteHeader current="History" />
@@ -27,27 +25,12 @@ const first = eras[0];
     </div>
   </header>
 
-  <section class="container hist-evo" data-reveal>
-    <div class="section-head">
-      <span class="index-num">✳</span>
-      <h2>The letter, through time</h2>
-      <span class="label">Drag the letter ⟷</span>
-    </div>
-    <EvolutionScrubber eras={eras} />
-  </section>
-
   <section class="container hist-eras">
     <div class="section-head">
       <span class="index-num">✳</span>
       <h2>The eras</h2>
       <span class="label">Eight chapters</span>
     </div>
-
-    <a class="hist-begin" href={`/history/${first.data.slug}`} style={`--era-accent:${first.data.theme.accent}`} data-reveal>
-      <span class="hist-begin__label label">Begin the journey</span>
-      <span class="hist-begin__name">Chapter 01 · {first.data.name}</span>
-      <span class="hist-begin__cue">Read it as one continuous story, or skip to any era below <span aria-hidden="true">→</span></span>
-    </a>
 
     <ol class="era-list">
       {eras.map((e) => (
@@ -56,7 +39,7 @@ const first = eras[0];
             <span class="era-row__num index-num">{String(e.data.order).padStart(2, '0')}</span>
             <div class="era-row__body">
               <span class="era-row__period label">{e.data.period}</span>
-              <h3 class="era-row__name">{e.data.name}</h3>
+              <h3 class="era-row__name" style={`font-family:'${e.data.specimenFont.family}'`}>{e.data.name}</h3>
               <p class="era-row__line">{e.data.oneLiner}</p>
             </div>
             <span class="era-row__sample" style={`font-family:'${e.data.specimenFont.family}'`}>{e.data.sample}</span>
@@ -86,28 +69,7 @@ const first = eras[0];
   .hist-hero__title em { font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent); }
   .hist-hero__lede { max-width: 60ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
 
-  .hist-evo { padding-block: clamp(2.5rem, 6vh, 5rem); }
   .hist-eras { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
-
-  .hist-begin {
-    display: flex; flex-direction: column; gap: 0.4rem;
-    padding: clamp(1.4rem, 4vw, 2.4rem);
-    margin-bottom: var(--sp-5);
-    background:
-      radial-gradient(120% 130% at 8% 0%, color-mix(in srgb, var(--era-accent) 22%, transparent), transparent 60%),
-      color-mix(in srgb, var(--era-accent) 8%, var(--bg));
-    border: 1px solid color-mix(in srgb, var(--era-accent) 35%, var(--line));
-    transition: transform 0.4s var(--ease), border-color 0.3s var(--ease);
-  }
-  .hist-begin:hover { transform: translateY(-2px); border-color: var(--era-accent); }
-  /* brand accent for text — a few era accents are too dark on the dark index
-     (and too bright on the light one); keep era colour only in the tints. */
-  .hist-begin__label { color: var(--accent); }
-  .hist-begin__name {
-    font-family: var(--font-ui); font-weight: 660; font-size: var(--step-2);
-    letter-spacing: -0.02em; line-height: 1;
-  }
-  .hist-begin__cue { color: var(--fg-2); font-size: var(--step-0); margin-top: 0.3rem; }
 
   .era-list { border-top: 1px solid var(--line); }
   .era-row { border-bottom: 1px solid var(--line); }

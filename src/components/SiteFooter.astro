@@ -33,10 +33,6 @@ const { prev, next } = Astro.props;
       <span class="wordmark__mark">Specimen</span>
       <span class="label">A living library of type</span>
     </div>
-    <p class="label footer-base__note">
-      Specimens are independent editorial showcases. Each typeface is free and open source under its own
-      licence. Built with self-hosted fonts · {new Date().getFullYear()}.
-    </p>
     <a href="/#index" class="label footer-base__top">Back to index ↑</a>
   </div>
 </footer>
@@ -55,14 +51,13 @@ const { prev, next } = Astro.props;
 
   .footer-base {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
     gap: var(--sp-5);
     align-items: center;
     padding-block: var(--sp-5);
   }
   .footer-base__brand { display: flex; flex-direction: column; gap: 2px; }
   .footer-base__brand .wordmark__mark { font-family: var(--font-ui); font-weight: 650; font-size: 1.1rem; letter-spacing: -0.02em; }
-  .footer-base__note { max-width: 48ch; }
   .footer-base__top { white-space: nowrap; }
   .footer-base__top:hover { color: var(--fg); }
 

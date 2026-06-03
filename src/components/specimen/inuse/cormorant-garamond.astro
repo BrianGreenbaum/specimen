@@ -31,9 +31,18 @@ const fam = font.fontFamily;
 <style>
   .iu__item { margin: 0; }
   .brand-scene { aspect-ratio: 16 / 9; }
-  .invite-scene { aspect-ratio: 4 / 5; max-width: 460px; }
+  /* Full-width frame; the portrait invitation is centred within it. */
+  .invite-scene { aspect-ratio: 16 / 9; display: grid; place-items: center; }
 
-  .invite { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2.4cqi; padding: 7cqi 6cqi; }
+  .invite {
+    /* cancel the global absolute fill so the card can be a centred object */
+    position: relative; inset: auto;
+    height: 100%; width: auto; aspect-ratio: 4 / 5;
+    container-type: inline-size; /* cqi now sizes to the card, not the frame */
+    background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 2.4cqi; padding: 7cqi 6cqi;
+  }
   .inv__eyebrow { font-size: 2.6cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); }
   .inv__pre { font-size: 3.2cqi; font-style: italic; color: var(--fg-2); max-width: 78%; }
   .inv__names { font-size: 16cqi; line-height: 0.95; font-weight: 500; }

@@ -7,7 +7,7 @@ const fam = font.fontFamily;
 <div class="iu" style={`--fam:${fam}`}>
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
-    <div class="iu__scene cover-scene">
+    <div class="iu__scene cover-scene iu__scene--portrait">
       <div class="iu__poster cover">
         <div class="cover__top">
           <span>№ 04</span><span>Autumn</span><span>$12</span>
@@ -39,7 +39,7 @@ const fam = font.fontFamily;
 
 <style>
   .iu__item { margin: 0; }
-  .cover-scene { aspect-ratio: 3 / 4; max-width: 460px; }
+  .cover-scene { --card-ar: 3 / 4; }
 
   .cover { background: var(--bg); display: flex; flex-direction: column; padding: 5cqi; }
   .cover__top { display: flex; justify-content: space-between; font-size: 2.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 2cqi; }

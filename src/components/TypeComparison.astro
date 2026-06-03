@@ -1,0 +1,426 @@
+---
+// "Compare the type" — one individual letter rendered across every face in the
+// library. Grab the letter and DRAG it left/right to scrub through the fonts (a
+// slim track beneath shows where you are), switch the letter to inspect, and read
+// who drew each face. Modelled on the history EvolutionScrubber, expanded to fonts.
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  fonts: CollectionEntry<'fonts'>[];
+}
+const { fonts } = Astro.props;
+const data = fonts.map((f) => {
+  const wght = f.data.axes.find((a) => a.tag === 'wght');
+  return {
+    slug: f.id,
+    name: f.data.name,
+    family: f.data.fontFamily,
+    // a mid weight reads best for comparison; clamp to what the face offers
+    weight: wght ? Math.min(Math.max(500, wght.min), wght.max) : 400,
+    designer: f.data.designer,
+    category: f.data.category,
+    classification: f.data.classification,
+    year: f.data.year,
+    weights: f.data.weights.length,
+    italic: f.data.hasItalic,
+  };
+});
+const letters = ['a', 'g', 'e', 'R', 'Q', 'M', 'G', '&'];
+const n = data.length;
+---
+<section class="cmp" data-cmp data-fonts={JSON.stringify(data)}>
+  <div class="cmp__grid">
+    <div
+      class="cmp__stage"
+      role="slider"
+      tabindex="0"
+      aria-valuemin="0"
+      aria-valuemax={n - 1}
+      aria-valuenow="0"
+      aria-label="Drag the letter through every typeface"
+      data-cmp-stage
+    >
+      <span class="cmp__tag" data-cmp-tag aria-hidden="true"></span>
+      <svg class="cmp__svg" data-cmp-svg preserveAspectRatio="xMidYMid meet" role="img" aria-label="A letter shown across every typeface" draggable="false"></svg>
+      <span class="cmp__hint" data-cmp-hint aria-hidden="true">
+        <span class="cmp__hint-arrow">←</span> drag <span class="cmp__hint-arrow">→</span>
+      </span>
+    </div>
+
+    <div class="cmp__readout">
+      <div class="cmp__letters" role="group" aria-label="Choose a letter">
+        {letters.map((l, i) => (
+          <button class:list={['cmp__letter', { 'is-on': i === 0 }]} data-cmp-letter={l} aria-pressed={i === 0 ? 'true' : 'false'}>
+            <span>{l}</span>
+          </button>
+        ))}
+      </div>
+
+      <span class="cmp__idx label" data-cmp-idx></span>
+      <h3 class="cmp__name" data-cmp-name></h3>
+      <p class="cmp__meta" data-cmp-meta></p>
+
+      <div class="cmp__stats" data-cmp-stats>
+        <div class="cmp__stat" data-stat="x">
+          <div class="cmp__stat-head"><span class="cmp__stat-label">X-height</span><span class="cmp__stat-val" data-stat-val></span></div>
+          <div class="cmp__stat-track"><span class="cmp__stat-fill" data-stat-fill></span></div>
+        </div>
+        <div class="cmp__stat" data-stat="w">
+          <div class="cmp__stat-head"><span class="cmp__stat-label">Set width</span><span class="cmp__stat-val" data-stat-val></span></div>
+          <div class="cmp__stat-track"><span class="cmp__stat-fill" data-stat-fill></span></div>
+        </div>
+        <div class="cmp__stat" data-stat="s">
+          <div class="cmp__stat-head"><span class="cmp__stat-label">Styles</span><span class="cmp__stat-val" data-stat-val></span></div>
+          <div class="cmp__stat-track"><span class="cmp__stat-fill" data-stat-fill></span></div>
+        </div>
+      </div>
+
+      <a class="cmp__link" data-cmp-link>Open specimen <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+
+  <div class="cmp__scrub">
+    <div class="cmp__scrub-head">
+      <span class="label">Drag, or jump to any face</span>
+      <span class="label cmp__scrub-count" data-cmp-count></span>
+    </div>
+    <ol class="cmp__ticks" data-cmp-ticks>
+      <span class="cmp__scrub-line" aria-hidden="true"></span>
+      <span class="cmp__scrub-fill" data-cmp-fill aria-hidden="true"></span>
+      {data.map((f, i) => (
+        <li>
+          <button
+            class:list={['cmp__tick', { 'is-on': i === 0 }]}
+            data-cmp-tick={i}
+            title={f.name}
+            aria-label={f.name}
+          ></button>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  import { renderGlyphDiagram } from '../lib/diagram';
+  import { measureGlyph } from '../lib/metrics';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const norm = (v: number, lo: number, hi: number) => Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+
+  document.querySelectorAll<HTMLElement>('[data-cmp]').forEach((root) => {
+    const fonts = JSON.parse(root.dataset.fonts || '[]');
+    const stage = root.querySelector('[data-cmp-stage]') as HTMLElement;
+    const svg = root.querySelector('[data-cmp-svg]') as SVGElement;
+    const tag = root.querySelector('[data-cmp-tag]') as HTMLElement;
+    const idxEl = root.querySelector('[data-cmp-idx]') as HTMLElement;
+    const name = root.querySelector('[data-cmp-name]') as HTMLElement;
+    const meta = root.querySelector('[data-cmp-meta]') as HTMLElement;
+    const link = root.querySelector('[data-cmp-link]') as HTMLAnchorElement;
+    const fill = root.querySelector('[data-cmp-fill]') as HTMLElement;
+    const count = root.querySelector('[data-cmp-count]') as HTMLElement;
+    const ticksEl = root.querySelector('[data-cmp-ticks]') as HTMLElement;
+    const tickBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-cmp-tick]'));
+    const letterBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-cmp-letter]'));
+    const statRows = Array.from(root.querySelectorAll<HTMLElement>('.cmp__stat'));
+
+    const setStat = (key: string, frac: number, label: string) => {
+      const row = statRows.find((r) => r.dataset.stat === key);
+      if (!row) return;
+      (row.querySelector('[data-stat-fill]') as HTMLElement).style.width = `${Math.round(frac * 100)}%`;
+      (row.querySelector('[data-stat-val]') as HTMLElement).textContent = label;
+    };
+
+    const n = fonts.length;
+    let idx = 0;
+    let prevIdx = 0;
+    let letter = 'a';
+
+    // Shrink the (nowrap) name until it fits the readout width on one line.
+    const fitName = () => {
+      name.style.fontSize = '';
+      const avail = name.clientWidth;
+      const full = name.scrollWidth;
+      if (avail > 0 && full > avail) {
+        const base = parseFloat(getComputedStyle(name).fontSize);
+        name.style.fontSize = `${(base * avail) / full}px`;
+      }
+    };
+
+    const render = (animate = true) => {
+      const f = fonts[idx];
+      if (!f) return;
+      const num = String(idx + 1).padStart(2, '0');
+      tag.textContent = `${num} / ${String(n).padStart(2, '0')}`;
+      idxEl.textContent = `${num} · ${f.category}`;
+      name.textContent = f.name;
+      name.style.fontFamily = `'${f.family}'`;
+      meta.textContent = `${f.classification} · ${f.designer} · ${f.year}`;
+      link.href = `/fonts/${f.slug}`;
+      count.textContent = `${num} / ${String(n).padStart(2, '0')}`;
+
+      tickBtns.forEach((t, i) => {
+        t.classList.toggle('is-on', i === idx);
+        t.classList.toggle('is-past', i < idx);
+      });
+      const frac = n > 1 ? idx / (n - 1) : 0;
+      fill.style.width = `calc((100% - 26px) * ${frac})`;
+
+      stage.setAttribute('aria-valuenow', String(idx));
+      stage.setAttribute('aria-valuetext', `${f.name}, ${f.classification}`);
+
+      const dir = idx >= prevIdx ? 1 : -1;
+      if (animate && !reduce) {
+        svg.classList.remove('is-in');
+        svg.style.transform = `translateX(${dir * 14}px)`;
+      }
+      renderGlyphDiagram(svg, {
+        family: f.family,
+        glyph: letter,
+        weight: f.weight,
+        guides: ['ascender', 'cap', 'x', 'baseline', 'descender'],
+        fill: 0.72,
+      }).then(() => {
+        requestAnimationFrame(() => {
+          svg.classList.add('is-in');
+          svg.style.transform = '';
+        });
+        // Keep the name on a single line (long faces shrink to fit) so the
+        // panel height never jumps as you scrub.
+        fitName();
+        // Real measured stats for the current face (font is now loaded)
+        const m = measureGlyph(f.family, 'n', f.weight);
+        const xRatio = m.capHeight ? m.xHeight / m.capHeight : 0;
+        setStat('x', norm(xRatio, 0.42, 0.78), `${Math.round(xRatio * 100)}%`);
+        setStat('w', norm(m.advance, 0.4, 0.66), m.advance.toFixed(2) + ' em');
+        setStat('s', norm(f.weights, 1, 9), `${f.weights}${f.italic ? ' + ital' : ''}`);
+      });
+    };
+
+    const setIdx = (i: number, animate = true) => {
+      const next = Math.max(0, Math.min(n - 1, Math.round(i)));
+      if (next === idx) return;
+      prevIdx = idx;
+      idx = next;
+      render(animate);
+    };
+
+    tickBtns.forEach((t, i) => t.addEventListener('click', () => setIdx(i)));
+
+    // Drag (or click) directly along the scrub track, like a slider
+    const idxFromX = (clientX: number) => {
+      const r = ticksEl.getBoundingClientRect();
+      const inset = 13; // half a tick — line runs between tick centres
+      const usable = Math.max(1, r.width - inset * 2);
+      return Math.round(((clientX - r.left - inset) / usable) * (n - 1));
+    };
+    let trackDrag = false;
+    ticksEl.addEventListener('pointerdown', (ev) => {
+      trackDrag = true;
+      ticksEl.setPointerCapture(ev.pointerId);
+      setIdx(idxFromX(ev.clientX));
+    });
+    ticksEl.addEventListener('pointermove', (ev) => { if (trackDrag) setIdx(idxFromX(ev.clientX), false); });
+    const endTrack = (ev: PointerEvent) => { trackDrag = false; try { ticksEl.releasePointerCapture(ev.pointerId); } catch {} };
+    ticksEl.addEventListener('pointerup', endTrack);
+    ticksEl.addEventListener('pointercancel', endTrack);
+
+    // Drag the letter through the library
+    let dragging = false;
+    let startX = 0;
+    let startIdx = 0;
+    const onDown = (ev: PointerEvent) => {
+      ev.preventDefault();
+      dragging = true;
+      startX = ev.clientX;
+      startIdx = idx;
+      stage.setPointerCapture(ev.pointerId);
+      stage.classList.add('is-dragging');
+      root.classList.add('cmp--touched');
+    };
+    const onMove = (ev: PointerEvent) => {
+      if (!dragging) return;
+      const span = stage.getBoundingClientRect().width;
+      const delta = ((ev.clientX - startX) / span) * (n - 1) * 1.1;
+      setIdx(startIdx + delta, false);
+    };
+    const onUp = (ev: PointerEvent) => {
+      dragging = false;
+      stage.classList.remove('is-dragging');
+      try { stage.releasePointerCapture(ev.pointerId); } catch {}
+    };
+    stage.addEventListener('pointerdown', onDown);
+    stage.addEventListener('pointermove', onMove);
+    stage.addEventListener('pointerup', onUp);
+    stage.addEventListener('pointercancel', onUp);
+    stage.addEventListener('dragstart', (e) => e.preventDefault());
+    stage.addEventListener('selectstart', (e) => e.preventDefault());
+
+    stage.addEventListener('keydown', (ev) => {
+      const k = ev.key;
+      if (k === 'ArrowRight' || k === 'ArrowUp') { ev.preventDefault(); setIdx(idx + 1); }
+      else if (k === 'ArrowLeft' || k === 'ArrowDown') { ev.preventDefault(); setIdx(idx - 1); }
+      else if (k === 'Home') { ev.preventDefault(); setIdx(0); }
+      else if (k === 'End') { ev.preventDefault(); setIdx(n - 1); }
+    });
+
+    letterBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        letter = b.dataset.cmpLetter!;
+        letterBtns.forEach((x) => {
+          const on = x === b;
+          x.classList.toggle('is-on', on);
+          x.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        render(false);
+      })
+    );
+
+    if ((document as any).fonts?.ready) (document as any).fonts.ready.then(() => render(false));
+    else render(false);
+  });
+</script>
+
+<style>
+  .cmp {
+    --cmp-bg: color-mix(in srgb, var(--accent) 4%, var(--bg));
+    border: 1px solid var(--line);
+    background: var(--cmp-bg);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .cmp__grid { display: grid; grid-template-columns: 1.05fr 1fr; min-height: 0; }
+
+  /* ---------- Stage (the control) ---------- */
+  .cmp__stage {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    max-height: clamp(360px, 56vh, 560px);
+    border-right: 1px solid var(--line);
+    display: grid; place-items: center;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+    background:
+      radial-gradient(120% 120% at 30% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 62%),
+      var(--bg-2);
+  }
+  .cmp__stage:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+  .cmp__stage.is-dragging { cursor: grabbing; }
+  .cmp__tag {
+    position: absolute; top: var(--sp-3); left: var(--sp-3); z-index: 2;
+    font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.1em;
+    color: var(--accent); font-weight: 600;
+  }
+  .cmp__svg {
+    width: 100%; height: 100%; opacity: 0.001;
+    pointer-events: none;
+    transition: transform 0.5s var(--ease);
+  }
+  .cmp__svg.is-in { opacity: 1; transition: opacity 0.4s var(--ease), transform 0.5s var(--ease); }
+  .cmp__svg .dg-glyph { fill: var(--fg); }
+
+  .cmp__hint {
+    position: absolute; left: 50%; bottom: var(--sp-3); transform: translateX(-50%); z-index: 2;
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3); display: inline-flex; align-items: center; gap: 0.5em;
+    pointer-events: none; transition: opacity 0.4s var(--ease);
+  }
+  .cmp--touched .cmp__hint { opacity: 0; }
+  .cmp__hint-arrow { animation: cmp-nudge 1.8s var(--ease) infinite; color: var(--accent); }
+  .cmp__hint-arrow:last-child { animation-delay: 0.9s; }
+  @keyframes cmp-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+
+  /* ---------- Readout ---------- */
+  .cmp__readout {
+    padding: clamp(1.4rem, 3.4vw, 2.6rem);
+    display: flex; flex-direction: column;
+    gap: var(--sp-3); justify-content: center; min-height: 0;
+  }
+  .cmp__letters { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: var(--sp-2); }
+  .cmp__letter {
+    width: 40px; height: 40px;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    font-family: var(--font-mono); font-size: 0.92rem; color: var(--fg-3);
+    display: grid; place-items: center;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+  }
+  .cmp__letter:hover { border-color: var(--fg); color: var(--fg); }
+  .cmp__letter.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+
+  .cmp__idx { color: var(--accent); }
+  .cmp__name {
+    font-size: var(--step-3); font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.15;
+    white-space: nowrap;
+  }
+  /* reserve two lines so a 1- vs 2-line meta never changes the panel height while scrubbing */
+  .cmp__meta { color: var(--fg-2); font-size: var(--step-0); line-height: 1.5; max-width: 42ch; min-height: 3em; }
+
+  /* measured stats */
+  .cmp__stats { display: grid; gap: var(--sp-3); margin-top: var(--sp-2); }
+  .cmp__stat-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.4rem; }
+  .cmp__stat-label {
+    font-family: var(--font-mono); font-size: var(--step--1); font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg);
+  }
+  .cmp__stat-val {
+    font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--accent);
+  }
+  .cmp__stat-track { position: relative; height: 6px; border-radius: 100px; background: color-mix(in srgb, var(--fg) 8%, transparent); overflow: hidden; }
+  .cmp__stat-fill {
+    position: absolute; left: 0; top: 0; height: 100%; width: 0;
+    background: var(--accent); border-radius: 100px; transition: width 0.5s var(--ease);
+  }
+
+  .cmp__link {
+    font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.04em; margin-top: var(--sp-2);
+    width: fit-content; border-bottom: 1px solid transparent; transition: border-color 0.2s var(--ease);
+  }
+  .cmp__link:hover { border-color: var(--accent); }
+
+  /* ---------- Scrub track ---------- */
+  .cmp__scrub {
+    border-top: 1px solid var(--line);
+    padding: var(--sp-3) clamp(1.4rem, 3.4vw, 2.6rem) var(--sp-4);
+  }
+  .cmp__scrub-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--sp-2); }
+  .cmp__scrub-head .label { color: var(--fg-3); }
+  .cmp__scrub-count { color: var(--accent); }
+  /* the track itself is a slider you can grab and drag */
+  .cmp__ticks { position: relative; display: flex; justify-content: space-between; align-items: center; cursor: grab; touch-action: none; }
+  .cmp__ticks:active { cursor: grabbing; }
+  .cmp__scrub-line {
+    position: absolute; left: 13px; right: 13px; top: 50%; height: 2px; transform: translateY(-50%);
+    background: color-mix(in srgb, var(--fg) 12%, transparent); border-radius: 100px;
+  }
+  .cmp__scrub-fill {
+    position: absolute; left: 13px; top: 50%; height: 2px; width: 0; transform: translateY(-50%);
+    background: color-mix(in srgb, var(--accent) 70%, transparent); border-radius: 100px;
+    transition: width 0.45s var(--ease);
+  }
+  .cmp__tick { position: relative; width: 26px; height: 26px; display: grid; place-items: center; }
+  .cmp__tick::after {
+    content: ''; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--bg); border: 1.5px solid color-mix(in srgb, var(--fg) 28%, transparent);
+    transition: transform 0.25s var(--ease), background-color 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .cmp__tick:hover::after { border-color: var(--accent); transform: scale(1.18); }
+  .cmp__tick.is-past::after { background: color-mix(in srgb, var(--fg) 30%, transparent); border-color: transparent; }
+  .cmp__tick.is-on::after {
+    background: var(--accent); border-color: var(--accent);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+
+  @media (max-width: 860px) {
+    .cmp__grid { grid-template-columns: 1fr; }
+    .cmp__stage { border-right: 0; border-bottom: 1px solid var(--line); aspect-ratio: 4 / 3; max-height: 42vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cmp__hint-arrow { animation: none; }
+    .cmp__svg, .cmp__scrub-fill, .cmp__tick::after { transition: none; }
+  }
+</style>

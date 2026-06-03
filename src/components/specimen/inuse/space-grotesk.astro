@@ -24,7 +24,7 @@ const fam = font.fontFamily;
 
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Sleeve — a record cover</span></figcaption>
-    <div class="iu__scene scene-sq">
+    <div class="iu__scene scene-sq iu__scene--portrait">
       <div class="iu__poster sleeve">
         <div class="sl-rings" aria-hidden="true"><span></span><span></span><span></span></div>
         <span class="sl-side">SIDE A · 33⅓</span>
@@ -50,7 +50,7 @@ const fam = font.fontFamily;
 <style>
   .iu__item { margin: 0; }
   .scene16 { aspect-ratio: 16 / 9; }
-  .scene-sq { aspect-ratio: 1 / 1; max-width: 460px; }
+  .scene-sq { --card-ar: 1 / 1; }
 
   .mission { background: var(--bg); color: var(--fg); padding: 5cqi; display: flex; flex-direction: column; }
   .ms-top { display: flex; justify-content: space-between; font-size: 2.6cqi; letter-spacing: 0.1em; color: var(--accent); }

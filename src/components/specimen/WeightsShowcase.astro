@@ -40,13 +40,14 @@ const fam = font.fontFamily;
   .weights__row {
     display: grid;
     grid-template-columns: 7.5rem 1fr;
-    align-items: baseline;
+    align-items: start;
     gap: var(--sp-4);
-    padding-block: clamp(0.4rem, 1.2vh, 1rem);
+    padding-block: clamp(0.9rem, 2.4vh, 1.9rem);
     border-top: 1px solid var(--line-soft);
   }
   .weights__row:first-child { border-top: 0; }
-  .weights__label { display: flex; flex-direction: column; gap: 2px; padding-top: 0.6em; }
+  /* nudge the cap-height of the label to meet the top of the big sample */
+  .weights__label { display: flex; flex-direction: column; gap: 2px; padding-top: 0.12em; }
   .weights__num {
     font-family: var(--font-mono);
     font-size: var(--step--1);

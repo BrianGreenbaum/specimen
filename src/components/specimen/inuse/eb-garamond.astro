@@ -7,7 +7,7 @@ const fam = font.fontFamily;
 <div class="iu" style={`--fam:${fam}`}>
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">The Renaissance title page</span></figcaption>
-    <div class="iu__scene title-scene">
+    <div class="iu__scene title-scene iu__scene--portrait">
       <div class="iu__poster titlepage">
         <p class="tp__l1">THE</p>
         <h3 class="tp__head">ESSAYES</h3>
@@ -39,7 +39,7 @@ const fam = font.fontFamily;
 <style>
   .iu__item { margin: 0; }
   .scene16 { aspect-ratio: 16 / 9; }
-  .title-scene { aspect-ratio: 3 / 4; max-width: 440px; }
+  .title-scene { --card-ar: 3 / 4; }
 
   .titlepage { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 7cqi 5cqi; gap: 2.5cqi; }
   .tp__l1 { font-size: 3.2cqi; letter-spacing: 0.3em; }

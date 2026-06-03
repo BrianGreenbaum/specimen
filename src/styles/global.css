@@ -210,7 +210,9 @@ body::after {
 .iu__cap { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: var(--sp-2); }
 .iu__scene {
   position: relative;
-  border: 1px solid var(--line);
+  /* theme-aware mat: the artwork sits inside a light(er) framing surface */
+  border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+  outline: 1px solid var(--line);
   overflow: hidden;
   container-type: inline-size;
   background: var(--bg-2);
@@ -218,6 +220,17 @@ body::after {
 /* Poster canvas: type scales with the box via cqi */
 .iu__poster { position: absolute; inset: 0; }
 .iu__poster * { font-family: var(--fam); }
+
+/* Portrait / square scenes: the mat runs the full column width while the
+   artwork stays a centred card at its own proportions (and its own cqi sizing,
+   via container-type, so type doesn't balloon against the wide frame). */
+.iu__scene--portrait { aspect-ratio: 16 / 9; display: grid; place-items: center; }
+.iu__scene--portrait > .iu__poster {
+  position: relative; inset: auto;
+  height: 100%; width: auto;
+  aspect-ratio: var(--card-ar, 3 / 4);
+  container-type: inline-size;
+}
 
 /* Device frame for realistic UI mockups (type stays at real px sizes) */
 .iu__device { background: var(--bg); }

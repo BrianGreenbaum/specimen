@@ -25,6 +25,7 @@ export interface DiagramOptions {
   guides?: GuideKey[];
   focus?: FocusSpot[];
   showAdvance?: boolean;
+  advanceLabel?: boolean; // draw the "advance NNN" text inside the SVG (default: follows showAdvance)
   showGuideLabels?: boolean; // text labels on the metric guides (inspector)
   fill?: number; // 0–1 fraction of the field height the type should occupy
 }
@@ -33,7 +34,7 @@ const SVGNS = 'http://www.w3.org/2000/svg';
 const W = 1000;
 const H = 1000;
 const MX = 70; // left margin for guide lines
-const LABEL_W = 250; // reserved space on the right for guide labels
+const LABEL_W = 205; // reserved space on the right for guide labels
 
 const GUIDE_LABEL: Record<GuideKey, string> = {
   ascender: 'ascender',
@@ -58,9 +59,11 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
     guides = [],
     focus = [],
     showAdvance = false,
+    advanceLabel,
     showGuideLabels = false,
     fill = 0.6,
   } = opts;
+  const drawAdvanceText = advanceLabel ?? showAdvance;
 
   await ensureFont(family, weight);
   const m = measureGlyph(family, glyph, weight);
@@ -129,9 +132,11 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
   if (showAdvance) {
     svg.appendChild(node('line', { class: 'dg-adv', x1: advL, y1: emTop - 24, x2: advL, y2: inkB + 60 }));
     svg.appendChild(node('line', { class: 'dg-adv', x1: advL + m.advance * FS, y1: emTop - 24, x2: advL + m.advance * FS, y2: inkB + 60 }));
-    svg.appendChild(
-      node('text', { class: 'dg-glabel', x: cx, y: inkB + 96, 'text-anchor': 'middle' }, `advance ${Math.round(m.advance * 1000)} units/em`)
-    );
+    if (drawAdvanceText) {
+      svg.appendChild(
+        node('text', { class: 'dg-glabel', x: cx, y: inkB + 96, 'text-anchor': 'middle' }, `advance ${Math.round(m.advance * 1000)} units/em`)
+      );
+    }
   }
 
   // base glyph

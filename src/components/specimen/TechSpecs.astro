@@ -1,11 +1,16 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 export interface Props {
   font: CollectionEntry<'fonts'>['data'];
 }
 const { font } = Astro.props;
 
-const rows: { k: string; v: string }[] = [
+// Map "pairs well with" names to specimen pages where one exists.
+const allFonts = await getCollection('fonts');
+const slugByName = new Map(allFonts.map((f) => [f.data.name, f.id]));
+
+const rows: { k: string; v: string; href?: string }[] = [
   { k: 'Designer', v: font.designer },
   ...(font.foundry ? [{ k: 'Foundry', v: font.foundry }] : []),
   { k: 'Released', v: String(font.year) },
@@ -14,6 +19,8 @@ const rows: { k: string; v: string }[] = [
   { k: 'Styles', v: `${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}` },
   { k: 'Languages', v: font.languages.join(', ') },
   { k: 'License', v: font.license },
+  { k: 'Get it', v: 'Google Fonts ↗', href: font.googleFontsUrl },
+  ...(font.sourceUrl ? [{ k: 'Source', v: 'Repository ↗', href: font.sourceUrl }] : []),
 ];
 ---
 <div class="specs">
@@ -21,7 +28,11 @@ const rows: { k: string; v: string }[] = [
     {rows.map((r) => (
       <div class="specs__row">
         <dt class="label">{r.k}</dt>
-        <dd>{r.v}</dd>
+        <dd>
+          {r.href
+            ? <a class="specs__link" href={r.href} target="_blank" rel="noopener">{r.v}</a>
+            : r.v}
+        </dd>
       </div>
     ))}
   </dl>
@@ -47,7 +58,9 @@ const rows: { k: string; v: string }[] = [
       <ul class="specs__pair-list">
         {font.pairsWith.map((p) => (
           <li class="specs__pair">
-            <span class="specs__pair-name">{p.name}</span>
+            {slugByName.has(p.name)
+              ? <a class="specs__pair-name specs__link" href={`/fonts/${slugByName.get(p.name)}`}>{p.name}</a>
+              : <span class="specs__pair-name">{p.name}</span>}
             <span class="specs__pair-role label">{p.role}</span>
           </li>
         ))}
@@ -74,6 +87,8 @@ const rows: { k: string; v: string }[] = [
   }
   .specs__row:first-child { border-top: 1px solid var(--fg); }
   .specs__row dd { font-size: var(--step-0); }
+  .specs__link { color: var(--accent); transition: opacity 0.2s var(--ease); }
+  .specs__link:hover { opacity: 0.7; }
 
   .specs__axes-title { margin-bottom: var(--sp-2); padding-bottom: var(--sp-2); border-bottom: 1px solid var(--fg); }
   .specs__axes-list, .specs__pair-list { display: flex; flex-direction: column; }

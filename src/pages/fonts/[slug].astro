@@ -12,7 +12,6 @@ import Waterfall from '../../components/specimen/Waterfall.astro';
 import DetailCallouts from '../../components/specimen/DetailCallouts.astro';
 import InUse from '../../components/specimen/InUse.astro';
 import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
-import OpenTypeFeatures from '../../components/specimen/OpenTypeFeatures.astro';
 import TechSpecs from '../../components/specimen/TechSpecs.astro';
 import Glossary from '../../components/Glossary.astro';
 import { themeToStyle } from '../../lib/theme';
@@ -42,13 +41,12 @@ const BespokeInUse = (inUseComponents[`../../components/specimen/inuse/${entry.i
 
 const sections = [
   { id: 'tester', label: 'Type Tester' },
+  { id: 'story', label: 'Story' },
   { id: 'weights', label: 'Weights' },
   { id: 'sizes', label: 'Sizes' },
   { id: 'anatomy', label: 'Anatomy' },
   { id: 'in-use', label: 'In Use' },
   { id: 'glyphs', label: 'Glyphs' },
-  ...(font.openType.length > 0 ? [{ id: 'features', label: 'OpenType' }] : []),
-  { id: 'story', label: 'Story' },
   { id: 'specs', label: 'Specs' },
 ];
 ---
@@ -60,39 +58,41 @@ const sections = [
   fixedTheme
 >
   <SiteHeader current={font.name} showToggle={false} />
-  <Hero font={font} />
-
-  {era && (
-    <a class="era-band" href={`/history/${era.data.slug}`} style={`--era-accent:${era.data.theme.accent}`}>
-      <div class="container era-band__inner">
-        <span class="label era-band__kicker">In the history of type</span>
-        <span class="era-band__era">{String(era.data.order).padStart(2, '0')} · {era.data.name}</span>
-        <span class="era-band__note">{font.historyNote}</span>
-        <span class="era-band__cta label">Explore the era →</span>
-      </div>
-    </a>
-  )}
-
   <JumpNav sections={sections} />
+  <Hero font={font} />
 
   <main>
     <Section id="tester" num="01" title="Type tester" note="Edit the text. Drag the axes.">
       <TypeTester font={font} />
     </Section>
 
-    <Section id="weights" num="02" title="Weights & styles" note={`${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}`}>
+    <Section id="story" num="02" title="The story">
+      <div class="story-prose prose" data-glossary style={`--term-fam:'${font.fontFamily}'`}>
+        <Content />
+      </div>
+      {era && (
+        <a class="story-era" href={`/history/${era.data.slug}`} style={`--era-accent:${era.data.theme.accent}`}>
+          <span class="label story-era__kicker">In the history of type</span>
+          <span class="story-era__era">{String(era.data.order).padStart(2, '0')} · {era.data.name}</span>
+          <span class="story-era__note">{font.historyNote}</span>
+          <span class="story-era__cta label">Explore the era →</span>
+        </a>
+      )}
+    </Section>
+
+    <Section id="weights" num="03" title="Weights & styles" note={`${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}`}>
       <WeightsShowcase font={font} />
     </Section>
 
-    <Section id="sizes" num="03" title="Size waterfall" note="The same words, ramped down.">
+    <Section id="sizes" num="04" title="Size waterfall" note="The same words, ramped down.">
       <Waterfall font={font} />
     </Section>
 
-    <Section id="anatomy" num="04" title="Details & anatomy" note="The marks that make it unmistakable.">
+    <Section id="anatomy" num="05" title="Details & anatomy" note="The marks that make it unmistakable.">
       <DetailCallouts callouts={font.callouts} family={font.fontFamily} />
     </Section>
 
-    <Section id="in-use" num="05" title="In use" note="Built live with the real webfont.">
+    <Section id="in-use" num="06" title="In use" note="Built live with the real webfont.">
       {BespokeInUse && <BespokeInUse font={font} />}
       {font.inUse.length > 0 && (
         <div class:list={{ 'inuse-after': BespokeInUse }}>
@@ -101,23 +101,11 @@ const sections = [
       )}
     </Section>
 
-    <Section id="glyphs" num="06" title="Character set" note="Click any glyph to inspect.">
+    <Section id="glyphs" num="07" title="Character set" note="Click any glyph to inspect.">
       <GlyphGrid font={font} />
     </Section>
 
-    {font.openType.length > 0 && (
-      <Section id="features" num="07" title="OpenType features" note="Typographic refinements, on demand.">
-        <OpenTypeFeatures font={font} />
-      </Section>
-    )}
-
-    <Section id="story" num={font.openType.length > 0 ? '08' : '07'} title="The story">
-      <div class="story-prose prose" data-glossary style={`--term-fam:'${font.fontFamily}'`}>
-        <Content />
-      </div>
-    </Section>
-
-    <Section id="specs" num={font.openType.length > 0 ? '09' : '08'} title="Technical specifications">
+    <Section id="specs" num="08" title="Technical specifications">
       <TechSpecs font={font} />
     </Section>
   </main>
@@ -127,22 +115,26 @@ const sections = [
 </Layout>
 
 <style>
-  .era-band {
-    display: block;
+  /* Editorial "where this sits in history" callout, closing the story section. */
+  .story-era {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3) var(--sp-4);
+    flex-wrap: wrap;
+    margin-top: var(--sp-6);
+    padding: var(--sp-4);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--era-accent);
+    border-radius: 3px;
     background: var(--bg-2);
-    border-bottom: 1px solid var(--line);
     transition: background 0.3s var(--ease);
   }
-  .era-band:hover { background: color-mix(in srgb, var(--era-accent) 10%, var(--bg-2)); }
-  .era-band__inner {
-    display: flex; align-items: baseline; gap: var(--sp-4); flex-wrap: wrap;
-    padding-block: var(--sp-3);
-  }
-  .era-band__kicker { color: var(--era-accent); }
-  .era-band__era { font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1); letter-spacing: -0.01em; }
-  .era-band__note { color: var(--fg-2); flex: 1; min-width: 12ch; }
-  .era-band__cta { color: var(--era-accent); white-space: nowrap; }
-  @media (max-width: 640px) { .era-band__note { display: none; } }
+  .story-era:hover { background: color-mix(in srgb, var(--era-accent) 10%, var(--bg-2)); }
+  .story-era__kicker { color: var(--era-accent); flex-basis: 100%; }
+  .story-era__era { font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1); letter-spacing: -0.01em; }
+  .story-era__note { color: var(--fg-2); flex: 1; min-width: 12ch; }
+  .story-era__cta { color: var(--era-accent); white-space: nowrap; }
+  @media (max-width: 640px) { .story-era__note { display: none; } }
 
   /* space between bespoke scenes and the shared generic scenes that follow */
   .inuse-after { margin-top: var(--sp-6); }

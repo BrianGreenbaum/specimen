@@ -41,6 +41,7 @@ const { sections } = Astro.props;
 
 <style>
   .jumpnav {
+    /* subnav — docked directly beneath the main header bar */
     position: sticky;
     top: 64px;
     z-index: 90;
@@ -53,25 +54,30 @@ const { sections } = Astro.props;
   .jumpnav__inner::-webkit-scrollbar { display: none; }
   .jumpnav__list {
     display: flex;
-    gap: 0;
-    min-height: 48px;
-    align-items: stretch;
+    /* roomier spacing between items */
+    gap: 3.25rem;
+    /* centre the labels vertically; underline sits just beneath the text */
+    align-items: center;
+    min-height: 42px;
+    /* centre the row horizontally in the bar; still scrolls if it overflows */
+    width: max-content;
+    margin-inline: auto;
   }
   .jumpnav__link {
     display: inline-flex;
     align-items: center;
     gap: 0.5em;
-    padding: 0 1rem;
+    /* no horizontal padding — the underline hugs just the number + label */
+    padding: 0;
     white-space: nowrap;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--fg-3);
     border-bottom: 2px solid transparent;
     transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
   }
-  .jumpnav__link:first-child { padding-left: 0; }
   .jumpnav__idx { color: var(--accent); opacity: 0.7; }
   .jumpnav__link:hover { color: var(--fg); }
   .jumpnav__link.is-active { color: var(--fg); border-color: var(--accent); }

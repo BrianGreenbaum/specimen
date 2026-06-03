@@ -153,7 +153,9 @@ const fam = font.fontFamily;
   .scene {
     container-type: inline-size;
     position: relative;
-    border: 1px solid var(--line);
+    /* theme-aware mat: matches the bespoke .iu__scene framing */
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
     overflow: hidden;
     aspect-ratio: 16 / 9;
     background: var(--bg-2);
@@ -162,22 +164,23 @@ const fam = font.fontFamily;
 
   /* ---------- APP UI ---------- */
   .scene--app-ui { background: var(--bg); }
-  .s-app { position: absolute; inset: 0; display: flex; flex-direction: column; font-size: 2.6cqi; }
-  .s-app__bar { display: flex; align-items: center; gap: 3cqi; padding: 2.4cqi 3cqi; border-bottom: 1px solid var(--line); }
-  .s-app__logo { font-weight: 700; color: var(--accent); }
+  /* Realistic interface sizing — kept small so it reads like a real UI. */
+  .s-app { position: absolute; inset: 0; display: flex; flex-direction: column; font-size: 1.7cqi; }
+  .s-app__bar { display: flex; align-items: center; gap: 3cqi; padding: 2cqi 2.6cqi; border-bottom: 1px solid var(--line); }
+  .s-app__logo { font-weight: 700; color: var(--accent); font-size: 1.9cqi; }
   .s-app__nav { display: flex; gap: 2.4cqi; color: var(--fg-3); }
   .s-app__nav b { color: var(--fg); font-weight: 600; }
-  .s-app__avatar { margin-left: auto; width: 6cqi; height: 6cqi; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 2.2cqi; font-weight: 600; }
+  .s-app__avatar { margin-left: auto; width: 4.2cqi; height: 4.2cqi; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 1.5cqi; font-weight: 600; }
   .s-app__body { flex: 1; display: grid; grid-template-columns: 22% 1fr; }
-  .s-app__side { display: flex; flex-direction: column; gap: 2.4cqi; padding: 3cqi; border-right: 1px solid var(--line); color: var(--fg-3); }
+  .s-app__side { display: flex; flex-direction: column; gap: 2cqi; padding: 2.6cqi; border-right: 1px solid var(--line); color: var(--fg-3); }
   .s-app__side .on { color: var(--fg); font-weight: 600; }
-  .s-app__main { padding: 3cqi; display: flex; flex-direction: column; gap: 3cqi; }
-  .s-app__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4cqi; }
-  .s-app__card { border: 1px solid var(--line); padding: 2.4cqi; display: flex; flex-direction: column; gap: 1cqi; }
-  .s-app__card .k { color: var(--fg-3); font-size: 2.2cqi; }
-  .s-app__card b { font-size: 5cqi; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: -0.01em; }
-  .s-app__card .up { color: #1f9d57; font-size: 2.2cqi; }
-  .s-app__card .dn { color: #c8442b; font-size: 2.2cqi; }
+  .s-app__main { padding: 2.6cqi; display: flex; flex-direction: column; gap: 2.6cqi; }
+  .s-app__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; }
+  .s-app__card { border: 1px solid var(--line); border-radius: 1cqi; padding: 2cqi; display: flex; flex-direction: column; gap: 0.8cqi; }
+  .s-app__card .k { color: var(--fg-3); font-size: 1.5cqi; }
+  .s-app__card b { font-size: 3.3cqi; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: -0.01em; }
+  .s-app__card .up { color: #1f9d57; font-size: 1.5cqi; }
+  .s-app__card .dn { color: #c8442b; font-size: 1.5cqi; }
   .s-app__chart { flex: 1; display: flex; align-items: flex-end; gap: 1.6cqi; padding-top: 2cqi; }
   .s-app__chart span { flex: 1; background: var(--accent); opacity: 0.85; border-radius: 1px 1px 0 0; }
   .s-app__chart span:nth-child(even) { opacity: 0.4; }

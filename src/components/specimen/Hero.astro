@@ -38,19 +38,7 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
         {font.foundry && <> · {font.foundry}</>}
       </p>
     </div>
-
-    <div class="hero__actions" data-reveal style="--reveal-delay:320ms">
-      <a class="btn btn--accent" href={font.googleFontsUrl} target="_blank" rel="noopener">
-        Get on Google Fonts ↗
-      </a>
-      {font.sourceUrl && (
-        <a class="btn" href={font.sourceUrl} target="_blank" rel="noopener">Source ↗</a>
-      )}
-      <span class="hero__license label">{font.license}</span>
-    </div>
   </div>
-
-  <div class="hero__scroll label" aria-hidden="true">Scroll to explore ↓</div>
 </header>
 
 <script>
@@ -150,6 +138,8 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
     line-height: 1;
     color: var(--accent);
     letter-spacing: -0.01em;
+    /* keep clear of the oversized display name above it */
+    margin-top: var(--sp-3);
     margin-bottom: var(--sp-5);
   }
 
@@ -158,30 +148,16 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
     flex-wrap: wrap;
     gap: var(--sp-3) var(--sp-6);
     align-items: baseline;
-    max-width: 60ch;
+    max-width: 78ch;
     margin-bottom: var(--sp-4);
   }
-  .hero__blurb { font-size: var(--step-1); color: var(--fg-2); max-width: 44ch; }
+  .hero__blurb { font-size: var(--step-1); color: var(--fg-2); max-width: 58ch; }
   .hero__credit { font-size: var(--step--1); }
   .hero__credit strong { color: var(--fg); }
-
-  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); margin-top: var(--sp-2); }
-  .hero__license { margin-left: 0.5rem; }
-
-  .hero__scroll {
-    position: absolute;
-    bottom: var(--sp-4);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
-    animation: bob 2.4s ease-in-out infinite;
-  }
-  @keyframes bob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(5px); } }
 
   @media (max-width: 640px) {
     .hero { min-height: auto; }
     .hero__name { font-size: clamp(3.5rem, 20vw, 6rem); }
-    .hero__scroll { display: none; }
     .hero__year { margin-left: 0; }
     .hero__top { flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
   }

@@ -1,11 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { showWords, showPhrases } from '../../lib/corpus';
+import { paragraphs } from '../../lib/corpus';
 export interface Props {
   font: CollectionEntry<'fonts'>['data'];
 }
 const { font } = Astro.props;
-const shufflePool = [...showPhrases, ...showWords];
+// Shuffle flows whole paragraphs, not single words/short phrases.
+const shufflePool = paragraphs;
 const initialVar = font.isVariable
   ? font.axes.map((a) => `'${a.tag}' ${a.default}`).join(', ')
   : '';
@@ -81,17 +82,6 @@ const initialVar = font.isVariable
     </div>
   </div>
 
-  {font.openType.length > 0 && (
-    <div class="tester__features">
-      <span class="label tester__features-label">OpenType</span>
-      {font.openType.map((f) => (
-        <button data-feature={f.tag} aria-pressed={f.on ? 'true' : 'false'} class:list={['feat', { 'is-on': f.on }]}>
-          <span class="feat__tag">{f.tag}</span>{f.label}
-        </button>
-      ))}
-    </div>
-  )}
-
   <div class="tester__stage">
     <div
       class="tester__preview"
@@ -114,10 +104,6 @@ const initialVar = font.isVariable
 
     const axisInputs = Array.from(root.querySelectorAll<HTMLInputElement>('[data-axis]'));
     const weightSel = root.querySelector<HTMLSelectElement>('[data-weight]');
-    const features = new Map<string, boolean>();
-    root.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((b) => {
-      features.set(b.dataset.feature!, b.getAttribute('aria-pressed') === 'true');
-    });
 
     const applyVariation = () => {
       if (isVar) {
@@ -130,11 +116,6 @@ const initialVar = font.isVariable
       } else if (weightSel) {
         preview.style.fontWeight = weightSel.value;
       }
-    };
-    const applyFeatures = () => {
-      const on = [...features.entries()].filter(([, v]) => v).map(([t]) => `'${t}' 1`);
-      const off = [...features.entries()].filter(([, v]) => !v).map(([t]) => `'${t}' 0`);
-      preview.style.fontFeatureSettings = [...on, ...off].join(', ');
     };
 
     axisInputs.forEach((i) => i.addEventListener('input', applyVariation));
@@ -169,18 +150,6 @@ const initialVar = font.isVariable
       preview.style.fontStyle = on ? 'normal' : 'italic';
     });
 
-    // Features
-    root.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((b) => {
-      b.addEventListener('click', () => {
-        const t = b.dataset.feature!;
-        const next = !features.get(t);
-        features.set(t, next);
-        b.setAttribute('aria-pressed', String(next));
-        b.classList.toggle('is-on', next);
-        applyFeatures();
-      });
-    });
-
     // Shuffle + reset
     let shuffleIdx = 0;
     root.querySelector('[data-shuffle]')?.addEventListener('click', () => {
@@ -190,8 +159,6 @@ const initialVar = font.isVariable
     root.querySelector('[data-reset]')?.addEventListener('click', () => {
       preview.textContent = defaultText;
     });
-
-    applyFeatures();
   });
 </script>
 
@@ -217,10 +184,10 @@ const initialVar = font.isVariable
   .ctl--axis { min-width: 8.5rem; }
   .ctl__top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
   .ctl__name {
-    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em;
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em;
     text-transform: uppercase; color: var(--fg-2);
   }
-  .ctl__val { font-family: var(--font-mono); font-size: 0.66rem; color: var(--accent); }
+  .ctl__val { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); }
 
   .ctl__range { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--fg-3); cursor: pointer; }
   .ctl__range::-webkit-slider-thumb {
@@ -255,22 +222,6 @@ const initialVar = font.isVariable
   .tgl:hover { border-color: var(--fg); color: var(--fg); }
   .tgl.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
   .tgl--action:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-
-  .tester__features {
-    display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
-    padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--line);
-  }
-  .tester__features-label { margin-right: 0.5rem; }
-  .feat {
-    display: inline-flex; align-items: center; gap: 0.45em;
-    font-size: 0.74rem; padding: 0.35rem 0.6rem;
-    border: 1px solid var(--line); border-radius: 100px; color: var(--fg-2);
-    transition: all 0.2s var(--ease);
-  }
-  .feat__tag { font-family: var(--font-mono); font-size: 0.62rem; color: var(--fg-3); text-transform: uppercase; }
-  .feat:hover { border-color: var(--fg-3); color: var(--fg); }
-  .feat.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
-  .feat.is-on .feat__tag { color: var(--accent-contrast); opacity: 0.8; }
 
   .tester__stage { padding: clamp(1.2rem, 4vw, 2.5rem); min-height: 240px; display: flex; align-items: center; }
   .tester__preview {
