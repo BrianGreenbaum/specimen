@@ -49,6 +49,20 @@ export const glossary: Record<string, GlossaryEntry> = {
     definition: 'The part of a letter that drops below the baseline, as in g, j, p, q and y.',
     glyph: 'p', guides: ['baseline', 'descender'], focus: [{ x: 0.22, y: 0.85, r: 0.18, label: 'descender' }],
   },
+  'cap height': {
+    term: 'Cap height',
+    definition: 'The height of the capital letters, measured from the baseline. It usually sits a touch below the ascender line.',
+    glyph: 'H', guides: ['cap', 'baseline'],
+  },
+  overshoot: {
+    term: 'Overshoot',
+    definition: 'The small amount by which round and pointed letters (o, e, A, v) push past a guide line, so they look the same size as the flat-topped letters beside them.',
+    glyph: 'o', guides: ['x', 'baseline'], focus: [{ x: 0.5, y: 0.98, r: 0.1, label: 'overshoot' }],
+  },
+  measure: {
+    term: 'Measure',
+    definition: 'The length of a line of text — ideally 45–75 characters. Too long and the eye struggles to find the next line; too short and the rhythm keeps breaking.',
+  },
   counter: {
     term: 'Counter',
     definition: 'The enclosed or partly-enclosed white space inside a letter, like the hole of an o or the loops of a g.',
@@ -62,17 +76,17 @@ export const glossary: Record<string, GlossaryEntry> = {
   aperture: {
     term: 'Aperture',
     definition: 'The opening where a curved letter doesn’t fully close — the gap in a c, e or s. Open apertures help legibility at small sizes.',
-    glyph: 'c', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.86, y: 0.5, r: 0.2, label: 'aperture' }],
+    glyph: 'e', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.8, y: 0.66, r: 0.16, label: 'aperture' }],
   },
   terminal: {
     term: 'Terminal',
     definition: 'The end of a stroke that has no serif — it can be cut flat, tapered, or finished with a round “ball”.',
-    glyph: 'a', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.78, y: 0.16, r: 0.16, label: 'terminal' }],
+    glyph: 'c', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.74, y: 0.14, r: 0.14, label: 'terminal' }],
   },
   'ball terminal': {
     term: 'Ball terminal',
     definition: 'A stroke that ends in a small circular blob rather than a point — a hallmark flourish of Didone and many display serifs.',
-    glyph: 'f', family: DIDONE, guides: ['ascender', 'x', 'baseline'], focus: [{ x: 0.66, y: 0.05, r: 0.13, label: 'ball' }],
+    glyph: 'f', family: DIDONE, guides: ['ascender', 'x', 'baseline'], focus: [{ x: 0.71, y: 0.09, r: 0.12, label: 'ball' }],
   },
   stem: {
     term: 'Stem',
@@ -99,7 +113,43 @@ export const glossary: Record<string, GlossaryEntry> = {
   ear: {
     term: 'Ear',
     definition: 'The small stroke that projects from the top-right of a double-storey lowercase g — a quiet place for personality.',
-    glyph: 'g', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.64, y: 0.1, r: 0.11, label: 'ear' }],
+    glyph: 'g', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.72, y: 0.16, r: 0.11, label: 'ear' }],
+  },
+  bracket: {
+    term: 'Bracket',
+    definition:
+      'The curved transition that eases a serif into the stem instead of meeting it at a hard right angle. Bracketed serifs feel warm and old-style; flat, unbracketed ones feel modern and mechanical.',
+    glyph: 'T', family: 'Besley Variable', guides: ['baseline'], focus: [{ x: 0.5, y: 0.9, r: 0.18, label: 'bracket' }],
+  },
+  spur: {
+    term: 'Spur',
+    definition: 'A small projection off a main stroke — like the little point where the bowl of a capital G turns up to meet its bar.',
+    glyph: 'G', family: 'Space Grotesk Variable', guides: ['cap', 'baseline'], focus: [{ x: 0.78, y: 0.6, r: 0.16, label: 'spur' }],
+  },
+  shoulder: {
+    term: 'Shoulder',
+    definition: 'The curved stroke that arches out of a stem and back down to the baseline, as in the n, m and h.',
+    glyph: 'n', family: SERIF, guides: ['x', 'baseline'], focus: [{ x: 0.6, y: 0.12, r: 0.18, label: 'shoulder' }],
+  },
+  arm: {
+    term: 'Arm',
+    definition: 'A horizontal or upward stroke that is free at one end, like the arms of an E, F or T.',
+    glyph: 'E', family: SERIF, guides: ['cap', 'baseline'], focus: [{ x: 0.6, y: 0.07, r: 0.15, label: 'arm' }],
+  },
+  leg: {
+    term: 'Leg',
+    definition: 'The down-stroke that gives a letter its footing — the kicking stroke of a K or an R.',
+    glyph: 'R', family: SERIF, guides: ['cap', 'baseline'], focus: [{ x: 0.78, y: 0.9, r: 0.16, label: 'leg' }],
+  },
+  tail: {
+    term: 'Tail',
+    definition: 'A descending, often decorative stroke — the flourish that sweeps below the baseline on a Q, or the descender of a j or y.',
+    glyph: 'Q', family: SERIF, guides: ['cap', 'baseline'], focus: [{ x: 0.66, y: 0.92, r: 0.18, label: 'tail' }],
+  },
+  apex: {
+    term: 'Apex',
+    definition: 'The point at the top where two diagonal strokes meet, as in the peak of an A or an M.',
+    glyph: 'A', family: SERIF, guides: ['cap', 'baseline'], focus: [{ x: 0.5, y: 0.06, r: 0.14, label: 'apex' }],
   },
   ligature: {
     term: 'Ligature',

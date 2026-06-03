@@ -10,6 +10,15 @@ const { current, showToggle = true } = Astro.props;
 // Menus shown on hover/focus under the History and Fonts links.
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+
+// Lexicon sections — kept in sync with the groups in /glossary.
+const lexSections = [
+  { id: 'anatomy', name: 'Anatomy', meta: 'Parts of a letter' },
+  { id: 'metrics', name: 'Metrics', meta: 'The guiding lines' },
+  { id: 'setting', name: 'Setting', meta: 'Space & rhythm' },
+  { id: 'lineage', name: 'Lineages', meta: 'Families of type' },
+  { id: 'screen', name: 'On screen', meta: 'Type as technology' },
+];
 ---
 <header class="site-header">
   <div class="container site-header__inner">
@@ -51,6 +60,19 @@ const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.dat
       </div>
 
       <a href="/compare" class="header-link label">Compare</a>
+
+      <div class="navitem">
+        <a href="/glossary" class="header-link label">Lexicon</a>
+        <div class="dropdown dropdown--list" role="menu" aria-label="Lexicon sections">
+          {lexSections.map((s, i) => (
+            <a class="dropdown__item" role="menuitem" href={`/glossary#${s.id}`}>
+              <span class="dropdown__idx">{String(i + 1).padStart(2, '0')}</span>
+              <span class="dropdown__name">{s.name}</span>
+              <span class="dropdown__meta">{s.meta}</span>
+            </a>
+          ))}
+        </div>
+      </div>
 
       {showToggle && <ColorModeToggle />}
     </nav>

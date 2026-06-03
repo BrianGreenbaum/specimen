@@ -28,7 +28,7 @@
     for (const node of nodes) {
       const txt = node.nodeValue || '';
       if (!txt.trim() || !node.parentElement) continue;
-      if (node.parentElement.closest('.term, a, code, .label, h1, h2, h3, .index-num')) continue;
+      if (node.parentElement.closest('.term, a, code, .label, h1, h2, h3, .index-num, .card__plate')) continue;
       const m = txt.match(re);
       if (!m || m.index == null) continue;
       const i = m.index;

@@ -1,0 +1,276 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import JumpNav from '../components/specimen/JumpNav.astro';
+import Glossary from '../components/Glossary.astro';
+import { glossary } from '../lib/glossary';
+
+// The terms surfaced as hover tooltips across the site, gathered into one
+// editorial lexicon. Visual terms re-use the shared glyph-diagram engine; style
+// terms show a word set in a representative face; concept terms get a small
+// purpose-built typographic motif.
+type Kind = 'diagram' | 'sample' | 'concept';
+const kindOf = (key: string): Kind => {
+  const e = glossary[key];
+  if (e.glyph) return 'diagram';
+  if (e.sample) return 'sample';
+  return 'concept';
+};
+
+const groups: { id: string; name: string; note: string; keys: string[] }[] = [
+  {
+    id: 'anatomy',
+    name: 'Anatomy',
+    note: 'The parts of a single letter',
+    keys: ['stem', 'shoulder', 'bowl', 'counter', 'aperture', 'serif', 'bracket', 'terminal', 'ball terminal', 'spur', 'ear', 'arm', 'leg', 'tail', 'apex', 'hairline', 'contrast', 'stress'],
+  },
+  {
+    id: 'metrics',
+    name: 'Metrics',
+    note: 'The invisible lines type is built on, top to bottom',
+    keys: ['ascender', 'cap height', 'x-height', 'baseline', 'descender', 'overshoot'],
+  },
+  {
+    id: 'setting',
+    name: 'Setting',
+    note: 'Space, rhythm & the joining of letters',
+    keys: ['kerning', 'tracking', 'leading', 'measure', 'ligature'],
+  },
+  {
+    id: 'lineage',
+    name: 'Lineages',
+    note: 'The great families, oldest to newest',
+    keys: ['humanist', 'old-style', 'transitional', 'didone', 'slab serif', 'grotesque', 'neo-grotesque', 'geometric', 'monospace'],
+  },
+  {
+    id: 'screen',
+    name: 'On screen',
+    note: 'The letter as living technology',
+    keys: ['optical size', 'variable font'],
+  },
+];
+
+const total = Object.keys(glossary).length;
+const DEFAULT_FAM = 'Fraunces Variable';
+---
+<Layout title="Lexicon — Specimen" description="A field guide to the vocabulary of type: anatomy, metrics, setting, lineages and the letter as living technology — every term the library annotates, in one place.">
+  <SiteHeader current="Lexicon" />
+  <JumpNav sections={groups.map((g) => ({ id: g.id, label: g.name }))} />
+
+  <header class="lex-hero">
+    <div class="container">
+      <p class="label" data-reveal>Lexicon · {total} terms</p>
+      <h1 class="lex-hero__title" data-reveal style="--reveal-delay:80ms">The vocabulary<br />of the <em>letter</em></h1>
+      <p class="lex-hero__lede" data-reveal style="--reveal-delay:160ms">
+        Every term the rest of the site quietly underlines — the parts of a letter, the lines it
+        sits on, the families it belongs to. Each one is drawn live in a face that shows it best.
+      </p>
+    </div>
+  </header>
+
+  <main class="container" data-glossary>
+    {groups.map((g) => (
+      <section class="lex-sec" id={g.id}>
+        <div class="lex-sec__head" data-reveal>
+          <h2 class="lex-sec__name">{g.name}</h2>
+          <p class="lex-sec__note">{g.note}</p>
+          <span class="lex-sec__count label">{String(g.keys.length).padStart(2, '0')}</span>
+        </div>
+        <div class="lex-grid">
+          {g.keys.map((key, i) => {
+            const e = glossary[key];
+            const kind = kindOf(key);
+            return (
+              <article class="card" data-reveal style={`--reveal-delay:${Math.min(i, 6) * 60}ms`}>
+                <div class={`card__plate card__plate--${kind}`}>
+                  {kind === 'diagram' && (
+                    <svg
+                      class="card__svg"
+                      data-term-svg
+                      data-family={e.family || DEFAULT_FAM}
+                      data-glyph={e.glyph}
+                      data-guides={JSON.stringify(e.guides || [])}
+                      data-focus={JSON.stringify(e.focus || [])}
+                      data-glabels={g.id === 'metrics' ? '1' : undefined}
+                      preserveAspectRatio="xMidYMid meet"
+                      role="img"
+                      aria-label={`${e.glyph} — ${e.term}`}
+                    ></svg>
+                  )}
+                  {kind === 'sample' && (
+                    <span class="card__word" style={`font-family:'${e.sampleFamily}'`}>{e.sample}</span>
+                  )}
+                  {kind === 'concept' && key === 'leading' && (
+                    <div class="motif motif--leading" aria-hidden="true">
+                      <span>Set</span><span>the</span><span>line</span>
+                    </div>
+                  )}
+                  {kind === 'concept' && key === 'optical size' && (
+                    <div class="motif motif--opsz" aria-hidden="true">
+                      <em class="motif__sm">A</em><em class="motif__lg">A</em>
+                    </div>
+                  )}
+                  {kind === 'concept' && key === 'variable font' && (
+                    <div class="motif motif--vf" aria-hidden="true"><em>A</em></div>
+                  )}
+                  {kind === 'concept' && key === 'measure' && (
+                    <div class="motif motif--measure" aria-hidden="true">
+                      <i></i><i></i><i></i>
+                      <span class="motif__rule"><em>45–75</em></span>
+                    </div>
+                  )}
+                </div>
+                <div class="card__text">
+                  <h3 class="card__term">{e.term}</h3>
+                  <p class="card__def">{e.definition}</p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    ))}
+  </main>
+
+  <Glossary />
+  <SiteFooter />
+</Layout>
+
+<script>
+  import { renderGlyphDiagram } from '../lib/diagram';
+  const draw = () => {
+    document.querySelectorAll<SVGElement>('[data-term-svg]').forEach((svg) => {
+      if (svg.dataset.drawn) return;
+      svg.dataset.drawn = '1';
+      const labels = svg.dataset.glabels === '1';
+      renderGlyphDiagram(svg, {
+        family: svg.dataset.family!,
+        glyph: svg.dataset.glyph!,
+        guides: JSON.parse(svg.dataset.guides || '[]'),
+        focus: JSON.parse(svg.dataset.focus || '[]'),
+        showGuideLabels: labels,
+        fill: labels ? 0.52 : 0.62,
+      });
+    });
+  };
+  (document as any).fonts?.ready.then(draw);
+  draw();
+  document.addEventListener('astro:after-swap', draw);
+</script>
+
+<style>
+  /* ---- Hero ---- */
+  .lex-hero { padding-block: clamp(3rem, 10vh, 6rem) clamp(2rem, 5vh, 3.25rem); border-bottom: 1px solid var(--line); }
+  .lex-hero__title {
+    font-family: var(--font-ui); font-weight: 680; font-size: clamp(2.6rem, 10vw, 7rem);
+    line-height: 0.92; letter-spacing: -0.03em; margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .lex-hero__title em {
+    font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent);
+  }
+  .lex-hero__lede { max-width: 56ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
+
+  /* ---- Section ---- */
+  .lex-sec { padding-block: clamp(2.5rem, 7vh, 5rem); border-bottom: 1px solid var(--line); scroll-margin-top: 116px; }
+  .lex-sec:last-of-type { border-bottom: 0; }
+  .lex-sec__head {
+    position: relative; display: flex; align-items: baseline; flex-wrap: wrap;
+    gap: 0.75rem 1.25rem; margin-bottom: var(--sp-5);
+    padding-bottom: var(--sp-3); border-bottom: 1px solid var(--line);
+  }
+  .lex-sec__name { font-family: var(--font-ui); font-weight: 660; font-size: var(--step-2); letter-spacing: -0.02em; }
+  .lex-sec__note { color: var(--fg-3); font-size: var(--step-0); }
+  .lex-sec__count { margin-left: auto; color: var(--fg-3); }
+
+  /* ---- Grid of cards (archival hairline grid) — three across on desktop ---- */
+  .lex-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+  }
+  .card { background: var(--bg); display: flex; flex-direction: column; }
+
+  .card__plate {
+    position: relative; aspect-ratio: 16 / 11; overflow: hidden;
+    display: grid; place-items: center;
+    background:
+      radial-gradient(120% 130% at 50% 0%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 62%),
+      var(--bg-2);
+  }
+  .card__svg { width: 100%; height: 100%; }
+  /* In-plate feature + guide labels live in 1000-unit viewBox space; scale them
+     up so they stay legible at the card's render size. */
+  .card__svg :global(.dg-flabel) { font-size: 38px; }
+  .card__svg :global(.dg-glabel) { font-size: 30px; }
+  .card__svg :global(.dg-ring) { stroke-width: 3.5; }
+
+  .card__word {
+    font-size: clamp(2rem, 4.6vw, 3.2rem); line-height: 1; color: var(--fg);
+    padding: 0 0.9rem; text-align: center; white-space: nowrap;
+    letter-spacing: -0.005em; max-width: 100%;
+  }
+
+  /* ---- Concept motifs ---- */
+  .motif { color: var(--fg); display: grid; place-items: center; gap: 0.1em; }
+  .motif--leading {
+    font-family: 'EB Garamond Variable', serif; font-size: clamp(1.5rem, 4.5vw, 2.1rem);
+    line-height: 1.0; position: relative; padding-left: 1.6rem;
+  }
+  .motif--leading span { display: block; }
+  .motif--leading::before {
+    content: ''; position: absolute; left: 0.55rem; top: 0.18em; bottom: 0.18em;
+    width: 1px; background: color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .motif--leading::after {
+    content: ''; position: absolute; left: 0.3rem; right: auto; top: 0.18em; width: 0.55rem; height: 1px;
+    background: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 0 calc(1.0em + 0.0px) 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  .motif--opsz { grid-auto-flow: column; align-items: baseline; gap: 0.4em; font-family: 'Newsreader Variable', serif; color: var(--fg); }
+  .motif--opsz em { font-style: normal; line-height: 0.8; }
+  .motif--opsz .motif__sm { font-size: 1.5rem; }
+  .motif--opsz .motif__lg { font-size: 4.5rem; }
+
+  .motif--vf em {
+    font-family: 'Fraunces Variable', serif; font-style: normal; font-size: 4.6rem; line-height: 0.8;
+    display: block; animation: vf-weight 4.5s var(--ease) infinite alternate;
+  }
+  @keyframes vf-weight {
+    0%   { font-variation-settings: 'wght' 100, 'opsz' 9; }
+    100% { font-variation-settings: 'wght' 900, 'opsz' 144; }
+  }
+  @media (prefers-reduced-motion: reduce) { .motif--vf em { animation: none; font-weight: 600; } }
+
+  /* Measure — three short lines of "type" over a width rule labelled 45–75 */
+  .motif--measure { width: min(58%, 200px); gap: 0.5rem; }
+  .motif--measure i { display: block; width: 100%; height: 5px; border-radius: 2px; background: color-mix(in srgb, var(--fg) 32%, transparent); }
+  .motif--measure i:nth-child(2) { width: 92%; }
+  .motif--measure i:nth-child(3) { width: 78%; }
+  .motif__rule {
+    position: relative; width: 100%; height: 1px; margin-top: 0.5rem;
+    background: color-mix(in srgb, var(--accent) 60%, transparent); display: grid; place-items: center;
+  }
+  .motif__rule::before, .motif__rule::after {
+    content: ''; position: absolute; top: 50%; width: 1px; height: 9px;
+    background: color-mix(in srgb, var(--accent) 60%, transparent); transform: translateY(-50%);
+  }
+  .motif__rule::before { left: 0; }
+  .motif__rule::after { right: 0; }
+  .motif__rule em {
+    font-family: var(--font-mono); font-style: normal; font-size: 0.7rem; color: var(--accent);
+    background: var(--bg-2); padding: 0 0.4rem; position: relative; z-index: 1;
+  }
+
+  .card__text { padding: var(--sp-4) var(--sp-4) var(--sp-5); border-top: 1px solid var(--line); flex: 1; }
+  .card__term { font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.8rem); font-weight: 620; letter-spacing: -0.015em; margin-bottom: 0.55rem; }
+  .card__def { color: var(--fg-2); font-size: var(--step-0); line-height: 1.58; max-width: 42ch; }
+
+  @media (max-width: 900px) {
+    .lex-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .lex-grid { grid-template-columns: 1fr; }
+    .card__text { padding: var(--sp-3) var(--sp-3) var(--sp-4); }
+  }
+</style>
