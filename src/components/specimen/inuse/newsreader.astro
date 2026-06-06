@@ -1,0 +1,634 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+// Sans/mono chrome for UI furniture (loaded site-wide in Layout.astro).
+const ui = "'Source Sans 3', system-ui, sans-serif";
+const mono = "'IBM Plex Mono', ui-monospace, monospace";
+---
+<div class="iu" style={`--fam:${fam}; --ui:${ui}; --mono:${mono}`}>
+
+  <!-- 01 — INTERACTIVE article reader UI (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Reader UI — long-form article, live type controls &amp; scroll progress</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device read" data-read>
+        <div class="read__progress" data-progress></div>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">thedispatch.press / longform / the-quiet-machine</span>
+        </div>
+        <div class="read__bar">
+          <span class="read__logo">The&nbsp;Dispatch</span>
+          <div class="read__controls" role="group" aria-label="Reading controls">
+            <div class="read__sizer">
+              <button class="read__step" data-size="-" aria-label="Smaller text">A<span>−</span></button>
+              <span class="read__sizeval" data-sizeval>17 px</span>
+              <button class="read__step" data-size="+" aria-label="Larger text">A<span>+</span></button>
+            </div>
+            <div class="read__themes" role="group" aria-label="Reading surface">
+              <button class="read__theme is-on" data-surface="paper" aria-pressed="true">Paper</button>
+              <button class="read__theme" data-surface="sepia" aria-pressed="false">Sepia</button>
+              <button class="read__theme" data-surface="night" aria-pressed="false">Night</button>
+            </div>
+          </div>
+          <span class="read__time">9 min read</span>
+        </div>
+        <article class="read__body" data-scroller data-body>
+          <span class="read__kicker">Technology · Reported essay</span>
+          <h1 class="read__head">The quiet machine: inside the newsroom that runs itself at night</h1>
+          <p class="read__byline">By <span class="read__author">Mara Velasquez</span> · <span class="read__fig">14 June 2026</span></p>
+          <p class="read__lede">Long after the last editor has gone home, the wire keeps moving — and for the first time, so does the page. We spent three weeks watching the overnight desk that no longer has anyone sitting at it.</p>
+          <p>At <span class="read__fig">2:14</span> a.m. the building is dark except for one screen on the third floor. It is refreshing a feed of municipal filings, court dockets and weather alerts, and every few minutes it decides, on its own, whether any of it is news. When it decides yes, a headline appears on the public site within <span class="read__fig">40</span> seconds — written, ranked and placed without a human in the loop.</p>
+          <p>The editors call it the quiet machine, half affection and half unease. It does not break stories so much as it keeps the lights on between them: the <span class="read__fig">11</span> p.m. closing price, the overnight collision on the ring road, the <span class="read__fig">3</span> a.m. result of a council vote that ran past midnight in a half-empty chamber.</p>
+          <blockquote class="read__quote">It writes the way the building used to sound at four in the morning — steady, unglamorous, never asleep.</blockquote>
+          <p>None of it would be possible at this size without a typeface drawn to be read rather than admired. At <span class="read__fig">17</span> pixels the serifs thicken, the spacing opens, and the column settles into the even grey that the trade calls a good colour. Push the same letters up into the headline and they sharpen toward display crispness — one file, tuned to every size on the page.</p>
+          <p>By dawn the machine has filed <span class="read__fig">26</span> items and flagged <span class="read__fig">4</span> for a human to look at when the desk arrives. The editors read those four first, over coffee, the way their predecessors once read the overnight wire — quietly, carefully, and entirely on screen.</p>
+        </article>
+      </div>
+    </div>
+    <p class="iu__hint label">Resize the text and switch the surface — the bar at the top tracks your scroll. Headline rides a 60pt optical cut; the body sits at a true 12pt reading cut.</p>
+  </figure>
+
+  <!-- 02 — Newspaper front page: Newsreader for heads AND body -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Front page — masthead, decks &amp; columns, all one face</span></figcaption>
+    <div class="iu__scene scene-portrait">
+      <div class="paper" data-paper>
+        <header class="paper__masthead">
+          <div class="paper__rule paper__rule--top">
+            <span>Vol. CXLIV · No. 312</span>
+            <span>City &amp; Final</span>
+            <span>Price 25c</span>
+          </div>
+          <h2 class="paper__nameplate" data-nameplate>The Evening Standard-Bearer</h2>
+          <div class="paper__rule paper__rule--sub">
+            <span>Established 1881</span>
+            <span class="paper__weather">Clear, then rain by morning · High 64°</span>
+            <span>Wednesday, June 17</span>
+          </div>
+        </header>
+        <div class="paper__grid">
+          <article class="paper__lead">
+            <span class="paper__kicker">City Hall</span>
+            <h3 class="paper__lead-head">Council Approves Overnight, Ending a Year of Delay on the Riverfront</h3>
+            <p class="paper__deck">After <em>eleven</em> public hearings, a divided chamber votes 6–3 to break ground in the autumn</p>
+            <p class="paper__col"><span class="paper__drop">A</span> measure that had stalled for the better part of a year cleared the council shortly after midnight, clearing the way for the long-debated riverfront works to begin before the first frost. The vote came after a final round of testimony that stretched the session past its usual close.</p>
+            <p class="paper__col">Supporters framed the project as overdue; opponents warned of cost. Both sides agreed on one thing only: that the chamber had not sat this late in living memory, and that the gallery had emptied long before the roll was called.</p>
+          </article>
+          <article class="paper__side">
+            <span class="paper__kicker">Markets</span>
+            <h4 class="paper__side-head">Mills Steady as Wheat Eases on Late Rain</h4>
+            <p class="paper__col paper__col--sm">Grain futures slipped on forecasts of overnight rain across the plains, easing a week of pressure on the city&rsquo;s flour mills. Closing figures held within a narrow band.</p>
+            <div class="paper__quote">
+              <p>The harvest will decide the winter price, not the weather of a single night.</p>
+              <span>— a broker on the floor</span>
+            </div>
+            <span class="paper__kicker paper__kicker--2">Weather</span>
+            <h4 class="paper__side-head">Fair, Turning Wet Before the Commute</h4>
+            <p class="paper__col paper__col--sm">A clear evening gives way to showers near dawn, with the heaviest rain expected during the early morning hours.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the nameplate to wake it. One typeface from the 96pt nameplate down to the 9pt market column — optical size doing the heavy lifting at both ends.</p>
+  </figure>
+
+  <!-- 03 — E-reader long-read: drop cap + pull quote, paged -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">E-reader — paged long-read with drop cap &amp; pull quote</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device ereader" data-ereader>
+        <div class="ereader__topbar">
+          <span class="ereader__crumb">Library · Essays</span>
+          <span class="ereader__loc" data-loc>Page 3 of 5 · 61%</span>
+        </div>
+        <div class="ereader__page" data-page-wrap>
+          <div class="ereader__pages" data-pages>
+            <section class="ereader__leaf" data-leaf>
+              <span class="ereader__chap">Chapter Two · The Even Grey</span>
+              <h3 class="ereader__title">On Reading Without Noticing</h3>
+              <p class="ereader__first"><span class="ereader__drop">R</span>eading is the rare art that succeeds only by vanishing. A page set well asks nothing of the eye; it offers no resistance, no flourish to stop and admire, only the steady passage of meaning from one line to the next. The letters do their work and then politely disappear.</p>
+              <p>This is harder than it sounds. A face must be even enough that no single word leaps from the column, yet distinct enough that the eye never stumbles. The thin strokes must hold at small sizes without flickering; the spacing must open just enough to keep the lines from clotting into grey mud.</p>
+              <blockquote class="ereader__pull">The best reading type is the type you finish a chapter without having seen.</blockquote>
+              <p>What the eye wants, in the end, is rhythm — a column whose colour stays constant from the first line to the last, so that an hour passes and the reader looks up surprised to find the room has gone dark around the lit rectangle in their hands.</p>
+            </section>
+            <section class="ereader__leaf" data-leaf hidden>
+              <span class="ereader__chap">Chapter Two · The Even Grey</span>
+              <p>The history of the reading face is a history of restraint. Each generation of punchcutters trimmed away a little more performance, leaving more room for the words. The Enlightenment straightened the stress; the screen demanded a larger x-height and serifs that would survive a backlit pixel grid.</p>
+              <p>And yet the goal never changed. From the hand press to the handheld, the aim has been the same modest miracle: to carry an argument intact from one mind to another, and to leave no trace of the vehicle that carried it.</p>
+              <blockquote class="ereader__pull">Set the page so well that the reader forgets there is a page at all.</blockquote>
+              <p>That is the whole ambition of a text serif, and it is enough. To be finished and forgotten is not a failure of design. It is the highest form of success a reading face can hope for.</p>
+            </section>
+          </div>
+        </div>
+        <div class="ereader__nav">
+          <button class="ereader__btn" data-prev aria-label="Previous page">‹ Prev</button>
+          <span class="ereader__dots" data-dots aria-hidden="true"></span>
+          <button class="ereader__btn" data-next aria-label="Next page">Next ›</button>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Turn the page with Prev / Next. A 96pt drop cap and a true-italic pull quote against a 12pt reading column.</p>
+  </figure>
+
+  <!-- 04 — Editorial feature opener showing the italic -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — feature opener, the true italic</span></figcaption>
+    <div class="iu__scene scene-wide">
+      <div class="feature" data-feature>
+        <div class="feature__meta">
+          <span class="feature__section">The Long Read</span>
+          <span class="feature__issue">Issue 47 · Summer</span>
+        </div>
+        <div class="feature__center">
+          <span class="feature__eyebrow">A profile</span>
+          <h2 class="feature__head"><span class="feature__upright">The letters that</span><br><em data-italic>lean in to listen</em></h2>
+          <p class="feature__deck">For forty years she has drawn type that <em>asks</em> to be read aloud — a study of the italic as the voice inside the voice.</p>
+        </div>
+        <div class="feature__foot">
+          <p class="feature__standfirst">Words by <span class="feature__name">Eleni Marchetti</span></p>
+          <p class="feature__credit">Photographs by <span class="feature__name">D. Osei</span></p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the title — the upright sentence leans into its true italic, the way emphasis enters a quiet voice.</p>
+  </figure>
+
+</div>
+
+<script>
+  // ---- 01 reader UI: type size, surface, scroll progress ----
+  document.querySelectorAll<HTMLElement>('[data-read]').forEach((read) => {
+    const body = read.querySelector<HTMLElement>('[data-body]')!;
+    const scroller = read.querySelector<HTMLElement>('[data-scroller]')!;
+    const progress = read.querySelector<HTMLElement>('[data-progress]')!;
+    const sizeval = read.querySelector<HTMLElement>('[data-sizeval]')!;
+    let size = 17;
+    const clamp = (n: number) => Math.max(14, Math.min(22, n));
+
+    const applySize = () => {
+      body.style.setProperty('--read-body', `${size}px`);
+      sizeval.textContent = `${size} px`;
+    };
+    read.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        size = clamp(size + (btn.dataset.size === '+' ? 1 : -1));
+        applySize();
+      })
+    );
+
+    read.querySelectorAll<HTMLButtonElement>('[data-surface]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        read.querySelectorAll('[data-surface]').forEach((b) => {
+          b.classList.remove('is-on');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('is-on');
+        btn.setAttribute('aria-pressed', 'true');
+        read.setAttribute('data-surface-on', btn.dataset.surface!);
+      })
+    );
+
+    let ticking = false;
+    const onScroll = () => {
+      ticking = false;
+      const max = scroller.scrollHeight - scroller.clientHeight;
+      const pct = max > 0 ? scroller.scrollTop / max : 0;
+      progress.style.transform = `scaleX(${pct})`;
+    };
+    scroller.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+    });
+
+    applySize();
+    onScroll();
+  });
+
+  // ---- 03 e-reader: paged turning ----
+  document.querySelectorAll<HTMLElement>('[data-ereader]').forEach((er) => {
+    const leaves = Array.from(er.querySelectorAll<HTMLElement>('[data-leaf]'));
+    const loc = er.querySelector<HTMLElement>('[data-loc]')!;
+    const dots = er.querySelector<HTMLElement>('[data-dots]')!;
+    const prev = er.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = er.querySelector<HTMLButtonElement>('[data-next]')!;
+    // Two on-screen leaves are part of a 5-page conceptual book.
+    const total = 5;
+    const basePage = 3; // first leaf == page 3
+    let i = 0;
+
+    const render = () => {
+      leaves.forEach((leaf, k) => { leaf.hidden = k !== i; });
+      const page = basePage + i;
+      const pct = Math.round((page / total) * 100);
+      loc.textContent = `Page ${page} of ${total} · ${pct}%`;
+      dots.replaceChildren();
+      for (let d = 1; d <= total; d++) {
+        const dot = document.createElement('i');
+        if (d === page) dot.className = 'is-on';
+        dots.appendChild(dot);
+      }
+      prev.disabled = i === 0;
+      next.disabled = i === leaves.length - 1;
+    };
+
+    const turn = (dir: number) => {
+      const ni = Math.max(0, Math.min(leaves.length - 1, i + dir));
+      if (ni === i) return;
+      i = ni;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        const cur = leaves[i];
+        cur.setAttribute('data-turn', dir > 0 ? 'in-next' : 'in-prev');
+        cur.addEventListener('animationend', () => cur.removeAttribute('data-turn'), { once: true });
+      }
+      render();
+    };
+
+    prev.addEventListener('click', () => turn(-1));
+    next.addEventListener('click', () => turn(1));
+    render();
+  });
+
+  // ---- 04 feature opener: scroll-into-view reveal of the italic ----
+  document.querySelectorAll<HTMLElement>('[data-feature]').forEach((feature) => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { feature.classList.add('is-in'); return; }
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          feature.classList.add('is-in');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(feature);
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches other inuse components */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-portrait { aspect-ratio: 3 / 4; }
+  .scene-wide { aspect-ratio: 16 / 10; }
+  @container (min-width: 720px) { .scene-portrait { aspect-ratio: 4 / 5; } }
+
+  .iu__device {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); overflow: hidden;
+  }
+  .iu__chrome {
+    display: flex; align-items: center; gap: 0.7rem; flex: none;
+    padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--line); background: var(--bg-2);
+  }
+  .iu__dots { display: flex; gap: 6px; }
+  .iu__dots i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 22%, transparent); }
+  .iu__addr {
+    font-family: var(--ui); font-size: 11.5px; color: var(--fg-3); letter-spacing: 0.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    background: color-mix(in srgb, var(--fg) 5%, transparent);
+    padding: 3px 10px; border-radius: 6px; margin: 0 auto 0 4px; max-width: 70%;
+  }
+
+  /* ============ 01 · READER UI (real px) ============ */
+  .read { font-size: 14px; }
+  /* per-surface tokens, scoped so the rest of the page tokens stay intact */
+  .read[data-surface-on='sepia'] {
+    --bg: #f4ecd8; --bg-2: #ece1c6; --fg: #3a2f21; --fg-2: #5b4c38;
+    --fg-3: #8a785c; --accent: #9a5b2e; --line: #3a2f2122; --line-soft: #3a2f2110;
+  }
+  .read[data-surface-on='night'] {
+    --bg: #16181d; --bg-2: #1d2026; --fg: #e6e3da; --fg-2: #b9b6ad;
+    --fg-3: #807d74; --accent: #d7a86b; --line: #ffffff1a; --line-soft: #ffffff0d;
+  }
+  .read__progress {
+    position: absolute; top: 0; left: 0; height: 3px; width: 100%; z-index: 4;
+    background: var(--accent); transform-origin: left center; transform: scaleX(0);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .read__progress { transition: transform 0.08s linear; }
+  }
+  .read__bar {
+    display: flex; align-items: center; gap: 0.9rem; flex: none;
+    padding: 0.6rem 1rem; border-bottom: 1px solid var(--line);
+  }
+  .read__logo {
+    font-size: 19px; color: var(--fg); white-space: nowrap;
+    font-variation-settings: 'wght' 520, 'opsz' 36; letter-spacing: 0.01em;
+  }
+  .read__controls { display: flex; align-items: center; gap: 0.7rem; margin-left: auto; }
+  .read__sizer {
+    display: inline-flex; align-items: center; gap: 0.15rem;
+    border: 1px solid var(--line); border-radius: 100px; padding: 0.1rem 0.25rem;
+  }
+  .read__step {
+    font-family: var(--fam); color: var(--fg-2); cursor: pointer; background: transparent;
+    border: none; border-radius: 100px; padding: 0.18rem 0.5rem; line-height: 1;
+    display: inline-flex; align-items: baseline; transition: color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .read__step[data-size='-'] { font-size: 13px; }
+  .read__step[data-size='+'] { font-size: 17px; }
+  .read__step span { font-family: var(--ui); font-size: 9px; margin-left: 1px; }
+  .read__step:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 6%, transparent); }
+  .read__sizeval {
+    font-family: var(--mono); font-size: 10.5px; color: var(--fg-3);
+    min-width: 36px; text-align: center; letter-spacing: 0.02em;
+  }
+  .read__themes { display: inline-flex; gap: 0.2rem; }
+  .read__theme {
+    font-family: var(--ui); font-size: 11px; font-weight: 600; color: var(--fg-3);
+    cursor: pointer; background: transparent; border: 1px solid var(--line);
+    border-radius: 100px; padding: 0.24rem 0.6rem; transition: all 0.15s var(--ease);
+  }
+  .read__theme:hover { color: var(--fg); }
+  .read__theme.is-on { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+  .read[data-surface-on] .read__theme.is-on { color: var(--bg); }
+  .read__time {
+    font-family: var(--ui); font-size: 11px; color: var(--fg-3); white-space: nowrap;
+    padding-left: 0.5rem; border-left: 1px solid var(--line);
+  }
+  .read__body {
+    --read-body: 17px;
+    flex: 1; overflow: auto; padding: 1.8rem clamp(1.2rem, 6cqi, 3.4rem) 2.4rem;
+    max-width: 68ch; margin: 0 auto;
+  }
+  .read__kicker {
+    font-family: var(--ui); font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .read__head {
+    font-size: clamp(28px, 5.2cqi, 46px); line-height: 1.06; margin: 0.5rem 0 0.6rem;
+    font-variation-settings: 'wght' 560, 'opsz' 60; letter-spacing: -0.012em; color: var(--fg);
+  }
+  .read__byline {
+    font-family: var(--ui); font-size: 12.5px; color: var(--fg-3); margin: 0 0 1.5rem;
+  }
+  .read__author { color: var(--fg-2); font-weight: 600; }
+  .read__lede {
+    font-size: calc(var(--read-body) + 2px); line-height: 1.5; color: var(--fg); margin: 0 0 1.1rem;
+    font-variation-settings: 'wght' 420, 'opsz' 24;
+  }
+  .read__body p {
+    font-size: var(--read-body); line-height: 1.62; color: var(--fg); margin: 0 0 1em;
+    font-variation-settings: 'wght' 400, 'opsz' 12;
+    font-feature-settings: 'liga' 1, 'onum' 1;
+  }
+  .read__fig { font-feature-settings: 'onum' 1; }
+  .read__drop {
+    float: left; font-size: 3.1em; line-height: 0.74; padding: 0.04em 0.12em 0 0; color: var(--accent);
+    font-variation-settings: 'wght' 520, 'opsz' 72;
+  }
+  .read__quote {
+    font-size: calc(var(--read-body) + 4px); line-height: 1.34; font-style: italic; color: var(--fg);
+    border-left: 2px solid var(--accent); padding-left: 1rem; margin: 1.4rem 0;
+    font-variation-settings: 'wght' 420, 'opsz' 40;
+  }
+  @container (max-width: 540px) {
+    .read__controls { gap: 0.4rem; }
+    .read__themes button[data-surface='sepia'] { display: none; }
+    .read__sizeval { display: none; }
+    .read__time { display: none; }
+  }
+
+  /* ============ 02 · NEWSPAPER FRONT PAGE (cqi) ============ */
+  .paper {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 4cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden;
+    font-feature-settings: 'liga' 1, 'onum' 1;
+  }
+  .paper__masthead { flex: none; }
+  .paper__rule {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--ui); font-size: 1.7cqi; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .paper__rule--top { border-bottom: 0.4cqi double var(--fg); padding-bottom: 1cqi; }
+  .paper__rule--sub {
+    border-top: 1px solid var(--fg); border-bottom: 0.4cqi double var(--fg);
+    padding: 1cqi 0; margin-top: 1cqi; font-size: 1.6cqi;
+  }
+  .paper__weather { font-style: italic; text-transform: none; letter-spacing: 0.01em; color: var(--fg-2); }
+  .paper__nameplate {
+    font-size: 10.8cqi; line-height: 0.94; text-align: center; margin: 1.6cqi 0; color: var(--fg);
+    font-variation-settings: 'wght' 640, 'opsz' 72; letter-spacing: -0.022em;
+    text-wrap: balance; hyphens: none;
+    transition: font-variation-settings 0.6s var(--ease, ease-out);
+  }
+  .paper__grid {
+    flex: 1; display: grid; grid-template-columns: 1.7fr 1fr; gap: 3cqi;
+    margin-top: 2.4cqi; min-height: 0;
+  }
+  .paper__lead { border-right: 1px solid var(--line); padding-right: 3cqi; }
+  .paper__kicker {
+    display: block; font-family: var(--ui); font-size: 1.7cqi; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  }
+  .paper__kicker--2 { margin-top: 3cqi; }
+  .paper__lead-head {
+    font-size: 6.6cqi; line-height: 1.02; margin: 1cqi 0 1.4cqi; color: var(--fg);
+    font-variation-settings: 'wght' 560, 'opsz' 48; letter-spacing: -0.01em;
+  }
+  .paper__deck {
+    font-size: 3cqi; line-height: 1.22; color: var(--fg-2); margin: 0 0 2cqi;
+    font-variation-settings: 'wght' 420, 'opsz' 28;
+  }
+  .paper__deck em, .paper__col em { font-style: italic; color: var(--accent); }
+  .paper__col {
+    font-size: 2.15cqi; line-height: 1.5; color: var(--fg); margin: 0 0 1.2cqi;
+    text-align: justify; hyphens: auto;
+    font-variation-settings: 'wght' 400, 'opsz' 11;
+  }
+  .paper__col--sm { font-size: 1.95cqi; line-height: 1.48; color: var(--fg-2); }
+  .paper__drop {
+    float: left; font-size: 7cqi; line-height: 0.72; padding: 0.05em 0.1em 0 0; color: var(--fg);
+    font-variation-settings: 'wght' 640, 'opsz' 72;
+  }
+  .paper__side-head {
+    font-size: 3cqi; line-height: 1.08; margin: 0.8cqi 0 1.2cqi; color: var(--fg);
+    font-variation-settings: 'wght' 600, 'opsz' 32; letter-spacing: -0.005em;
+  }
+  .paper__quote {
+    border-top: 1px solid var(--fg); border-bottom: 1px solid var(--line);
+    padding: 1.6cqi 0; margin: 2cqi 0;
+  }
+  .paper__quote p {
+    font-size: 2.7cqi; line-height: 1.22; font-style: italic; color: var(--fg);
+    margin: 0 0 0.8cqi; font-variation-settings: 'wght' 440, 'opsz' 30;
+  }
+  .paper__quote span {
+    font-family: var(--ui); font-size: 1.6cqi; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .paper[data-paper]:hover .paper__nameplate,
+    .paper[data-paper]:focus-within .paper__nameplate {
+      font-variation-settings: 'wght' 720, 'opsz' 72;
+    }
+  }
+  @container (max-width: 480px) {
+    .paper__grid { grid-template-columns: 1fr; gap: 2cqi; }
+    .paper__lead { border-right: 0; padding-right: 0; border-bottom: 1px solid var(--line); padding-bottom: 2cqi; }
+    .paper__nameplate { font-size: 12cqi; }
+    .paper__lead-head { font-size: 7.5cqi; }
+    .paper__deck { font-size: 3.6cqi; }
+    .paper__col { font-size: 3cqi; }
+    .paper__col--sm, .paper__side-head { font-size: 3cqi; }
+    .paper__side-head { font-size: 4cqi; }
+    .paper__quote p { font-size: 3.6cqi; }
+    .paper__drop { font-size: 9cqi; }
+  }
+
+  /* ============ 03 · E-READER (real px) ============ */
+  .ereader {
+    font-size: 14px;
+    background:
+      radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 60%),
+      var(--bg);
+  }
+  .ereader__topbar {
+    display: flex; align-items: baseline; justify-content: space-between; flex: none;
+    padding: 0.7rem 1.1rem 0.5rem; font-family: var(--ui); font-size: 11px;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .ereader__loc { font-feature-settings: 'tnum'; letter-spacing: 0.05em; }
+  .ereader__page {
+    flex: 1; min-height: 0; display: flex; padding: 0.4rem clamp(1rem, 7cqi, 4rem) 0.6rem;
+    overflow: hidden;
+  }
+  .ereader__pages { position: relative; flex: 1; min-height: 0; max-width: 60ch; margin: 0 auto; width: 100%; }
+  .ereader__leaf { position: absolute; inset: 0; overflow: auto; }
+  .ereader__leaf[hidden] { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .ereader__leaf[data-turn='in-next'] { animation: leaf-next 0.4s var(--ease-out, ease-out) both; }
+    .ereader__leaf[data-turn='in-prev'] { animation: leaf-prev 0.4s var(--ease-out, ease-out) both; }
+  }
+  @keyframes leaf-next { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+  @keyframes leaf-prev { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+  .ereader__chap {
+    display: block; font-family: var(--ui); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem;
+  }
+  .ereader__title {
+    font-size: clamp(20px, 3.6cqi, 27px); line-height: 1.06; margin: 0 0 0.7rem; color: var(--fg);
+    font-variation-settings: 'wght' 560, 'opsz' 40; letter-spacing: -0.01em;
+  }
+  .ereader__leaf p {
+    font-size: 14px; line-height: 1.58; color: var(--fg); margin: 0 0 0.7em;
+    font-variation-settings: 'wght' 400, 'opsz' 12;
+    font-feature-settings: 'liga' 1, 'onum' 1; text-align: justify; hyphens: auto;
+  }
+  .ereader__leaf p:last-child { margin-bottom: 0; }
+  .ereader__drop {
+    float: left; font-size: 3.2em; line-height: 0.72; padding: 0.04em 0.1em 0 0; color: var(--accent);
+    font-variation-settings: 'wght' 540, 'opsz' 72;
+  }
+  .ereader__pull {
+    font-size: 16px; line-height: 1.3; font-style: italic; color: var(--fg);
+    text-align: center; margin: 1rem auto; max-width: 28ch;
+    padding: 0.6rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    font-variation-settings: 'wght' 420, 'opsz' 36;
+  }
+  .ereader__nav {
+    flex: none; display: flex; align-items: center; justify-content: space-between;
+    padding: 0.6rem 1.1rem 0.8rem; border-top: 1px solid var(--line);
+  }
+  .ereader__btn {
+    font-family: var(--ui); font-size: 12px; font-weight: 600; color: var(--fg-2);
+    cursor: pointer; background: transparent; border: 1px solid var(--line);
+    border-radius: 100px; padding: 0.35rem 0.9rem; transition: all 0.15s var(--ease);
+  }
+  .ereader__btn:hover:not(:disabled) { color: var(--fg); border-color: var(--fg-3); }
+  .ereader__btn:disabled { opacity: 0.4; cursor: default; }
+  .ereader__dots { display: inline-flex; gap: 6px; }
+  .ereader__dots i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 22%, transparent); }
+  .ereader__dots i.is-on { background: var(--accent); }
+
+  /* ============ 04 · EDITORIAL FEATURE OPENER (cqi) ============ */
+  .feature {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column; padding: 4.5cqi 5cqi; overflow: hidden;
+  }
+  .feature__meta, .feature__foot {
+    display: flex; justify-content: space-between; align-items: baseline; flex: none;
+    font-family: var(--ui); font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .feature__section { color: var(--accent); }
+  .feature__center {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 3cqi;
+  }
+  .feature__eyebrow {
+    font-style: italic; font-size: 3cqi; color: var(--fg-3);
+    font-variation-settings: 'wght' 420, 'opsz' 28;
+  }
+  .feature__head {
+    font-size: 11cqi; line-height: 0.98; margin: 0; color: var(--fg);
+    font-variation-settings: 'wght' 460, 'opsz' 72; letter-spacing: -0.02em;
+  }
+  /* RESTING contrast pushed: upright runs light & cool, the true italic
+     sits heavier, warmer and visibly slanted — the voice inside the voice. */
+  .feature__upright {
+    display: inline-block; color: var(--fg-2);
+    font-variation-settings: 'wght' 360, 'opsz' 72; letter-spacing: -0.018em;
+  }
+  .feature__head em {
+    display: inline-block; font-style: italic; color: var(--accent);
+    font-variation-settings: 'wght' 520, 'opsz' 72; letter-spacing: -0.01em;
+  }
+  .feature__deck {
+    font-size: 3.2cqi; line-height: 1.34; color: var(--fg-2); max-width: 44ch; margin: 0;
+    font-variation-settings: 'wght' 400, 'opsz' 26;
+  }
+  .feature__deck em { font-style: italic; color: var(--fg); }
+  .feature__name { font-style: italic; color: var(--fg-2); font-variation-settings: 'opsz' 18; text-transform: none; letter-spacing: 0; }
+  /* the true italic is the resting state; it breathes on its own axis,
+     and on hover/focus it weights up and warms further */
+  .feature__head em[data-italic] {
+    font-style: italic;
+    transition: font-variation-settings 0.5s var(--ease-out, ease-out), color 0.5s var(--ease-out, ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    /* scroll-into-view reveal: the italic rises and leans into place */
+    .feature__upright { opacity: 0; transform: translateY(0.18em); transition: opacity 0.7s var(--ease-out, ease-out), transform 0.7s var(--ease-out, ease-out); }
+    .feature__head em[data-italic] { opacity: 0; transform: translateY(0.34em); transition: opacity 0.8s var(--ease-out, ease-out) 0.12s, transform 0.8s var(--ease-out, ease-out) 0.12s, font-variation-settings 0.5s var(--ease-out, ease-out), color 0.5s var(--ease-out, ease-out); }
+    .feature.is-in .feature__upright { opacity: 1; transform: none; }
+    .feature.is-in .feature__head em[data-italic] { opacity: 1; transform: none; }
+    /* once revealed, the italic keeps a gentle resting breathe on its own axis */
+    .feature.is-in .feature__head em[data-italic] { animation: italic-breathe 7s var(--ease, ease-in-out) 1s infinite; }
+    .feature[data-feature]:hover .feature__head em[data-italic],
+    .feature[data-feature]:focus-within .feature__head em[data-italic] {
+      animation: none;
+      font-variation-settings: 'wght' 640, 'opsz' 72;
+      color: color-mix(in srgb, var(--accent) 80%, var(--fg));
+    }
+  }
+  @keyframes italic-breathe {
+    0%, 100% { font-variation-settings: 'wght' 520, 'opsz' 72; }
+    50% { font-variation-settings: 'wght' 580, 'opsz' 72; }
+  }
+  @container (max-width: 480px) {
+    .feature__head { font-size: 13cqi; }
+    .feature__deck { font-size: 4cqi; }
+    .feature__eyebrow { font-size: 4cqi; }
+    .feature__meta, .feature__foot { font-size: 2.6cqi; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .read__progress, .paper__nameplate, .read__theme, .ereader__btn { transition: none; }
+  }
+</style>

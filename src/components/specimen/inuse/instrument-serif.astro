@@ -1,0 +1,481 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// Landing-page hero (scene 01, interactive UI) — a contemporary studio site.
+const navTabs = [
+  { id: 'work',    label: 'Work' },
+  { id: 'studio',  label: 'Studio' },
+  { id: 'journal', label: 'Journal' },
+];
+// Each tab swaps the hero phrase + a small index of projects/notes/people.
+const panels: Record<string, { lede: string; em: string; tail: string; rows: { k: string; v: string; y: string }[] }> = {
+  work: {
+    lede: 'We build', em: 'quiet', tail: 'brands that age well.',
+    rows: [
+      { k: 'Halden Mineral Water', v: 'Identity, packaging', y: '’26' },
+      { k: 'Aперио Gallery',       v: 'Naming, web',         y: '’25' },
+      { k: 'Court & Vine',         v: 'Brand, art direction', y: '’25' },
+    ],
+  },
+  studio: {
+    lede: 'A studio of', em: 'eleven', tail: 'in Lisbon & Oslo.',
+    rows: [
+      { k: 'Founded',     v: 'Practice est.',     y: '2019' },
+      { k: 'Disciplines', v: 'Brand · Type · Web', y: '03' },
+      { k: 'Recognition', v: 'D&AD, Type Dir. Club', y: '07' },
+    ],
+  },
+  journal: {
+    lede: 'Notes on', em: 'craft,', tail: 'slowly written.',
+    rows: [
+      { k: 'On the hairline serif',  v: 'Essay',     y: 'Apr' },
+      { k: 'Designing in two voices', v: 'Roman & italic', y: 'Feb' },
+      { k: 'The case for less type',  v: 'Field note', y: 'Jan' },
+    ],
+  },
+};
+---
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — INTERACTIVE landing-page hero (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Landing page — studio hero (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device site" data-site>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">studio-feuille.com</span>
+        </div>
+
+        <header class="site__bar">
+          <span class="site__logo">Feuille<i class="site__logo-dot" aria-hidden="true"></i></span>
+          <nav class="site__nav" aria-label="Sections">
+            {navTabs.map((t, i) => (
+              <button class={`site__tab${i === 0 ? ' is-on' : ''}`} data-tab={t.id} aria-pressed={i === 0 ? 'true' : 'false'}>{t.label}</button>
+            ))}
+          </nav>
+          <button class="site__cta">Start a project</button>
+        </header>
+
+        <div class="site__hero">
+          <span class="site__eyebrow">Independent design studio <i class="site__eyebrow-em">— since 2019</i></span>
+          <h3 class="site__head" data-head>
+            <span data-h-lede>We build</span> <em data-h-em>quiet</em> <span data-h-tail>brands that age well.</span>
+          </h3>
+          <p class="site__sub">Branding, typography &amp; the web — for people who would rather be remembered than noticed.</p>
+        </div>
+
+        <div class="site__index" data-index>
+          <div class="site__index-head">
+            <span data-index-title>Selected work</span>
+            <span class="site__index-count" data-index-count>03</span>
+          </div>
+          <ul class="site__rows" data-rows>
+            {panels.work.rows.map((r) => (
+              <li class="site__row">
+                <span class="site__row-k">{r.k}</span>
+                <span class="site__row-v">{r.v}</span>
+                <span class="site__row-y">{r.y}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Switch the tabs — the hero line, italic accent word and project index swap. Hover a row.</p>
+  </figure>
+
+  <!-- 02 — Fashion / culture editorial spread (roman vs. italic) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — a culture-magazine opener</span></figcaption>
+    <div class="iu__scene scene43">
+      <div class="iu__poster spread" data-reveal-scene>
+        <div class="spread__rail">
+          <span class="spread__folio">Feature · 042</span>
+          <span class="spread__sec">The Profile</span>
+        </div>
+        <div class="spread__main">
+          <span class="spread__kicker">In conversation</span>
+          <h3 class="spread__head" data-reveal-line>
+            <span class="r1">The woman who</span><br/>
+            <span class="r2"><em>rebuilt</em> the look</span><br/>
+            <span class="r3">of the new opera.</span>
+          </h3>
+          <p class="spread__deck">Costume designer <em>Inès Marchetti</em> on dressing two centuries at once — and why restraint is the loudest thing on a stage.</p>
+          <div class="spread__body">
+            <p><span class="spread__drop">F</span>or three seasons she has quietly redrawn what a modern production looks like, trading spectacle for a severe, almost editorial calm. The effect is unmistakable and hard to name.</p>
+            <p>“People think minimal means cold,” she says. “It only means you have decided what matters. Everything else can leave the room.”</p>
+          </div>
+          <span class="spread__by">Photographs by Lou Vasseur · Words by D. Reyes</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Scroll it into view — the headline rises line by line; roman set against the true italic.</p>
+  </figure>
+
+  <!-- 03 — Refined brand identity / wordmark system -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Identity — a wordmark &amp; lockup system</span></figcaption>
+    <div class="iu__scene scene16">
+      <div class="iu__poster ident" data-ident>
+        <div class="ident__main">
+          <span class="ident__estd">Est. MMXXVI · Côte d’Azur</span>
+          <h3 class="ident__word">Maremma</h3>
+          <span class="ident__sub">Hôtel <i class="ident__dot" aria-hidden="true"></i> Restaurant <i class="ident__dot" aria-hidden="true"></i> Bain de mer</span>
+        </div>
+        <div class="ident__grid" aria-label="Wordmark variations">
+          <div class="ident__cell">
+            <span class="ident__cell-lab">Primary</span>
+            <span class="ident__cell-mark">Maremma</span>
+          </div>
+          <div class="ident__cell ident__cell--mono">
+            <span class="ident__cell-lab">Reversed</span>
+            <span class="ident__cell-mark">Maremma</span>
+          </div>
+          <div class="ident__cell">
+            <span class="ident__cell-lab">Italic mark</span>
+            <span class="ident__cell-mark"><em>Maremma</em></span>
+          </div>
+          <div class="ident__cell ident__cell--mono-fig">
+            <span class="ident__cell-lab">Monogram</span>
+            <span class="ident__cell-mark ident__cell-mono">M</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A single display face carries a whole identity — primary, reversed, italic and monogram lockups.</p>
+  </figure>
+
+  <!-- 04 — Literary poster: roman set against the elegant italic -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Poster — a literary evening (roman × italic)</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster poster" data-poster>
+        <span class="poster__top">The Athenaeum Reading Series · No. 9</span>
+        <div class="poster__stack">
+          <span class="poster__an">an evening of</span>
+          <h3 class="poster__title">
+            <span class="poster__rom">Letters</span>
+            <span class="poster__amp" aria-hidden="true">&amp;</span>
+            <span class="poster__ital"><em>Longing</em></span>
+          </h3>
+          <span class="poster__after">new translations, read aloud</span>
+        </div>
+        <div class="poster__bill">
+          <span><em>Marina Tsvetaeva</em> · in version</span>
+          <span><em>Cavafy</em> · the late poems</span>
+          <span><em>Szymborska</em> · selected</span>
+        </div>
+        <div class="poster__foot">
+          <span>Friday · 8 pm</span>
+          <span class="poster__ven">Hall of the Athenaeum</span>
+          <span>Free · seats limited</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the title — the upright <em>Letters</em> and the flowing italic <em>Longing</em> trade emphasis.</p>
+  </figure>
+
+</div>
+
+<script>
+  // ---- 01 landing-page hero: tab switch swaps hero line + project index ----
+  type Row = { k: string; v: string; y: string };
+  type Panel = { lede: string; em: string; tail: string; title: string; rows: Row[] };
+  const PANELS: Record<string, Panel> = {
+    work: {
+      lede: 'We build', em: 'quiet', tail: 'brands that age well.', title: 'Selected work',
+      rows: [
+        { k: 'Halden Mineral Water', v: 'Identity, packaging', y: '’26' },
+        { k: 'Aперио Gallery',       v: 'Naming, web',          y: '’25' },
+        { k: 'Court & Vine',         v: 'Brand, art direction',  y: '’25' },
+      ],
+    },
+    studio: {
+      lede: 'A studio of', em: 'eleven', tail: 'in Lisbon & Oslo.', title: 'The practice',
+      rows: [
+        { k: 'Founded',     v: 'Practice est.',       y: '2019' },
+        { k: 'Disciplines', v: 'Brand · Type · Web',  y: '03' },
+        { k: 'Recognition', v: 'D&AD, Type Dir. Club', y: '07' },
+      ],
+    },
+    journal: {
+      lede: 'Notes on', em: 'craft,', tail: 'slowly written.', title: 'From the journal',
+      rows: [
+        { k: 'On the hairline serif',   v: 'Essay',          y: 'Apr' },
+        { k: 'Designing in two voices', v: 'Roman & italic', y: 'Feb' },
+        { k: 'The case for less type',  v: 'Field note',     y: 'Jan' },
+      ],
+    },
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-site]').forEach((site) => {
+    const lede = site.querySelector<HTMLElement>('[data-h-lede]')!;
+    const em = site.querySelector<HTMLElement>('[data-h-em]')!;
+    const tail = site.querySelector<HTMLElement>('[data-h-tail]')!;
+    const head = site.querySelector<HTMLElement>('[data-head]')!;
+    const idxTitle = site.querySelector<HTMLElement>('[data-index-title]')!;
+    const idxCount = site.querySelector<HTMLElement>('[data-index-count]')!;
+    const rowsEl = site.querySelector<HTMLElement>('[data-rows]')!;
+
+    const render = (id: string) => {
+      const p = PANELS[id];
+      if (!p) return;
+      lede.textContent = p.lede;
+      em.textContent = p.em;
+      tail.textContent = p.tail;
+      idxTitle.textContent = p.title;
+      idxCount.textContent = String(p.rows.length).padStart(2, '0');
+      const next: HTMLLIElement[] = p.rows.map((r) => {
+        const li = document.createElement('li');
+        li.className = 'site__row';
+        const k = document.createElement('span'); k.className = 'site__row-k'; k.textContent = r.k;
+        const v = document.createElement('span'); v.className = 'site__row-v'; v.textContent = r.v;
+        const y = document.createElement('span'); y.className = 'site__row-y'; y.textContent = r.y;
+        li.append(k, v, y);
+        return li;
+      });
+      rowsEl.replaceChildren(...next);
+      // soft re-key animation (reduced-motion safe via CSS)
+      head.classList.remove('is-keyed'); void head.offsetWidth; head.classList.add('is-keyed');
+    };
+
+    site.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        site.querySelectorAll('[data-tab]').forEach((b) => {
+          b.classList.remove('is-on'); b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('is-on'); btn.setAttribute('aria-pressed', 'true');
+        render(btn.dataset.tab!);
+      });
+    });
+  });
+
+  // ---- 02 editorial: line-by-line rise when the spread scrolls into view ----
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.35 });
+    document.querySelectorAll('[data-reveal-scene]').forEach((el) => io.observe(el));
+  } else {
+    document.querySelectorAll('[data-reveal-scene]').forEach((el) => el.classList.add('is-in'));
+  }
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint em { font-style: italic; font-family: var(--fam); color: var(--fg-2); }
+  .scene16 { aspect-ratio: 16 / 9; }
+  .scene43 { aspect-ratio: 4 / 3; }
+  .iu__scene * { font-family: var(--fam); }
+
+  /* ============================================================
+     01 — LANDING-PAGE HERO (real px UI)
+     Instrument's signature register: a couture-calm studio site.
+     Single weight does the whole hierarchy via SCALE + the true italic.
+     Accent reserved to: the logo dot, the active tab, the italic hero word.
+     ============================================================ */
+  .site { font-size: 14px; line-height: 1.45; background: var(--bg); color: var(--fg); }
+  .site__bar {
+    display: flex; align-items: center; gap: 1.2rem;
+    padding: 0.85rem 1.4rem; border-bottom: 1px solid var(--line);
+  }
+  .site__logo {
+    font-size: 22px; letter-spacing: 0.01em; color: var(--fg);
+    display: inline-flex; align-items: baseline;
+  }
+  .site__logo-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-left: 3px; align-self: flex-end; margin-bottom: 4px; }
+  .site__nav { display: flex; gap: 0.2rem; margin-left: 1.4rem; }
+  .site__tab {
+    font-size: 14px; color: var(--fg-3); padding: 0.3rem 0.75rem; border-radius: 100px;
+    letter-spacing: 0.01em; cursor: pointer; transition: color .18s var(--ease), background .18s var(--ease);
+  }
+  .site__tab:hover { color: var(--fg); }
+  .site__tab.is-on { color: var(--accent); }
+  .site__cta {
+    margin-left: auto; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: var(--font-mono); color: var(--fg); border: 1px solid var(--line);
+    border-radius: 100px; padding: 0.5rem 1rem; cursor: pointer;
+    transition: border-color .18s var(--ease), color .18s var(--ease);
+  }
+  .site__cta:hover { border-color: var(--accent); color: var(--accent); }
+
+  .site__hero { padding: 3.4rem 1.4rem 2.2rem; max-width: 760px; }
+  .site__eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .site__eyebrow-em { font-style: italic; text-transform: none; letter-spacing: 0.02em; color: var(--fg-3); font-family: var(--fam); font-size: 14px; }
+  .site__head {
+    font-size: clamp(40px, 7.4cqi, 76px); line-height: 0.98; letter-spacing: -0.02em;
+    margin: 1rem 0 0; color: var(--fg); font-weight: 400; text-wrap: balance;
+  }
+  .site__head em { font-style: italic; color: var(--accent); }
+  .site__sub {
+    font-size: 16px; line-height: 1.5; color: var(--fg-2); font-style: italic;
+    margin: 1.1rem 0 0; max-width: 46ch;
+  }
+
+  .site__index { border-top: 1px solid var(--line); margin: 1.4rem 1.4rem 1.4rem; }
+  .site__index-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 0.9rem 0 0.5rem;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .site__index-count { color: var(--accent); }
+  .site__rows { list-style: none; margin: 0; padding: 0; }
+  .site__row {
+    display: grid; grid-template-columns: 1.4fr 1fr auto; align-items: baseline; gap: 1rem;
+    padding: 0.7rem 0.4rem; border-top: 1px solid var(--line-soft);
+    transition: background .18s var(--ease), padding .18s var(--ease);
+  }
+  .site__row:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); padding-left: 0.9rem; }
+  .site__row-k { font-size: 21px; color: var(--fg); letter-spacing: -0.005em; }
+  .site__row-v { font-size: 14px; font-style: italic; color: var(--fg-3); }
+  .site__row-y { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); letter-spacing: 0.04em; justify-self: end; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site__head.is-keyed em { animation: is-key .5s var(--ease); }
+    @keyframes is-key { 0% { opacity: .25; transform: translateY(4px); } 100% { opacity: 1; transform: none; } }
+  }
+
+  @container (max-width: 540px) {
+    .site__cta { display: none; }
+    .site__nav { margin-left: 0.6rem; }
+    .site__hero { padding: 2.2rem 1.1rem 1.6rem; }
+    .site__row { grid-template-columns: 1fr auto; }
+    .site__row-v { grid-column: 1; }
+    .site__row-y { grid-row: 1; }
+  }
+
+  /* ============================================================
+     02 — EDITORIAL CULTURE OPENER
+     Roman headline against the true italic; line-by-line scroll rise.
+     Accent reserved to: rail folio + the drop cap hairline reads neutral.
+     ============================================================ */
+  .spread { background: var(--bg); display: grid; grid-template-columns: 12% 1fr; padding: 5cqi; gap: 4cqi; }
+  .spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 3cqi; }
+  .spread__folio { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  .spread__sec { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
+  .spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+  .spread__kicker { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .spread__head {
+    font-size: 11.5cqi; line-height: 0.96; font-weight: 400; letter-spacing: -0.015em;
+    color: var(--fg); margin: 1.6cqi 0 0;
+  }
+  .spread__head em { font-style: italic; color: var(--fg); }
+  .spread__head span { display: inline-block; }
+  .spread__deck { font-size: 3.1cqi; line-height: 1.24; font-style: italic; color: var(--fg-2); max-width: 86%; margin-top: 3cqi; }
+  .spread__deck em { color: var(--fg); }
+  .spread__body { columns: 2; column-gap: 4cqi; font-size: 2.1cqi; line-height: 1.52; color: var(--fg-2); margin-top: 3.4cqi; }
+  .spread__body p { margin: 0 0 0.85em; }
+  .spread__body p:last-child { font-style: italic; color: var(--fg); }
+  .spread__drop { float: left; font-size: 9cqi; line-height: 0.7; padding: 0.05em 0.12em 0 0; color: var(--fg); }
+  .spread__by { font-family: var(--font-mono); font-size: 1.7cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); margin-top: auto; padding-top: 3cqi; }
+
+  /* line-by-line rise; fully rendered by default, motion only adds when JS marks .is-in */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal-scene] .spread__head span,
+    [data-reveal-scene] .spread__deck,
+    [data-reveal-scene] .spread__body { opacity: 0; transform: translateY(14px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+    [data-reveal-scene].is-in .spread__head span,
+    [data-reveal-scene].is-in .spread__deck,
+    [data-reveal-scene].is-in .spread__body { opacity: 1; transform: none; }
+    [data-reveal-scene].is-in .spread__head .r2 { transition-delay: .1s; }
+    [data-reveal-scene].is-in .spread__head .r3 { transition-delay: .2s; }
+    [data-reveal-scene].is-in .spread__deck { transition-delay: .3s; }
+    [data-reveal-scene].is-in .spread__body { transition-delay: .42s; }
+  }
+
+  /* ============================================================
+     03 — IDENTITY / WORDMARK SYSTEM
+     One display face spans a full identity: primary, reversed, italic, monogram.
+     Accent reserved to: the reversed cell ground + the separating dots.
+     ============================================================ */
+  .ident { background: var(--bg); display: grid; grid-template-columns: 1.15fr 1fr; }
+  .ident__main {
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    gap: 2.4cqi; padding: 5cqi 5cqi 5cqi 6cqi; border-right: 1px solid var(--line);
+  }
+  .ident__estd { font-family: var(--font-mono); font-size: 1.8cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .ident__word { font-size: 15cqi; line-height: 0.9; font-weight: 400; letter-spacing: -0.01em; color: var(--fg); margin: 0; }
+  .ident__sub { display: inline-flex; align-items: center; gap: 0.5em; font-size: 2.4cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-2); padding-left: 0.28em; }
+  .ident__dot { width: 0.5cqi; height: 0.5cqi; border-radius: 50%; background: var(--accent); display: inline-block; }
+
+  .ident__grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+  .ident__cell {
+    position: relative; display: flex; flex-direction: column; justify-content: space-between;
+    gap: 2.4cqi; padding: 2.8cqi 3cqi; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line);
+    min-height: 0; overflow: hidden;
+  }
+  .ident__grid > .ident__cell:nth-child(2n) { border-right: 0; }
+  .ident__grid > .ident__cell:nth-child(n+3) { border-bottom: 0; }
+  .ident__cell-lab { font-family: var(--font-mono); font-size: 1.4cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .ident__cell-mark { font-size: 3.3cqi; line-height: 0.92; color: var(--fg); letter-spacing: -0.01em; align-self: flex-start; max-width: 100%; }
+  .ident__cell-mark em { font-style: italic; }
+  .ident__cell--mono { background: var(--fg); }
+  .ident__cell--mono .ident__cell-lab { color: color-mix(in srgb, var(--bg) 60%, transparent); }
+  .ident__cell--mono .ident__cell-mark { color: var(--bg); }
+  .ident__cell--mono-fig { background: var(--accent); }
+  .ident__cell--mono-fig .ident__cell-lab { color: color-mix(in srgb, var(--accent-contrast) 70%, transparent); }
+  .ident__cell-mono { font-size: 18cqi; line-height: 0.8; color: var(--accent-contrast); align-self: center; }
+
+  /* a quiet hover: the primary cell's mark slides to italic, advertising the second voice */
+  @media (prefers-reduced-motion: no-preference) {
+    .ident__cell:first-child .ident__cell-mark { transition: transform .4s var(--ease); }
+    .ident:hover .ident__cell:first-child .ident__cell-mark { transform: none; }
+  }
+
+  /* ============================================================
+     04 — LITERARY POSTER (roman × italic)
+     The whole composition turns on the contrast of upright vs. cursive.
+     Accent reserved to: the ampersand + the venue line.
+     ============================================================ */
+  .poster { --card-ar: 3 / 4; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; padding: 6cqi 6cqi 5cqi; }
+  .poster__top { font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 3cqi; }
+  .poster__stack { display: flex; flex-direction: column; align-items: center; text-align: center; margin: auto 0; gap: 1.4cqi; }
+  .poster__an { font-style: italic; font-size: 4.4cqi; color: var(--fg-2); }
+  .poster__title { display: flex; flex-direction: column; align-items: center; line-height: 0.8; margin: 2cqi 0; font-weight: 400; }
+  .poster__rom { font-size: 25cqi; letter-spacing: -0.02em; color: var(--fg); transition: color .5s var(--ease); }
+  .poster__amp { font-size: 10cqi; font-style: italic; color: var(--accent); margin: 0.2cqi 0; }
+  .poster__ital { font-size: 25cqi; }
+  .poster__ital em { font-style: italic; letter-spacing: 0; color: var(--fg); transition: color .5s var(--ease); }
+  .poster__after { font-style: italic; font-size: 4.4cqi; color: var(--fg-2); }
+  .poster__bill { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.6cqi; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 4cqi 0; margin-top: 0; }
+  .poster__bill span { font-size: 3.4cqi; color: var(--fg-2); }
+  .poster__bill em { font-style: italic; color: var(--fg); }
+  .poster__foot { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi; margin-top: 4cqi; font-size: 2.5cqi; color: var(--fg-3); }
+  .poster__foot span:first-child { font-feature-settings: 'tnum'; }
+  .poster__ven { font-style: italic; color: var(--accent); font-size: 2.9cqi; text-align: center; }
+  .poster__foot span:last-child { text-align: right; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .poster:hover .poster__rom { color: var(--fg-3); }
+    .poster:hover .poster__ital em { color: var(--accent); }
+  }
+
+  /* ---- responsive: restack editorial + identity on narrow columns ---- */
+  @container (max-width: 600px) {
+    .spread { grid-template-columns: 1fr; }
+    .spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2.4cqi; }
+    .spread__sec { writing-mode: horizontal-tb; }
+    .spread__main { grid-column: 1; }
+    .spread__body { columns: 1; }
+    .spread__head { font-size: 13cqi; }
+  }
+  @container (max-width: 560px) {
+    .ident { grid-template-columns: 1fr; }
+    .ident__main { border-right: 0; border-bottom: 1px solid var(--line); align-items: center; text-align: center; padding: 6cqi 5cqi; }
+    .ident__word { font-size: 22cqi; }
+    .ident__cell-mark { font-size: 7cqi; }
+    .ident__cell-mono { font-size: 22cqi; }
+  }
+</style>

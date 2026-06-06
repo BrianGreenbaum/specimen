@@ -1,0 +1,620 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// Launch manifest rows for the sortable table (scene 04). Real-feeling smallsat rideshare.
+const manifest = [
+  { id: 'SX-2291', sat: 'Sentinel-6B Michelangelo',  org: 'ESA / NOAA',   massKg: 1192.0, alt: 1336, incl: 66.0, win: '11:24:07' },
+  { id: 'SX-2304', sat: 'IRIS-T Constellation 04',     org: 'OroraTech',    massKg: 12.8,   alt: 525,  incl: 97.4, win: '11:24:07' },
+  { id: 'SX-2310', sat: 'Hubble Servicing Tug',        org: 'Astroscale',   massKg: 980.5,  alt: 540,  incl: 28.5, win: '13:02:55' },
+  { id: 'SX-2318', sat: 'PlanetScope Dove 0xA4',       org: 'Planet Labs',  massKg: 5.0,    alt: 475,  incl: 97.6, win: '13:02:55' },
+  { id: 'SX-2326', sat: 'Kuiper Test Article KA-02',   org: 'Amazon',       massKg: 650.0,  alt: 590,  incl: 51.9, win: '15:47:31' },
+  { id: 'SX-2331', sat: 'Quantum Key Relay QKR-1',     org: 'DLR',          massKg: 88.2,   alt: 605,  incl: 97.8, win: '15:47:31' },
+];
+---
+<div class="iu" style={`--fam:${fam}`}>
+  <!-- 01 — INTERACTIVE REAL-SCALE UI: mission telemetry console w/ live width-axis density control -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Mission ops — a live deep-space telemetry console</span></figcaption>
+    <div class="iu__scene">
+      <div class="mc" data-mc>
+        <header class="mc__chrome">
+          <div class="iu__dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+          <span class="mc__title">groundlink // PROBE&nbsp;ARES-IX</span>
+          <span class="mc__live" data-live><i></i> LOCK</span>
+          <label class="mc__wdth" title="Drives the font-variation width axis (wdth) across the entire console">
+            <span class="mc__wdth-k">DENSITY</span>
+            <input data-wdth type="range" min="75" max="112" step="0.5" value="100" aria-label="console width density (wdth axis)" />
+            <b data-wdth-v>100</b>
+          </label>
+        </header>
+
+        <div class="mc__grid">
+          <div class="mc__stat"><span class="mc__k">VELOCITY km/s</span><b data-stat="vel">—</b><span class="mc__spark" data-spark="vel"></span></div>
+          <div class="mc__stat"><span class="mc__k">RANGE Gm</span><b data-stat="rng">—</b><span class="mc__spark" data-spark="rng"></span></div>
+          <div class="mc__stat"><span class="mc__k">SIGNAL dBm</span><b data-stat="sig">—</b><span class="mc__spark" data-spark="sig"></span></div>
+          <div class="mc__stat"><span class="mc__k">RTT min</span><b data-stat="rtt">—</b><span class="mc__spark" data-spark="rtt"></span></div>
+        </div>
+
+        <div class="mc__body">
+          <table class="mc__sub">
+            <thead><tr><th>SUBSYSTEM</th><th class="r">BUS&nbsp;V</th><th class="r">TEMP&nbsp;K</th><th class="bar">HEALTH</th></tr></thead>
+            <tbody data-subs>
+              <tr><td>PWR/array-φ</td><td class="r" data-v>28.40</td><td class="r" data-t>0312</td><td class="bar"><i data-h style="width:96%"></i></td></tr>
+              <tr><td>THERM/loop-A</td><td class="r" data-v>28.38</td><td class="r" data-t>0289</td><td class="bar"><i data-h style="width:88%"></i></td></tr>
+              <tr><td>GNC/imu-2</td><td class="r" data-v>28.41</td><td class="r" data-t>0301</td><td class="bar"><i data-h style="width:92%"></i></td></tr>
+              <tr><td>COMM/x-band</td><td class="r" data-v>28.39</td><td class="r" data-t>0274</td><td class="bar"><i data-h style="width:74%"></i></td></tr>
+            </tbody>
+          </table>
+          <div class="mc__log" data-log></div>
+        </div>
+
+        <form class="mc__cli" data-cli>
+          <span class="mc__prompt">ares-ix <b>❯</b></span>
+          <input data-cli-input type="text" spellcheck="false" autocomplete="off" placeholder="try: burn 12 · safehold · ping · status" aria-label="uplink command" />
+        </form>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag <b>DENSITY</b> to drive the live <b>wdth</b> axis console-wide — columns never break. Uplink <b>burn 12</b>, <b>safehold</b>, <b>ping</b>, or <b>status</b>.</p>
+  </figure>
+
+  <!-- 02 — KINETIC WIDTH-AXIS POSTER: mission insignia, breathes on wdth + wght -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Identity — a kinetic mission poster on the width axis</span></figcaption>
+    <div class="iu__scene iu__scene--portrait" style="--card-ar: 3 / 4;">
+      <div class="iu__poster mp" data-poster>
+        <div class="mp__grid" aria-hidden="true"></div>
+        <div class="mp__top">
+          <span class="mp__tag" data-flex="1">FLIGHT 09</span>
+          <span class="mp__tag mp__tag--r" data-flex="1">LP-39A</span>
+        </div>
+        <div class="mp__center">
+          <span class="mp__kicker" data-flex="2">EVIL MARTIANS AEROSPACE</span>
+          <h3 class="mp__word" data-stretch>ASCENT</h3>
+          <span class="mp__sub" data-flex="3">SEMI-CONDENSED · 75 → 112 wdth · 100 → 800 wght</span>
+        </div>
+        <div class="mp__count" data-count>
+          <span data-tminus>T−00:00:09</span>
+        </div>
+        <div class="mp__foot">
+          <span data-flex="1">26°35′N</span>
+          <span data-flex="1">080°34′W</span>
+          <span data-flex="1">Δv 9.41 km/s</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The headline is one variable file: it expands and contracts on the <b>wdth</b> axis while the weight swells — a width axis on a monospace, dramatised.</p>
+  </figure>
+
+  <!-- 03 — GRID DATA HEATMAP that snaps to the cell: orbital ground-station pass schedule -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Telemetry — a ground-station contact heatmap on the mono grid</span></figcaption>
+    <div class="iu__scene">
+      <div class="hm" data-hm>
+        <div class="hm__head"><span>passes/window.grid — 24h × 6 stations</span><span data-hm-status>UTC · sweeping…</span></div>
+        <div class="hm__scroll">
+          <pre class="hm__art" data-grid aria-label="Ground-station contact windows as a character heatmap"></pre>
+        </div>
+        <div class="hm__legend">
+          <span class="hm__lg"><i class="l0"></i> no&nbsp;contact</span>
+          <span class="hm__lg"><i class="l1"></i> acquiring</span>
+          <span class="hm__lg"><i class="l2"></i> downlink</span>
+          <span class="hm__lg"><i class="l3"></i> peak&nbsp;gain</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Every hour is one fixed cell; a contact sweep marches column by column. Density blocks (<b>·▒▓█</b>) snap to the grid — impossible to align in a proportional face.</p>
+  </figure>
+
+  <!-- 04 — SORTABLE LAUNCH MANIFEST: tabular figures + width-axis fit-to-column -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Data — a sortable launch manifest with width fit-to-column</span></figcaption>
+    <div class="iu__scene">
+      <div class="mf" data-mf>
+        <div class="mf__bar">
+          <span class="mf__title">rideshare manifest · transporter-13</span>
+          <button class="mf__fit" data-fit aria-pressed="false" title="Condense the wdth axis so long payload names fit one fixed column">FIT NAMES ↦ wdth 78</button>
+        </div>
+        <table class="mf__table" data-mf-table>
+          <thead>
+            <tr>
+              <th data-sort="id">ID</th>
+              <th data-sort="sat">PAYLOAD</th>
+              <th data-sort="org">OPERATOR</th>
+              <th data-sort="massKg" class="num">MASS&nbsp;kg</th>
+              <th data-sort="alt" class="num">ALT&nbsp;km</th>
+              <th data-sort="incl" class="num">INCL°</th>
+              <th data-sort="win" class="num" data-active="asc">WINDOW</th>
+            </tr>
+          </thead>
+          <tbody>
+            {manifest.map((r) => (
+              <tr data-id={r.id} data-sat={r.sat} data-org={r.org} data-masskg={r.massKg} data-alt={r.alt} data-incl={r.incl} data-win={r.win}>
+                <td class="mono-id">{r.id}</td>
+                <td class="sat">{r.sat}</td>
+                <td class="dim">{r.org}</td>
+                <td class="num">{r.massKg.toLocaleString('en-US', { minimumFractionDigits: 1 })}</td>
+                <td class="num">{r.alt}</td>
+                <td class="num">{r.incl.toFixed(1)}</td>
+                <td class="num strong">{r.win}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="iu__hint label">Sort any column — rows rerank and tabular figures hold every digit on the same rail. Tap <b>FIT NAMES</b> to compress the <b>wdth</b> axis so long payload names stay in one cell-aligned column.</p>
+  </figure>
+</div>
+
+<script>
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const vset = (el: HTMLElement, wght: number, wdth: number) =>
+    (el.style.fontVariationSettings = `"wght" ${wght}, "wdth" ${wdth}`);
+
+  // ---- 01 mission telemetry console ----
+  document.querySelectorAll<HTMLElement>('[data-mc]').forEach((mc) => {
+    const stat = (k: string) => mc.querySelector<HTMLElement>(`[data-stat="${k}"]`)!;
+    const spark = (k: string) => mc.querySelector<HTMLElement>(`[data-spark="${k}"]`)!;
+    const log = mc.querySelector<HTMLElement>('[data-log]')!;
+    const subs = mc.querySelector<HTMLElement>('[data-subs]')!;
+    const SPARK = '▁▂▃▄▅▆▇█';
+    const hist: Record<string, number[]> = { vel: [], rng: [], sig: [], rtt: [] };
+    let safehold = false;
+    let burnMag = 0;
+
+    const renderSpark = (k: string) => {
+      const a = hist[k]; const lo = Math.min(...a), hi = Math.max(...a);
+      spark(k).textContent = a.map((v) => SPARK[Math.round(((v - lo) / (hi - lo || 1)) * 7)]).join('');
+    };
+
+    let t = 0;
+    const tick = () => {
+      t++;
+      const vel = +(34.21 + Math.sin(t / 4) * 0.18 + burnMag * 0.4 + Math.random() * 0.03).toFixed(2);
+      const rng = +(218.4 + t * 0.06 + Math.random() * 0.02).toFixed(2);
+      const sig = +(-118 + Math.sin(t / 5) * 4 + (safehold ? -9 : 0) + Math.random() * 1.2).toFixed(1);
+      const rtt = +(24.3 + Math.sin(t / 6) * 0.2 + Math.random() * 0.05).toFixed(2);
+      const vals: Record<string, number> = { vel, rng, sig, rtt };
+      for (const k of Object.keys(vals)) { hist[k].push(vals[k]); if (hist[k].length > 18) hist[k].shift(); }
+      stat('vel').textContent = vel.toFixed(2);
+      stat('rng').textContent = rng.toFixed(2);
+      stat('sig').textContent = sig.toFixed(1);
+      stat('rtt').textContent = rtt.toFixed(2);
+      stat('sig').classList.toggle('hot', sig < -123);
+      (['vel', 'rng', 'sig', 'rtt'] as const).forEach(renderSpark);
+      burnMag *= 0.78;
+
+      subs.querySelectorAll('tr').forEach((tr, i) => {
+        const v = tr.querySelector<HTMLElement>('[data-v]')!;
+        const tp = tr.querySelector<HTMLElement>('[data-t]')!;
+        const h = tr.querySelector<HTMLElement>('[data-h]')!;
+        v.textContent = (28.38 + Math.random() * 0.06).toFixed(2);
+        tp.textContent = String(Math.round([312, 289, 301, 274][i] + (Math.random() - 0.5) * 6)).padStart(4, '0');
+        const base = [96, 88, 92, safehold ? 40 : 74][i];
+        h.style.width = Math.max(8, Math.min(99, base + (Math.random() - 0.5) * 8)) + '%';
+        tr.classList.toggle('is-warn', base < 50);
+      });
+    };
+
+    const addLog = (level: string, msg: string) => {
+      const now = new Date();
+      const ts = [now.getHours(), now.getMinutes(), now.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+      const p = document.createElement('p');
+      const a = document.createElement('span'); a.className = 't'; a.textContent = ts;
+      const b = document.createElement('span'); b.className = level.trim().toLowerCase(); b.textContent = level;
+      p.append(a, document.createTextNode(' '), b, document.createTextNode(' ' + msg));
+      log.appendChild(p);
+      while (log.children.length > 6) log.removeChild(log.firstChild!);
+      log.scrollTop = log.scrollHeight;
+    };
+
+    // live width-axis density control — drives wdth across the whole console
+    const wdth = mc.querySelector<HTMLInputElement>('[data-wdth]')!;
+    const wdthV = mc.querySelector<HTMLElement>('[data-wdth-v]')!;
+    const applyWdth = () => {
+      const w = +wdth.value;
+      mc.style.fontVariationSettings = `"wdth" ${w}`;
+      wdthV.textContent = w.toFixed(0);
+    };
+    wdth.addEventListener('input', applyWdth);
+    applyWdth();
+
+    // CLI
+    const cli = mc.querySelector<HTMLFormElement>('[data-cli]')!;
+    const input = mc.querySelector<HTMLInputElement>('[data-cli-input]')!;
+    cli.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = input.value.trim(); input.value = '';
+      if (!raw) return;
+      addLog('CMD  ', '❯ ' + raw);
+      const [cmd, arg] = raw.split(/\s+/);
+      if (cmd === 'burn' && arg && +arg > 0) {
+        burnMag = Math.min(20, +arg);
+        addLog('EXEC ', `prograde burn ${burnMag.toFixed(0)}s — Δv +${(burnMag * 0.012).toFixed(3)} km/s`);
+        tick();
+      } else if (cmd === 'safehold') {
+        safehold = true; addLog('WARN ', 'SAFEHOLD asserted — bus to survival, comm degraded');
+      } else if (cmd === 'resume' || cmd === 'wake') {
+        safehold = false; addLog('INFO ', 'nominal mode restored — all subsystems green');
+      } else if (cmd === 'ping') {
+        addLog('INFO ', `pong — RTT ${(24.3 + Math.random() * 0.4).toFixed(2)} min · 1-way 12.1 min`);
+      } else if (cmd === 'status') {
+        addLog('INFO ', `mode=${safehold ? 'SAFEHOLD' : 'NOMINAL'} subs=4/4 dsn=Goldstone-43`);
+      } else if (cmd === 'clear') {
+        log.replaceChildren();
+      } else {
+        addLog('ERR  ', `unknown command: ${cmd}`);
+      }
+    });
+
+    for (let i = 0; i < 18; i++) tick();
+    addLog('INFO ', 'DSN handover → Goldstone DSS-43 · lock acquired');
+    addLog('INFO ', 'ephemeris updated — solution converged 4.2σ');
+    addLog('INFO ', 'thermal loop-A within band 289K');
+    addLog('WARN ', 'x-band margin low — 74% nominal');
+    addLog('INFO ', 'attitude knowledge 0.004° · IMU-2 prime');
+    addLog('INFO ', 'next contact T+06:14 · Madrid DSS-63');
+
+    if (!REDUCE) {
+      setInterval(tick, 1200);
+      setInterval(() => {
+        const msgs: [string, string][] = [
+          ['INFO ', 'ranging tone returned — solution nominal'],
+          ['INFO ', `heap ${Math.round(40 + Math.random() * 12)}% · wdt fed`],
+          ['WARN ', 'x-band margin low — 74% nominal'],
+          ['INFO ', 'thermal loop-A within band 289K'],
+        ];
+        const m = msgs[Math.floor(Math.random() * msgs.length)];
+        addLog(m[0], m[1]);
+      }, 2800);
+    } else {
+      mc.querySelector('[data-live]')?.setAttribute('hidden', '');
+    }
+  });
+
+  // ---- 02 kinetic width-axis poster ----
+  document.querySelectorAll<HTMLElement>('[data-poster]').forEach((poster) => {
+    const word = poster.querySelector<HTMLElement>('[data-stretch]')!;
+    const tEl = poster.querySelector<HTMLElement>('[data-tminus]')!;
+    const flexers = Array.from(poster.querySelectorAll<HTMLElement>('[data-flex]'));
+
+    // static-friendly default
+    vset(word, 760, 96);
+
+    if (REDUCE) {
+      vset(word, 800, 100);
+      tEl.textContent = 'T−00:00:00';
+      return;
+    }
+
+    let raf = 0; const start = performance.now();
+    const loop = (now: number) => {
+      const e = (now - start) / 1000;
+      // width breathes 78 ↔ 112, weight swells in counterphase
+      const wd = 95 + Math.sin(e * 0.55) * 17;
+      const wg = 540 + (Math.sin(e * 0.55) * 0.5 + 0.5) * 250;
+      vset(word, Math.round(wg), +wd.toFixed(1));
+      // ambient ripple on the small tags so the whole sheet feels alive
+      flexers.forEach((f, i) => {
+        const lvl = +(f.dataset.flex || '1');
+        const wgg = 360 + Math.sin(e * 0.5 + i * 0.9 + lvl) * 120;
+        f.style.fontVariationSettings = `"wght" ${Math.round(wgg)}, "wdth" ${(98 + Math.sin(e * 0.4 + i) * 6).toFixed(1)}`;
+      });
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+
+    // count-up clock loop
+    let secs = 9;
+    setInterval(() => {
+      secs = secs <= 0 ? 9 : secs - 1;
+      tEl.textContent = secs === 0 ? 'T−00:00:00 · IGNITION' : `T−00:00:${String(secs).padStart(2, '0')}`;
+      tEl.classList.toggle('is-zero', secs === 0);
+    }, 1000);
+
+    // pause when offscreen
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach((en) => {
+        if (en.isIntersecting && !raf) raf = requestAnimationFrame(loop);
+        else if (!en.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; }
+      });
+    }, { threshold: 0.05 });
+    io.observe(poster);
+  });
+
+  // ---- 03 ground-station contact heatmap ----
+  document.querySelectorAll<HTMLElement>('[data-hm]').forEach((root) => {
+    const grid = root.querySelector<HTMLElement>('[data-grid]')!;
+    const status = root.querySelector<HTMLElement>('[data-hm-status]')!;
+    const STATIONS = ['GOLDSTONE-43', 'MADRID-63   ', 'CANBERRA-36 ', 'SVALBARD-12 ', 'KOUROU-07   ', 'TROLL-A1    '];
+    const HOURS = 24;
+    const GLYPH = ['·', '░', '▒', '▓', '█'];
+    // deterministic-ish pass pattern per station (level 0..4 per hour)
+    const data: number[][] = STATIONS.map((_, s) => {
+      const row: number[] = [];
+      const phase = s * 3.1, win = 4 + (s % 3);
+      for (let h = 0; h < HOURS; h++) {
+        const inPass = ((h + phase) % (8 + (s % 4))) < win;
+        if (!inPass) { row.push(0); continue; }
+        const center = Math.sin(((h + phase) % 8) / win * Math.PI);
+        row.push(1 + Math.min(3, Math.round(center * 3)));
+      }
+      return row;
+    });
+
+    const PAD = '            '; // 12 chars: aligns with STATIONS label width
+    // Single clean aligned hour ruler — labels every 6h land on their cell,
+    // riding the fixed monospace advance: "00      06      12      18".
+    const buildHeader = () => {
+      const frag = document.createDocumentFragment();
+      const sp = (txt: string, cls: string) => {
+        const e = document.createElement('span'); e.className = cls; e.textContent = txt; frag.append(e);
+      };
+      // ruler row: leading pad, then a 2-char label at each 6h tick, blanks between
+      let labels = '';
+      for (let h = 0; h < HOURS; ) {
+        if (h % 6 === 0) { labels += String(h).padStart(2, '0'); h += 2; }
+        else { labels += ' '; h += 1; }
+      }
+      sp(PAD + ' ' + labels + '\n', 'hm__ruler');
+      // tick row aligning the column grid under the labels
+      let ticks = '';
+      for (let h = 0; h < HOURS; h++) ticks += h % 6 === 0 ? '╷' : h % 3 === 0 ? '·' : ' ';
+      sp('UTC STATION  ' + ticks + '\n', 'hm__ticks');
+      return frag;
+    };
+
+    // per-cell spans so we can colour + tint each level and mark the sweep
+    const paint = (sweep: number) => {
+      const frag = document.createDocumentFragment();
+      frag.append(buildHeader());
+      data.forEach((row, s) => {
+        const st = document.createElement('span'); st.className = 'hm__st'; st.textContent = STATIONS[s] + ' ';
+        frag.append(st);
+        for (let h = 0; h < HOURS; h++) {
+          const lvl = row[h];
+          const sweepHit = h === sweep;
+          const c = document.createElement('span');
+          c.className = `hm__c hm__c${lvl}${sweepHit ? ' hm__sweep' : ''}`;
+          c.textContent = GLYPH[lvl];
+          frag.append(c);
+        }
+        frag.append(document.createTextNode('\n'));
+      });
+      grid.replaceChildren(frag);
+    };
+
+    paint(REDUCE ? -1 : 0);
+    if (REDUCE) { status.textContent = 'UTC · static'; return; }
+    let col = 0;
+    setInterval(() => {
+      col = (col + 1) % HOURS;
+      paint(col);
+      status.textContent = `UTC · sweep ${String(col).padStart(2, '0')}:00`;
+    }, 220);
+  });
+
+  // ---- 04 sortable manifest + width fit-to-column ----
+  document.querySelectorAll<HTMLElement>('[data-mf]').forEach((mf) => {
+    const table = mf.querySelector<HTMLElement>('[data-mf-table]')!;
+    const tbody = table.querySelector('tbody')!;
+    const nums = new Set(['massKg', 'alt', 'incl']);
+    table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort!;
+        const wasAsc = th.dataset.active === 'asc';
+        table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+        const asc = !wasAsc;
+        th.dataset.active = asc ? 'asc' : 'desc';
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const first = new Map<HTMLElement, number>();
+        rows.forEach((r) => first.set(r, r.getBoundingClientRect().top));
+        rows.sort((a, b) => {
+          let av: number | string, bv: number | string;
+          if (nums.has(key)) { av = +(a.dataset[key.toLowerCase()] ?? a.dataset[key])!; bv = +(b.dataset[key.toLowerCase()] ?? b.dataset[key])!; }
+          else { av = (a.dataset[key.toLowerCase()] ?? a.dataset[key])!; bv = (b.dataset[key.toLowerCase()] ?? b.dataset[key])!; }
+          return (av < bv ? -1 : av > bv ? 1 : 0) * (asc ? 1 : -1);
+        });
+        rows.forEach((r) => tbody.appendChild(r));
+        if (REDUCE) return;
+        rows.forEach((r) => {
+          const delta = first.get(r)! - r.getBoundingClientRect().top;
+          if (!delta) return;
+          r.style.transition = 'none';
+          r.style.transform = `translateY(${delta}px)`;
+        });
+        requestAnimationFrame(() => rows.forEach((r) => {
+          r.style.transition = 'transform 0.42s cubic-bezier(.22,.61,.36,1)';
+          r.style.transform = '';
+        }));
+      })
+    );
+
+    // width fit-to-column — condense the wdth axis on payload names
+    const fit = mf.querySelector<HTMLButtonElement>('[data-fit]')!;
+    fit.addEventListener('click', () => {
+      const on = mf.classList.toggle('mf--fit');
+      fit.setAttribute('aria-pressed', String(on));
+      fit.textContent = on ? 'RESET ↦ wdth 100' : 'FIT NAMES ↦ wdth 78';
+    });
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint b { color: var(--fg-2); font-weight: 600; }
+  .iu .iu__scene * { font-family: var(--fam); }
+  .iu .iu__scene { font-feature-settings: 'tnum' 1, 'zero' 1; }
+
+  /* ============================================================
+     01 — MISSION TELEMETRY CONSOLE (own dark surface, real px)
+     ============================================================ */
+  .mc {
+    --t-bg: #07090d; --t-bg2: #0d1219; --t-line: #18222e;
+    --t-fg: #d4e2ef; --t-dim: #5a6b7d; --t-amber: #ffb454;
+    --t-green: #4ade80; --t-cyan: #38bdf8; --t-red: #f87171;
+    background: var(--t-bg); color: var(--t-fg);
+    font-size: 13px; line-height: 1.55;
+    font-variation-settings: "wdth" 100;
+  }
+  .mc__chrome { display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.85rem; background: var(--t-bg2); border-bottom: 1px solid var(--t-line); }
+  .mc__title { color: var(--t-dim); font-size: 12px; letter-spacing: 0.04em; }
+  .mc__live { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 11px; letter-spacing: 0.16em; color: var(--t-green); margin-left: auto; }
+  .mc__live[hidden] { display: none; }
+  .mc__live i { width: 7px; height: 7px; border-radius: 50%; background: var(--t-green); animation: mc-pulse 1.6s ease-out infinite; }
+  @keyframes mc-pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.6); } 70%,100% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } }
+  .mc__wdth { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .mc__wdth-k { color: var(--t-dim); font-size: 10px; letter-spacing: 0.14em; }
+  .mc__wdth input { width: 92px; accent-color: var(--t-amber); cursor: ew-resize; }
+  .mc__wdth b { color: var(--t-amber); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 2.4ch; text-align: right; }
+
+  .mc__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--t-line); border-bottom: 1px solid var(--t-line); }
+  .mc__stat { background: var(--t-bg); padding: 0.7rem 0.85rem; display: flex; flex-direction: column; gap: 0.18rem; }
+  .mc__k { color: var(--t-dim); font-size: 9.5px; letter-spacing: 0.13em; }
+  .mc__stat b { font-size: 21px; font-weight: 600; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
+  .mc__stat b.hot { color: var(--t-red); }
+  .mc__spark { font-size: 13px; letter-spacing: -0.5px; min-height: 1.1em; }
+  .mc__stat:nth-child(1) .mc__spark { color: var(--t-cyan); }
+  .mc__stat:nth-child(2) .mc__spark { color: var(--t-green); }
+  .mc__stat:nth-child(3) .mc__spark { color: var(--t-amber); }
+  .mc__stat:nth-child(4) .mc__spark { color: var(--t-dim); }
+
+  .mc__body { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .mc__sub { width: 100%; border-collapse: collapse; font-size: 11.5px; border-right: 1px solid var(--t-line); }
+  .mc__sub th { text-align: left; color: var(--t-dim); font-weight: 500; font-size: 9.5px; letter-spacing: 0.1em; padding: 0.5rem 0.85rem; border-bottom: 1px solid var(--t-line); }
+  .mc__sub td { padding: 0.42rem 0.85rem; border-bottom: 1px solid #0f1620; font-variant-numeric: tabular-nums; }
+  .mc__sub td:first-child { color: var(--t-cyan); }
+  .mc__sub .r { text-align: right; }
+  .mc__sub .bar { width: 30%; }
+  .mc__sub .bar i { display: block; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--t-cyan), var(--t-green)); transition: width 0.9s var(--ease, ease); }
+  .mc__sub tr.is-warn td:first-child { color: var(--t-amber); }
+  .mc__sub tr.is-warn .bar i { background: linear-gradient(90deg, var(--t-amber), var(--t-red)); }
+
+  .mc__log { padding: 0.55rem 0.85rem; font-size: 11px; line-height: 1.62; height: 9.6em; overflow: hidden; }
+  .mc__log p { white-space: pre-wrap; }
+  .mc__log .t { color: var(--t-dim); }
+  .mc__log .info { color: var(--t-green); }
+  .mc__log .warn { color: var(--t-amber); }
+  .mc__log .err  { color: var(--t-red); }
+  .mc__log .cmd  { color: var(--t-cyan); }
+  .mc__log .exec { color: var(--t-amber); }
+
+  .mc__cli { display: flex; align-items: center; gap: 0.55rem; padding: 0.6rem 0.85rem; background: var(--t-bg2); border-top: 1px solid var(--t-line); }
+  .mc__prompt { color: var(--t-dim); white-space: nowrap; }
+  .mc__prompt b { color: var(--t-green); font-weight: 400; }
+  .mc__cli input { flex: 1; background: transparent; border: none; outline: none; color: var(--t-fg); font-family: var(--fam); font-size: 13px; padding: 0.1rem 0; caret-color: var(--t-amber); }
+  .mc__cli input::placeholder { color: var(--t-dim); opacity: 0.85; }
+
+  /* ============================================================
+     02 — KINETIC WIDTH-AXIS POSTER (container-query scaled card)
+     ============================================================ */
+  .mp {
+    background: #07090d; color: #e9eef4; overflow: hidden;
+    display: flex; flex-direction: column; padding: 6cqi 5.5cqi 5cqi;
+  }
+  .mp__grid { position: absolute; inset: 0; opacity: 0.5;
+    background-image: linear-gradient(#ffffff0a 1px, transparent 1px), linear-gradient(90deg, #ffffff0a 1px, transparent 1px);
+    background-size: 7.5cqi 7.5cqi; }
+  .mp__top, .mp__foot { display: flex; justify-content: space-between; position: relative; z-index: 1; }
+  .mp__tag { font-size: 2.6cqi; letter-spacing: 0.12em; color: var(--accent, #ffb454); font-weight: 600; }
+  .mp__tag--r { text-align: right; }
+  .mp__center { position: relative; z-index: 1; margin: auto 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2cqi; }
+  .mp__kicker { font-size: 2.3cqi; letter-spacing: 0.34em; color: #8b99a8; }
+  .mp__word {
+    margin: 0; font-size: 26cqi; line-height: 0.86; letter-spacing: -0.01em;
+    color: #fff; font-weight: 800;
+    font-variation-settings: "wght" 760, "wdth" 96;
+    will-change: font-variation-settings;
+  }
+  .mp__sub { font-size: 2cqi; letter-spacing: 0.12em; color: #6f7d8c; }
+  .mp__count { position: relative; z-index: 1; text-align: center; margin: 3cqi 0; }
+  .mp__count [data-tminus] { font-size: 5.4cqi; font-weight: 600; letter-spacing: 0.06em; color: var(--accent, #ffb454); font-variant-numeric: tabular-nums; }
+  .mp__count [data-tminus].is-zero { color: #f87171; }
+  .mp__foot { font-size: 2.3cqi; letter-spacing: 0.06em; color: #8b99a8; border-top: 0.4cqi solid #ffffff14; padding-top: 2.5cqi; gap: 2cqi; }
+  .mp__foot span { flex: 1; }
+  .mp__foot span:nth-child(2) { text-align: center; }
+  .mp__foot span:last-child { text-align: right; }
+
+  /* ============================================================
+     03 — GROUND-STATION HEATMAP (own surface, real px)
+     ============================================================ */
+  .hm { background: #07090d; color: #b7c4d4; }
+  .hm__head { display: flex; justify-content: space-between; padding: 0.55rem 0.95rem; background: #0d1219; border-bottom: 1px solid #18222e; color: #7c8da0; font-size: 11.5px; letter-spacing: 0.04em; }
+  .hm__scroll { overflow-x: auto; }
+  .hm__art { margin: 0; padding: 1rem 0.95rem; font-size: 13.5px; line-height: 1.62; white-space: pre; letter-spacing: 0; }
+  .hm__ruler { color: #aebccd; font-weight: 600; }
+  .hm__ticks { color: #3a4b5e; }
+  .hm__st { color: #8b9aab; }
+  /* density ramp — clearly distinct luminance steps + per-cell background tint */
+  .hm__c0 { color: #2b3a4b; }                                   /* no contact — faint dot */
+  .hm__c1 { color: #6fd0ff; background: rgba(56,189,248,0.16); } /* acquiring  */
+  .hm__c2 { color: #7af0a8; background: rgba(74,222,128,0.26); } /* downlink   */
+  .hm__c3 { color: #ffc878; background: rgba(255,180,84,0.34); } /* strong     */
+  .hm__c4 { color: #fff1da; background: rgba(255,209,160,0.50); } /* peak gain  */
+  .hm__sweep { color: #fff !important; background: rgba(255,255,255,0.22) !important; text-shadow: 0 0 8px rgba(255,180,84,0.9); }
+  .hm__legend { display: flex; flex-wrap: wrap; gap: 1rem 1.4rem; padding: 0.6rem 0.95rem 0.7rem; border-top: 1px solid #18222e; font-size: 10.5px; letter-spacing: 0.06em; color: #7c8da0; }
+  .hm__lg { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .hm__lg i { width: 0.9em; height: 0.9em; border-radius: 2px; display: inline-block; }
+  .hm__lg .l0 { background: #2b3a4b; } .hm__lg .l1 { background: #38bdf8; }
+  .hm__lg .l2 { background: #4ade80; } .hm__lg .l3 { background: #ffb454; }
+
+  /* ============================================================
+     04 — LAUNCH MANIFEST (theme tokens, real px)
+     ============================================================ */
+  .mf { background: var(--bg); }
+  .mf__bar { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; border-bottom: 1px solid var(--line); gap: 1rem; }
+  .mf__title { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .mf__fit { font-family: var(--fam); font-size: 10.5px; letter-spacing: 0.08em; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 0.35rem 0.85rem; cursor: pointer; white-space: nowrap; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+  .mf__fit:hover { border-color: var(--accent); }
+  .mf__fit[aria-pressed="true"] { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .mf__table { width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: fixed; }
+  .mf__table th { text-align: left; color: var(--fg-3); font-weight: 500; font-size: 10px; letter-spacing: 0.09em; padding: 0.6rem 0.65rem; border-bottom: 1px solid var(--fg); cursor: pointer; user-select: none; white-space: nowrap; }
+  .mf__table th:hover { color: var(--fg); }
+  .mf__table th.num { text-align: right; }
+  .mf__table th[data-active]::after { content: ' ↓'; color: var(--accent); }
+  .mf__table th[data-active='asc']::after { content: ' ↑'; }
+  .mf__table td { padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--line-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mf__table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .mf__table .dim { color: var(--fg-3); }
+  .mf__table .strong { color: var(--fg); font-weight: 600; }
+  .mf__table .mono-id { color: var(--accent); font-weight: 600; letter-spacing: 0.02em; }
+  .mf__table .sat { color: var(--fg); }
+  .mf__table tbody tr { transition: background 0.15s var(--ease); will-change: transform; }
+  .mf__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  /* width fit-to-column: condense the wdth axis only on the payload-name cells */
+  .mf__table .sat { transition: font-variation-settings 0.5s var(--ease, ease); }
+  .mf.mf--fit .mf__table .sat { font-variation-settings: "wdth" 78; white-space: nowrap; }
+  /* column proportions */
+  .mf__table th:nth-child(1), .mf__table td:nth-child(1) { width: 9%; }
+  .mf__table th:nth-child(2), .mf__table td:nth-child(2) { width: 30%; }
+  .mf__table th:nth-child(3), .mf__table td:nth-child(3) { width: 16%; }
+
+  /* ---------------- responsive ---------------- */
+  @container (max-width: 640px) {
+    .mc { font-size: 12px; }
+    .mc__stat b { font-size: 18px; }
+    .hm__art { font-size: 11px; }
+    .mf__table { font-size: 11.5px; }
+  }
+  @container (max-width: 460px) {
+    .mc__grid { grid-template-columns: repeat(2, 1fr); }
+    .mc__body { grid-template-columns: 1fr; }
+    .mc__sub { border-right: none; border-bottom: 1px solid var(--t-line); }
+    .mc__sub .bar { display: none; }
+    .mc__sub th:last-child, .mc__sub td:last-child { display: none; }
+    .mc__wdth input { width: 64px; }
+    .hm__art { font-size: 10px; }
+    .mf__table th:nth-child(3), .mf__table td:nth-child(3) { display: none; }
+    .mf__table th:nth-child(5), .mf__table td:nth-child(5) { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc__live i { animation: none; }
+    .mc__sub .bar i { transition: none; }
+    .mf__table tbody tr, .mf__table .sat { transition: none; }
+  }
+</style>

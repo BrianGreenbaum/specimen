@@ -3,73 +3,807 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// --- 01 · Mission-control telemetry console (interactive, real device scale) --
+// Three flight phases the operator can switch; tabular telemetry re-streams,
+// subsystem toggles flip state, gauges re-arm. The canonical Space Grotesk use.
+const phases = [
+  {
+    id: 'ascent', name: 'ASCENT', met: '+00:02:41', live: true,
+    vehicle: 'ARTEMIS-VII', stage: 'STAGE I BURN',
+    telem: [
+      ['ALT', '38.42', 'km'],
+      ['VEL', '1.94', 'km/s'],
+      ['DYN.Q', '34.1', 'kPa'],
+      ['THR', '98.6', '%'],
+      ['PITCH', '74.2', '°'],
+      ['LOX', '71.3', '%'],
+    ] as [string, string, string][],
+    subs: [
+      ['GUIDANCE', 'NOMINAL', 'ok'],
+      ['PROPULSION', 'NOMINAL', 'ok'],
+      ['TELEMETRY', 'LOCKED', 'ok'],
+      ['RANGE SAFE', 'ARMED', 'warn'],
+    ] as [string, string, string][],
+    gauges: [['CHAMBER', 78], ['TURBO', 64], ['HYDRAULIC', 91]] as [string, number][],
+  },
+  {
+    id: 'meco', name: 'MECO', met: '+00:08:52', live: true,
+    vehicle: 'ARTEMIS-VII', stage: 'STAGE SEP',
+    telem: [
+      ['ALT', '188.07', 'km'],
+      ['VEL', '7.61', 'km/s'],
+      ['DYN.Q', '00.0', 'kPa'],
+      ['THR', '00.0', '%'],
+      ['PITCH', '02.8', '°'],
+      ['LOX', '04.2', '%'],
+    ] as [string, string, string][],
+    subs: [
+      ['GUIDANCE', 'NOMINAL', 'ok'],
+      ['PROPULSION', 'CUTOFF', 'warn'],
+      ['TELEMETRY', 'LOCKED', 'ok'],
+      ['RANGE SAFE', 'SAFED', 'ok'],
+    ] as [string, string, string][],
+    gauges: [['CHAMBER', 4], ['TURBO', 0], ['HYDRAULIC', 88]] as [string, number][],
+  },
+  {
+    id: 'orbit', name: 'ORBIT', met: '+01:24:17', live: true,
+    vehicle: 'ARTEMIS-VII', stage: 'LEO INSERTION',
+    telem: [
+      ['ALT', '412.80', 'km'],
+      ['VEL', '7.66', 'km/s'],
+      ['DYN.Q', '00.0', 'kPa'],
+      ['THR', '00.0', '%'],
+      ['INC', '51.64', '°'],
+      ['PWR', '99.1', '%'],
+    ] as [string, string, string][],
+    subs: [
+      ['GUIDANCE', 'NOMINAL', 'ok'],
+      ['SOLAR ARRAY', 'DEPLOYED', 'ok'],
+      ['TELEMETRY', 'LOCKED', 'ok'],
+      ['THERMAL', 'NOMINAL', 'ok'],
+    ] as [string, string, string][],
+    gauges: [['BATTERY', 99], ['COMMS', 96], ['ATTITUDE', 100]] as [string, number][],
+  },
+];
+const p0 = phases[0];
+
+// --- 03 · Crypto / on-chain trading terminal (interactive, real px) ----------
+const markets = [
+  ['SOL', 'Solana', '148.92', '+6.41', 1],
+  ['ETH', 'Ethereum', '3,412.08', '+2.18', 1],
+  ['BTC', 'Bitcoin', '67,940.50', '+0.94', 1],
+  ['AVAX', 'Avalanche', '38.17', '-1.62', -1],
+  ['LINK', 'Chainlink', '18.44', '+3.07', 1],
+  ['ARB', 'Arbitrum', '1.082', '-2.94', -1],
+] as [string, string, string, string, number][];
+
+// order book: [price, size] for asks (desc) and bids (desc)
+const asks = [
+  ['149.12', '184.2'], ['149.08', '402.6'], ['149.03', '96.1'],
+  ['148.99', '658.0'], ['148.95', '221.7'],
+] as [string, string][];
+const bids = [
+  ['148.90', '512.4'], ['148.86', '143.9'], ['148.81', '870.3'],
+  ['148.77', '305.5'], ['148.72', '64.8'],
+] as [string, string][];
+
+// --- 04 · Deep-space science data-viz editorial -----------------------------
+const exoplanets = [
+  ['KEPLER-442 b', '1,206', '2.34', '112.3', 0.84],
+  ['TRAPPIST-1 e', '40.7', '0.92', '6.10', 0.71],
+  ['PROXIMA b', '4.24', '1.27', '11.19', 0.62],
+  ['TOI-700 d', '101.4', '1.19', '37.42', 0.69],
+  ['LHS 1140 b', '48.9', '1.73', '24.74', 0.58],
+] as [string, string, string, string, number][];
 ---
 <div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — INTERACTIVE mission-control telemetry console (real device scale) -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Poster — mission control</span></figcaption>
-    <div class="iu__scene scene16">
-      <div class="iu__poster mission" data-mission>
-        <div class="ms-top"><span>◤ ORBITAL DYNAMICS</span><span data-clock>T‑00:00:08</span></div>
-        <h3 class="ms-head">LAUNCH<br/>WINDOW</h3>
-        <div class="ms-grid">
-          <div><span class="ms-k">ALT</span><b>412.8 km</b></div>
-          <div><span class="ms-k">VEL</span><b>7.66 km/s</b></div>
-          <div><span class="ms-k">INC</span><b>51.6°</b></div>
-          <div><span class="ms-k">FUEL</span><b>98.2%</b></div>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — flight-control telemetry, real device scale</span></figcaption>
+    <div class="iu__scene iu__scene--console">
+      <div class="mc" data-mc>
+        <div class="mc__bar">
+          <span class="mc__logo"><i class="mc__diamond"></i>RANGE&nbsp;CONTROL</span>
+          <span class="mc__vehicle" data-vehicle>{p0.vehicle}</span>
+          <span class="mc__met"><span class="mc__met-k">MET</span><span data-met>{p0.met}</span></span>
         </div>
-        <div class="ms-foot"><span>PAD 39A · LEO INSERTION</span><span class="ms-go">● GO</span></div>
+
+        <div class="mc__phases" role="tablist">
+          {phases.map((ph, i) => (
+            <button class={`mc__phase ${i === 0 ? 'is-on' : ''}`} data-phase={ph.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+              <span class="mc__phase-i">T{i + 1}</span>
+              <span class="mc__phase-n">{ph.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div class="mc__body">
+          <div class="mc__telem" data-telem>
+            <div class="mc__telem-h"><span data-stage>{p0.stage}</span><span class="mc__strip" data-strip>● STREAMING</span></div>
+            <div class="mc__readout">
+              {p0.telem.map((t) => (
+                <div class="mc__cell" data-cell>
+                  <span class="mc__cell-k" data-ck>{t[0]}</span>
+                  <span class="mc__cell-v"><b data-cv>{t[1]}</b><i data-cu>{t[2]}</i></span>
+                </div>
+              ))}
+            </div>
+            <div class="mc__gauges" data-gauges>
+              {p0.gauges.map((g) => (
+                <div class="mc__gauge" data-gauge>
+                  <span class="mc__gauge-top"><span data-gk>{g[0]}</span><b data-gv>{g[1]}%</b></span>
+                  <span class="mc__gauge-track"><i data-gfill style={`width:${g[1]}%`}></i></span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="mc__side">
+            <span class="mc__side-h">SUBSYSTEMS</span>
+            <div class="mc__subs" data-subs>
+              {p0.subs.map((s) => (
+                <button class={`mc__sub mc__sub--${s[2]}`} data-sub data-state={s[2]}>
+                  <span class="mc__sub-led"></span>
+                  <span class="mc__sub-n" data-sn>{s[0]}</span>
+                  <span class="mc__sub-s" data-ss>{s[1]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <p class="iu__hint label">Switch flight phase (T1–T3) — the tabular telemetry re-streams and gauges re-arm. Tap a subsystem to acknowledge it. Tall, narrow figures hold their columns like a countdown clock.</p>
   </figure>
 
+  <!-- 02 — techy product / brand poster, kinetic variable weight + stylistic-set reveal -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Sleeve — a record cover</span></figcaption>
-    <div class="iu__scene scene-sq iu__scene--portrait">
-      <div class="iu__poster sleeve">
-        <div class="sl-rings" aria-hidden="true"><span></span><span></span><span></span></div>
-        <span class="sl-side">SIDE A · 33⅓</span>
-        <h3 class="sl-title">Frequencies<br/>from Orbit</h3>
-        <span class="sl-artist">THE SECOND STAGE</span>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — product launch wall, kinetic wght axis + ss01/02/03</span></figcaption>
+    <div class="iu__scene scene16">
+      <div class="halt" data-halt>
+        <div class="halt__grid" aria-hidden="true"></div>
+        <div class="halt__top">
+          <span class="halt__mark"><i class="halt__diamond"></i>HALT&nbsp;LABS</span>
+          <span class="halt__ver">REV&nbsp;0.9 · 2026</span>
+        </div>
+        <span class="halt__kicker">EDGE COMPUTE FOR THE ORBITAL AGE</span>
+        <h3 class="halt__head">
+          <span class="halt__word" data-flux style="--d:0s">gravity</span>
+          <span class="halt__word halt__word--accent" data-flux style="--d:-2.6s">signal</span>
+        </h3>
+        <p class="halt__sub">An edge runtime that streams telemetry from anywhere with a horizon — set in Space&nbsp;Grotesk&rsquo;s alternate <b class="halt__alt">a g t</b>.</p>
+        <div class="halt__foot">
+          <button class="halt__chip" data-ss-toggle type="button" aria-pressed="true">
+            <span class="halt__chip-dot" aria-hidden="true"></span>STYLISTIC&nbsp;SETS&nbsp;<b data-ss-state>ON</b>
+          </button>
+          <span class="halt__meta">SS01·alt&nbsp;a&nbsp; SS02·single-storey&nbsp;g&nbsp; SS03·alt&nbsp;t</span>
+        </div>
       </div>
     </div>
+    <p class="iu__hint label">The two display words breathe across the full 300–700 weight axis, phase-offset. Toggle the stylistic sets to swap in Space Grotesk&rsquo;s signature alternate a, single-storey g and cut t &mdash; the detail that makes the poster unmistakably this face.</p>
+  </figure>
+
+  <!-- 03 — INTERACTIVE crypto / on-chain trading terminal (own dark surface, real px) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Product UI — on-chain trading terminal, live tape</span></figcaption>
+    <div class="iu__scene iu__scene--console">
+      <div class="trade" data-trade>
+        <div class="trade__bar">
+          <span class="trade__logo">◈ HELION</span>
+          <span class="trade__net"><i class="trade__dot"></i>MAINNET</span>
+          <span class="trade__gas">GAS <b data-gas>14</b> gwei</span>
+        </div>
+        <div class="trade__watch" data-watch role="tablist">
+          {markets.map((mk, i) => (
+            <button class={`trade__tk ${i === 0 ? 'is-on' : ''} ${mk[4] > 0 ? 'is-up' : 'is-dn'}`} data-mkt={mk[0]} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+              <span class="trade__tk-sym">{mk[0]}</span>
+              <span class="trade__tk-px" data-px>{mk[2]}</span>
+              <span class="trade__tk-ch" data-ch>{mk[3]}%</span>
+            </button>
+          ))}
+        </div>
+        <div class="trade__body">
+          <div class="trade__chart-wrap">
+            <div class="trade__quote">
+              <span class="trade__pair" data-pair>SOL / USDC</span>
+              <span class="trade__last" data-last>148.92</span>
+              <span class="trade__delta is-up" data-delta>+6.41%</span>
+            </div>
+            <svg class="trade__chart" viewBox="0 0 300 90" preserveAspectRatio="none" aria-hidden="true">
+              <polyline class="trade__spark" data-spark points="" fill="none" />
+              <polyline class="trade__sparkfill" data-sparkfill points="" />
+            </svg>
+            <div class="trade__btns">
+              <button class="trade__buy">BUY</button>
+              <button class="trade__sell">SELL</button>
+            </div>
+          </div>
+          <div class="trade__book">
+            <div class="trade__book-h"><span>PRICE</span><span>SIZE</span></div>
+            <div class="trade__asks">
+              {asks.map((a) => (
+                <div class="trade__lvl trade__lvl--ask"><i class="trade__depth" style={`width:${Math.min(100, +a[1] / 9)}%`}></i><span class="trade__lp">{a[0]}</span><span class="trade__ls">{a[1]}</span></div>
+              ))}
+            </div>
+            <div class="trade__spread"><span data-spread>SPREAD 0.02 · 0.013%</span></div>
+            <div class="trade__bids">
+              {bids.map((b) => (
+                <div class="trade__lvl trade__lvl--bid"><i class="trade__depth" style={`width:${Math.min(100, +b[1] / 9)}%`}></i><span class="trade__lp">{b[0]}</span><span class="trade__ls">{b[1]}</span></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Pick a market — the pair, last price, sparkline and book re-key live; the tape flickers like a ticker. Tabular figures keep every price column flush.</p>
+  </figure>
+
+  <!-- 04 — deep-space science data-viz editorial -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — exoplanet survey, data-viz spread</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="exo">
+        <div class="exo__head">
+          <span class="exo__issue">VOL. XII · DEEP FIELD SURVEY</span>
+          <h3 class="exo__title">THE HABITABLE<br/>SHORTLIST</h3>
+          <p class="exo__deck">Five rocky worlds in the circumstellar comfort zone, ranked by an Earth-Similarity Index drawn from radius, insolation and orbital geometry.</p>
+        </div>
+        <div class="exo__chart" data-exo>
+          <div class="exo__chart-h"><span>WORLD</span><span class="exo__num">DIST&nbsp;ly</span><span class="exo__num">R⊕</span><span class="exo__num">PERIOD&nbsp;d</span><span class="exo__esi">ESI</span></div>
+          {exoplanets.map((e) => (
+            <div class="exo__row">
+              <span class="exo__name">{e[0]}</span>
+              <span class="exo__num">{e[1]}</span>
+              <span class="exo__num">{e[2]}</span>
+              <span class="exo__num">{e[3]}</span>
+              <span class="exo__esi">
+                <i class="exo__bar" data-bar style={`--v:${e[4]}`}></i>
+                <b>{e[4].toFixed(2)}</b>
+              </span>
+            </div>
+          ))}
+        </div>
+        <div class="exo__foot">
+          <span>SOURCE · ARCHIVE DR4</span>
+          <span class="exo__foot-note">ESI 1.00 = EARTH</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A data spread: display gothic headline over tabular survey figures, the ESI bars drawing in on reveal.</p>
   </figure>
 </div>
 
+<script id="sg-mc-data" type="application/json" set:html={JSON.stringify(phases)} is:inline></script>
+<script id="sg-mkt-data" type="application/json" set:html={JSON.stringify({ markets, asks, bids })} is:inline></script>
+
 <script>
-  document.querySelectorAll<HTMLElement>('[data-mission]').forEach((m) => {
-    const clock = m.querySelector('[data-clock]') as HTMLElement;
-    let t = 8;
-    const tick = () => {
-      t = t <= 0 ? 8 : t - 1;
-      clock.textContent = `T‑00:00:${String(t).padStart(2, '0')}`;
-    };
-    setInterval(tick, 1000);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== 01 · mission-control phase switching + subsystem ack =====
+  type Phase = {
+    id: string; name: string; met: string; live: boolean; vehicle: string; stage: string;
+    telem: [string, string, string][];
+    subs: [string, string, string][];
+    gauges: [string, number][];
+  };
+  const mcIsland = document.getElementById('sg-mc-data');
+  let phases: Phase[] = [];
+  try { phases = mcIsland ? JSON.parse(mcIsland.textContent || '[]') : []; } catch { phases = []; }
+  const phaseById: Record<string, Phase> = {};
+  phases.forEach((p) => (phaseById[p.id] = p));
+
+  document.querySelectorAll<HTMLElement>('[data-mc]').forEach((mc) => {
+    if (!phases.length) return;
+    const q = (s: string) => mc.querySelector(s) as HTMLElement | null;
+    const vehicle = q('[data-vehicle]')!, met = q('[data-met]')!, stage = q('[data-stage]')!;
+    const cells = Array.from(mc.querySelectorAll('[data-cell]'));
+    const gauges = Array.from(mc.querySelectorAll('[data-gauge]'));
+    const subsWrap = q('[data-subs]')!;
+
+    function render(id: string) {
+      const p = phaseById[id];
+      if (!p) return;
+      vehicle.textContent = p.vehicle;
+      met.textContent = p.met;
+      stage.textContent = p.stage;
+
+      cells.forEach((cell, i) => {
+        const t = p.telem[i];
+        if (!t) { (cell as HTMLElement).style.display = 'none'; return; }
+        (cell as HTMLElement).style.display = '';
+        (cell.querySelector('[data-ck]') as HTMLElement).textContent = t[0];
+        (cell.querySelector('[data-cv]') as HTMLElement).textContent = t[1];
+        (cell.querySelector('[data-cu]') as HTMLElement).textContent = t[2];
+      });
+
+      gauges.forEach((g, i) => {
+        const gd = p.gauges[i];
+        if (!gd) { (g as HTMLElement).style.display = 'none'; return; }
+        (g as HTMLElement).style.display = '';
+        (g.querySelector('[data-gk]') as HTMLElement).textContent = gd[0];
+        (g.querySelector('[data-gv]') as HTMLElement).textContent = gd[1] + '%';
+        (g.querySelector('[data-gfill]') as HTMLElement).style.width = gd[1] + '%';
+      });
+
+      subsWrap.replaceChildren();
+      p.subs.forEach((s) => {
+        const btn = document.createElement('button');
+        btn.className = `mc__sub mc__sub--${s[2]}`;
+        btn.setAttribute('data-sub', '');
+        btn.setAttribute('data-state', s[2]);
+        const led = document.createElement('span'); led.className = 'mc__sub-led';
+        const n = document.createElement('span'); n.className = 'mc__sub-n'; n.textContent = s[0];
+        const st = document.createElement('span'); st.className = 'mc__sub-s'; st.textContent = s[1];
+        btn.append(led, n, st);
+        wireSub(btn);
+        subsWrap.appendChild(btn);
+      });
+
+      mc.querySelectorAll('[data-phase]').forEach((t) => {
+        const on = (t as HTMLElement).dataset.phase === id;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    function wireSub(btn: HTMLElement) {
+      btn.addEventListener('click', () => {
+        const ss = btn.querySelector('[data-ss]') as HTMLElement;
+        if (btn.dataset.state === 'warn') {
+          btn.dataset.state = 'ok';
+          btn.classList.remove('mc__sub--warn');
+          btn.classList.add('mc__sub--ok');
+          ss.textContent = 'ACK';
+        } else {
+          btn.dataset.state = 'warn';
+          btn.classList.remove('mc__sub--ok');
+          btn.classList.add('mc__sub--warn');
+          ss.textContent = 'CHECK';
+        }
+      });
+    }
+    mc.querySelectorAll<HTMLElement>('[data-sub]').forEach(wireSub);
+
+    mc.querySelectorAll<HTMLButtonElement>('[data-phase]').forEach((btn) =>
+      btn.addEventListener('click', () => render(btn.dataset.phase!))
+    );
+
+    // subtle live jitter on telemetry (reduced-motion: static)
+    if (!reduce) {
+      const jitter = () => {
+        cells.forEach((cell) => {
+          const vEl = cell.querySelector('[data-cv]') as HTMLElement;
+          const base = parseFloat(vEl.textContent || '0');
+          if (!isFinite(base) || base === 0) return;
+          const drift = base * (1 + (Math.random() - 0.5) * 0.0016);
+          const dec = (vEl.textContent || '').includes('.') ? (vEl.textContent!.split('.')[1]?.length || 2) : 0;
+          vEl.textContent = drift.toFixed(dec);
+        });
+      };
+      setInterval(jitter, 1200);
+    }
   });
+
+  // ===== 02 · HALT poster — stylistic-set (ss01/ss02/ss03) live toggle =====
+  document.querySelectorAll<HTMLElement>('[data-halt]').forEach((halt) => {
+    const btn = halt.querySelector('[data-ss-toggle]') as HTMLButtonElement | null;
+    const state = halt.querySelector('[data-ss-state]') as HTMLElement | null;
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const off = halt.toggleAttribute('data-ss-off');
+      btn.setAttribute('aria-pressed', off ? 'false' : 'true');
+      if (state) state.textContent = off ? 'OFF' : 'ON';
+    });
+  });
+
+  // ===== 03 · crypto terminal market switching + live tape =====
+  type Mkt = [string, string, string, string, number];
+  const mktIsland = document.getElementById('sg-mkt-data');
+  let mdata: { markets: Mkt[]; asks: [string, string][]; bids: [string, string][] } =
+    { markets: [], asks: [], bids: [] };
+  try { mdata = mktIsland ? JSON.parse(mktIsland.textContent || '{}') : mdata; } catch {}
+  const mktById: Record<string, Mkt> = {};
+  mdata.markets.forEach((m) => (mktById[m[0]] = m));
+
+  // deterministic-ish sparkline generator per symbol
+  function spark(sym: string, up: boolean): number[] {
+    let seed = 0;
+    for (const c of sym) seed += c.charCodeAt(0);
+    const pts: number[] = [];
+    let v = 45;
+    for (let i = 0; i < 32; i++) {
+      seed = (seed * 9301 + 49297) % 233280;
+      const r = seed / 233280;
+      v += (r - 0.5) * 14 + (up ? 0.5 : -0.5);
+      v = Math.max(10, Math.min(80, v));
+      pts.push(v);
+    }
+    return pts;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-trade]').forEach((tr) => {
+    if (!mdata.markets || !mdata.markets.length) return;
+    const q = (s: string) => tr.querySelector(s) as HTMLElement | null;
+    const pair = q('[data-pair]')!, last = q('[data-last]')!, delta = q('[data-delta]')!;
+    const spreadEl = q('[data-spread]')!;
+    const sparkEl = tr.querySelector('[data-spark]') as unknown as SVGPolylineElement;
+    const fillEl = tr.querySelector('[data-sparkfill]') as unknown as SVGPolylineElement;
+
+    function draw(sym: string) {
+      const m = mktById[sym];
+      if (!m) return;
+      const up = m[4] > 0;
+      pair.textContent = `${m[0]} / USDC`;
+      last.textContent = m[2];
+      delta.textContent = (up ? '+' : '') + m[3] + '%';
+      delta.classList.toggle('is-up', up);
+      delta.classList.toggle('is-dn', !up);
+      const ys = spark(sym, up);
+      const stepX = 300 / (ys.length - 1);
+      const pts = ys.map((y, i) => `${(i * stepX).toFixed(1)},${(90 - y).toFixed(1)}`).join(' ');
+      sparkEl.setAttribute('points', pts);
+      fillEl.setAttribute('points', `0,90 ${pts} 300,90`);
+      tr.dataset.dir = up ? 'up' : 'dn';
+      // re-trigger the draw animation
+      if (!reduce) {
+        sparkEl.style.animation = 'none';
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        sparkEl.getBoundingClientRect();
+        sparkEl.style.animation = '';
+      }
+    }
+
+    draw('SOL');
+    tr.querySelectorAll<HTMLButtonElement>('[data-mkt]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        tr.querySelectorAll('[data-mkt]').forEach((b) => {
+          b.classList.remove('is-on');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('is-on');
+        btn.setAttribute('aria-selected', 'true');
+        draw(btn.dataset.mkt!);
+      })
+    );
+
+    // live gas + faint price tape flicker (reduced-motion: static)
+    if (!reduce) {
+      const gas = q('[data-gas]');
+      setInterval(() => {
+        if (gas) gas.textContent = String(8 + Math.floor(Math.random() * 22));
+      }, 2600);
+    }
+  });
+
+  // ===== 04 · exoplanet ESI bars draw in on reveal =====
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('[data-exo]').forEach((exo) => {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) { exo.classList.add('is-in'); io.disconnect(); }
+        });
+      }, { threshold: 0.3 });
+      io.observe(exo);
+    });
+  } else {
+    document.querySelectorAll<HTMLElement>('[data-exo]').forEach((e) => e.classList.add('is-in'));
+  }
 </script>
 
 <style>
   .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches InUse.astro / inter.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
   .scene16 { aspect-ratio: 16 / 9; }
-  .scene-sq { --card-ar: 1 / 1; }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
 
-  .mission { background: var(--bg); color: var(--fg); padding: 5cqi; display: flex; flex-direction: column; }
-  .ms-top { display: flex; justify-content: space-between; font-size: 2.6cqi; letter-spacing: 0.1em; color: var(--accent); }
-  .ms-top [data-clock] { font-feature-settings: 'tnum'; }
-  .ms-head { font-size: 17cqi; line-height: 0.86; font-weight: 700; letter-spacing: -0.02em; margin: 2cqi 0 auto; }
-  .ms-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2cqi; border-top: 1px solid var(--line); padding-top: 3cqi; }
-  .ms-grid div { display: flex; flex-direction: column; gap: 0.6cqi; }
-  .ms-k { font-size: 2.2cqi; letter-spacing: 0.1em; color: var(--fg-3); }
-  .ms-grid b { font-size: 3.6cqi; font-feature-settings: 'tnum'; }
-  .ms-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 3cqi; font-size: 2.6cqi; letter-spacing: 0.08em; color: var(--fg-2); }
-  .ms-go { color: var(--accent); font-weight: 700; }
+  /* console variant: real-px UI that fills the scene */
+  .iu__scene--console { aspect-ratio: 16 / 10; padding: 0; }
+  @container (max-width: 520px) { .iu__scene--console { aspect-ratio: 4 / 5; } }
 
-  .sleeve { background: var(--fg); color: var(--bg); overflow: hidden; padding: 6cqi; display: flex; flex-direction: column; }
-  .sl-rings { position: absolute; top: 50%; left: 50%; transform: translate(-30%, -50%); }
-  .sl-rings span { position: absolute; border: 1px solid var(--accent); border-radius: 50%; opacity: 0.5; }
-  .sl-rings span:nth-child(1) { width: 60cqi; height: 60cqi; margin: -30cqi; }
-  .sl-rings span:nth-child(2) { width: 42cqi; height: 42cqi; margin: -21cqi; }
-  .sl-rings span:nth-child(3) { width: 24cqi; height: 24cqi; margin: -12cqi; background: var(--accent); }
-  .sl-side { position: relative; font-size: 2.6cqi; letter-spacing: 0.2em; }
-  .sl-title { position: relative; font-size: 13cqi; line-height: 0.9; font-weight: 700; margin-top: auto; }
-  .sl-artist { position: relative; font-size: 2.8cqi; letter-spacing: 0.25em; color: var(--accent); margin-top: 2cqi; }
+  /* ============================================================
+     01 · MISSION-CONTROL TELEMETRY (own dark console surface, real px)
+     ============================================================ */
+  .mc {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background:
+      radial-gradient(120% 90% at 50% -10%, #0f1a16 0%, transparent 60%),
+      #06080a;
+    color: #d6e6dd; font-size: 13px;
+    --mc-accent: #caff48; --mc-warn: #ffb02e; --mc-dim: #5d6f66; --mc-line: #ffffff14;
+  }
+  .mc__bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 9px 14px; border-bottom: 1px solid var(--mc-line); flex: none;
+    background: #ffffff05;
+  }
+  .mc__logo { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; }
+  .mc__diamond { width: 7px; height: 7px; background: var(--mc-accent); transform: rotate(45deg); }
+  .mc__vehicle { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; color: var(--mc-dim); }
+  .mc__met { display: inline-flex; align-items: baseline; gap: 7px; font-feature-settings: 'tnum'; }
+  .mc__met-k { font-size: 9px; letter-spacing: 0.2em; color: var(--mc-dim); }
+  .mc__met [data-met] { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--mc-accent); }
+
+  .mc__phases { display: flex; gap: 0; border-bottom: 1px solid var(--mc-line); flex: none; }
+  .mc__phase {
+    flex: 1; display: flex; align-items: baseline; justify-content: center; gap: 7px;
+    padding: 8px 6px; background: transparent; cursor: pointer; min-width: 0;
+    border-right: 1px solid var(--mc-line); border-bottom: 2px solid transparent;
+    transition: background 0.15s ease;
+  }
+  .mc__phase:last-child { border-right: 0; }
+  .mc__phase:hover { background: #ffffff08; }
+  .mc__phase.is-on { background: color-mix(in srgb, var(--mc-accent) 10%, transparent); border-bottom-color: var(--mc-accent); }
+  .mc__phase-i { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; color: var(--mc-dim); font-feature-settings: 'tnum'; }
+  .mc__phase.is-on .mc__phase-i { color: var(--mc-accent); }
+  .mc__phase-n { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; color: #aebbb3; white-space: nowrap; }
+  .mc__phase.is-on .mc__phase-n { color: #fff; }
+
+  .mc__body { flex: 1; display: grid; grid-template-columns: 1fr 38%; min-height: 0; }
+  .mc__telem { padding: 13px 15px; display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--mc-line); }
+  .mc__telem-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 11px; }
+  .mc__telem-h [data-stage] { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #c4d2ca; }
+  .mc__strip { font-size: 9px; font-weight: 600; letter-spacing: 0.16em; color: var(--mc-accent); }
+
+  .mc__readout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--mc-line); border: 1px solid var(--mc-line); }
+  .mc__cell { background: #070a0c; padding: 8px 10px 9px; display: flex; flex-direction: column; gap: 4px; }
+  .mc__cell-k { font-size: 9px; letter-spacing: 0.18em; color: var(--mc-dim); }
+  .mc__cell-v { display: flex; align-items: baseline; gap: 3px; }
+  .mc__cell-v b { font-size: 21px; font-weight: 500; font-feature-settings: 'tnum'; letter-spacing: 0.01em; color: #eaf4ee; line-height: 1; }
+  .mc__cell-v i { font-size: 9.5px; font-style: normal; color: var(--mc-dim); letter-spacing: 0.05em; }
+
+  .mc__gauges { display: flex; flex-direction: column; gap: 9px; margin-top: 13px; }
+  .mc__gauge { display: flex; flex-direction: column; gap: 4px; }
+  .mc__gauge-top { display: flex; align-items: baseline; justify-content: space-between; font-size: 9.5px; letter-spacing: 0.14em; color: var(--mc-dim); }
+  .mc__gauge-top b { font-size: 11px; font-weight: 600; color: #c4d2ca; font-feature-settings: 'tnum'; letter-spacing: 0; }
+  .mc__gauge-track { height: 4px; background: #ffffff10; overflow: hidden; }
+  .mc__gauge-track i { display: block; height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--mc-accent) 55%, transparent), var(--mc-accent)); transition: width 0.6s cubic-bezier(0.2,0.7,0.2,1); }
+
+  .mc__side { padding: 13px 15px; display: flex; flex-direction: column; min-height: 0; }
+  .mc__side-h { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: var(--mc-dim); margin-bottom: 11px; }
+  .mc__subs { display: flex; flex-direction: column; gap: 7px; }
+  .mc__sub {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px;
+    padding: 8px 10px; background: #ffffff05; border: 1px solid var(--mc-line);
+    cursor: pointer; text-align: left; transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .mc__sub:hover { background: #ffffff0a; }
+  .mc__sub-led { width: 7px; height: 7px; border-radius: 50%; }
+  .mc__sub--ok .mc__sub-led { background: var(--mc-accent); box-shadow: 0 0 6px color-mix(in srgb, var(--mc-accent) 70%, transparent); }
+  .mc__sub--warn { border-color: color-mix(in srgb, var(--mc-warn) 45%, transparent); }
+  .mc__sub--warn .mc__sub-led { background: var(--mc-warn); box-shadow: 0 0 6px color-mix(in srgb, var(--mc-warn) 70%, transparent); }
+  .mc__sub-n { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #c4d2ca; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mc__sub-s { font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; font-feature-settings: 'tnum'; }
+  .mc__sub--ok .mc__sub-s { color: var(--mc-accent); }
+  .mc__sub--warn .mc__sub-s { color: var(--mc-warn); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mc__sub--warn .mc__sub-led { animation: mc-blink 1s steps(1) infinite; }
+    @keyframes mc-blink { 50% { opacity: 0.25; } }
+  }
+
+  @container (max-width: 520px) {
+    .mc__body { grid-template-columns: 1fr; }
+    .mc__telem { border-right: 0; border-bottom: 1px solid var(--mc-line); }
+    .mc__readout { grid-template-columns: repeat(3, 1fr); }
+    .mc__cell-v b { font-size: 18px; }
+    .mc__phase-n { font-size: 10px; }
+  }
+
+  /* ============================================================
+     02 · HALT LABS PRODUCT POSTER (kinetic variable weight)
+     ============================================================ */
+  .halt {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 4cqi 5.5cqi; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .halt__grid {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 8cqi 8cqi;
+    mask-image: radial-gradient(120% 80% at 80% 20%, #000 0%, transparent 75%);
+  }
+  .halt__top, .halt__kicker, .halt__head, .halt__sub, .halt__foot { position: relative; }
+  .halt__top { display: flex; justify-content: space-between; align-items: center; font-size: 2.1cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2); flex: none; }
+  .halt__mark { display: inline-flex; align-items: center; gap: 1.4cqi; font-weight: 700; color: var(--fg); }
+  .halt__diamond { width: 1.8cqi; height: 1.8cqi; background: var(--accent); transform: rotate(45deg); }
+  .halt__ver { font-feature-settings: 'tnum'; color: var(--fg-3); }
+  .halt__kicker { font-size: 2cqi; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-top: auto; margin-bottom: 1.4cqi; }
+  .halt__head { display: flex; flex-direction: column; gap: 0; line-height: 0.82; margin: 0; }
+  /* lowercase display words so Space Grotesk's signature alternates are visible.
+     ss01 alt a · ss02 single-storey g · ss03 cut t — toggled live below. */
+  .halt__word {
+    font-size: 16.5cqi; font-weight: 700; letter-spacing: -0.02em;
+    font-variation-settings: 'wght' 700;
+    font-feature-settings: 'ss01' 1, 'ss02' 1, 'ss03' 1;
+    transition: font-feature-settings 0.2s;
+  }
+  .halt[data-ss-off] .halt__word { font-feature-settings: 'ss01' 0, 'ss02' 0, 'ss03' 0; }
+  .halt__word--accent { color: var(--accent); }
+  .halt__sub { font-size: 2.4cqi; line-height: 1.36; max-width: 60%; color: var(--fg-2); margin-top: 1.8cqi; margin-bottom: auto; }
+  .halt__alt {
+    font-weight: 700; color: var(--accent); letter-spacing: 0.08em;
+    font-feature-settings: 'ss01' 1, 'ss02' 1, 'ss03' 1;
+  }
+  .halt[data-ss-off] .halt__alt { color: var(--fg-3); font-feature-settings: 'ss01' 0, 'ss02' 0, 'ss03' 0; }
+  .halt__foot { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; flex: none; padding-top: 2.6cqi; border-top: 1px solid var(--line); }
+  .halt__chip {
+    display: inline-flex; align-items: center; gap: 1.4cqi;
+    font-size: 2.4cqi; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--accent-contrast); background: var(--accent);
+    padding: 1.2cqi 2.8cqi; border-radius: 100px; border: 0; cursor: pointer;
+    transition: background 0.2s, color 0.2s, opacity 0.2s;
+  }
+  .halt__chip-dot { width: 1.6cqi; height: 1.6cqi; border-radius: 50%; background: var(--accent-contrast); flex: none; }
+  .halt[data-ss-off] .halt__chip { background: transparent; color: var(--fg-2); box-shadow: inset 0 0 0 1px var(--line); }
+  .halt[data-ss-off] .halt__chip-dot { background: var(--fg-3); }
+  .halt__chip:hover { filter: brightness(1.06); }
+  .halt__meta { font-size: 1.85cqi; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum'; text-align: right; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .halt__word[data-flux] {
+      animation: halt-flux 5.5s cubic-bezier(0.45,0,0.2,1) infinite alternate;
+      animation-delay: var(--d, 0s);
+    }
+    /* weight-breathe keeps the alternates lit across the whole axis, so the
+       reveal reads as THIS variable face flexing — not a generic wght demo. */
+    @keyframes halt-flux {
+      from { font-variation-settings: 'wght' 300; letter-spacing: 0.02em; }
+      to   { font-variation-settings: 'wght' 700; letter-spacing: -0.025em; }
+    }
+  }
+
+  @container (max-width: 520px) {
+    .halt__word { font-size: 22cqi; }
+    .halt__sub { max-width: 100%; font-size: 3.2cqi; }
+    .halt__meta { display: none; }
+    .halt__foot { justify-content: flex-start; }
+  }
+
+  /* ============================================================
+     03 · CRYPTO TRADING TERMINAL (own dark surface, real px)
+     ============================================================ */
+  .trade {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: #07090c; color: #c9d4dd; font-size: 13px;
+    --t-up: #2ee6a6; --t-dn: #ff5d6c; --t-accent: #caff48; --t-dim: #5e6b78; --t-line: #ffffff12;
+  }
+  .trade__bar { display: flex; align-items: center; gap: 12px; padding: 9px 13px; border-bottom: 1px solid var(--t-line); flex: none; }
+  .trade__logo { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; color: var(--t-accent); }
+  .trade__net { display: inline-flex; align-items: center; gap: 6px; font-size: 9.5px; font-weight: 600; letter-spacing: 0.16em; color: var(--t-up); }
+  .trade__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--t-up); box-shadow: 0 0 6px color-mix(in srgb, var(--t-up) 70%, transparent); }
+  .trade__gas { margin-left: auto; font-size: 10px; letter-spacing: 0.1em; color: var(--t-dim); font-feature-settings: 'tnum'; }
+  .trade__gas b { color: #c9d4dd; font-weight: 600; }
+
+  .trade__watch { display: flex; border-bottom: 1px solid var(--t-line); flex: none; overflow: hidden; }
+  .trade__tk {
+    flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    padding: 7px 9px; background: transparent; cursor: pointer; min-width: 0;
+    border-right: 1px solid var(--t-line); border-bottom: 2px solid transparent;
+    transition: background 0.15s ease;
+  }
+  .trade__tk:last-child { border-right: 0; }
+  .trade__tk:hover { background: #ffffff07; }
+  .trade__tk.is-on { background: #ffffff0a; border-bottom-color: var(--t-accent); }
+  .trade__tk-sym { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: #e6edf2; }
+  .trade__tk-px { font-size: 11px; font-weight: 500; font-feature-settings: 'tnum'; letter-spacing: 0.01em; color: #aab6c0; }
+  .trade__tk-ch { font-size: 9.5px; font-weight: 600; font-feature-settings: 'tnum'; }
+  .trade__tk.is-up .trade__tk-ch { color: var(--t-up); }
+  .trade__tk.is-dn .trade__tk-ch { color: var(--t-dn); }
+
+  .trade__body { flex: 1; display: grid; grid-template-columns: 1fr 40%; min-height: 0; }
+  .trade__chart-wrap { display: flex; flex-direction: column; padding: 12px 14px; border-right: 1px solid var(--t-line); min-height: 0; }
+  .trade__quote { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+  .trade__pair { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--t-dim); }
+  .trade__last { font-size: 28px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0; color: #eef3f7; line-height: 1; }
+  .trade__delta { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; }
+  .trade__delta.is-up { color: var(--t-up); }
+  .trade__delta.is-dn { color: var(--t-dn); }
+  .trade__chart { flex: 1; width: 100%; min-height: 70px; margin: 12px 0; overflow: visible; }
+  .trade__spark { stroke: var(--t-accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  [data-dir='dn'] .trade__spark { stroke: var(--t-dn); }
+  .trade__sparkfill { fill: color-mix(in srgb, var(--t-accent) 14%, transparent); stroke: none; }
+  [data-dir='dn'] .trade__sparkfill { fill: color-mix(in srgb, var(--t-dn) 12%, transparent); }
+  .trade__btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .trade__buy, .trade__sell { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 9px 0; cursor: pointer; border: 1px solid transparent; }
+  .trade__buy { background: var(--t-up); color: #04130d; }
+  .trade__sell { background: transparent; color: var(--t-dn); border-color: color-mix(in srgb, var(--t-dn) 45%, transparent); }
+  .trade__buy:hover { filter: brightness(1.08); }
+  .trade__sell:hover { background: color-mix(in srgb, var(--t-dn) 12%, transparent); }
+
+  .trade__book { display: flex; flex-direction: column; padding: 10px 12px; min-height: 0; }
+  .trade__book-h { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: 0.16em; color: var(--t-dim); margin-bottom: 6px; }
+  .trade__asks, .trade__bids { display: flex; flex-direction: column; gap: 1px; }
+  .trade__lvl { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 3px 6px; overflow: hidden; }
+  .trade__depth { position: absolute; top: 0; bottom: 0; right: 0; opacity: 0.16; }
+  .trade__lvl--ask .trade__depth { background: var(--t-dn); }
+  .trade__lvl--bid .trade__depth { background: var(--t-up); }
+  .trade__lp, .trade__ls { position: relative; font-size: 11px; font-feature-settings: 'tnum'; letter-spacing: 0.01em; }
+  .trade__lvl--ask .trade__lp { color: var(--t-dn); }
+  .trade__lvl--bid .trade__lp { color: var(--t-up); }
+  .trade__ls { color: #97a3ad; text-align: right; }
+  .trade__spread { padding: 6px 6px; font-size: 9.5px; letter-spacing: 0.14em; color: var(--t-dim); font-feature-settings: 'tnum'; text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .trade__spark { stroke-dasharray: 1000; animation: trade-draw 0.7s ease-out both; }
+    @keyframes trade-draw { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+    .trade__dot { animation: trade-pulse 1.6s ease-in-out infinite; }
+    @keyframes trade-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  }
+
+  @container (max-width: 540px) {
+    .trade__watch { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .trade__tk:nth-child(3n) { border-right: 0; }
+    .trade__tk { border-bottom: 1px solid var(--t-line); }
+    .trade__body { grid-template-columns: 1fr; }
+    .trade__chart-wrap { border-right: 0; border-bottom: 1px solid var(--t-line); }
+    .trade__last { font-size: 24px; }
+  }
+
+  /* ============================================================
+     04 · EXOPLANET SURVEY (data-viz editorial)
+     ============================================================ */
+  .exo {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 5cqi 5.5cqi; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .exo__head { flex: none; }
+  .exo__issue { font-size: 2cqi; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); }
+  .exo__title { font-size: 11cqi; font-weight: 700; line-height: 0.88; letter-spacing: -0.01em; text-transform: uppercase; margin: 1.4cqi 0 2cqi; }
+  .exo__deck { font-size: 2.5cqi; line-height: 1.42; color: var(--fg-2); max-width: 86%; padding-bottom: 2.6cqi; border-bottom: 1px solid var(--line); }
+  .exo__chart { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-top: 2cqi; }
+  .exo__chart-h, .exo__row {
+    display: grid; grid-template-columns: 1.8fr 0.9fr 0.6fr 1fr 1.5fr;
+    align-items: center; gap: 2cqi;
+  }
+  .exo__chart-h { font-size: 1.8cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); padding-bottom: 1.4cqi; border-bottom: 1px solid var(--line); }
+  .exo__row { flex: 1; border-bottom: 1px solid var(--line-soft); }
+  .exo__row:last-child { border-bottom: 0; }
+  .exo__name { font-size: 3cqi; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .exo__num { font-size: 2.7cqi; font-weight: 400; font-feature-settings: 'tnum'; text-align: right; color: var(--fg-2); letter-spacing: 0.01em; }
+  .exo__chart-h .exo__num { font-size: 1.8cqi; color: var(--fg-3); }
+  .exo__esi { display: flex; align-items: center; gap: 1.4cqi; justify-content: flex-end; }
+  .exo__chart-h .exo__esi { justify-content: flex-end; }
+  .exo__bar { flex: 1; height: 1.4cqi; background: #ffffff14; position: relative; overflow: hidden; max-width: 70%; }
+  .exo__bar::after {
+    content: ''; position: absolute; inset: 0 auto 0 0; width: calc(var(--v) * 100%);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 50%, transparent), var(--accent));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.9s cubic-bezier(0.2,0.7,0.2,1);
+  }
+  [data-exo].is-in .exo__bar::after { transform: scaleX(1); }
+  .exo__esi b { font-size: 2.6cqi; font-weight: 600; font-feature-settings: 'tnum'; color: var(--fg); min-width: 7cqi; text-align: right; }
+  .exo__chart-h .exo__esi { font-size: 1.8cqi; }
+  .exo__foot { flex: none; display: flex; justify-content: space-between; align-items: baseline; margin-top: 2.4cqi; padding-top: 2cqi; border-top: 1px solid var(--line); font-size: 1.9cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum'; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .exo__bar::after { transition: none; transform: scaleX(1); }
+  }
+
+  @container (max-width: 540px) {
+    .exo__title { font-size: 13cqi; }
+    .exo__deck { max-width: 100%; font-size: 3.4cqi; }
+    .exo__chart-h, .exo__row { grid-template-columns: 1.6fr 0.8fr 1.4fr; }
+    .exo__chart-h span:nth-child(3), .exo__chart-h span:nth-child(4),
+    .exo__row .exo__num:nth-of-type(2), .exo__row .exo__num:nth-of-type(3) { display: none; }
+    .exo__name { font-size: 4cqi; }
+    .exo__num { font-size: 3.4cqi; }
+    .exo__esi b { font-size: 3.4cqi; min-width: 10cqi; }
+  }
 </style>

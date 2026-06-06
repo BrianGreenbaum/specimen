@@ -1,0 +1,619 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// --- 01 · Interactive SaaS landing + billing toggle ----------------------
+// Three plans whose prices flip monthly⇄annual; tabular figures hold columns.
+const plans = [
+  { id: 'starter', name: 'Starter', m: 0,  a: 0,  tag: 'For trying things out', cta: 'Start free',
+    feats: ['1 workspace', 'Up to 3 seats', '5 GB storage', 'Community support'] },
+  { id: 'team', name: 'Team', m: 19, a: 15, tag: 'For growing teams', cta: 'Start trial', best: true,
+    feats: ['Unlimited workspaces', 'Up to 25 seats', '250 GB storage', 'Priority support', 'Advanced roles'] },
+  { id: 'scale', name: 'Scale', m: 49, a: 39, tag: 'For whole companies', cta: 'Talk to sales',
+    feats: ['Everything in Team', 'Unlimited seats', 'SSO &amp; SCIM', 'Audit log', 'SLA &amp; uptime'] },
+];
+
+// --- 02 · Pricing / plan comparison matrix (interactive column focus) -----
+const cmpPlans = [
+  { id: 'starter', name: 'Starter', price: '$0' },
+  { id: 'team', name: 'Team', price: '$15', best: true },
+  { id: 'scale', name: 'Scale', price: '$39' },
+];
+type Cell = boolean | string;
+const cmpGroups: { group: string; rows: { label: string; v: [Cell, Cell, Cell] }[] }[] = [
+  { group: 'Workspace', rows: [
+    { label: 'Active projects', v: ['3', 'Unlimited', 'Unlimited'] },
+    { label: 'Team seats', v: ['3', '25', 'Unlimited'] },
+    { label: 'Storage', v: ['5 GB', '250 GB', '2 TB'] },
+    { label: 'Version history', v: ['7 days', '90 days', 'Forever'] },
+  ]},
+  { group: 'Collaboration', rows: [
+    { label: 'Real-time editing', v: [true, true, true] },
+    { label: 'Guest access', v: [false, true, true] },
+    { label: 'Advanced roles', v: [false, true, true] },
+    { label: 'Audit log', v: [false, false, true] },
+  ]},
+  { group: 'Security', rows: [
+    { label: 'SSO / SAML', v: [false, false, true] },
+    { label: 'SCIM provisioning', v: [false, false, true] },
+    { label: 'Uptime SLA', v: ['—', '99.9%', '99.99%'] },
+  ]},
+];
+
+// --- 03 · Mobile app onboarding (device scale) ---------------------------
+const onboard = [
+  { k: 'Plan together', t: 'Everything in\none place', b: 'Tasks, docs and timelines living side by side — so your team always knows what is next.', icon: 'M4 7h16M4 12h16M4 17h10' },
+  { k: 'Move faster', t: 'Automate the\nbusywork', b: 'Triggers and rules quietly handle the routine, and route the rest to the right person.', icon: 'M13 2 4 14h7l-1 8 9-12h-7z' },
+  { k: 'Stay in sync', t: 'See the whole\npicture', b: 'Live dashboards roll every workspace up into one calm, readable view of progress.', icon: 'M4 19V9m5 10V5m5 14v-7m5 7V11' },
+];
+---
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — interactive SaaS landing with billing toggle (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — SaaS landing &amp; pricing, real device scale</span></figcaption>
+    <div class="iu__scene scene-land">
+      <div class="iu__device land" data-land>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">getcadence.app</span>
+        </div>
+        <header class="land__nav">
+          <span class="land__logo"><span class="land__mark" aria-hidden="true"></span>Cadence</span>
+          <nav class="land__links">
+            <a>Product</a><a>Solutions</a><a>Pricing</a><a>Docs</a>
+          </nav>
+          <span class="land__act"><a class="land__ghost">Sign in</a><a class="land__cta">Get started</a></span>
+        </header>
+        <section class="land__hero" data-hero>
+          <span class="land__heromark" aria-hidden="true"></span>
+          <span class="land__eyebrow">New · Automations 2.0</span>
+          <h3 class="land__h1"><span class="land__h1l" data-wline>Run the work,</span><span class="land__h1l land__h1l--accent" data-wline>not the busywork.</span></h3>
+          <p class="land__sub">Cadence keeps projects, docs and people in rhythm — one calm workspace that scales from a side-project to the whole company.</p>
+          <div class="land__heroact">
+            <a class="land__cta land__cta--lg">Start for free</a>
+            <a class="land__play">▷ Watch the 2-min tour</a>
+          </div>
+          <div class="land__logos"><span>Acme</span><span>Northwind</span><span>Globex</span><span>Initech</span><span>Umbra</span></div>
+        </section>
+        <section class="land__pricing">
+          <div class="land__pricehead">
+            <h4>Simple, scaling pricing</h4>
+            <div class="land__toggle" role="group" aria-label="Billing period">
+              <button class="land__tg is-on" data-bill="m">Monthly</button>
+              <button class="land__tg" data-bill="a">Annual</button>
+              <span class="land__save" data-save hidden>Save 20%</span>
+            </div>
+          </div>
+          <div class="land__plans">
+            {plans.map((p) => (
+              <div class={`land__plan ${p.best ? 'is-best' : ''}`}>
+                {p.best && <span class="land__ribbon">Most popular</span>}
+                <span class="land__pname">{p.name}</span>
+                <span class="land__ptag" set:html={p.tag}></span>
+                <span class="land__price">
+                  <b data-price={p.id} data-m={p.m} data-a={p.a}>${p.m}</b>
+                  <i class="land__per">/seat · mo</i>
+                </span>
+                <a class={`land__pcta ${p.best ? 'is-solid' : ''}`}>{p.cta}</a>
+                <ul class="land__feats">
+                  {p.feats.map((f) => (<li set:html={f}></li>))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+    <p class="iu__hint label">Flip Monthly ⇄ Annual — prices recount in tabular figures and the savings badge appears. Outfit at true UI sizes.</p>
+  </figure>
+
+  <!-- 02 — plan comparison matrix, interactive column focus -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Product UI — plan comparison matrix, tabular figures</span></figcaption>
+    <div class="iu__scene scene-cmp">
+      <div class="iu__device cmp" data-cmp>
+        <div class="cmp__top">
+          <span class="cmp__brand"><span class="land__mark" aria-hidden="true"></span>Cadence</span>
+          <span class="cmp__title">Compare plans</span>
+          <span class="cmp__hint">Tap a column to focus</span>
+        </div>
+        <div class="cmp__scroll">
+          <!-- narrow: stacked per-plan cards so the comparison survives 390 with no h-scroll -->
+          <div class="cmp__stack" aria-hidden="false">
+            {cmpPlans.map((p, ci) => (
+              <article class={`cmp__card ${p.best ? 'is-best' : ''}`} data-card={p.id}>
+                <header class="cmp__chead">
+                  <span class="cmp__cn">{p.name}</span>
+                  <span class="cmp__cp">{p.price}<i>/mo</i></span>
+                  {p.best && <span class="cmp__cbadge">Popular</span>}
+                </header>
+                {cmpGroups.map((g) => (
+                  <div class="cmp__cgrp">
+                    <span class="cmp__cgrpt">{g.group}</span>
+                    <dl class="cmp__clist">
+                      {g.rows.map((r) => (
+                        <div class="cmp__cline">
+                          <dt class="cmp__cdt">{r.label}</dt>
+                          <dd class="cmp__cdd">
+                            {typeof r.v[ci] === 'boolean'
+                              ? (r.v[ci]
+                                  ? <span class="cmp__yes" aria-label="Included">✓</span>
+                                  : <span class="cmp__no" aria-label="Not included">–</span>)
+                              : <span class="cmp__txt" set:html={r.v[ci]}></span>}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                ))}
+              </article>
+            ))}
+          </div>
+          <table class="cmp__table">
+            <thead>
+              <tr>
+                <th class="cmp__rowhead"></th>
+                {cmpPlans.map((p) => (
+                  <th class={`cmp__col ${p.best ? 'is-best' : ''}`} data-col={p.id}>
+                    <span class="cmp__cn">{p.name}</span>
+                    <span class="cmp__cp">{p.price}<i>/mo</i></span>
+                    {p.best && <span class="cmp__cbadge">Popular</span>}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {cmpGroups.map((g) => (
+              <tbody>
+                <tr class="cmp__grp"><td colspan="4">{g.group}</td></tr>
+                {g.rows.map((r) => (
+                  <tr class="cmp__row">
+                    <td class="cmp__rl">{r.label}</td>
+                    {r.v.map((cell, i) => (
+                      <td class={`cmp__cell ${cmpPlans[i].best ? 'is-best' : ''}`} data-cell={cmpPlans[i].id}>
+                        {typeof cell === 'boolean'
+                          ? (cell
+                              ? <span class="cmp__yes" aria-label="Included">✓</span>
+                              : <span class="cmp__no" aria-label="Not included">–</span>)
+                          : <span class="cmp__txt" set:html={cell}></span>}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Tap any plan column to dim the rest — figures and check-marks stay column-locked with tabular numbers.</p>
+  </figure>
+
+  <!-- 03 — mobile app onboarding, true device scale, stepper -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Mobile app — onboarding flow, device scale</span></figcaption>
+    <div class="iu__scene iu__scene--phone">
+      <div class="iu__device phone" data-onb>
+        <div class="phone__chrome">
+          <span class="phone__time">9:41</span>
+          <span class="phone__notch" aria-hidden="true"></span>
+          <span class="phone__status">
+            <svg viewBox="0 0 16 12" class="phone__sig" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect x="12" y="0" width="3" height="12" rx="0.6"/></svg>
+            <svg viewBox="0 0 26 12" class="phone__batt" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="16" height="8" rx="1" fill="currentColor"/></svg>
+          </span>
+        </div>
+        <div class="phone__body">
+          <div class="phone__brand"><span class="land__mark" aria-hidden="true"></span>Cadence</div>
+          {onboard.map((s, i) => (
+            <div class={`onb__slide ${i === 0 ? 'is-on' : ''}`} data-slide={i}>
+              <div class="onb__art" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="onb__icon"><path d={s.icon} fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="onb__k">{s.k}</span>
+              <h3 class="onb__t">{s.t}</h3>
+              <p class="onb__b">{s.b}</p>
+            </div>
+          ))}
+        </div>
+        <div class="phone__foot">
+          <div class="onb__dots" data-dots>
+            {onboard.map((_, i) => (<i class={i === 0 ? 'is-on' : ''} data-dot={i}></i>))}
+          </div>
+          <button class="onb__next" data-next>
+            <span data-nextlabel>Continue</span>
+          </button>
+          <button class="onb__skip" data-skip>Skip</button>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Step through onboarding — slides advance, the dots fill, and the final screen swaps to “Create account.” Outfit’s even widths at phone scale.</p>
+  </figure>
+
+  <!-- 04 — startup brand / identity board -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Brand — identity board: wordmark, weight scale &amp; system</span></figcaption>
+    <div class="iu__scene scene-board">
+      <div class="brand">
+        <div class="brand__hd">
+          <span class="brand__doc">Cadence — Brand System</span>
+          <span class="brand__ver">v1.2 · 2026</span>
+        </div>
+        <div class="brand__grid">
+          <div class="brand__logo">
+            <span class="brand__wm"><span class="brand__mark" aria-hidden="true"></span>cadence</span>
+            <span class="brand__cap">Primary wordmark · Outfit Medium, −2% tracking</span>
+          </div>
+          <div class="brand__scaleC">
+            <span class="brand__lbl">Weight scale · 100 → 900</span>
+            <div class="brand__scale" data-scale>
+              <span style="font-weight:200">Aa</span>
+              <span style="font-weight:300">Aa</span>
+              <span style="font-weight:400">Aa</span>
+              <span style="font-weight:500">Aa</span>
+              <span style="font-weight:600">Aa</span>
+              <span style="font-weight:700">Aa</span>
+              <span style="font-weight:900">Aa</span>
+            </div>
+          </div>
+          <div class="brand__voiceC">
+            <span class="brand__lbl">Voice</span>
+            <p class="brand__voice">Form, made <em>friendly.</em></p>
+            <p class="brand__voiceSub">Geometry you can trust, warmth you can feel — a system built on the circle and the line.</p>
+          </div>
+          <div class="brand__swatchC">
+            <span class="brand__lbl">Palette</span>
+            <div class="brand__sw">
+              <span class="brand__chip" style="background:var(--accent);color:var(--accent-contrast)">Pulse<i>accent</i></span>
+              <span class="brand__chip" style="background:var(--fg);color:var(--bg)">Ink<i>fg</i></span>
+              <span class="brand__chip brand__chip--line" style="background:var(--bg-2);color:var(--fg)">Paper<i>bg-2</i></span>
+            </div>
+          </div>
+          <div class="brand__specC">
+            <span class="brand__lbl">Specimen</span>
+            <span class="brand__alpha">ABCGRaego&amp;<b>0123</b></span>
+          </div>
+        </div>
+        <div class="brand__ft">
+          <span>Geometric Sans · Variable 100–900</span>
+          <span>The circle, the line, a hundred years of optimism.</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the weight ramp to drive Outfit’s wght axis from Thin to Black — the whole identity in one face.</p>
+  </figure>
+</div>
+
+<script>
+  // 01 — billing toggle (monthly ⇄ annual)
+  document.querySelectorAll<HTMLElement>('[data-land]').forEach((land) => {
+    const save = land.querySelector('[data-save]') as HTMLElement;
+    const prices = Array.from(land.querySelectorAll<HTMLElement>('[data-price]'));
+    land.querySelectorAll<HTMLButtonElement>('[data-bill]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        land.querySelectorAll('[data-bill]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        const annual = btn.dataset.bill === 'a';
+        save.hidden = !annual;
+        prices.forEach((el) => {
+          const v = annual ? el.dataset.a : el.dataset.m;
+          el.textContent = `$${v}`;
+        });
+      })
+    );
+  });
+
+  // 02 — comparison column focus
+  document.querySelectorAll<HTMLElement>('[data-cmp]').forEach((cmp) => {
+    let active: string | null = null;
+    const cols = Array.from(cmp.querySelectorAll<HTMLElement>('[data-col]'));
+    const cards = Array.from(cmp.querySelectorAll<HTMLElement>('[data-card]'));
+    const setFocus = (id: string | null) => {
+      active = id;
+      cmp.querySelectorAll<HTMLElement>('[data-cell],[data-col]').forEach((el) => {
+        el.classList.toggle('is-focus', !!id && el.dataset.col === id || !!id && el.dataset.cell === id);
+        el.classList.toggle('is-dim', !!id && !(el.dataset.col === id || el.dataset.cell === id));
+      });
+      cards.forEach((c) => c.classList.toggle('is-dim', !!id && c.dataset.card !== id));
+    };
+    cols.forEach((col) =>
+      col.addEventListener('click', () => setFocus(active === col.dataset.col ? null : col.dataset.col!))
+    );
+    cards.forEach((c) =>
+      c.addEventListener('click', () => setFocus(active === c.dataset.card ? null : c.dataset.card!))
+    );
+  });
+
+  // 03 — onboarding stepper
+  document.querySelectorAll<HTMLElement>('[data-onb]').forEach((onb) => {
+    const slides = Array.from(onb.querySelectorAll<HTMLElement>('[data-slide]'));
+    const dots = Array.from(onb.querySelectorAll<HTMLElement>('[data-dot]'));
+    const nextBtn = onb.querySelector('[data-next]') as HTMLButtonElement;
+    const nextLabel = onb.querySelector('[data-nextlabel]') as HTMLElement;
+    const skip = onb.querySelector('[data-skip]') as HTMLButtonElement;
+    let i = 0;
+    const show = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
+      dots.forEach((d, k) => d.classList.toggle('is-on', k === i));
+      const last = i === slides.length - 1;
+      nextLabel.textContent = last ? 'Create account' : 'Continue';
+      skip.textContent = last ? 'Start over' : 'Skip';
+    };
+    nextBtn.addEventListener('click', () => show(i + 1));
+    skip.addEventListener('click', () => show(i === slides.length - 1 ? 0 : slides.length - 1));
+    dots.forEach((d) => d.addEventListener('click', () => show(+d.dataset.dot!)));
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches inter.astro / oswald.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-board { aspect-ratio: 16 / 10; }
+  /* matrix: tall enough at narrow widths to show all stacked plan cards on first paint */
+  @media (max-width: 560px) { .scene-cmp { aspect-ratio: 3 / 5; } }
+  /* landing is taller than the artifact frame so the pricing toggle stays in view */
+  .scene-land { aspect-ratio: 4 / 5; }
+  @container (min-width: 760px) { .scene-land { aspect-ratio: 1 / 1; } }
+
+  .iu__device { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+  .iu__chrome { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--line); background: var(--bg-2); flex: none; }
+  .iu__dots { display: inline-flex; gap: 5px; }
+  .iu__dots i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 22%, transparent); }
+  .iu__addr { font-size: 11px; color: var(--fg-3); border: 1px solid var(--line); border-radius: 6px; padding: 2px 10px; margin: 0 auto; letter-spacing: 0.01em; }
+
+  /* shared brand mark — a circle + line, Outfit's founding shapes */
+  .land__mark, .brand__mark { display: inline-block; border-radius: 50%; background: var(--accent); position: relative; flex: none; }
+  .land__mark { width: 14px; height: 14px; }
+  .land__mark::after { content: ''; position: absolute; left: 50%; top: 50%; width: 8px; height: 2px; border-radius: 2px; background: var(--accent-contrast); transform: translate(-50%,-50%) rotate(-32deg); }
+
+  /* ============ 01 · SAAS LANDING (real px) ============ */
+  .land { font-size: 13px; line-height: 1.45; overflow-y: auto; }
+  .land__nav { display: flex; align-items: center; gap: 1.4rem; padding: 0.85rem 1.3rem; border-bottom: 1px solid var(--line-soft); flex: none; }
+  .land__logo { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .land__links { display: flex; gap: 1.1rem; margin: 0 auto; }
+  .land__links a { font-size: 13px; font-weight: 500; color: var(--fg-2); cursor: pointer; }
+  .land__links a:hover { color: var(--fg); }
+  .land__act { display: inline-flex; align-items: center; gap: 0.9rem; }
+  .land__ghost { font-size: 13px; font-weight: 500; color: var(--fg-2); cursor: pointer; }
+  .land__cta { font-size: 13px; font-weight: 600; color: var(--accent-contrast); background: var(--accent); padding: 0.5rem 0.95rem; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+  .land__cta:hover { filter: brightness(1.06); }
+
+  .land__hero { position: relative; padding: 2.2rem 1.3rem 1.7rem; text-align: center; border-bottom: 1px solid var(--line-soft); background: radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%); }
+  /* prominent geometric brand mark — Outfit's circle + line, oversized in the hero */
+  .land__heromark { display: block; width: 54px; height: 54px; margin: 0 auto 1rem; border-radius: 50%; background: var(--accent); position: relative; box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--accent) 90%, transparent); }
+  .land__heromark::before { content: ''; position: absolute; left: 50%; top: 50%; width: 26px; height: 5px; border-radius: 3px; background: var(--accent-contrast); transform: translate(-50%,-50%) rotate(-32deg); }
+  .land__heromark::after { content: ''; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; border-radius: 50%; border: 2.5px solid var(--accent-contrast); transform: translate(-50%,-50%); }
+  .land__eyebrow { display: inline-block; font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 0.25rem 0.7rem; border-radius: 100px; }
+  .land__h1 { font-size: clamp(40px, 8.6cqi, 64px); line-height: 0.98; letter-spacing: -0.045em; margin: 0.85rem 0 0; font-variation-settings: 'wght' 700; }
+  .land__h1l { display: block; font-variation-settings: 'wght' 700; }
+  .land__h1l--accent { color: var(--accent); }
+  .land__sub { font-size: 14.5px; line-height: 1.5; color: var(--fg-2); max-width: 30rem; margin: 0.8rem auto 0; }
+  .land__heroact { display: inline-flex; align-items: center; gap: 1rem; margin-top: 1.3rem; }
+  .land__cta--lg { font-size: 14px; padding: 0.65rem 1.3rem; }
+  .land__play { font-size: 13px; font-weight: 500; color: var(--fg-2); cursor: pointer; }
+  .land__play:hover { color: var(--fg); }
+  .land__logos { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.6rem; margin-top: 1.4rem; }
+  .land__logos span { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--fg-3); opacity: 0.85; }
+
+  .land__pricing { padding: 1.8rem 1.3rem 2.2rem; }
+  .land__pricehead { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .land__pricehead h4 { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+  .land__toggle { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .land__tg { font-size: 12.5px; font-weight: 600; color: var(--fg-3); padding: 0.4rem 0.85rem; border-radius: 100px; cursor: pointer; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
+  .land__tg.is-on { color: var(--accent-contrast); background: var(--accent); }
+  .land__tg:not(.is-on):hover { color: var(--fg); }
+  .land__save { font-size: 11px; font-weight: 600; color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent); padding: 0.25rem 0.6rem; border-radius: 100px; }
+
+  .land__plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+  .land__plan { position: relative; border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.05rem; display: flex; flex-direction: column; gap: 0.35rem; background: var(--bg); }
+  .land__plan.is-best { border-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 14px 34px -22px color-mix(in srgb, var(--accent) 80%, transparent); background: color-mix(in srgb, var(--accent) 4%, var(--bg)); }
+  .land__ribbon { position: absolute; top: -0.7rem; right: 0.9rem; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-contrast); background: var(--accent); padding: 0.2rem 0.6rem; border-radius: 100px; }
+  .land__pname { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .land__ptag { font-size: 12px; color: var(--fg-3); }
+  .land__price { display: flex; align-items: baseline; gap: 0.35rem; margin: 0.5rem 0 0.2rem; }
+  .land__price b { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; font-feature-settings: 'tnum'; }
+  .land__per { font-style: normal; font-size: 11.5px; color: var(--fg-3); }
+  .land__pcta { font-size: 12.5px; font-weight: 600; text-align: center; padding: 0.55rem; border-radius: 8px; border: 1px solid var(--line); color: var(--fg); cursor: pointer; margin: 0.4rem 0 0.7rem; transition: background 0.15s var(--ease); }
+  .land__pcta:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .land__pcta.is-solid { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .land__pcta.is-solid:hover { filter: brightness(1.06); background: var(--accent); }
+  .land__feats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.42rem; }
+  .land__feats li { font-size: 12px; color: var(--fg-2); padding-left: 1.25rem; position: relative; }
+  .land__feats li::before { content: '✓'; position: absolute; left: 0; top: 0; color: var(--accent); font-size: 11px; font-weight: 700; }
+
+  /* wght-axis entrance + hover drive — the headline asserts Outfit's variable axis */
+  @media (prefers-reduced-motion: no-preference) {
+    .land__h1l { animation: land-wght 0.7s var(--ease-out, cubic-bezier(.2,.7,.2,1)) both; }
+    .land__h1l:nth-child(2) { animation-delay: 0.1s; }
+    @keyframes land-wght {
+      0%   { font-variation-settings: 'wght' 300; opacity: 0; transform: translateY(8px); }
+      30%  { opacity: 1; transform: none; }
+      100% { font-variation-settings: 'wght' 700; opacity: 1; transform: none; }
+    }
+    .land__hero:hover .land__h1l { font-variation-settings: 'wght' 880; transition: font-variation-settings 0.5s var(--ease); }
+    .land__hero:hover .land__heromark { transform: rotate(180deg); transition: transform 0.6s var(--ease); }
+  }
+
+  @container (max-width: 720px) {
+    .land__links { display: none; }
+    .land__h1 { font-size: clamp(34px, 11cqi, 52px); }
+    .land__heromark { width: 46px; height: 46px; }
+    .land__plans { grid-template-columns: 1fr; }
+    .land__logos { gap: 1.1rem; }
+  }
+
+  /* ============ 02 · COMPARISON MATRIX (real px) ============ */
+  .cmp { font-size: 13px; }
+  .cmp__top { display: flex; align-items: baseline; gap: 1rem; padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--line); flex: none; }
+  .cmp__brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; }
+  .cmp__title { font-size: 14px; font-weight: 600; margin: 0 auto 0 0.4rem; color: var(--fg-2); }
+  .cmp__hint { font-size: 11px; color: var(--fg-3); }
+  .cmp__scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
+  .cmp__table { width: 100%; border-collapse: collapse; }
+  .cmp__stack { display: none; }
+  .cmp__table th, .cmp__table td { padding: 0.55rem 0.7rem; }
+  .cmp__rowhead { width: 38%; }
+  .cmp__col { text-align: center; vertical-align: bottom; border-bottom: 1px solid var(--line); position: relative; transition: opacity 0.18s var(--ease); cursor: pointer; }
+  .cmp__col.is-best { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+  .cmp__cn { display: block; font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
+  .cmp__cp { display: block; font-size: 17px; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: -0.02em; margin-top: 1px; }
+  .cmp__cp i { font-style: normal; font-size: 10.5px; font-weight: 500; color: var(--fg-3); }
+  .cmp__cbadge { display: inline-block; margin-top: 4px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.03em; color: var(--accent-contrast); background: var(--accent); padding: 1px 7px; border-radius: 100px; }
+  .cmp__grp td { font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); padding-top: 1rem; padding-bottom: 0.3rem; }
+  .cmp__row { transition: background 0.12s var(--ease); }
+  .cmp__row:hover { background: color-mix(in srgb, var(--fg) 3.5%, transparent); }
+  .cmp__rl { font-size: 12.5px; color: var(--fg-2); border-bottom: 1px solid var(--line-soft); }
+  .cmp__cell { text-align: center; border-bottom: 1px solid var(--line-soft); transition: opacity 0.18s var(--ease); }
+  .cmp__cell.is-best { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .cmp__txt { font-size: 12.5px; font-weight: 600; font-feature-settings: 'tnum'; }
+  .cmp__yes { color: var(--accent); font-weight: 700; font-size: 13px; }
+  .cmp__no { color: var(--fg-3); font-weight: 500; }
+  .cmp__cell.is-dim, .cmp__col.is-dim { opacity: 0.32; }
+  .cmp__cell.is-focus { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .cmp__col.is-focus { background: color-mix(in srgb, var(--accent) 12%, transparent); opacity: 1; }
+
+  @container (max-width: 620px) {
+    .cmp__rowhead { width: 34%; }
+    .cmp__table th, .cmp__table td { padding: 0.5rem 0.4rem; }
+    .cmp__cn { font-size: 12px; }
+    .cmp__cp { font-size: 14px; }
+    .cmp__hint { display: none; }
+  }
+
+  /* narrow: switch the matrix to a stacked per-plan card list (no h-scroll) */
+  @container (max-width: 480px) {
+    .cmp__table { display: none; }
+    .cmp__stack { display: flex; flex-direction: column; gap: 0.7rem; padding: 0.9rem; }
+  }
+  .cmp__card { border: 1px solid var(--line); border-radius: 12px; padding: 0.85rem 0.95rem; background: var(--bg); transition: opacity 0.18s var(--ease), border-color 0.18s var(--ease); }
+  .cmp__card.is-best { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 4%, var(--bg)); box-shadow: 0 14px 34px -24px color-mix(in srgb, var(--accent) 80%, transparent); }
+  .cmp__card.is-dim { opacity: 0.4; }
+  .cmp__chead { display: flex; align-items: baseline; gap: 0.5rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line-soft); margin-bottom: 0.5rem; }
+  .cmp__chead .cmp__cn { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .cmp__chead .cmp__cp { font-size: 18px; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: -0.02em; margin-left: auto; }
+  .cmp__chead .cmp__cp i { font-style: normal; font-size: 10.5px; font-weight: 500; color: var(--fg-3); }
+  .cmp__cbadge { display: inline-block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.03em; color: var(--accent-contrast); background: var(--accent); padding: 1px 7px; border-radius: 100px; }
+  .cmp__cgrpt { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); margin: 0.55rem 0 0.25rem; }
+  .cmp__clist { margin: 0; }
+  .cmp__cline { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.28rem 0; }
+  .cmp__cdt { font-size: 12.5px; color: var(--fg-2); margin: 0; }
+  .cmp__cdd { margin: 0; font-size: 12.5px; font-weight: 600; font-feature-settings: 'tnum'; text-align: right; }
+  .cmp__cdd .cmp__yes { color: var(--accent); font-weight: 700; }
+  .cmp__cdd .cmp__no { color: var(--fg-3); }
+
+  /* ============ 03 · MOBILE ONBOARDING (real px, phone) ============ */
+  .iu__scene--phone { aspect-ratio: 16 / 10; display: grid; place-items: center; padding: clamp(14px, 3cqi, 34px) 0; }
+  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
+  .iu__scene--phone .phone {
+    position: relative; inset: auto;
+    width: 332px; max-width: 100%; height: 100%; max-height: 656px;
+    aspect-ratio: 332 / 656;
+    border-radius: 34px; border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.55), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
+    font-size: 13px;
+  }
+  .phone__chrome { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1.3rem 0.3rem; flex: none; border-radius: 34px 34px 0 0; position: relative; }
+  .phone__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; }
+  .phone__notch { position: absolute; left: 50%; top: 0.4rem; transform: translateX(-50%); width: 80px; height: 18px; border-radius: 100px; background: color-mix(in srgb, var(--fg) 88%, transparent); }
+  .phone__status { display: inline-flex; align-items: center; gap: 5px; color: var(--fg-2); }
+  .phone__sig { width: 15px; height: 11px; } .phone__sig rect { fill: currentColor; }
+  .phone__batt { width: 21px; height: 10px; }
+  .phone__body { flex: 1; display: flex; flex-direction: column; padding: 1.1rem 1.5rem 0; position: relative; overflow: hidden; }
+  .phone__brand { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; }
+  .onb__slide { position: absolute; inset: 3rem 1.5rem 0; display: none; flex-direction: column; }
+  .onb__slide.is-on { display: flex; }
+  @media (prefers-reduced-motion: no-preference) {
+    .onb__slide.is-on { animation: onb-in 0.4s var(--ease-out, ease-out); }
+    @keyframes onb-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  }
+  .onb__art { width: 76px; height: 76px; border-radius: 22px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); margin: 1.6rem 0 1.6rem; }
+  .onb__icon { width: 36px; height: 36px; }
+  .onb__k { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .onb__t { font-size: 27px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin: 0.5rem 0 0.7rem; white-space: pre-line; }
+  .onb__b { font-size: 14px; line-height: 1.5; color: var(--fg-2); }
+  .phone__foot { flex: none; padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+  .onb__dots { display: inline-flex; gap: 7px; }
+  .onb__dots i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 18%, transparent); transition: width 0.25s var(--ease), background 0.2s var(--ease); cursor: pointer; }
+  .onb__dots i.is-on { width: 22px; border-radius: 100px; background: var(--accent); }
+  .onb__next { width: 100%; font-size: 14px; font-weight: 600; color: var(--accent-contrast); background: var(--accent); border: 0; padding: 0.8rem; border-radius: 12px; cursor: pointer; transition: filter 0.15s var(--ease); }
+  .onb__next:hover { filter: brightness(1.06); }
+  .onb__skip { font-size: 12.5px; font-weight: 500; color: var(--fg-3); background: none; border: 0; cursor: pointer; }
+  .onb__skip:hover { color: var(--fg); }
+
+  /* ============ 04 · BRAND / IDENTITY BOARD ============ */
+  .brand { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 3.2cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .brand__hd { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.9cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi; }
+  .brand__grid { flex: 1; display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: auto auto auto; gap: 3cqi 3cqi; align-content: center; min-height: 0; padding: 2.4cqi 0; }
+  .brand__logo { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; gap: 1.2cqi; justify-content: center; }
+  .brand__wm { display: inline-flex; align-items: center; gap: 1.6cqi; font-size: 10cqi; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+  .brand__mark { width: 6.4cqi; height: 6.4cqi; }
+  .brand__mark::after { content: ''; position: absolute; left: 50%; top: 50%; width: 3.4cqi; height: 0.9cqi; background: var(--accent-contrast); transform: translate(-50%,-50%) rotate(-32deg); border-radius: 2px; }
+  .brand__cap { font-size: 1.9cqi; color: var(--fg-3); letter-spacing: 0.02em; }
+  .brand__lbl { display: block; font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 1.2cqi; }
+
+  .brand__scaleC { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; }
+  .brand__scale { display: flex; align-items: baseline; gap: 1cqi; flex-wrap: nowrap; }
+  .brand__scale span { font-size: 3.8cqi; line-height: 1; color: var(--fg); transition: font-variation-settings 0.4s var(--ease); }
+
+  .brand__voiceC { grid-column: 1; grid-row: 2; }
+  .brand__voice { font-size: 5.4cqi; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .brand__voice em { font-style: normal; color: var(--accent); }
+  .brand__voiceSub { font-size: 2.2cqi; line-height: 1.4; color: var(--fg-2); max-width: 34cqi; margin-top: 1.4cqi; }
+
+  .brand__swatchC { grid-column: 2; grid-row: 2; }
+  .brand__sw { display: flex; gap: 1.2cqi; }
+  .brand__chip { flex: 1; aspect-ratio: 1 / 1.05; border-radius: 1.6cqi; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.4cqi; font-size: 2.2cqi; font-weight: 600; letter-spacing: -0.01em; }
+  .brand__chip i { font-style: normal; font-size: 1.5cqi; font-weight: 500; opacity: 0.7; letter-spacing: 0.04em; }
+  .brand__chip--line { border: 1px solid var(--line); }
+
+  .brand__specC { grid-column: 1 / -1; grid-row: 3; border-top: 1px solid var(--line); padding-top: 1.6cqi; }
+  .brand__alpha { display: block; font-size: 4.7cqi; font-weight: 400; letter-spacing: 0.01em; line-height: 1; color: var(--fg-2); white-space: nowrap; }
+  .brand__alpha b { font-weight: 700; color: var(--accent); font-feature-settings: 'tnum'; }
+
+  .brand__ft { display: flex; justify-content: space-between; gap: 2cqi; font-size: 1.8cqi; letter-spacing: 0.06em; color: var(--fg-3); border-top: 1px solid var(--line); padding-top: 1.6cqi; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .brand__scale:hover span { font-variation-settings: 'wght' 900; }
+    .brand__scale span:nth-child(1) { transition-delay: 0s; }
+    .brand__scale span:nth-child(2) { transition-delay: 0.04s; }
+    .brand__scale span:nth-child(3) { transition-delay: 0.08s; }
+    .brand__scale span:nth-child(4) { transition-delay: 0.12s; }
+    .brand__scale span:nth-child(5) { transition-delay: 0.16s; }
+    .brand__scale span:nth-child(6) { transition-delay: 0.2s; }
+    .brand__scale span:nth-child(7) { transition-delay: 0.24s; }
+  }
+
+  @container (max-width: 640px) {
+    .brand__grid { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; gap: 3cqi; align-content: start; }
+    .brand__logo { grid-column: 1; grid-row: 1; }
+    .brand__scaleC { grid-column: 1; grid-row: 2; }
+    .brand__voiceC { grid-column: 1; grid-row: 3; }
+    .brand__swatchC { grid-column: 1; grid-row: 4; }
+    .brand__specC { grid-column: 1; grid-row: 5; }
+    .brand__wm { font-size: 13cqi; }
+    .brand__mark { width: 8.5cqi; height: 8.5cqi; }
+    .brand__voice { font-size: 9cqi; }
+    .brand__voiceSub { font-size: 3.2cqi; max-width: none; }
+    .brand__scale span { font-size: 7.4cqi; }
+    .brand__alpha { font-size: 8cqi; }
+    .brand__cap, .brand__lbl { font-size: 2.8cqi; }
+    .brand__chip { font-size: 3cqi; }
+    .brand__chip i { font-size: 2.2cqi; }
+    .brand__ft { font-size: 2.6cqi; flex-direction: column; gap: 0.6cqi; }
+  }
+</style>

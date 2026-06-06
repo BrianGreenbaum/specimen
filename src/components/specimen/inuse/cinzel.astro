@@ -1,48 +1,398 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import BrandScene from '../BrandScene.astro';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+// Loaded companion serif for the rare lines of small body/caption text — Cinzel is
+// caps-only and must never carry running text.
+const serif = "'Spectral', Georgia, serif";
+
+// ── Scene 04 (interactive maison microsite) collection data ──────────────────
+const cuvees = [
+  { id: 'I',   name: 'BLANC DE CRAIE', cat: 'champagne', cuvee: 'Brut Nature',     year: '2014', price: '210', note: 'Chalk · Citron · Brioche',    tag: 'Prestige' },
+  { id: 'II',  name: 'NOIR DE NUIT',   cat: 'champagne', cuvee: 'Extra Brut',      year: '2012', price: '340', note: 'Quince · Ash · Toasted Almond', tag: '' },
+  { id: 'III', name: 'AURUM',          cat: 'cognac',    cuvee: 'Grande Champagne', year: '1971', price: '1,900', note: 'Rancio · Walnut · Saffron',  tag: 'Rare' },
+  { id: 'IV',  name: 'SOLSTICE',       cat: 'champagne', cuvee: 'Rosé de Saignée', year: '2016', price: '290', note: 'Redcurrant · Rose · Flint',   tag: '' },
+  { id: 'V',   name: 'OBSIDIAN',       cat: 'cognac',    cuvee: 'Hors d’Âge',  year: '1958', price: '4,500', note: 'Leather · Fig · Dark Honey', tag: 'Cellar' },
+  { id: 'VI',  name: 'MERIDIEN',       cat: 'spirit',    cuvee: 'Vermouth Doré',   year: 'NV',   price: '120', note: 'Gentian · Wormwood · Orange', tag: '' },
+];
 ---
-<div class="iu" style={`--fam:${fam}`}>
+<div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
+
+  <!-- 01 — CINEMATIC TITLE CARD: kinetic letter-spaced reveal -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Lapidary — a carved inscription</span></figcaption>
-    <div class="iu__scene scene16">
-      <div class="iu__poster monument">
-        <span class="monument__leaf" aria-hidden="true">❦</span>
-        <p class="monument__small">IN·THE·YEAR·OF·THE·LETTER</p>
-        <h3 class="monument__head">SENATVS<br/>POPVLVS<wbr/>QVE</h3>
-        <p class="monument__rule" aria-hidden="true"></p>
-        <p class="monument__date">· MMXXVI ·</p>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Film — the main title card</span></figcaption>
+    <div class="iu__scene cz-scene-cine">
+      <div class="cz-cine" data-cine>
+        <span class="cz-cine__pres">A · GUILLERMO · SAINT-CLAIR · FILM</span>
+        <h3 class="cz-cine__title" data-cine-title aria-label="Imperium">
+          <span>I</span><span>M</span><span>P</span><span>E</span><span>R</span><span>I</span><span>V</span><span>M</span>
+        </h3>
+        <span class="cz-cine__rule" aria-hidden="true"></span>
+        <span class="cz-cine__sub">IN · ASSOCIATION · WITH · THE · AUREATE · COMPANY</span>
+        <span class="cz-cine__cast">NEARING · LE&nbsp;GALL · VESPUCCI · DRAKOS</span>
       </div>
     </div>
+    <p class="iu__hint label">A cinematic main title: the capitals fade up and the tracking opens from a tight cluster to monumental width — hover to replay.</p>
   </figure>
 
+  <!-- 02 — WINE / SPIRITS LABEL: engraved cuvée label with SVG textPath arc -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a luxury monogram</span></figcaption>
-    <div class="iu__scene brand-scene">
-      <BrandScene font={font} variant="monogram" />
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Packaging — the cuvée label (SVG textPath)</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cz-label" data-label>
+        <span class="cz-label__top">CHAMPAGNE · GRAND CRU</span>
+        <svg class="cz-label__svg" viewBox="0 0 360 460" role="img" aria-label="Cuvée Aurum champagne label, engraved capitals">
+          <defs>
+            <path id="cz-arc-top" d="M 40 196 A 140 140 0 0 1 320 196" fill="none" />
+            <path id="cz-arc-bot" d="M 48 322 A 132 132 0 0 0 312 322" fill="none" />
+          </defs>
+          <!-- engraved oval frame -->
+          <ellipse class="cz-label__frame" cx="180" cy="230" rx="172" ry="222" />
+          <ellipse class="cz-label__frame cz-label__frame--in" cx="180" cy="230" rx="158" ry="208" />
+          <!-- arced legends -->
+          <text class="cz-label__arc"><textPath href="#cz-arc-top" startOffset="50%" text-anchor="middle">MAISON · DE&nbsp;CRAIE</textPath></text>
+          <text class="cz-label__arc cz-label__arc--bot"><textPath href="#cz-arc-bot" startOffset="50%" text-anchor="middle">MIS · EN · BOVTEILLE · AV · DOMAINE</textPath></text>
+          <!-- centred lockup -->
+          <text class="cz-label__cuvee" x="180" y="196" text-anchor="middle">CVVÉE</text>
+          <text class="cz-label__name"  x="180" y="262" text-anchor="middle">AVRVM</text>
+          <line class="cz-label__hair" x1="112" y1="292" x2="248" y2="292" />
+          <text class="cz-label__year"  x="180" y="324" text-anchor="middle">· MCMLXXI ·</text>
+        </svg>
+        <span class="cz-label__foot">BRVT NATVRE · 12,5% VOL · 750 ML</span>
+      </div>
     </div>
+    <p class="iu__hint label">Live SVG <code>textPath</code> engraves the legends around the medallion — the frame draws in and the lockup re-engraves on hover.</p>
   </figure>
+
+  <!-- 03 — FASHION / JEWELRY HOUSE IDENTITY: variable-weight breathing wordmark -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — the maison de joaillerie identity</span></figcaption>
+    <div class="iu__scene cz-scene-16">
+      <div class="iu__poster cz-house" data-house>
+        <div class="cz-house__id">
+          <span>HAVTE · JOAILLERIE</span>
+          <i class="cz-house__dot" aria-hidden="true"></i>
+          <span>PLACE · VENDÔME</span>
+        </div>
+        <div class="cz-house__center">
+          <span class="cz-house__rule" aria-hidden="true"></span>
+          <h3 class="cz-house__word" data-house-word>VALORE</h3>
+          <span class="cz-house__sub">ORFÈVRE&nbsp;·&nbsp;PARIS&nbsp;·&nbsp;DEPVIS&nbsp;MDCCCXLIV</span>
+          <span class="cz-house__rule" aria-hidden="true"></span>
+        </div>
+        <div class="cz-house__mark" aria-label="hallmark">
+          <span class="cz-house__mono">V</span>
+          <span class="cz-house__mark-r">POINÇON · DE&nbsp;MAÎTRE<br/><i>or 750 · diamant · serti grain</i></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The wordmark breathes the weight axis from a hairline Regular to a struck Black on a slow loop — the engraved capital, alive.</p>
+  </figure>
+
+  <!-- 04 — INTERACTIVE MAISON MICROSITE: real-scale luxury cellar, weight axis + filter -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Maison microsite — the cellar (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device cz-site" data-site>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">maison-de-craie.fr/cellier</span>
+        </div>
+        <header class="cz-site__head">
+          <span class="cz-site__logo">DE&nbsp;CRAIE</span>
+          <nav class="cz-site__filters" aria-label="Filter the cellar">
+            <button class="is-on" data-filter="all">TOUT</button>
+            <button data-filter="champagne">CHAMPAGNE</button>
+            <button data-filter="cognac">COGNAC</button>
+            <button data-filter="spirit">SPIRITUEUX</button>
+          </nav>
+          <span class="cz-site__reserve">RÉSERVER</span>
+        </header>
+
+        <div class="cz-site__axis">
+          <label for="cz-wght">WEIGHT — <span data-wght-val>400</span></label>
+          <input id="cz-wght" type="range" min="400" max="900" value="400" step="10" data-wght />
+          <span class="cz-site__axis-hint">drag — the featured cuvée is struck heavier into the stone</span>
+        </div>
+
+        <div class="cz-site__grid" data-grid>
+          {cuvees.map((l, i) => {
+            const hero = i === 0;
+            return (
+            <article class={`cz-card${hero ? ' cz-card--hero' : ''}`} data-cat={l.cat} data-id={l.id}>
+              <div class="cz-card__img" aria-hidden="true">
+                <span class="cz-card__ghost">{l.id}</span>
+                {hero
+                  ? <span class="cz-card__hero-word" data-wght-type>{l.name}</span>
+                  : <span class="cz-card__word">{l.name}</span>}
+                {l.tag && <span class="cz-card__tag">{l.tag}</span>}
+              </div>
+              <div class="cz-card__meta">
+                <div class="cz-card__row cz-card__row--top">
+                  <h4 class="cz-card__name">{l.name}</h4>
+                  <span class="cz-card__price num">€{l.price}</span>
+                </div>
+                <span class="cz-card__cuvee">{l.cuvee} · <span class="num">{l.year}</span></span>
+                <span class="cz-card__note">{l.note}</span>
+              </div>
+            </article>
+          );})}
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter the cellar by family, then drag the weight axis — the featured cuvée is struck deeper, from a quiet Regular to a monumental Black. Display in Cinzel, the small notes in Spectral.</p>
+  </figure>
+
 </div>
+
+<script>
+  // ── Scene 04: filter + live weight axis on the hero cuvée ─────────────────
+  document.querySelectorAll<HTMLElement>('[data-site]').forEach((site) => {
+    const grid = site.querySelector<HTMLElement>('[data-grid]')!;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.cz-card'));
+    site.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+      b.addEventListener('click', () => {
+        site.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        const f = b.dataset.filter!;
+        cards.forEach((c) => c.classList.toggle('is-hidden', !(f === 'all' || c.dataset.cat === f)));
+      })
+    );
+
+    const slider = site.querySelector<HTMLInputElement>('[data-wght]')!;
+    const val = site.querySelector<HTMLElement>('[data-wght-val]')!;
+    const heads = site.querySelectorAll<HTMLElement>('[data-wght-type]');
+    const apply = () => {
+      const v = slider.value;
+      val.textContent = v;
+      heads.forEach((h) => {
+        h.style.fontVariationSettings = `'wght' ${v}`;
+        h.style.fontWeight = v;
+      });
+    };
+    slider.addEventListener('input', apply);
+    apply();
+  });
+
+  // ── Scene 01: replay the cinematic title reveal on hover/focus ────────────
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll<HTMLElement>('[data-cine]').forEach((scene) => {
+      const title = scene.querySelector<HTMLElement>('[data-cine-title]');
+      if (!title) return;
+      const replay = () => {
+        title.classList.remove('is-in');
+        // force reflow so the animation restarts
+        void title.offsetWidth;
+        title.classList.add('is-in');
+      };
+      scene.addEventListener('pointerenter', replay);
+    });
+  }
+</script>
 
 <style>
   .iu__item { margin: 0; }
-  .scene16 { aspect-ratio: 16 / 9; }
-  .brand-scene { aspect-ratio: 16 / 9; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
+  .cz-scene-16 { aspect-ratio: 16 / 9; }
+  .cz-scene-cine { aspect-ratio: 16 / 9; }
 
-  .monument {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-    padding: 5cqi; gap: 2cqi;
+  /* Display type is Cinzel everywhere; the few lines of small body copy use the
+     loaded Spectral companion (Cinzel is caps-only and must not run as text). */
+  .iu__scene { font-family: var(--fam); }
+  .iu__scene .num { font-feature-settings: 'lnum' 1, 'tnum' 1; font-variant-numeric: lining-nums tabular-nums; }
+
+  /* ============================================================
+     01 — CINEMATIC TITLE CARD
+     Kinetic letter-spacing reveal: glyphs fade up and the tracking
+     opens from a tight cluster to monumental width. Dark cinema surface.
+     ============================================================ */
+  .cz-cine {
+    position: relative; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4.2cqi;
     background:
-      linear-gradient(120deg, color-mix(in srgb, var(--fg) 4%, transparent), transparent 40%),
-      var(--bg-2);
-    color: var(--fg);
+      radial-gradient(120% 90% at 50% 38%, color-mix(in srgb, #1c1813 86%, var(--accent) 14%), #100d09 78%);
+    color: #efe6d2; text-align: center; overflow: hidden; padding: 6cqi 10cqi;
   }
-  .monument__leaf { color: var(--accent); font-size: 5cqi; }
-  .monument__small { font-size: 2.6cqi; letter-spacing: 0.3em; color: var(--fg-2); }
-  .monument__head { font-size: 11cqi; line-height: 0.95; font-weight: 700; letter-spacing: 0.04em; }
-  .monument__rule { width: 30%; height: 2px; background: var(--accent); opacity: 0.6; margin: 1cqi 0; }
-  .monument__date { font-size: 3.4cqi; letter-spacing: 0.3em; color: var(--accent); }
+  .cz-cine__pres { font-size: 2.3cqi; letter-spacing: 0.5em; padding-left: 0.5em; color: color-mix(in srgb, #efe6d2 60%, transparent); }
+  .cz-cine__title {
+    display: flex; justify-content: center; flex-wrap: nowrap;
+    font-size: 13cqi; line-height: 1; font-weight: 600;
+    color: #f3ead6;
+  }
+  .cz-cine__title span {
+    display: inline-block;
+    background: linear-gradient(180deg, #fff4dc 0%, #e8cf9a 46%, #b48a44 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .cz-cine__rule { width: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+  .cz-cine__sub { font-size: 2.1cqi; letter-spacing: 0.42em; padding-left: 0.42em; color: color-mix(in srgb, #efe6d2 55%, transparent); }
+  .cz-cine__cast { font-size: 2.5cqi; letter-spacing: 0.34em; padding-left: 0.34em; color: color-mix(in srgb, #efe6d2 78%, transparent); }
+
+  /* static rendered state (no-JS / reduced-motion screenshot = the finished card) */
+  .cz-cine__title { letter-spacing: 0.12em; padding-left: 0.12em; }
+  .cz-cine__rule { width: 34cqi; }
+
+  /* Default (no-JS / reduced-motion / screenshot) = the finished, fully visible card.
+     Motion only ADDS an entrance/replay; it never hides the resting state. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* one-shot entrance on load, then replay by toggling .is-in */
+    .cz-cine__title { animation: cz-track 1.6s var(--ease-out) both; }
+    .cz-cine__title span { animation: cz-rise 0.9s var(--ease-out) both; }
+    .cz-cine__title span:nth-child(1) { animation-delay: 0.05s; }
+    .cz-cine__title span:nth-child(2) { animation-delay: 0.13s; }
+    .cz-cine__title span:nth-child(3) { animation-delay: 0.21s; }
+    .cz-cine__title span:nth-child(4) { animation-delay: 0.29s; }
+    .cz-cine__title span:nth-child(5) { animation-delay: 0.37s; }
+    .cz-cine__title span:nth-child(6) { animation-delay: 0.45s; }
+    .cz-cine__title span:nth-child(7) { animation-delay: 0.53s; }
+    .cz-cine__title span:nth-child(8) { animation-delay: 0.61s; }
+    .cz-cine__rule { animation: cz-wipe 1.2s var(--ease-out) 0.6s both; }
+    .cz-cine__pres { animation: cz-fade 1s var(--ease-out) 0.3s both; }
+    .cz-cine__sub  { animation: cz-fade 1s var(--ease-out) 0.9s both; }
+    .cz-cine__cast { animation: cz-fade 1s var(--ease-out) 1.1s both; }
+
+    /* replay: re-run the same animations */
+    .cz-cine__title.is-in { animation: cz-track 1.6s var(--ease-out) both; }
+    .cz-cine__title.is-in span { animation: cz-rise 0.9s var(--ease-out) both; }
+
+    @keyframes cz-track { from { letter-spacing: -0.02em; padding-left: 0; } to { letter-spacing: 0.12em; padding-left: 0.12em; } }
+    @keyframes cz-rise  { from { opacity: 0; transform: translateY(0.6cqi); } to { opacity: 1; transform: none; } }
+    @keyframes cz-wipe  { from { width: 0; } to { width: 34cqi; } }
+    @keyframes cz-fade  { from { opacity: 0; } to { opacity: 1; } }
+  }
+
+  /* ============================================================
+     02 — CUVÉE LABEL (SVG textPath, engraved medallion)
+     Distinct silhouette + curved type; the one accent is the year.
+     ============================================================ */
+  .cz-label { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 5cqi 5cqi 4.5cqi; }
+  .cz-label__top { font-size: 2.4cqi; letter-spacing: 0.34em; padding-left: 0.34em; color: var(--fg-3); }
+  .cz-label__svg { width: 100%; height: auto; margin: auto 0; display: block; }
+  .cz-label__foot { font-size: 2.3cqi; letter-spacing: 0.24em; padding-left: 0.24em; color: var(--fg-3); }
+
+  .cz-label__frame { fill: none; stroke: var(--fg-2); stroke-width: 1.1; }
+  .cz-label__frame--in { stroke: var(--line); stroke-width: 0.75; }
+  .cz-label__svg text { fill: var(--fg); }
+  .cz-label__arc { font-size: 13px; letter-spacing: 4px; fill: var(--fg-2); font-weight: 500; }
+  .cz-label__arc--bot { font-size: 11px; letter-spacing: 3px; fill: var(--fg-3); }
+  .cz-label__cuvee { font-size: 24px; letter-spacing: 7px; font-weight: 500; fill: var(--fg-2); }
+  .cz-label__name { font-size: 66px; letter-spacing: 2px; font-weight: 800; fill: var(--fg); }
+  .cz-label__hair { stroke: var(--accent); stroke-width: 1; }
+  .cz-label__year { font-size: 15px; letter-spacing: 4px; fill: var(--accent); font-weight: 500; }
+
+  .cz-label__frame { stroke-dasharray: 1300; stroke-dashoffset: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cz-label:hover .cz-label__frame { animation: cz-redraw 1.4s var(--ease); }
+    .cz-label:hover .cz-label__cuvee,
+    .cz-label:hover .cz-label__name,
+    .cz-label:hover .cz-label__year,
+    .cz-label:hover .cz-label__arc,
+    .cz-label:hover .cz-label__arc--bot { animation: cz-engrave 1.1s var(--ease); }
+    @keyframes cz-redraw { from { stroke-dashoffset: 1300; } to { stroke-dashoffset: 0; } }
+    @keyframes cz-engrave { 0% { opacity: 0; } 45% { opacity: 0; } 100% { opacity: 1; } }
+  }
+
+  /* ============================================================
+     03 — MAISON DE JOAILLERIE IDENTITY
+     Wordmark breathes the weight axis. The single accent is the centre dot.
+     ============================================================ */
+  .cz-house { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 6cqi; }
+  .cz-house__id { display: flex; align-items: center; justify-content: center; gap: 2.4cqi; font-size: 2.3cqi; letter-spacing: 0.34em; padding-left: 0.34em; color: var(--fg-3); }
+  .cz-house__dot { width: 0.7cqi; height: 0.7cqi; border-radius: 50%; background: var(--accent); }
+  .cz-house__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6cqi; }
+  .cz-house__rule { width: 30cqi; height: 1px; background: var(--line); }
+  .cz-house__word {
+    font-size: 18cqi; line-height: 0.92; letter-spacing: 0.06em; padding-left: 0.06em; color: var(--fg);
+    font-weight: 400; font-variation-settings: 'wght' 400; text-align: center;
+  }
+  .cz-house__sub { font-size: 2.3cqi; letter-spacing: 0.34em; padding-left: 0.34em; color: var(--fg-2); }
+  .cz-house__mark { display: flex; align-items: center; gap: 3cqi; justify-self: center; border: 1px solid var(--line); padding: 2.6cqi 4cqi; }
+  .cz-house__mono { font-size: 9cqi; line-height: 1; font-weight: 700; color: var(--fg); }
+  .cz-house__mark-r { font-family: var(--serif); font-size: 2.7cqi; line-height: 1.35; color: var(--fg-2); letter-spacing: 0.04em; }
+  .cz-house__mark-r i { font-style: italic; color: var(--fg-3); font-size: 2.4cqi; letter-spacing: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cz-house__word { animation: cz-strike 9s var(--ease) infinite; }
+    @keyframes cz-strike {
+      0%, 100% { font-variation-settings: 'wght' 400; font-weight: 400; }
+      50%      { font-variation-settings: 'wght' 900; font-weight: 900; }
+    }
+  }
+
+  /* ============================================================
+     04 — MAISON MICROSITE / CELLAR (real px sizing)
+     Hero cuvée spans two columns; live weight axis strikes it heavier.
+     ============================================================ */
+  .cz-site { font-size: 13px; line-height: 1.4; background: var(--bg); }
+  .cz-site__head { display: flex; align-items: center; gap: 1.1rem; padding: 0.95rem 1.15rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .cz-site__logo { font-size: 21px; font-weight: 700; letter-spacing: 0.14em; padding-left: 0.14em; color: var(--fg); }
+  .cz-site__filters { display: flex; gap: 0.2rem; margin-left: 0.5rem; }
+  .cz-site__filters button { font-size: 11px; letter-spacing: 0.12em; color: var(--fg-3); padding: 0.34rem 0.7rem; border-radius: 100px; transition: color .15s var(--ease), background .15s var(--ease); }
+  .cz-site__filters button:hover { color: var(--fg); }
+  .cz-site__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-weight: 600; }
+  .cz-site__reserve { margin-left: auto; font-size: 11px; letter-spacing: 0.14em; color: var(--fg-2); border: 1px solid var(--line); padding: 0.34rem 0.8rem; }
+
+  .cz-site__axis { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.15rem; border-bottom: 1px solid var(--line); }
+  .cz-site__axis label { font-size: 10.5px; letter-spacing: 0.16em; color: var(--fg-3); white-space: nowrap; }
+  .cz-site__axis label span { color: var(--accent); font-feature-settings: 'tnum'; }
+  .cz-site__axis-hint { font-family: var(--serif); font-size: 11.5px; font-style: italic; color: var(--fg-3); margin-left: auto; }
+  .cz-site__axis input[type='range'] { -webkit-appearance: none; appearance: none; width: 180px; height: 2px; background: var(--line); border-radius: 2px; cursor: pointer; }
+  .cz-site__axis input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+  .cz-site__axis input[type='range']::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+  .cz-site__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr auto; grid-auto-flow: dense;
+    gap: 1px; background: var(--line); padding: 1px;
+  }
+  .cz-card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .cz-card.is-hidden { display: none; }
+  .cz-card__img { position: relative; flex: 1; min-height: 170px; background: var(--bg-2); display: grid; place-items: center; overflow: hidden; padding: 0.8rem; container-type: inline-size; }
+  .cz-card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
+  .cz-card__ghost {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: clamp(70px, 42cqi, 150px); font-weight: 800; color: var(--fg);
+    opacity: 0.05; pointer-events: none; line-height: 1; letter-spacing: 0;
+  }
+  .cz-card__word { position: relative; font-size: clamp(15px, 12cqi, 26px); line-height: 1.05; text-align: center; letter-spacing: 0.06em; color: var(--fg); font-weight: 500; max-width: 100%; }
+  .cz-card__tag { position: absolute; top: 0.7rem; left: 0.7rem; z-index: 2; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
+
+  .cz-card__meta { padding: 0.7rem 0.85rem 0.9rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .cz-card__row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+  .cz-card__name { font-size: 15px; font-weight: 600; letter-spacing: 0.05em; color: var(--fg); }
+  .cz-card__price { font-family: var(--serif); font-size: 14px; font-weight: 500; color: var(--fg); }
+  .cz-card__cuvee { font-family: var(--serif); font-size: 12.5px; font-style: italic; color: var(--fg-2); }
+  .cz-card__note { font-family: var(--serif); font-size: 11.5px; color: var(--fg-3); letter-spacing: 0.01em; }
+
+  /* hero cuvée: spans two columns + two rows, large live-weight word */
+  .cz-card--hero { grid-column: 1 / span 2; grid-row: 1 / span 2; }
+  .cz-card--hero .cz-card__img { flex: 1; min-height: 0; }
+  .cz-card--hero .cz-card__ghost { font-size: clamp(120px, 40cqi, 220px); opacity: 0.06; }
+  .cz-card__hero-word {
+    position: relative; font-size: clamp(26px, 9cqi, 58px); line-height: 1; text-align: center; letter-spacing: 0.06em;
+    color: var(--fg); font-weight: 400; font-variation-settings: 'wght' 400;
+    transition: font-variation-settings .1s linear; max-width: 100%; padding: 0 0.2em;
+  }
+  .cz-card--hero .cz-card__name { font-size: 19px; }
+  .cz-card--hero .cz-card__tag { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+
+  @container (max-width: 640px) {
+    .cz-site__grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto auto auto; }
+    .cz-card--hero { grid-column: 1 / span 2; grid-row: 1; }
+    .cz-card--hero .cz-card__img { min-height: 210px; }
+    .cz-site__axis-hint { display: none; }
+  }
+  @container (max-width: 460px) {
+    .cz-site__head { gap: 0.6rem; }
+    .cz-site__reserve { display: none; }
+    .cz-site__filters { margin-left: 0; flex-wrap: wrap; }
+    .cz-site__axis input[type='range'] { width: 120px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cz-card__hero-word { transition: none; }
+  }
 </style>

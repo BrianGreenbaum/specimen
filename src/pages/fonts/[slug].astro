@@ -93,12 +93,9 @@ const sections = [
     </Section>
 
     <Section id="in-use" num="06" title="In use" note="Built live with the real webfont.">
-      {BespokeInUse && <BespokeInUse font={font} />}
-      {font.inUse.length > 0 && (
-        <div class:list={{ 'inuse-after': BespokeInUse }}>
-          <InUse font={font} startIndex={BespokeInUse ? 3 : 1} />
-        </div>
-      )}
+      {BespokeInUse
+        ? <BespokeInUse font={font} />
+        : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
     </Section>
 
     <Section id="glyphs" num="07" title="Character set" note="Click any glyph to inspect.">

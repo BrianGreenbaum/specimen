@@ -1,0 +1,672 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+// Real text companions (loaded site-wide in Layout.astro).
+const serif = "'Spectral', Georgia, serif";
+
+// --- 01 · Live sports match-center (interactive) -------------------------
+// Three matches the user can switch between; tabular figures realign on tab.
+const matches = [
+  {
+    id: 'a', comp: 'Premier League', venue: 'Emirates Stadium', status: "78'", live: true,
+    home: { name: 'ARSENAL', sh: 'ARS', g: 2 },
+    away: { name: 'CHELSEA', sh: 'CHE', g: 1 },
+    stats: [
+      ['Possession', 58, 42],
+      ['Shots', 14, 9],
+      ['On target', 6, 3],
+      ['Corners', 7, 4],
+      ['xG', 2.1, 1.3],
+    ] as [string, number, number][],
+    events: [
+      ['12', 'GOAL', 'Saka', 'home'],
+      ['34', 'GOAL', 'Palmer', 'away'],
+      ['52', 'YEL', 'Rice', 'home'],
+      ['61', 'GOAL', 'Ødegaard', 'home'],
+      ['68', 'SUB', 'Jesus', 'home'],
+      ['74', 'YEL', 'Caicedo', 'away'],
+      ['77', 'SUB', 'Nkunku', 'away'],
+    ] as [string, string, string, string][],
+  },
+  {
+    id: 'b', comp: 'Premier League', venue: 'Anfield', status: 'FT', live: false,
+    home: { name: 'LIVERPOOL', sh: 'LIV', g: 3 },
+    away: { name: 'MAN CITY', sh: 'MCI', g: 3 },
+    stats: [
+      ['Possession', 44, 56],
+      ['Shots', 11, 17],
+      ['On target', 5, 7],
+      ['Corners', 3, 9],
+      ['xG', 2.4, 2.8],
+    ] as [string, number, number][],
+    events: [
+      ['08', 'GOAL', 'Haaland', 'away'],
+      ['23', 'GOAL', 'Salah', 'home'],
+      ['41', 'YEL', 'Rodri', 'away'],
+      ['55', 'GOAL', 'Díaz', 'home'],
+      ['67', 'GOAL', 'Foden', 'away'],
+      ['81', 'GOAL', 'Núñez', 'home'],
+      ['90', 'GOAL', 'Doku', 'away'],
+    ] as [string, string, string, string][],
+  },
+  {
+    id: 'c', comp: 'Champions League', venue: 'Santiago Bernabéu', status: "23'", live: true,
+    home: { name: 'REAL MADRID', sh: 'RMA', g: 0 },
+    away: { name: 'BAYERN', sh: 'BAY', g: 1 },
+    stats: [
+      ['Possession', 51, 49],
+      ['Shots', 4, 6],
+      ['On target', 1, 2],
+      ['Corners', 2, 3],
+      ['xG', 0.4, 0.9],
+    ] as [string, number, number][],
+    events: [
+      ['09', 'YEL', 'Rüdiger', 'home'],
+      ['19', 'GOAL', 'Kane', 'away'],
+      ['21', 'YEL', 'Tchouaméni', 'home'],
+    ] as [string, string, string, string][],
+  },
+];
+const m0 = matches[0];
+
+// --- 03 · Departure board ------------------------------------------------
+// [time, destination, platform, status, revised, minsFromNow, operator]
+const departures = [
+  ['07:42', 'EDINBURGH WAVERLEY', '4', 'ON TIME', '', 4, 'LNER'],
+  ['07:48', 'OXFORD', '8', 'ON TIME', '', 10, 'GWR'],
+  ['07:55', 'MANCHESTER PICCADILLY', '11', 'ON TIME', '', 17, 'AVANTI'],
+  ['08:03', 'BIRMINGHAM NEW STREET', '2', 'DELAYED', '08:19', 25, 'AVANTI'],
+  ['08:10', 'LEEDS', '6', 'ON TIME', '', 32, 'LNER'],
+  ['08:18', 'BRISTOL TEMPLE MEADS', '9', 'BOARDING', '', 40, 'GWR'],
+  ['08:27', 'CARDIFF CENTRAL', '13', 'ON TIME', '', 49, 'GWR'],
+  ['08:34', 'NEWCASTLE', '5', 'CANCELLED', '', 56, 'LNER'],
+  ['08:41', 'NORWICH', '10', 'ON TIME', '', 63, 'GA'],
+] as [string, string, string, string, string, number, string][];
+---
+<div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
+
+  <!-- 01 — interactive live sports match-center (true device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — live match centre, real device scale</span></figcaption>
+    <div class="iu__scene iu__scene--phone">
+      <div class="iu__device sb" data-sb>
+        <div class="sb__chrome">
+          <span class="sb__time">9:41</span>
+          <span class="sb__brand">MATCHDAY</span>
+          <span class="sb__status">
+            <svg class="sb__wifi" viewBox="0 0 16 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect class="sb__wifi-off" x="12" y="0" width="3" height="12" rx="0.6"/></svg>
+            <svg class="sb__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="15" height="8" rx="1" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="sb__tabs" role="tablist">
+          {matches.map((mt, i) => (
+            <button class={`sb__tab ${i === 0 ? 'is-on' : ''}`} data-tab={mt.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+              <span class="sb__tab-comp">{mt.comp}</span>
+              <span class="sb__tab-score">
+                <em>{mt.home.sh}</em>
+                <b>{mt.home.g}–{mt.away.g}</b>
+                <em>{mt.away.sh}</em>
+              </span>
+              <span class={`sb__tab-min ${mt.live ? 'is-live' : ''}`}>{mt.status}</span>
+            </button>
+          ))}
+        </div>
+
+        <div class="sb__hero" data-hero>
+          <span class={`sb__badge ${m0.live ? 'is-live' : ''}`} data-status>
+            <i class="sb__pulse"></i><span data-statustxt>{m0.live ? `LIVE · ${m0.status}` : 'FULL TIME'}</span>
+          </span>
+          <div class="sb__line">
+            <span class="sb__team sb__team--h" data-hname>{m0.home.name}</span>
+            <span class="sb__nums"><b class="sb__num--h" data-hg>{m0.home.g}</b><span class="sb__dash">–</span><b class="sb__num--a" data-ag>{m0.away.g}</b></span>
+            <span class="sb__team sb__team--a" data-aname>{m0.away.name}</span>
+          </div>
+          <span class="sb__venue" data-venue>{m0.venue}</span>
+        </div>
+
+        <div class="sb__stats" data-stats>
+          {m0.stats.map((s) => {
+            const total = s[1] + s[2];
+            return (
+            <div class="sb__stat" data-stat>
+              <span class="sb__stat-k" data-sk>{s[0]}</span>
+              <span class="sb__stat-v sb__stat-v--h" data-sh>{s[1]}{s[0]==='Possession'?'%':''}</span>
+              <span class="sb__stat-track">
+                <i class="sb__stat-fill sb__stat-fill--h" data-fillh style={`width:${(s[1]/total)*100}%`}></i>
+                <i class="sb__stat-fill sb__stat-fill--a" data-filla style={`width:${(s[2]/total)*100}%`}></i>
+              </span>
+              <span class="sb__stat-v sb__stat-v--a" data-sa>{s[2]}{s[0]==='Possession'?'%':''}</span>
+            </div>
+          );})}
+        </div>
+
+        <div class="sb__feed-h"><span>Match feed</span><span class="sb__feed-key"><i class="sb__key sb__key--h"></i>Home<i class="sb__key sb__key--a"></i>Away</span></div>
+        <ul class="sb__feed" data-feed>
+          {m0.events.slice().reverse().map((e) => (
+            <li class={`sb__ev sb__ev--${e[3]}`}>
+              <span class="sb__ev-min">{e[0]}'</span>
+              <span class={`sb__ev-tag sb__ev-tag--${e[1].toLowerCase()}`}>{e[1]}</span>
+              <span class="sb__ev-name">{e[2]}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <p class="iu__hint label">Tap a fixture — the scoreline, two-tone stat bars and feed reload; tabular figures hold their columns.</p>
+  </figure>
+
+  <!-- 02 — front-page newspaper -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the front page, display gothic over a serif text face</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="paper" data-paper>
+        <div class="paper__nameplate">
+          <span class="paper__edge">No. 24,118</span>
+          <h3 class="paper__title">THE CLARION</h3>
+          <span class="paper__edge paper__edge--r">Late Edition · 15¢</span>
+        </div>
+        <div class="paper__ear">CITY &amp; STATE · FRIDAY, JUNE 6, 2026 · EST. 1887</div>
+        <div class="paper__grid">
+          <div class="paper__lead">
+            <span class="paper__kicker">Special Report</span>
+            <h4 class="paper__head">CITY VOTES TO RECLAIM THE WATERFRONT</h4>
+            <p class="paper__deck">After a decade of stalled plans, the council approves a sweeping mile-long park — and the largest public works budget in a generation.</p>
+            <div class="paper__byline">By MARGARET ELLISON · City Hall Bureau</div>
+            <div class="paper__cols">
+              <p><span class="paper__drop">T</span>he vote came just before midnight, 9 to 4, ending one of the longest debates the chamber has seen this year. Crowds that had waited in the corridors since dusk spilled onto the marble steps to cheer the result.</p>
+              <p>Construction is expected to begin in the autumn, with the first stretch of promenade opening to the public by the following summer. Officials called it &ldquo;the spine of the next century,&rdquo; and promised the riverfront walk would stay free to enter for good.</p>
+            </div>
+          </div>
+          <div class="paper__rail">
+            <div class="paper__brief">
+              <span class="paper__rail-h">ALSO INSIDE</span>
+              <p><b>MARKETS</b> Index closes at a record high on rate-cut hopes.</p>
+              <p><b>WEATHER</b> Clear and warm through the weekend; highs near 28°.</p>
+              <p><b>SPORT</b> United clinch the title with a stoppage-time winner.</p>
+            </div>
+            <div class="paper__stand">THE TALL, NARROW VOICE OF THE BROADSIDE.</div>
+          </div>
+        </div>
+        <div class="paper__control">
+          <span class="paper__control-h">TEXT SIZE</span>
+          <div class="paper__seg" role="group" aria-label="Body text size">
+            <button class="paper__segbtn is-on" data-size="comfortable">Comfortable</button>
+            <button class="paper__segbtn" data-size="compact">Compact</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Oswald carries the nameplate and headline; the deck and columns are set in Spectral. Toggle the reader's text size — the serif columns reflow live.</p>
+  </figure>
+
+  <!-- 03 — transit departure board (own dark surface) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Wayfinding — departures board, filterable</span></figcaption>
+    <div class="iu__scene">
+      <div class="board" data-board>
+        <div class="board__top">
+          <span class="board__title">DEPARTURES</span>
+          <div class="board__filters" role="group" aria-label="Filter departures">
+            <button class="board__filter is-on" data-filter="all">ALL DAY</button>
+            <button class="board__filter" data-filter="soon">NEXT 30 MIN</button>
+            <button class="board__filter" data-filter="running">RUNNING</button>
+          </div>
+          <span class="board__clock" data-clock>07:38</span>
+        </div>
+        <div class="board__head">
+          <span>TIME</span><span>DESTINATION</span><span class="board__c">PLAT</span><span class="board__s">STATUS</span>
+        </div>
+        <div class="board__rows" data-rows>
+          {departures.map((d) => (
+            <div class="board__row" data-mins={d[5]} data-cancelled={d[3] === 'CANCELLED' ? '1' : '0'}>
+              <span class="board__time">{d[0]}</span>
+              <span class="board__dest">{d[1]}<i class="board__op">{d[6]}</i></span>
+              <span class="board__plat">{d[2]}</span>
+              <span class={`board__status board__status--${d[3].toLowerCase()}`}>
+                {d[3] === 'DELAYED' && d[4] ? <><s>{d[0]}</s> {d[4]}</> : d[3]}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div class="board__foot"><span data-count>9 services</span><span class="board__foot-note">Live · updates every 30s</span></div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter the board — rows drop in and out and the tabular times re-stack, columns never break.</p>
+  </figure>
+
+  <!-- 04 — event poster, variable weight in motion -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Poster — the headline shout, full wght axis in motion</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="gig">
+        <div class="gig__rail"><span>wght</span><span>200 — 700</span></div>
+        <div class="gig__top">
+          <span>THE UNDERGROUND PRESENTS</span>
+          <span>ALL AGES · DOORS 8PM</span>
+        </div>
+        <div class="gig__stack">
+          <span class="gig__line gig__line--thin">FRIDAY NIGHT</span>
+          <span class="gig__line gig__line--mid">THE</span>
+          <span class="gig__line gig__line--shout" data-shout style="--d:0s">NIGHT</span>
+          <span class="gig__line gig__line--shout gig__line--accent" data-shout style="--d:-2.3s">EDITION</span>
+          <span class="gig__line gig__line--thin">LIVE AT THE HALL</span>
+        </div>
+        <div class="gig__foot">
+          <span>SAT · 21 NOV · DOWNTOWN HALL A</span>
+          <span class="gig__price">£18 ADV</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The two shout lines breathe across the full weight axis, phase-offset — Oswald's whole range, live.</p>
+  </figure>
+</div>
+
+<script id="oswald-sb-data" type="application/json" set:html={JSON.stringify(matches)} is:inline></script>
+
+<script>
+  type Match = {
+    id: string; comp: string; venue: string; status: string; live: boolean;
+    home: { name: string; sh: string; g: number };
+    away: { name: string; sh: string; g: number };
+    stats: [string, number, number][];
+    events: [string, string, string, string][];
+  };
+
+  const island = document.getElementById('oswald-sb-data');
+  let matches: Match[] = [];
+  try { matches = island ? JSON.parse(island.textContent || '[]') : []; } catch { matches = []; }
+  const byId: Record<string, Match> = {};
+  matches.forEach((m) => (byId[m.id] = m));
+
+  document.querySelectorAll<HTMLElement>('[data-sb]').forEach((sb) => {
+    if (!matches.length) return;
+    const q = (s: string) => sb.querySelector(s) as HTMLElement | null;
+    const hg = q('[data-hg]')!, ag = q('[data-ag]')!;
+    const hname = q('[data-hname]')!, aname = q('[data-aname]')!;
+    const venue = q('[data-venue]')!;
+    const badge = q('[data-status]')!, statustxt = q('[data-statustxt]')!;
+    const statsWrap = q('[data-stats]')!;
+    const feed = q('[data-feed]')!;
+    const statRows = Array.from(statsWrap.querySelectorAll('[data-stat]'));
+
+    function render(id: string) {
+      const m = byId[id];
+      if (!m) return;
+      hg.textContent = String(m.home.g);
+      ag.textContent = String(m.away.g);
+      hname.textContent = m.home.name;
+      aname.textContent = m.away.name;
+      venue.textContent = m.venue;
+      badge.classList.toggle('is-live', m.live);
+      statustxt.textContent = m.live ? `LIVE · ${m.status}` : 'FULL TIME';
+
+      statRows.forEach((row, i) => {
+        const s = m.stats[i];
+        const el = row as HTMLElement;
+        if (!s) { el.style.display = 'none'; return; }
+        el.style.display = '';
+        const total = s[1] + s[2];
+        const pct = s[0] === 'Possession' ? '%' : '';
+        (row.querySelector('[data-sh]') as HTMLElement).textContent = s[1] + pct;
+        (row.querySelector('[data-sa]') as HTMLElement).textContent = s[2] + pct;
+        (row.querySelector('[data-sk]') as HTMLElement).textContent = s[0];
+        (row.querySelector('[data-fillh]') as HTMLElement).style.width = (s[1] / total) * 100 + '%';
+        (row.querySelector('[data-filla]') as HTMLElement).style.width = (s[2] / total) * 100 + '%';
+      });
+
+      feed.replaceChildren();
+      m.events.slice().reverse().forEach((e) => {
+        const li = document.createElement('li');
+        li.className = `sb__ev sb__ev--${e[3]}`;
+        const min = document.createElement('span');
+        min.className = 'sb__ev-min';
+        min.textContent = `${e[0]}'`;
+        const tag = document.createElement('span');
+        tag.className = `sb__ev-tag sb__ev-tag--${e[1].toLowerCase()}`;
+        tag.textContent = e[1];
+        const name = document.createElement('span');
+        name.className = 'sb__ev-name';
+        name.textContent = e[2];
+        li.append(min, tag, name);
+        feed.appendChild(li);
+      });
+
+      sb.querySelectorAll('[data-tab]').forEach((t) => {
+        const on = (t as HTMLElement).dataset.tab === id;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    sb.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) =>
+      btn.addEventListener('click', () => render(btn.dataset.tab!))
+    );
+  });
+
+  // --- 02 · front-page text-size toggle (user-driven, reduced-motion safe) ---
+  document.querySelectorAll<HTMLElement>('[data-paper]').forEach((paper) => {
+    paper.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        paper.querySelectorAll('[data-size]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        paper.setAttribute('data-textsize', btn.dataset.size!);
+      })
+    );
+  });
+
+  // --- 03 · departures filter (user-driven, reduced-motion safe) ---
+  document.querySelectorAll<HTMLElement>('[data-board]').forEach((board) => {
+    const rowsWrap = board.querySelector('[data-rows]') as HTMLElement;
+    const rows = Array.from(rowsWrap.querySelectorAll<HTMLElement>('.board__row'));
+    const count = board.querySelector('[data-count]') as HTMLElement;
+    function apply(filter: string) {
+      let shown = 0;
+      rows.forEach((row) => {
+        const mins = +(row.dataset.mins || '0');
+        const cancelled = row.dataset.cancelled === '1';
+        let ok = true;
+        if (filter === 'soon') ok = mins <= 30;
+        else if (filter === 'running') ok = !cancelled;
+        row.classList.toggle('is-hidden', !ok);
+        if (ok) shown++;
+      });
+      count.textContent = `${shown} service${shown === 1 ? '' : 's'}`;
+    }
+    board.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        board.querySelectorAll('[data-filter]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        apply(btn.dataset.filter!);
+      })
+    );
+  });
+
+  // Ticking clock on the board (reduced-motion: leave static).
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll<HTMLElement>('[data-clock]').forEach((el) => {
+      let mins = 7 * 60 + 38;
+      setInterval(() => {
+        mins = (mins + 1) % (24 * 60);
+        const h = String(Math.floor(mins / 60)).padStart(2, '0');
+        const mm = String(mins % 60).padStart(2, '0');
+        el.textContent = `${h}:${mm}`;
+      }, 4000);
+    });
+  }
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches InUse.astro / inter.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 10; } }
+
+  /* phone-frame variant: a centered device, not a full-bleed scene */
+  .iu__scene--phone {
+    aspect-ratio: 16 / 10;
+    display: grid; place-items: center;
+    padding: clamp(14px, 3cqi, 34px) 0;
+  }
+  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
+
+  .iu__device {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); overflow: hidden;
+  }
+  /* the scoreboard renders as a real phone, sized in px */
+  .iu__scene--phone .sb {
+    position: relative; inset: auto;
+    width: 348px; max-width: 100%; height: 100%; max-height: 660px;
+    aspect-ratio: 348 / 660;
+    border-radius: 30px; border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.7), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+
+  /* ============ 01 · SCOREBOARD (real px, news/sport UI) ============ */
+  /* second hue: a cool slate keyed off --fg, for the away side + surfaces */
+  .sb {
+    font-size: 13px;
+    --away: #6f8cb0;            /* restrained cool counter-hue to the warm accent */
+    --surf: color-mix(in srgb, var(--fg) 4%, var(--bg));
+  }
+  .sb__chrome {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
+    padding: 0.6rem 1.1rem 0.5rem; border-bottom: 1px solid var(--line);
+    background: var(--bg-2); flex: none; border-radius: 30px 30px 0 0;
+  }
+  .sb__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
+  .sb__brand { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: var(--accent); }
+  .sb__status { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); }
+  .sb__wifi { width: 15px; height: 11px; }
+  .sb__wifi rect { fill: currentColor; }
+  .sb__wifi .sb__wifi-off { fill: color-mix(in srgb, currentColor 28%, transparent); }
+  .sb__batt { width: 22px; height: 10px; color: var(--fg-2); }
+
+  .sb__tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); flex: none; }
+  .sb__tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 9px 6px 10px; border-right: 1px solid var(--line-soft);
+    background: transparent; cursor: pointer; transition: background 0.15s var(--ease);
+    border-bottom: 2px solid transparent; min-width: 0;
+  }
+  .sb__tab:last-child { border-right: 0; }
+  .sb__tab:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .sb__tab.is-on { border-bottom-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
+  .sb__tab-comp {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--fg-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
+  .sb__tab-score { display: flex; align-items: baseline; gap: 5px; }
+  .sb__tab-score em { font-style: normal; font-size: 11px; font-weight: 600; color: var(--fg-2); letter-spacing: 0.04em; }
+  .sb__tab-score b { font-size: 17px; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: 0.01em; color: var(--fg); }
+  .sb__tab-min { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .sb__tab-min.is-live { color: var(--accent); }
+  .sb__tab.is-on .sb__tab-comp { color: var(--accent); }
+
+  .sb__hero {
+    flex: none; padding: 14px 18px 13px; text-align: center;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 78%);
+  }
+  .sb__badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--fg-3); font-feature-settings: 'tnum'; margin-bottom: 9px;
+    padding: 2px 9px; border-radius: 100px; border: 1px solid var(--line);
+  }
+  .sb__badge.is-live { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .sb__pulse { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.4; }
+  .sb__badge.is-live .sb__pulse { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sb__badge.is-live .sb__pulse { animation: sb-pulse 1.4s var(--ease, ease-in-out) infinite; }
+    @keyframes sb-pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); } 70% { box-shadow: 0 0 0 5px transparent; } }
+  }
+  .sb__line { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+  .sb__team {
+    font-size: 23px; font-weight: 600; letter-spacing: 0.01em; line-height: 1;
+    text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sb__team--h { text-align: right; }
+  .sb__team--a { text-align: left; color: var(--fg-2); }
+  .sb__nums { display: flex; align-items: baseline; gap: 6px; }
+  .sb__nums b { font-size: 40px; font-weight: 700; line-height: 0.85; font-feature-settings: 'tnum'; letter-spacing: 0; }
+  .sb__num--a { color: var(--away); }
+  .sb__dash { font-size: 24px; color: var(--fg-3); font-weight: 300; }
+  .sb__venue { display: block; margin-top: 9px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+
+  .sb__stats { flex: none; padding: 12px 18px; display: flex; flex-direction: column; gap: 9px; border-bottom: 1px solid var(--line); }
+  /* labels inline, not stacked: key | home | bidirectional bar | away */
+  .sb__stat { display: grid; grid-template-columns: auto 26px 1fr 26px; align-items: center; gap: 10px; }
+  .sb__stat-k { grid-column: 1; text-align: left; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); white-space: nowrap; }
+  .sb__stat-v { font-size: 12.5px; font-weight: 700; font-feature-settings: 'tnum'; }
+  .sb__stat-v--h { grid-column: 2; text-align: right; color: var(--fg); }
+  .sb__stat-v--a { grid-column: 4; text-align: left; color: var(--away); }
+  .sb__stat-track { grid-column: 3; display: flex; height: 5px; gap: 2px; }
+  .sb__stat-fill { display: block; height: 100%; transition: width 0.5s var(--ease); }
+  .sb__stat-fill--h { background: var(--accent); border-radius: 3px 0 0 3px; margin-left: auto; }
+  .sb__stat-fill--a { background: var(--away); border-radius: 0 3px 3px 0; }
+
+  .sb__feed-h { flex: none; padding: 11px 18px 4px; display: flex; align-items: baseline; justify-content: space-between; }
+  .sb__feed-h > span:first-child { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
+  .sb__feed-key { display: inline-flex; align-items: center; gap: 5px; font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
+  .sb__key { width: 7px; height: 7px; border-radius: 2px; }
+  .sb__key--h { background: var(--accent); }
+  .sb__key--a { background: var(--away); margin-left: 7px; }
+  .sb__feed { flex: 1; overflow: auto; margin: 0; padding: 2px 18px 12px; list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .sb__ev { display: flex; align-items: center; gap: 11px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); }
+  .sb__ev:last-child { border-bottom: 0; }
+  .sb__ev-min { font-size: 12px; font-weight: 600; color: var(--fg-3); font-feature-settings: 'tnum'; min-width: 22px; }
+  .sb__ev-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px; line-height: 1; min-width: 30px; text-align: center; }
+  .sb__ev-tag--goal { background: var(--accent); color: var(--accent-contrast); }
+  .sb__ev-tag--yel { background: #d8a200; color: #1a1500; }
+  .sb__ev-tag--sub { background: color-mix(in srgb, var(--away) 22%, transparent); color: var(--away); }
+  .sb__ev-name { font-size: 14px; font-weight: 500; letter-spacing: 0.01em; }
+  .sb__ev--away { flex-direction: row-reverse; }
+  .sb__ev--away .sb__ev-name { text-align: right; color: var(--fg-2); }
+
+  @container (max-width: 460px) {
+    .sb__team { font-size: 19px; }
+    .sb__nums b { font-size: 33px; }
+  }
+
+  /* ============ 02 · FRONT PAGE (broadside gothic + Spectral text) ============ */
+  .paper { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4.2cqi 5cqi 0; display: flex; flex-direction: column; overflow: hidden; --bodysize: 2cqi; --bodylead: 1.5; }
+  .paper[data-textsize='compact'] { --bodysize: 1.72cqi; --bodylead: 1.36; }
+  .paper__nameplate { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 0.5cqi solid var(--fg); padding-bottom: 1.5cqi; }
+  .paper__edge { font-size: 2.1cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .paper__edge--r { text-align: right; }
+  .paper__title { font-size: 13cqi; font-weight: 700; letter-spacing: 0.02em; line-height: 0.9; text-align: center; text-transform: uppercase; }
+  .paper__ear { font-size: 1.9cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-2); text-align: center; padding: 1.2cqi 0; border-bottom: 1px solid var(--line); margin-bottom: 2.5cqi; font-feature-settings: 'tnum'; }
+  .paper__grid { flex: 1; display: grid; grid-template-columns: 1fr 0.42fr; gap: 4cqi; min-height: 0; }
+  .paper__lead { display: flex; flex-direction: column; min-height: 0; }
+  .paper__kicker { font-size: 2cqi; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+  .paper__head { font-size: 9.5cqi; font-weight: 700; line-height: 0.92; letter-spacing: 0; text-transform: uppercase; margin: 0.6cqi 0 1.4cqi; }
+
+  /* deck + body + briefs set in the serif text companion */
+  .paper__deck { font-family: var(--serif); font-size: 2.7cqi; font-weight: 400; line-height: 1.32; color: var(--fg); max-width: 94%; }
+  .paper__byline { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding: 1.6cqi 0; border-bottom: 1px solid var(--line); margin: 1.6cqi 0; }
+  .paper__cols { columns: 2; column-gap: 3.5cqi; column-rule: 1px solid var(--line-soft); font-family: var(--serif); font-size: var(--bodysize); line-height: var(--bodylead); color: var(--fg-2); transition: font-size 0.3s var(--ease); }
+  .paper__cols p { margin: 0 0 1.2cqi; text-align: justify; hyphens: auto; }
+  .paper__cols p + p { text-indent: 1.6cqi; }
+  .paper__drop { float: left; font-family: var(--fam); font-weight: 700; font-size: 7cqi; line-height: 0.72; padding: 0.4cqi 0.6cqi 0 0; color: var(--accent); text-transform: uppercase; }
+  .paper__rail { border-left: 1px solid var(--line); padding-left: 4cqi; display: flex; flex-direction: column; justify-content: space-between; }
+  .paper__rail-h { font-size: 2cqi; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); border-bottom: 2px solid var(--accent); padding-bottom: 1cqi; display: block; margin-bottom: 1.6cqi; }
+  .paper__brief p { font-family: var(--serif); font-size: var(--bodysize); line-height: 1.36; color: var(--fg-2); margin: 0 0 1.6cqi; transition: font-size 0.3s var(--ease); }
+  .paper__brief b { font-family: var(--fam); color: var(--fg); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 1.85cqi; }
+  .paper__stand { font-size: 3.4cqi; font-weight: 700; line-height: 1.02; text-transform: uppercase; color: var(--accent); border-top: 1px solid var(--line); padding-top: 2cqi; }
+
+  .paper__control { display: flex; align-items: center; gap: 2cqi; margin-top: 2.2cqi; padding: 1.8cqi 0; border-top: 1px solid var(--line); }
+  .paper__control-h { font-size: 1.7cqi; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
+  .paper__seg { display: inline-flex; border: 1px solid var(--line); border-radius: 100px; overflow: hidden; }
+  .paper__segbtn { font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.8cqi 2.2cqi; color: var(--fg-3); cursor: pointer; background: transparent; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
+  .paper__segbtn + .paper__segbtn { border-left: 1px solid var(--line); }
+  .paper__segbtn:hover { color: var(--fg); }
+  .paper__segbtn.is-on { background: var(--accent); color: var(--accent-contrast); }
+
+  @container (max-width: 540px) {
+    .paper { padding-bottom: 0; }
+    .paper__grid { grid-template-columns: 1fr; gap: 2.5cqi; }
+    .paper__rail { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; padding-top: 2.5cqi; }
+    .paper__cols { columns: 1; }
+    .paper { --bodysize: 3.2cqi; }
+    .paper[data-textsize='compact'] { --bodysize: 2.7cqi; }
+    .paper__deck { font-size: 4cqi; }
+    .paper__head { font-size: 11cqi; }
+    .paper__title { font-size: 16cqi; }
+    .paper__drop { font-size: 10cqi; }
+    .paper__brief b { font-size: 3cqi; }
+    .paper__stand { display: none; }
+    .paper__segbtn { font-size: 2.8cqi; padding: 1.2cqi 3cqi; }
+    .paper__control-h { font-size: 2.6cqi; }
+  }
+
+  /* ============ 03 · DEPARTURE BOARD (own dark surface) ============ */
+  .board { position: absolute; inset: 0; background: #0a0c0a; color: #f4d34a; padding: 3cqi 3.5cqi 2.4cqi; display: flex; flex-direction: column; }
+  .board__top { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 2cqi; border-bottom: 0.5cqi solid #f4d34a33; padding-bottom: 1.6cqi; margin-bottom: 1.4cqi; }
+  .board__title { font-size: 5cqi; font-weight: 700; letter-spacing: 0.14em; }
+  .board__filters { display: inline-flex; justify-self: center; gap: 1cqi; }
+  .board__filter { font-size: 1.85cqi; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #f4d34a99; background: transparent; border: 1px solid #f4d34a2e; border-radius: 100px; padding: 0.7cqi 1.8cqi; cursor: pointer; transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap; }
+  .board__filter:hover { color: #f4d34a; border-color: #f4d34a66; }
+  .board__filter.is-on { color: #0a0c0a; background: #f4d34a; border-color: #f4d34a; }
+  .board__clock { font-size: 4.4cqi; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.04em; justify-self: end; }
+  .board__head { display: grid; grid-template-columns: 14% 1fr 10% 24%; gap: 2cqi; font-size: 1.9cqi; letter-spacing: 0.18em; color: #f4d34a80; padding-bottom: 1.2cqi; border-bottom: 1px solid #f4d34a1f; }
+  .board__c { text-align: center; }
+  .board__s { text-align: right; }
+  .board__rows { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .board__row { display: grid; grid-template-columns: 14% 1fr 10% 24%; gap: 2cqi; align-items: baseline; padding: 1.25cqi 0; border-bottom: 1px solid #f4d34a14; }
+  .board__row.is-hidden { display: none; }
+  .board__time { font-size: 3.4cqi; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
+  .board__dest { font-size: 3.4cqi; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: baseline; gap: 1.4cqi; min-width: 0; }
+  .board__op { font-style: normal; font-size: 1.7cqi; font-weight: 600; letter-spacing: 0.1em; color: #f4d34a66; flex: none; }
+  .board__plat { font-size: 3.4cqi; font-weight: 700; text-align: center; font-feature-settings: 'tnum'; }
+  .board__status { font-size: 2.5cqi; font-weight: 600; letter-spacing: 0.1em; text-align: right; font-feature-settings: 'tnum'; }
+  .board__status s { color: #f4d34a55; text-decoration: line-through; }
+  .board__status--on { color: #5fd16b; }
+  .board__status--boarding { color: #f4d34a; animation: board-blink 1.1s steps(1) infinite; }
+  .board__status--delayed { color: #ff9d3c; }
+  .board__status--cancelled { color: #ff5a4d; }
+  .board__foot { display: flex; align-items: baseline; justify-content: space-between; padding-top: 1.4cqi; margin-top: 0.4cqi; border-top: 1px solid #f4d34a1f; font-size: 1.8cqi; letter-spacing: 0.14em; text-transform: uppercase; color: #f4d34a80; font-feature-settings: 'tnum'; }
+
+  @keyframes board-blink { 50% { opacity: 0.25; } }
+  @media (prefers-reduced-motion: reduce) { .board__status--boarding { animation: none; } }
+
+  @container (max-width: 560px) {
+    .board__top { grid-template-columns: 1fr auto; }
+    .board__filters { grid-column: 1 / -1; grid-row: 2; justify-self: start; margin-top: 1.4cqi; flex-wrap: wrap; }
+    .board__head, .board__row { grid-template-columns: 16% 1fr 24%; }
+    .board__c, .board__plat { display: none; }
+    .board__time, .board__dest { font-size: 3cqi; }
+    .board__op { display: none; }
+    .board__filter { font-size: 2.6cqi; }
+  }
+
+  /* ============ 04 · GIG POSTER (variable weight shout) ============ */
+  .gig { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .gig__rail { position: absolute; top: 50%; right: 1.4cqi; transform: translateY(-50%); writing-mode: vertical-rl; display: flex; gap: 3cqi; font-size: 1.8cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
+  .gig__top { display: flex; justify-content: space-between; font-size: 2.1cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi; }
+  .gig__stack { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 0.4cqi; padding: 2cqi 0; min-height: 0; }
+  .gig__line { line-height: 0.9; text-transform: uppercase; text-align: center; white-space: nowrap; }
+  .gig__line--thin { font-size: 4cqi; font-weight: 300; letter-spacing: 0.34em; color: var(--fg-2); line-height: 1; padding: 1cqi 0; }
+  .gig__line--mid { font-size: 10cqi; font-weight: 500; letter-spacing: 0.06em; line-height: 0.92; }
+  /* explicit leading + gap so the two shouts never collide */
+  .gig__line--shout { font-size: 27cqi; font-weight: 700; letter-spacing: 0; line-height: 0.96; }
+  .gig__line--accent { color: var(--accent); }
+  .gig__line--shout[data-shout] { font-variation-settings: 'wght' 700; }
+  .gig__foot { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.4cqi; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); border-top: 1px solid var(--line); padding-top: 1.6cqi; }
+  .gig__price { font-size: 3.6cqi; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .gig__line--shout[data-shout] {
+      animation: gig-weight 5s var(--ease-out, ease-in-out) infinite alternate;
+      animation-delay: var(--d, 0s);
+    }
+    @keyframes gig-weight {
+      from { font-variation-settings: 'wght' 230; letter-spacing: 0.05em; }
+      to   { font-variation-settings: 'wght' 700; letter-spacing: -0.01em; }
+    }
+  }
+
+  @container (max-width: 520px) {
+    .gig { padding: 4cqi 3cqi; }
+    .gig__line--shout { font-size: 21cqi; letter-spacing: -0.005em; line-height: 0.98; }
+    .gig__line--mid { font-size: 11cqi; }
+    .gig__rail { display: none; }
+  }
+</style>

@@ -1,45 +1,493 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import BrandScene from '../BrandScene.astro';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
 ---
 <div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — INTERACTIVE: live four-axis variable playground -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Show card — an Arts &amp; Crafts bill</span></figcaption>
-    <div class="iu__scene scene-sq iu__scene--portrait">
-      <div class="iu__poster showcard">
-        <span class="sc__badge sc__badge--1">Est. 1899</span>
-        <span class="sc__badge sc__badge--2">Honk!</span>
-        <p class="sc__small">THE ROYCROFT GUILD PRESENTS</p>
-        <h3 class="sc__head">A Marvellous<br/><em>Evening</em> of Type</h3>
-        <p class="sc__sub">with curious letters &amp; soft, wonky serifs</p>
-        <span class="sc__foot">Saturday · Half past Eight</span>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Variable playground — drive all four axes</span></figcaption>
+    <div class="iu__scene play-scene">
+      <div class="play" data-play>
+        <div class="play__stage">
+          <span class="play__readout" data-readout>wght 360 · opsz 144 · SOFT 42 · WONK on</span>
+          <h3 class="play__word" data-word>Humming</h3>
+        </div>
+        <div class="play__controls">
+          <label class="play__ctl">
+            <span class="play__name">Weight <i data-out="wght">360</i></span>
+            <input type="range" data-axis="wght" min="100" max="900" step="1" value="360" />
+          </label>
+          <label class="play__ctl">
+            <span class="play__name">Optical size <i data-out="opsz">144</i></span>
+            <input type="range" data-axis="opsz" min="9" max="144" step="1" value="144" />
+          </label>
+          <label class="play__ctl">
+            <span class="play__name">Softness <i data-out="SOFT">42</i></span>
+            <input type="range" data-axis="SOFT" min="0" max="100" step="1" value="42" />
+          </label>
+          <label class="play__ctl play__ctl--toggle">
+            <span class="play__name">Wonk</span>
+            <button type="button" class="play__toggle" data-wonk aria-pressed="true">
+              <span>off</span><span>on</span>
+            </button>
+          </label>
+        </div>
       </div>
     </div>
+    <p class="iu__hint label">Drag the sliders — softness inks the joints, Wonk leans the n, h &amp; m. Every axis of Fraunces, live.</p>
   </figure>
 
+  <!-- 02 — Fashion magazine cover: wonky + soft masthead, hover-inking, italic cover-line swap -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a modernist lockup</span></figcaption>
-    <div class="iu__scene brand-scene">
-      <BrandScene font={font} variant="stack" />
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Cover — a wonky, soft-inked fashion masthead</span></figcaption>
+    <div class="iu__scene scene-cover iu__scene--portrait">
+      <div class="iu__poster cover" data-cover>
+        <div class="cover__top">
+          <span class="cover__issue">No. <span class="on">14</span></span>
+          <span class="cover__price">£<span class="on">12</span> · Spring <span class="on">2026</span></span>
+        </div>
+        <div class="cover__mastblock">
+          <h3 class="cover__masthead" data-masthead>Plume</h3>
+          <p class="cover__deck">The <em>soft</em> issue — fashion, ink &amp; the art of the <em>wonky</em> line.</p>
+        </div>
+        <ul class="cover__lines">
+          <li><span class="cover__num on">01</span> The hairline returns — couture set <em data-swap>entirely in thin</em></li>
+          <li><span class="cover__num on">02</span> Flavia Zimbardi on the joy of giving letters away</li>
+          <li><span class="cover__num on">03</span> A field guide to the <em data-swap>off-kilter serif</em></li>
+        </ul>
+        <div class="cover__foot">
+          <span class="cover__barcode" aria-hidden="true"></span>
+          <span class="cover__sub">plume.press</span>
+        </div>
+      </div>
     </div>
+    <p class="iu__hint label">Hover the masthead — the ink floods in (SOFT 0→100) and the cover lines tilt to true italic.</p>
   </figure>
+
+  <!-- 03 — INTERACTIVE: optical-size signature, user-driven contrast bloom -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Optical size — drag one outline from 9pt to 144pt</span></figcaption>
+    <div class="iu__scene scene-opsz">
+      <div class="opsz" data-opsz>
+        <div class="opsz__head">
+          <span class="opsz__tag">Optical size</span>
+          <span class="opsz__val"><i data-opsz-out>144</i> pt</span>
+        </div>
+        <h3 class="opsz__word" data-opsz-word>Gazette</h3>
+        <input class="opsz__range" type="range" data-opsz-axis min="9" max="144" step="1" value="144" aria-label="Optical size" />
+        <div class="opsz__pair">
+          <p class="opsz__small">Set the same Gazette masthead at nine point and the hairlines fatten, the x-height climbs and the contrast calms — the letters stop performing and settle into a column of news.</p>
+          <span class="opsz__big" data-opsz-mini>Gazette</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the slider — one outline ramps from a calm 9pt text cut to a flamboyant 144pt display.</p>
+  </figure>
+
+  <!-- 04 — REAL UI at device scale, interactive OpenType toggles + live specimen chip -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Reader UI — long-form CMS at real scale</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device reader" data-reader>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">read.plume.press/the-wonky-line</span>
+        </div>
+        <div class="reader__bar">
+          <span class="reader__logo">Plume</span>
+          <nav class="reader__feat">
+            <button class="is-on" data-feat="liga" aria-pressed="true">Ligatures</button>
+            <button data-feat="onum" aria-pressed="false">Old-style figures</button>
+            <button data-feat="dlig" aria-pressed="false">Disc. ligatures</button>
+          </nav>
+          <span class="reader__time">8 min</span>
+        </div>
+        <div class="reader__chip" data-chip aria-hidden="true">
+          <span class="reader__chiplabel">Live</span>
+          <span class="reader__chipspec" data-chip-spec>office · 1873</span>
+        </div>
+        <article class="reader__body" data-text>
+          <span class="reader__kicker">Type · Essay</span>
+          <h4 class="reader__head">An office of fifteen affable, soft-spoken letters</h4>
+          <p class="reader__byline">by Flavia Zimbardi · published <span class="reader__fig">12 June 2026</span></p>
+          <p class="reader__lede"><span class="reader__drop">I</span>n the summer of 2018, the brief was almost a dare: design a warm, slightly goofy serif and give it away. The fi, fl and ffi ligatures fell into place first — the office of letters where stems and dots would otherwise collide.</p>
+          <p>Across <span class="reader__fig">1,073</span> drafts the family grew to <span class="reader__fig">4</span> axes and more than <span class="reader__fig">100</span> named instances. The figures here sit on the baseline as lining by default; flip them to old-style and the <span class="reader__fig">3</span>, <span class="reader__fig">4</span>, <span class="reader__fig">7</span> and <span class="reader__fig">9</span> drop their tails below it, the way an <span class="reader__fig">1873</span> compositor would have set them.</p>
+          <blockquote class="reader__quote">A beautiful, characterful serif made by a Brazilian and given away for nothing.</blockquote>
+        </article>
+      </div>
+    </div>
+    <p class="iu__hint label">Toggle the OpenType features — watch the “Live” chip and the figures in the column change in step.</p>
+  </figure>
+
 </div>
+
+<script>
+  // ---- 01 variable playground ----
+  document.querySelectorAll<HTMLElement>('[data-play]').forEach((play) => {
+    const word = play.querySelector<HTMLElement>('[data-word]')!;
+    const readout = play.querySelector<HTMLElement>('[data-readout]')!;
+    const axes: Record<string, number> = { wght: 360, opsz: 144, SOFT: 42, WONK: 1 };
+
+    const apply = () => {
+      word.style.fontVariationSettings =
+        `'wght' ${axes.wght}, 'opsz' ${axes.opsz}, 'SOFT' ${axes.SOFT}, 'WONK' ${axes.WONK}`;
+      readout.textContent =
+        `wght ${axes.wght} · opsz ${axes.opsz} · SOFT ${axes.SOFT} · WONK ${axes.WONK ? 'on' : 'off'}`;
+    };
+
+    play.querySelectorAll<HTMLInputElement>('input[data-axis]').forEach((input) => {
+      const axis = input.dataset.axis!;
+      const out = play.querySelector<HTMLElement>(`[data-out="${axis}"]`);
+      input.addEventListener('input', () => {
+        axes[axis] = +input.value;
+        if (out) out.textContent = input.value;
+        play.removeAttribute('data-hint');
+        apply();
+      });
+    });
+
+    const wonk = play.querySelector<HTMLButtonElement>('[data-wonk]');
+    wonk?.addEventListener('click', () => {
+      axes.WONK = axes.WONK ? 0 : 1;
+      wonk.setAttribute('aria-pressed', String(!!axes.WONK));
+      apply();
+    });
+
+    // One-time interactivity telegraph: pulse the SOFT thumb (reduced-motion safe via CSS).
+    play.setAttribute('data-hint', 'soft');
+    apply();
+  });
+
+  // ---- 03 optical-size scrubber ----
+  document.querySelectorAll<HTMLElement>('[data-opsz]').forEach((root) => {
+    const word = root.querySelector<HTMLElement>('[data-opsz-word]')!;
+    const out = root.querySelector<HTMLElement>('[data-opsz-out]')!;
+    const range = root.querySelector<HTMLInputElement>('[data-opsz-axis]')!;
+    const apply = (v: number) => {
+      // weight eases down slightly as the display blooms, letterspacing tightens
+      const wght = Math.round(430 - (v - 9) / (144 - 9) * 90);
+      const ls = (0.01 - (v - 9) / (144 - 9) * 0.04).toFixed(3);
+      word.style.fontVariationSettings = `'wght' ${wght}, 'opsz' ${v}, 'SOFT' 0, 'WONK' 0`;
+      word.style.letterSpacing = `${ls}em`;
+      out.textContent = String(v);
+    };
+    range.addEventListener('input', () => apply(+range.value));
+    apply(+range.value);
+  });
+
+  // ---- 04 reader OpenType toggles + specimen chip ----
+  document.querySelectorAll<HTMLElement>('[data-reader]').forEach((reader) => {
+    const text = reader.querySelector<HTMLElement>('[data-text]')!;
+    const chip = reader.querySelector<HTMLElement>('[data-chip-spec]')!;
+    const state: Record<string, boolean> = { liga: true, onum: false, dlig: false };
+
+    const apply = () => {
+      const feats = Object.entries(state)
+        .map(([k, v]) => `'${k}' ${v ? 1 : 0}`)
+        .join(', ');
+      text.style.fontFeatureSettings = feats;
+      chip.style.fontFeatureSettings = feats;
+      // surface a word that shows the active feature in the magnified chip
+      chip.textContent = state.dlig ? 'aspect · 1873' : state.onum ? 'office · 1873' : 'office · 1873';
+    };
+
+    reader.querySelectorAll<HTMLButtonElement>('[data-feat]').forEach((btn) => {
+      const feat = btn.dataset.feat!;
+      btn.addEventListener('click', () => {
+        state[feat] = !state[feat];
+        btn.classList.toggle('is-on', state[feat]);
+        btn.setAttribute('aria-pressed', String(state[feat]));
+        apply();
+      });
+    });
+
+    apply();
+  });
+</script>
 
 <style>
   .iu__item { margin: 0; }
-  .brand-scene { aspect-ratio: 16 / 9; }
-  .scene-sq { --card-ar: 4 / 5; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__scene * { font-family: var(--fam); }
 
-  .showcard { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6cqi; gap: 2cqi; }
-  .sc__badge { position: absolute; font-weight: 700; border-radius: 50%; display: grid; place-items: center; transform: rotate(-12deg); }
-  .sc__badge--1 { background: var(--accent); color: var(--accent-contrast); width: 18cqi; height: 18cqi; font-size: 3cqi; top: 5cqi; right: 5cqi; }
-  .sc__badge--2 { background: var(--fg); color: var(--bg); width: 14cqi; height: 14cqi; font-size: 3.4cqi; bottom: 6cqi; left: 5cqi; transform: rotate(10deg); font-style: italic; }
-  .sc__small { font-size: 2.6cqi; letter-spacing: 0.2em; color: var(--fg-2); }
-  .sc__head { font-size: 13cqi; line-height: 0.95; font-weight: 600; }
-  .sc__head em { font-style: italic; color: var(--accent); }
-  .sc__sub { font-size: 3.4cqi; font-style: italic; color: var(--fg-2); }
-  .sc__foot { font-size: 2.8cqi; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-top: 1cqi; }
+  /* ====== 01 · VARIABLE PLAYGROUND ====== */
+  .play-scene { background: var(--bg); }
+  .play {
+    position: relative; background: var(--bg); color: var(--fg);
+    display: grid; grid-template-columns: 1fr; min-height: 0;
+    container-type: inline-size;
+  }
+  .play__stage {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 5cqi 4cqi 4cqi; gap: 2.4cqi; overflow: hidden;
+  }
+  .play__readout {
+    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .play__word {
+    font-size: 26cqi; line-height: 0.92; font-weight: 400;
+    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 42, 'WONK' 1;
+    color: var(--fg); letter-spacing: -0.015em;
+  }
+  .play__controls {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 3cqi 5cqi; padding: 4cqi 6cqi 6cqi; border-top: 1px solid var(--line);
+  }
+  .play__ctl { display: flex; flex-direction: column; gap: 1.4cqi; }
+  .play__name {
+    font-family: var(--font-mono); font-size: 2.2cqi; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-2);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .play__name i { font-style: normal; color: var(--accent); font-feature-settings: 'tnum'; }
+  .play__ctl input[type='range'] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
+    background: var(--line); border-radius: 2px; cursor: pointer;
+  }
+  .play__ctl input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 3.4cqi; height: 3.4cqi; min-width: 14px; min-height: 14px;
+    border-radius: 50%; background: var(--accent);
+    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  .play__ctl input[type='range']::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
+    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  /* One-time pulse on the SOFT slider thumb to telegraph that this is draggable */
+  @media (prefers-reduced-motion: no-preference) {
+    .play[data-hint='soft'] [data-axis='SOFT']::-webkit-slider-thumb {
+      animation: thumb-pulse 1.6s var(--ease, ease-out) 3;
+    }
+    .play[data-hint='soft'] [data-axis='SOFT']::-moz-range-thumb {
+      animation: thumb-pulse 1.6s var(--ease, ease-out) 3;
+    }
+  }
+  @keyframes thumb-pulse {
+    0%, 100% { box-shadow: 0 0 0 1px var(--accent); }
+    50% { box-shadow: 0 0 0 1px var(--accent), 0 0 0 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+  }
+  .play__ctl--toggle { justify-content: flex-start; }
+  .play__toggle {
+    display: inline-grid; grid-auto-flow: column; align-items: center;
+    border: 1px solid var(--line); border-radius: 100px; padding: 1cqi;
+    gap: 0; position: relative; align-self: flex-start; cursor: pointer;
+  }
+  .play__toggle span {
+    font-family: var(--font-mono); font-size: 2.2cqi; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.6cqi 2.4cqi; border-radius: 100px;
+    color: var(--fg-3); position: relative; z-index: 1; transition: color 0.25s var(--ease);
+  }
+  .play__toggle[aria-pressed='false'] span:first-child { color: var(--accent-contrast); background: var(--accent); }
+  .play__toggle[aria-pressed='true'] span:last-child { color: var(--accent-contrast); background: var(--accent); }
+
+  @container (min-width: 620px) {
+    .play__word { font-size: 19cqi; }
+    .play__controls { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* ====== 02 · FASHION COVER ====== */
+  .scene-cover { --card-ar: 3 / 4; }
+  .cover {
+    background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column; padding: 6cqi 6cqi 5cqi;
+    overflow: hidden;
+  }
+  .cover__top {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 2.5cqi; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .cover__top .on { font-feature-settings: 'onum' 1; color: var(--accent); }
+  .cover__mastblock { margin-top: 5cqi; }
+  .cover__masthead {
+    font-size: 46cqi; line-height: 0.8; font-weight: 360; cursor: default;
+    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+    letter-spacing: -0.03em; margin: 0; color: var(--fg);
+    transition: font-variation-settings 0.6s var(--ease, ease-out), color 0.6s var(--ease);
+  }
+  .cover__deck {
+    font-size: 4.4cqi; line-height: 1.16; color: var(--fg-2);
+    margin-top: 3.5cqi; max-width: 94%; font-weight: 380;
+    font-variation-settings: 'wght' 380, 'opsz' 40;
+  }
+  .cover__deck em { font-style: italic; color: var(--accent); font-variation-settings: 'opsz' 40; }
+  .cover__lines {
+    margin-top: auto; list-style: none; padding: 0;
+    display: flex; flex-direction: column; gap: 2.4cqi;
+    border-top: 1px solid var(--line); padding-top: 4cqi;
+  }
+  .cover__lines li {
+    font-size: 4.2cqi; line-height: 1.12; color: var(--fg);
+    font-weight: 380; padding-left: 7cqi; position: relative;
+    font-variation-settings: 'wght' 400, 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+  }
+  .cover__num {
+    position: absolute; left: 0; top: 0.1em;
+    font-family: var(--font-mono); font-size: 2.6cqi; letter-spacing: 0.08em;
+    color: var(--accent); font-feature-settings: 'onum' 1;
+  }
+  .cover__lines em {
+    font-style: italic; color: var(--fg-2);
+    font-variation-settings: 'opsz' 60, 'wght' 400;
+    transition: color 0.5s var(--ease);
+  }
+  .cover__foot {
+    margin-top: 4cqi; display: flex; align-items: flex-end; justify-content: space-between;
+  }
+  .cover__sub {
+    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .cover__barcode {
+    height: 7cqi; width: 24cqi;
+    background: repeating-linear-gradient(90deg, var(--fg-2) 0 0.5cqi, transparent 0.5cqi 1.3cqi);
+    opacity: 0.7;
+  }
+  /* live touch: hover the masthead → ink floods + cover lines tilt to true italic */
+  @media (prefers-reduced-motion: no-preference) {
+    .cover[data-cover]:hover .cover__masthead,
+    .cover[data-cover]:focus-within .cover__masthead {
+      font-variation-settings: 'wght' 380, 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+      color: var(--accent);
+    }
+    .cover[data-cover]:hover .cover__lines em[data-swap],
+    .cover[data-cover]:focus-within .cover__lines em[data-swap] {
+      color: var(--accent);
+    }
+  }
+
+  /* ====== 03 · OPTICAL SIZE (interactive scrubber) ====== */
+  .scene-opsz { background: var(--bg); }
+  .opsz {
+    position: relative; background: var(--bg); color: var(--fg);
+    padding: 6cqi 6cqi 6cqi; display: flex; flex-direction: column; gap: 3cqi;
+  }
+  .opsz__head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .opsz__val { color: var(--accent); }
+  .opsz__val i { font-style: normal; font-feature-settings: 'tnum'; }
+  .opsz__word {
+    font-size: 30cqi; line-height: 0.86; font-weight: 360;
+    letter-spacing: -0.02em; color: var(--fg); text-align: left;
+    font-variation-settings: 'wght' 340, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  }
+  .opsz__range {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--line), var(--accent));
+    border-radius: 2px; cursor: pointer; margin: 1cqi 0 1cqi;
+  }
+  .opsz__range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 3.4cqi; height: 3.4cqi; min-width: 16px; min-height: 16px;
+    border-radius: 50%; background: var(--accent);
+    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  .opsz__range::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
+    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  .opsz__pair {
+    display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 5cqi;
+    border-top: 1px solid var(--line); padding-top: 4cqi;
+  }
+  .opsz__small {
+    font-size: 2.9cqi; line-height: 1.5; color: var(--fg-2); max-width: 48ch;
+    font-variation-settings: 'wght' 400, 'opsz' 11, 'SOFT' 0, 'WONK' 0;
+  }
+  .opsz__big {
+    font-size: 11cqi; line-height: 0.8; color: var(--accent);
+    font-variation-settings: 'wght' 400, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+    letter-spacing: 0;
+  }
+
+  /* ====== 04 · READER UI (real px) ====== */
+  .reader { font-size: 14px; line-height: 1.5; }
+  .reader__bar {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--line);
+  }
+  .reader__logo {
+    font-size: 19px; font-weight: 400; color: var(--fg);
+    font-variation-settings: 'wght' 460, 'opsz' 80, 'SOFT' 0, 'WONK' 0;
+    letter-spacing: 0.01em;
+  }
+  .reader__feat { display: flex; gap: 0.3rem; margin-left: auto; flex-wrap: wrap; }
+  .reader__feat button {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
+    color: var(--fg-3); padding: 0.32rem 0.62rem; border-radius: 100px;
+    border: 1px solid var(--line); cursor: pointer; transition: all 0.18s var(--ease);
+    white-space: nowrap;
+  }
+  .reader__feat button:hover { color: var(--fg); border-color: var(--fg-3); }
+  .reader__feat button.is-on {
+    color: var(--accent-contrast); background: var(--accent); border-color: var(--accent);
+  }
+  .reader__time {
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    letter-spacing: 0.06em; padding-left: 0.4rem; border-left: 1px solid var(--line);
+  }
+  /* magnified before/after specimen chip — makes the OpenType change unmissable */
+  .reader__chip {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.5rem 1rem; border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+  }
+  .reader__chiplabel {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-contrast);
+    background: var(--accent); border-radius: 100px; padding: 0.15rem 0.55rem;
+  }
+  .reader__chipspec {
+    font-size: 30px; line-height: 1; color: var(--fg);
+    font-variation-settings: 'wght' 420, 'opsz' 60, 'SOFT' 0, 'WONK' 0;
+    letter-spacing: -0.01em;
+  }
+  .reader__body { padding: clamp(1.4rem, 3.4cqi, 2.6rem) clamp(1.4rem, 5cqi, 4rem); max-width: 70ch; margin: 0 auto; }
+  .reader__kicker {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .reader__head {
+    font-size: clamp(26px, 4.4cqi, 38px); line-height: 1.08; margin: 0.5rem 0 0.7rem;
+    font-variation-settings: 'wght' 500, 'opsz' 96, 'SOFT' 0, 'WONK' 0;
+    letter-spacing: -0.01em; color: var(--fg);
+  }
+  .reader__byline { font-size: 14px; color: var(--fg-3); font-style: italic; margin: 0 0 1.4rem; }
+  .reader__fig { font-feature-settings: inherit; }
+  .reader__lede, .reader__body p {
+    font-size: 16px; line-height: 1.62; color: var(--fg); margin: 0 0 1em;
+    font-variation-settings: 'wght' 380, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  }
+  .reader__lede { font-size: 17px; }
+  .reader__drop {
+    float: left; font-size: 3.2em; line-height: 0.72; padding: 0.06em 0.14em 0 0;
+    color: var(--accent);
+    font-variation-settings: 'wght' 460, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  }
+  .reader__quote {
+    font-size: 20px; line-height: 1.34; font-style: italic; color: var(--fg);
+    border-left: 2px solid var(--accent); padding-left: 1rem; margin: 1.4rem 0 0;
+    font-variation-settings: 'wght' 420, 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+  }
+
+  /* ---- responsive ---- */
+  @container (max-width: 420px) {
+    .play__controls { grid-template-columns: 1fr; gap: 4cqi; }
+  }
+  @container (max-width: 560px) {
+    .opsz__pair { grid-template-columns: 1fr; align-items: start; gap: 3cqi; }
+    .reader__feat button { font-size: 10px; padding: 0.28rem 0.5rem; }
+    .reader__chipspec { font-size: 24px; }
+  }
+  @media (max-width: 600px) {
+    .scene-opsz, .play-scene { aspect-ratio: auto; }
+  }
 </style>

@@ -3,88 +3,510 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// Ledger rows for the sortable table (scene 05). Real, plausible infra spend.
+const ledger = [
+  { svc: 'compute/api-gateway',   reg: 'us-east-1', req: 4820114, p99: 182, err: 0.03, usd: 12480.55 },
+  { svc: 'storage/object-store',  reg: 'eu-west-1', req: 1009388, p99: 41,  err: 0.00, usd: 8210.10 },
+  { svc: 'queue/event-bus',       reg: 'us-east-1', req: 9930017, p99: 9,   err: 0.12, usd: 3076.40 },
+  { svc: 'db/primary-cluster',    reg: 'us-west-2', req: 884201,  p99: 7,   err: 0.01, usd: 19942.00 },
+  { svc: 'edge/cdn',              reg: 'global',    req: 41200900,p99: 23,   err: 0.04, usd: 6588.73 },
+  { svc: 'ml/inference',          reg: 'us-east-1', req: 220841,  p99: 940,  err: 0.21, usd: 24105.88 },
+];
 ---
 <div class="iu" style={`--fam:${fam}`}>
-  <!-- 01 — realistic interactive terminal -->
+  <!-- 01 — INTERACTIVE REAL-SCALE UI: live monitoring terminal -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Terminal — a real shell session</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Observability — a live monitoring terminal</span></figcaption>
     <div class="iu__scene">
-      <div class="term" data-term>
-        <div class="term__chrome">
+      <div class="mon" data-mon>
+        <div class="mon__chrome">
           <div class="iu__dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
-          <span class="term__title">brian@specimen — zsh</span>
+          <span class="mon__title">plexctl top — region us-east-1</span>
+          <span class="mon__live" data-live><i></i> LIVE</span>
         </div>
-        <div class="term__body" data-term-body>
-          <p><span class="c">~/specimen</span> <span class="p">❯</span> whoami</p>
-          <p class="o">brian — typographer, occasional shell tourist</p>
-          <p><span class="c">~/specimen</span> <span class="p">❯</span> <span class="cur">█</span></p>
+
+        <div class="mon__grid">
+          <div class="mon__stat"><span class="mon__k">req/s</span><b data-stat="rps">—</b><span class="mon__spark" data-spark="rps"></span></div>
+          <div class="mon__stat"><span class="mon__k">p99 ms</span><b data-stat="p99">—</b><span class="mon__spark" data-spark="p99"></span></div>
+          <div class="mon__stat"><span class="mon__k">err %</span><b data-stat="err">—</b><span class="mon__spark" data-spark="err"></span></div>
+          <div class="mon__stat"><span class="mon__k">cpu %</span><b data-stat="cpu">—</b><span class="mon__spark" data-spark="cpu"></span></div>
         </div>
-        <div class="term__cmds">
-          <span class="label">Try:</span>
-          <button data-cmd="npm run build">npm run build</button>
-          <button data-cmd="git status">git status</button>
-          <button data-cmd="ls fonts/">ls fonts/</button>
-        </div>
+
+        <table class="mon__procs">
+          <thead><tr><th>PID</th><th>NODE</th><th class="r">CONN</th><th class="r">RSS</th><th class="bar">LOAD</th></tr></thead>
+          <tbody data-procs>
+            <tr><td>00412</td><td>api-7f9c</td><td class="r" data-conn>1842</td><td class="r" data-rss>318M</td><td class="bar"><i data-load style="width:62%"></i></td></tr>
+            <tr><td>00871</td><td>api-3b2d</td><td class="r" data-conn>1190</td><td class="r" data-rss>402M</td><td class="bar"><i data-load style="width:41%"></i></td></tr>
+            <tr><td>01093</td><td>edge-0a1e</td><td class="r" data-conn>9930</td><td class="r" data-rss>96M</td><td class="bar"><i data-load style="width:78%"></i></td></tr>
+            <tr><td>01556</td><td>db-c0re</td><td class="r" data-conn>0064</td><td class="r" data-rss>1.2G</td><td class="bar"><i data-load style="width:23%"></i></td></tr>
+          </tbody>
+        </table>
+
+        <div class="mon__log" data-log></div>
+
+        <form class="mon__cli" data-cli>
+          <span class="mon__prompt">us-east-1 <b>❯</b></span>
+          <input data-cli-input type="text" spellcheck="false" autocomplete="off" placeholder="try: scale 6 · drain api-7f9c · status" aria-label="terminal command" />
+        </form>
       </div>
     </div>
-    <p class="iu__hint label">Click a command — Plex Mono at real code sizes.</p>
+    <p class="iu__hint label">Live counters realign on the fixed-advance grid every tick. Type <b>scale 6</b>, <b>drain api-7f9c</b>, or <b>status</b> and hit enter.</p>
   </figure>
 
-  <!-- 02 — code editor -->
+  <!-- 02 — code editor: switchable tabs, ss-alternate toggle, live tokenizing REPL -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Code — syntax in the editor</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Code — editor, tabs, alternates & a live tokenizer</span></figcaption>
     <div class="iu__scene">
-      <div class="editor">
-        <div class="editor__tabs"><span class="is-on">specimen.ts</span><span>theme.css</span></div>
-        <div class="editor__code">
-          <ol>
-            <li><span class="kw">export</span> <span class="kw">const</span> <span class="fn">render</span> = <span class="pn">(</span>glyph<span class="pn">)</span> => <span class="pn">{`{`}</span></li>
-            <li>  <span class="kw">const</span> m = <span class="fn">measure</span><span class="pn">(</span><span class="st">'Inter'</span>, glyph<span class="pn">)</span>;</li>
-            <li>  <span class="cm">// baseline, x-height, cap — all real</span></li>
-            <li>  <span class="kw">return</span> <span class="pn">{`{`}</span> x: m.xHeight, cap: m.capHeight <span class="pn">{`}`}</span>;</li>
-            <li><span class="pn">{`}`}</span>;</li>
-            <li>&nbsp;</li>
-            <li><span class="cm">// man &amp; machine, set in mono</span></li>
-            <li><span class="fn">console</span>.<span class="fn">log</span><span class="pn">(</span><span class="st">`0 != O`</span><span class="pn">)</span>;</li>
-          </ol>
+      <div class="ide" data-ide>
+        <div class="ide__tabs" role="tablist" aria-label="open files">
+          <button class="is-on" role="tab" aria-selected="true" data-tab="ts">tokenizer.ts<i>●</i></button>
+          <button role="tab" aria-selected="false" data-tab="css">theme.css</button>
+          <button role="tab" aria-selected="false" data-tab="md">README.md</button>
+          <button class="ide__alt" data-alt aria-pressed="false" title="Toggle ss01/ss02 stylistic alternates (a g y · digits)">ss<sub>01</sub></button>
+          <span class="ide__branch">⎇ main</span>
+        </div>
+
+        <div class="ide__main">
+          <!-- tokenizer.ts -->
+          <pre class="ide__code" data-pane="ts"><code><span class="ln add" data-g="+"><span class="kw">export</span> <span class="kw">function</span> <span class="fn">tokenize</span><span class="pn">(</span><span class="vr">src</span>: <span class="ty">string</span><span class="pn">)</span><span class="pn">:</span> <span class="ty">Token</span><span class="pn">[]</span> <span class="pn">{`{`}</span></span>
+<span class="ln"  >  <span class="kw">const</span> <span class="vr">out</span><span class="pn">:</span> <span class="ty">Token</span><span class="pn">[]</span> = <span class="pn">[]</span>;</span>
+<span class="ln"  >  <span class="kw">for</span> <span class="pn">(</span><span class="kw">const</span> <span class="vr">ch</span> <span class="kw">of</span> <span class="vr">src</span><span class="pn">)</span> <span class="pn">{`{`}</span></span>
+<span class="ln del" data-g="-">    <span class="cm">// 'O' and '0', 'l' and '1' used to collide</span></span>
+<span class="ln add" data-g="+">    <span class="vr">out</span>.<span class="fn">push</span><span class="pn">(</span><span class="pn">{`{`}</span> <span class="vr">ch</span>, <span class="vr">kind</span>: <span class="fn">classify</span><span class="pn">(</span><span class="vr">ch</span><span class="pn">)</span> <span class="pn">{`}`}</span><span class="pn">)</span>;</span>
+<span class="ln"  >  <span class="pn">{`}`}</span></span>
+<span class="ln"  >  <span class="kw">return</span> <span class="vr">out</span>;</span>
+<span class="ln"  ><span class="pn">{`}`}</span></span></code></pre>
+
+          <!-- theme.css -->
+          <pre class="ide__code" data-pane="css" hidden><code><span class="ln"  ><span class="sel">:root</span> <span class="pn">{`{`}</span></span>
+<span class="ln"  >  <span class="prop">--mono</span>: <span class="st">'IBM Plex Mono'</span>, <span class="vr">monospace</span>;</span>
+<span class="ln"  >  <span class="prop">--ch</span>: <span class="num2">0.6</span><span class="unit">ch</span>;  <span class="cm">/* one cell wide */</span></span>
+<span class="ln"  >  <span class="prop">--ink</span>: <span class="hex">#0a0e15</span>;</span>
+<span class="ln"  ><span class="pn">{`}`}</span></span>
+<span class="ln"  ><span class="sel">code</span> <span class="pn">{`{`}</span> <span class="prop">font-feature-settings</span>: <span class="st">'zero'</span> <span class="num2">1</span>; <span class="pn">{`}`}</span></span></code></pre>
+
+          <!-- README.md -->
+          <pre class="ide__code ide__code--md" data-pane="md" hidden><code><span class="ln"  ><span class="h1"># plex-tokenizer</span></span>
+<span class="ln"  ></span>
+<span class="ln"  >A lexer set in a face where <span class="code">0</span> never</span>
+<span class="ln"  >reads as <span class="code">O</span>, nor <span class="code">1</span> as <span class="code">l</span> or <span class="code">I</span>.</span>
+<span class="ln"  ></span>
+<span class="ln"  ><span class="bul">-</span> deterministic per-character pass</span>
+<span class="ln"  ><span class="bul">-</span> <span class="bold">zero</span> ambiguity by construction</span></code></pre>
+        </div>
+
+        <div class="ide__repl">
+          <p class="ide__replcmd"><span class="p">›</span> tokenize(<span class="st">"l1 O0 Il"</span>).length</p>
+          <p class="ide__replout" data-repl-seed>8</p>
+          <form class="ide__replform" data-repl>
+            <span class="p">›</span>
+            <span class="ide__replpre">tokenize(<span class="st">"</span></span>
+            <input data-repl-input type="text" spellcheck="false" autocomplete="off" value="l1 O0 Il" aria-label="tokenizer input" />
+            <span class="ide__replpre"><span class="st">"</span>)</span>
+          </form>
+          <div class="ide__tokens" data-tokens aria-live="polite"></div>
+        </div>
+
+        <div class="ide__status">
+          <span class="ide__stat-l" data-status-l>TypeScript · UTF-8 · LF</span>
+          <span class="ide__stat-r">Ln 5, Col 42 · <i class="add">+3</i> <i class="del">−1</i></span>
         </div>
       </div>
     </div>
+    <p class="iu__hint label">Switch files, toggle <b>ss01/ss02</b> alternates, and type into the tokenizer — each char is tagged, with <b>0 O</b> / <b>1 l I</b> flagged in colour.</p>
+  </figure>
+
+  <!-- 03 — ASCII / box-drawing system diagram with a routed packet -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">ASCII — a box-drawing architecture diagram</span></figcaption>
+    <div class="iu__scene">
+      <div class="ascii" data-ascii>
+        <div class="ascii__head"><span>infra/topology.txt</span><span data-ascii-status>UTF-8 · routing…</span></div>
+        <div class="ascii__scroll">
+<pre class="ascii__art" data-art aria-label="System architecture rendered in box-drawing characters">        ┌─────────────┐        ┌─────────────┐
+        │   CLIENT    │        │   CLIENT    │
+        │  390 × 844  │        │ 1440 × 900  │
+        └──────┬──────┘        └──────┬──────┘
+               │                      │
+               └──────────┬───────────┘
+                          ▼
+                 ╔═════════════════╗
+                 ║   EDGE / CDN    ║   ◀── cache hit 94.2%
+                 ╚════════╤════════╝
+                          │
+              ┌───────────┼───────────┐
+              ▼           ▼           ▼
+        ┌───────┐   ┌───────┐   ┌───────┐
+        │ api-1 │   │ api-2 │   │ api-3 │
+        └───┬───┘   └───┬───┘   └───┬───┘
+            └───────────┼───────────┘
+                        ▼
+                 ┌──────────────┐
+                 │  EVENT BUS   │──▶ ◇ workers ×12
+                 └──────┬───────┘
+                        ▼
+              ┌─────────────────┐
+              │  db/primary     │  ●─○ replica
+              └─────────────────┘</pre>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A request packet steps cell-by-cell down the rules — every junction and arrow snaps to the grid, impossible in a proportional face.</p>
+  </figure>
+
+  <!-- 04 — boarding pass / ticket with figure-style toggle -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Ticket — a monospaced boarding pass</span></figcaption>
+    <div class="iu__scene iu__scene--portrait" style="--card-ar: 5 / 3;">
+      <div class="iu__poster pass" data-pass>
+        <div class="pass__main">
+          <div class="pass__brand">
+            <span class="pass__logo">▣ PLEX AIR</span>
+            <button class="pass__fig" data-fig aria-pressed="false" title="Swap default (lining) ↔ ss02 figures">DEFAULT FIGURES</button>
+          </div>
+          <div class="pass__route">
+            <div class="pass__city"><b>SFO</b><span>San Francisco</span></div>
+            <div class="pass__plane">✈</div>
+            <div class="pass__city pass__city--r"><b>AMS</b><span>Amsterdam</span></div>
+          </div>
+          <div class="pass__rows">
+            <div><span class="pass__k">PASSENGER</span><span class="pass__v">ABBINK / MIKE</span></div>
+            <div><span class="pass__k">FLIGHT</span><span class="pass__v pass__num">IB 0170</span></div>
+            <div><span class="pass__k">DATE</span><span class="pass__v pass__num">06 JUN 2026</span></div>
+            <div><span class="pass__k">GATE</span><span class="pass__v pass__num">A10</span></div>
+            <div><span class="pass__k">BOARD</span><span class="pass__v pass__num">11:05</span></div>
+            <div><span class="pass__k">SEAT</span><span class="pass__v pass__num">21C</span></div>
+          </div>
+          <div class="pass__barcode" aria-hidden="true"></div>
+        </div>
+        <div class="pass__stub">
+          <div class="pass__perf" aria-hidden="true"></div>
+          <span class="pass__logo">▣ PLEX AIR</span>
+          <div class="pass__stubrows">
+            <div><span class="pass__k">SFO → AMS</span></div>
+            <div><span class="pass__k">SEAT</span><span class="pass__v pass__num">21C</span></div>
+            <div><span class="pass__k">GATE</span><span class="pass__v pass__num">A10</span></div>
+            <div><span class="pass__k">SEQ</span><span class="pass__v pass__num">0042</span></div>
+          </div>
+          <div class="pass__seq pass__num">0170 · 21C · 06JUN</div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Tap <b>DEFAULT FIGURES</b> to swap lining → ss02 across every tabular field — fixed advances keep gates, times and codes on perfect columns either way.</p>
+  </figure>
+
+  <!-- 05 — sortable financial ledger (tabular figures realign, FLIP) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Data — a sortable cost ledger</span></figcaption>
+    <div class="iu__scene">
+      <div class="led">
+        <div class="led__bar"><span class="led__title">spend · last 24h</span><span class="led__sum">Σ $74,403.66</span></div>
+        <table class="led__table" data-led>
+          <thead>
+            <tr>
+              <th data-sort="svc">SERVICE</th>
+              <th data-sort="reg">REGION</th>
+              <th data-sort="req" class="num">REQUESTS</th>
+              <th data-sort="p99" class="num">P99</th>
+              <th data-sort="err" class="num">ERR%</th>
+              <th data-sort="usd" class="num" data-active="desc">USD</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ledger.map((r) => (
+              <tr data-svc={r.svc} data-reg={r.reg} data-req={r.req} data-p99={r.p99} data-err={r.err} data-usd={r.usd}>
+                <td>{r.svc}</td>
+                <td class="dim">{r.reg}</td>
+                <td class="num">{r.req.toLocaleString('en-US')}</td>
+                <td class="num">{r.p99}<span class="u">ms</span></td>
+                <td class={`num ${r.err > 0.1 ? 'hot' : ''}`}>{r.err.toFixed(2)}</td>
+                <td class="num strong">{r.usd.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="iu__hint label">Sort any column — rows animate to their new rank and tabular figures keep every digit on the same vertical rail.</p>
   </figure>
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-term]').forEach((term) => {
-    const body = term.querySelector('[data-term-body]') as HTMLElement;
-    const out: Record<string, string[]> = {
-      'npm run build': ['▸ building 22 pages…', '✓ 12 specimens · 8 eras', '◆ done in 0.42s'],
-      'git status': ['On branch main', 'nothing to commit, working tree clean'],
-      'ls fonts/': ['inter  fraunces  bodoni-moda  besley', 'jost  cinzel  eb-garamond  …'],
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- 01 live monitoring terminal ----
+  document.querySelectorAll<HTMLElement>('[data-mon]').forEach((mon) => {
+    const stat = (k: string) => mon.querySelector<HTMLElement>(`[data-stat="${k}"]`)!;
+    const spark = (k: string) => mon.querySelector<HTMLElement>(`[data-spark="${k}"]`)!;
+    const log = mon.querySelector<HTMLElement>('[data-log]')!;
+    const procs = mon.querySelector<HTMLElement>('[data-procs]')!;
+
+    const hist: Record<string, number[]> = { rps: [], p99: [], err: [], cpu: [] };
+    const SPARK = '▁▂▃▄▅▆▇█';
+    let nodes = 4;
+    const drained = new Set<string>();
+
+    const padL = (s: string, n: number) => (s.length >= n ? s : ' '.repeat(n - s.length) + s);
+    const renderSpark = (k: string) => {
+      const a = hist[k];
+      const lo = Math.min(...a), hi = Math.max(...a);
+      spark(k).textContent = a.map((v) => SPARK[Math.round(((v - lo) / (hi - lo || 1)) * 7)]).join('');
     };
-    term.querySelectorAll<HTMLButtonElement>('[data-cmd]').forEach((b) =>
-      b.addEventListener('click', () => {
-        const cmd = b.dataset.cmd!;
-        const cur = body.querySelector('.cur')?.closest('p');
-        if (cur) cur.remove();
-        const mk = (html: boolean, cls: string, text: string) => {
-          const p = document.createElement('p');
-          if (cls) p.className = cls;
-          p.textContent = text;
-          return p;
-        };
-        const line = document.createElement('p');
-        const c = document.createElement('span'); c.className = 'c'; c.textContent = '~/specimen';
-        const pr = document.createElement('span'); pr.className = 'p'; pr.textContent = '❯';
-        line.append(c, document.createTextNode(' '), pr, document.createTextNode(' ' + cmd));
-        body.appendChild(line);
-        (out[cmd] || ['…']).forEach((o) => body.appendChild(mk(false, 'o', o)));
-        const next = document.createElement('p');
-        const c2 = document.createElement('span'); c2.className = 'c'; c2.textContent = '~/specimen';
-        const pr2 = document.createElement('span'); pr2.className = 'p'; pr2.textContent = '❯';
-        const cur2 = document.createElement('span'); cur2.className = 'cur'; cur2.textContent = '█';
-        next.append(c2, document.createTextNode(' '), pr2, document.createTextNode(' '), cur2);
-        body.appendChild(next);
-        body.scrollTop = body.scrollHeight;
+
+    let t = 0;
+    const tick = () => {
+      t++;
+      const rps = Math.round(18000 + Math.sin(t / 3) * 4200 + Math.random() * 1800);
+      const p99 = Math.round(60 + Math.abs(Math.sin(t / 5)) * 90 + Math.random() * 20);
+      const err = +Math.max(0, 0.04 + Math.sin(t / 7) * 0.05 + (Math.random() - 0.5) * 0.03).toFixed(2);
+      const cpu = Math.round(34 + Math.abs(Math.sin(t / 4)) * 40 + Math.random() * 8);
+      const vals: Record<string, number> = { rps, p99, err, cpu };
+      for (const k of Object.keys(vals)) { hist[k].push(vals[k]); if (hist[k].length > 18) hist[k].shift(); }
+      stat('rps').textContent = rps.toLocaleString('en-US');
+      stat('p99').textContent = String(p99);
+      stat('err').textContent = err.toFixed(2);
+      stat('cpu').textContent = String(cpu);
+      stat('err').classList.toggle('hot', err > 0.08);
+      stat('p99').classList.toggle('hot', p99 > 130);
+      (['rps', 'p99', 'err', 'cpu'] as const).forEach(renderSpark);
+
+      // process table jitter — tabular figures realign each tick
+      procs.querySelectorAll('tr').forEach((tr, i) => {
+        const conn = tr.querySelector<HTMLElement>('[data-conn]')!;
+        const load = tr.querySelector<HTMLElement>('[data-load]')!;
+        const base = [1842, 1190, 9930, 64][i];
+        const node = tr.children[1].textContent || '';
+        const isDrain = drained.has(node);
+        const off = Math.round((Math.random() - 0.4) * base * 0.18);
+        const next = isDrain ? 0 : Math.max(0, base + off);
+        conn.textContent = padL(String(next), 5).replace(/ /g, '0').slice(-5);
+        load.style.width = (isDrain ? 2 : Math.min(98, 20 + Math.random() * 75)) + '%';
+        tr.classList.toggle('is-drain', isDrain);
+      });
+    };
+
+    const addLog = (level: string, msg: string) => {
+      const now = new Date();
+      const ts = [now.getHours(), now.getMinutes(), now.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':');
+      const p = document.createElement('p');
+      const t1 = document.createElement('span'); t1.className = 't'; t1.textContent = ts;
+      const t2 = document.createElement('span'); t2.className = level.trim().toLowerCase(); t2.textContent = level;
+      p.append(t1, document.createTextNode(' '), t2, document.createTextNode(' ' + msg));
+      log.appendChild(p);
+      while (log.children.length > 6) log.removeChild(log.firstChild!);
+      log.scrollTop = log.scrollHeight;
+    };
+
+    // CLI
+    const cli = mon.querySelector<HTMLFormElement>('[data-cli]')!;
+    const input = mon.querySelector<HTMLInputElement>('[data-cli-input]')!;
+    cli.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = input.value.trim(); input.value = '';
+      if (!raw) return;
+      addLog('CMD  ', '❯ ' + raw);
+      const [cmd, arg] = raw.split(/\s+/);
+      if (cmd === 'scale' && arg && +arg > 0) {
+        nodes = Math.min(24, +arg);
+        addLog('INFO ', `autoscale: desired=${nodes} — provisioning…`);
+      } else if (cmd === 'drain' && arg) {
+        drained.add(arg);
+        addLog('WARN ', `draining ${arg} — connections → 0`);
+      } else if (cmd === 'status') {
+        addLog('INFO ', `nodes=${nodes} drained=${drained.size} region=us-east-1`);
+      } else if (cmd === 'clear') {
+        log.replaceChildren();
+      } else {
+        addLog('ERR  ', `unknown command: ${cmd}`);
+      }
+    });
+
+    // seed numeric history + 6 seed log lines so the static state is rich
+    for (let i = 0; i < 18; i++) tick();
+    addLog('INFO ', 'health check ok — 4/4 nodes ready');
+    addLog('INFO ', 'autoscale: target=4 desired=4');
+    addLog('INFO ', 'cache warm — 94.2% hit ratio');
+    addLog('WARN ', 'p99 above target on edge-0a1e');
+    addLog('INFO ', 'checkpoint flushed to db/primary');
+    addLog('INFO ', 'gc: pause 1.4ms · heap 332M');
+
+    if (!REDUCE) {
+      setInterval(tick, 1100);
+      setInterval(() => {
+        const msgs: [string, string][] = [
+          ['INFO ', 'cache warm — 94.2% hit ratio'],
+          ['INFO ', `gc: pause 1.4ms · heap ${Math.round(300 + Math.random() * 80)}M`],
+          ['WARN ', 'p99 above target on edge-0a1e'],
+          ['INFO ', 'checkpoint flushed to db/primary'],
+        ];
+        const m = msgs[Math.floor(Math.random() * msgs.length)];
+        addLog(m[0], m[1]);
+      }, 2600);
+    } else {
+      mon.querySelector('[data-live]')?.setAttribute('hidden', '');
+    }
+  });
+
+  // ---- 02 IDE: tabs, ss-alternate toggle, live tokenizer ----
+  document.querySelectorAll<HTMLElement>('[data-ide]').forEach((ide) => {
+    // tabs
+    const tabs = Array.from(ide.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panes = Array.from(ide.querySelectorAll<HTMLElement>('[data-pane]'));
+    const statusL = ide.querySelector<HTMLElement>('[data-status-l]')!;
+    const STATUS: Record<string, string> = {
+      ts: 'TypeScript · UTF-8 · LF', css: 'CSS · UTF-8 · LF', md: 'Markdown · UTF-8 · LF',
+    };
+    tabs.forEach((tab) => tab.addEventListener('click', () => {
+      const key = tab.dataset.tab!;
+      tabs.forEach((x) => { x.classList.toggle('is-on', x === tab); x.setAttribute('aria-selected', String(x === tab)); });
+      panes.forEach((p) => p.toggleAttribute('hidden', p.dataset.pane !== key));
+      statusL.textContent = STATUS[key] ?? statusL.textContent;
+    }));
+
+    // ss01/ss02 stylistic alternates
+    const alt = ide.querySelector<HTMLButtonElement>('[data-alt]')!;
+    alt.addEventListener('click', () => {
+      const on = ide.classList.toggle('ide--alt');
+      alt.setAttribute('aria-pressed', String(on));
+      alt.replaceChildren(document.createTextNode('ss'), Object.assign(document.createElement('sub'), { textContent: on ? '02' : '01' }));
+    });
+
+    // live tokenizer: classify each char, flag ambiguous code glyphs
+    const replForm = ide.querySelector<HTMLFormElement>('[data-repl]')!;
+    const replInput = ide.querySelector<HTMLInputElement>('[data-repl-input]')!;
+    const tokensEl = ide.querySelector<HTMLElement>('[data-tokens]')!;
+    const seedOut = ide.querySelector<HTMLElement>('[data-repl-seed]')!;
+    const AMBIG = new Set(['0', 'O', '1', 'l', 'I']);
+    const classify = (ch: string) => {
+      if (ch === ' ') return 'space';
+      if (AMBIG.has(ch)) return 'ambig';
+      if (/[0-9]/.test(ch)) return 'digit';
+      return 'alpha';
+    };
+    const render = () => {
+      const src = replInput.value;
+      tokensEl.replaceChildren();
+      for (const ch of src) {
+        const k = classify(ch);
+        const chip = document.createElement('span');
+        chip.className = 'tok tok--' + k;
+        const g = document.createElement('b');
+        g.textContent = ch === ' ' ? '␣' : ch;
+        const tag = document.createElement('i');
+        tag.textContent = k;
+        chip.append(g, tag);
+        tokensEl.appendChild(chip);
+      }
+      seedOut.textContent = String([...src].length);
+    };
+    replForm.addEventListener('submit', (e) => e.preventDefault());
+    replInput.addEventListener('input', render);
+    render();
+  });
+
+  // ---- 03 ASCII: route a packet cell-by-cell down the rule edges ----
+  document.querySelectorAll<HTMLElement>('[data-ascii]').forEach((root) => {
+    const art = root.querySelector<HTMLElement>('[data-art]')!;
+    const status = root.querySelector<HTMLElement>('[data-ascii-status]')!;
+    const base = art.textContent ?? '';
+    const lines = base.split('\n');
+    // characters that form the routable connective tissue
+    const PATH = new Set(['│', '┬', '┼', '▼', '╤', '┌', '┐', '└', '┘', '─', '├', '┤']);
+    // build a vertical spine of cells (col,row) the packet travels: follow the
+    // central column downward, picking connective glyphs.
+    const spine: Array<[number, number]> = [];
+    for (let r = 0; r < lines.length; r++) {
+      const ln = lines[r];
+      // find a connective char near the centre to trace the main trunk
+      let best = -1, bestDist = Infinity;
+      const mid = 26;
+      for (let c = 0; c < ln.length; c++) {
+        if (PATH.has(ln[c])) {
+          const d = Math.abs(c - mid);
+          if (d < bestDist) { bestDist = d; best = c; }
+        }
+      }
+      if (best >= 0 && bestDist <= 12) spine.push([best, r]);
+    }
+
+    if (REDUCE || spine.length === 0) {
+      status.textContent = 'UTF-8 · box-drawing';
+      return;
+    }
+
+    let i = 0;
+    const renderAt = (idx: number) => {
+      const frag = document.createDocumentFragment();
+      const lit = spine[idx];
+      lines.forEach((ln, r) => {
+        if (lit && r === lit[1]) {
+          const c = lit[0];
+          frag.append(document.createTextNode(ln.slice(0, c)));
+          const hot = document.createElement('span');
+          hot.className = 'ascii__hot';
+          hot.textContent = ln[c];
+          frag.append(hot, document.createTextNode(ln.slice(c + 1)));
+        } else {
+          frag.append(document.createTextNode(ln));
+        }
+        if (r < lines.length - 1) frag.append(document.createTextNode('\n'));
+      });
+      art.replaceChildren(frag);
+    };
+    renderAt(0);
+    setInterval(() => { i = (i + 1) % spine.length; renderAt(i); status.textContent = `UTF-8 · routing ${i + 1}/${spine.length}`; }, 240);
+  });
+
+  // ---- 04 boarding pass: swap lining ↔ ss02 figures ----
+  document.querySelectorAll<HTMLElement>('[data-pass]').forEach((pass) => {
+    const btn = pass.querySelector<HTMLButtonElement>('[data-fig]')!;
+    btn.addEventListener('click', () => {
+      const on = pass.classList.toggle('pass--ss02');
+      btn.setAttribute('aria-pressed', String(on));
+      btn.textContent = on ? 'ss02 FIGURES' : 'DEFAULT FIGURES';
+    });
+  });
+
+  // ---- 05 sortable ledger with FLIP ----
+  document.querySelectorAll<HTMLElement>('[data-led]').forEach((table) => {
+    const tbody = table.querySelector('tbody')!;
+    const nums = new Set(['req', 'p99', 'err', 'usd']);
+    table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort!;
+        const wasAsc = th.dataset.active === 'asc';
+        table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+        const asc = !wasAsc;
+        th.dataset.active = asc ? 'asc' : 'desc';
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        // FLIP: record first positions
+        const first = new Map<HTMLElement, number>();
+        rows.forEach((r) => first.set(r, r.getBoundingClientRect().top));
+
+        rows.sort((a, b) => {
+          let av: number | string, bv: number | string;
+          if (nums.has(key)) { av = +a.dataset[key]!; bv = +b.dataset[key]!; }
+          else { av = a.dataset[key]!; bv = b.dataset[key]!; }
+          return (av < bv ? -1 : av > bv ? 1 : 0) * (asc ? 1 : -1);
+        });
+        rows.forEach((r) => tbody.appendChild(r));
+
+        if (REDUCE) return;
+        // invert + play
+        rows.forEach((r) => {
+          const delta = first.get(r)! - r.getBoundingClientRect().top;
+          if (!delta) return;
+          r.style.transition = 'none';
+          r.style.transform = `translateY(${delta}px)`;
+        });
+        requestAnimationFrame(() => {
+          rows.forEach((r) => {
+            r.style.transition = 'transform 0.42s cubic-bezier(.22,.61,.36,1)';
+            r.style.transform = '';
+          });
+        });
       })
     );
   });
@@ -93,37 +515,226 @@ const fam = font.fontFamily;
 <style>
   .iu__item { margin: 0; }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint b { color: var(--fg-2); font-weight: 600; }
+  .iu .iu__scene * { font-family: var(--fam); }
+  .iu .iu__scene { font-feature-settings: 'tnum' 1, 'zero' 1; }
 
-  .term { font-family: var(--fam); }
-  .term__chrome { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.9rem; background: color-mix(in srgb, var(--fg) 8%, var(--bg)); border-bottom: 1px solid var(--line); }
-  .term__title { font-size: 12px; color: var(--fg-3); margin-inline: auto; }
-  .term__body { padding: 1rem 1.1rem; font-size: 13px; line-height: 1.7; height: 260px; overflow-y: auto; }
-  .term__body p { white-space: pre-wrap; word-break: break-word; }
-  .term .c { color: var(--accent); }
-  .term .p { color: #2ecc71; }
-  .term .o { color: var(--fg-2); }
-  .term .cur { animation: blink 1.1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  .term__cmds { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; padding: 0.7rem 1.1rem; border-top: 1px solid var(--line); }
-  .term__cmds button { font-family: var(--fam); font-size: 12px; color: var(--fg-2); border: 1px solid var(--line); border-radius: 4px; padding: 0.3rem 0.6rem; transition: all 0.18s var(--ease); }
-  .term__cmds button:hover { border-color: var(--accent); color: var(--accent); }
+  /* ============================================================
+     01 — LIVE MONITORING TERMINAL (own dark surface, real px)
+     ============================================================ */
+  .mon {
+    --term-bg: #0a0e15; --term-bg2: #0f1521; --term-line: #1d2734;
+    --term-fg: #d6e0ec; --term-dim: #5d6b7e; --term-blue: #4d8dff;
+    --term-green: #34d399; --term-amber: #fbbf24; --term-red: #f87171;
+    background: var(--term-bg); color: var(--term-fg);
+    font-size: 13px; line-height: 1.55;
+  }
+  .mon__chrome { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.85rem; background: var(--term-bg2); border-bottom: 1px solid var(--term-line); }
+  .mon__title { color: var(--term-dim); font-size: 12px; margin-inline: auto; }
+  .mon__live { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 11px; letter-spacing: 0.14em; color: var(--term-green); }
+  .mon__live[hidden] { display: none; }
+  .mon__live i { width: 7px; height: 7px; border-radius: 50%; background: var(--term-green); box-shadow: 0 0 0 0 var(--term-green); animation: pulse 1.6s ease-out infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,.6); } 70%,100% { box-shadow: 0 0 0 6px rgba(52,211,153,0); } }
 
-  .editor { font-family: var(--fam); }
-  .editor__tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 4%, var(--bg)); }
-  .editor__tabs span { font-size: 12px; color: var(--fg-3); padding: 0.6rem 1rem; border-right: 1px solid var(--line); }
-  .editor__tabs span.is-on { color: var(--fg); background: var(--bg); border-bottom: 2px solid var(--accent); }
-  .editor__code { padding: 0.8rem 0; font-size: 13px; line-height: 1.7; }
-  .editor__code ol { counter-reset: l; }
-  .editor__code li { counter-increment: l; padding-left: 3.4rem; position: relative; white-space: pre; }
-  .editor__code li::before { content: counter(l); position: absolute; left: 0; width: 2.6rem; text-align: right; color: var(--fg-3); opacity: 0.5; }
-  .editor .kw { color: var(--accent); }
-  .editor .fn { color: #4aa3ff; }
-  .editor .st { color: #2ecc71; }
-  .editor .cm { color: var(--fg-3); font-style: italic; }
-  .editor .pn { color: var(--fg-2); }
+  .mon__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--term-line); border-bottom: 1px solid var(--term-line); }
+  .mon__stat { background: var(--term-bg); padding: 0.7rem 0.85rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .mon__k { color: var(--term-dim); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .mon__stat b { font-size: 20px; font-weight: 600; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
+  .mon__stat b.hot { color: var(--term-amber); }
+  .mon__spark { font-size: 13px; letter-spacing: -0.5px; min-height: 1.1em; }
+  /* distinct per-metric spark colour */
+  .mon__stat:nth-child(1) .mon__spark { color: var(--term-blue); }
+  .mon__stat:nth-child(2) .mon__spark { color: var(--term-amber); }
+  .mon__stat:nth-child(3) .mon__spark { color: var(--term-red); }
+  .mon__stat:nth-child(4) .mon__spark { color: var(--term-green); }
 
-  @container (max-width: 600px) {
-    .term__body { height: 200px; font-size: 12px; }
-    .editor__code { font-size: 11.5px; }
+  .mon__procs { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mon__procs th { text-align: left; color: var(--term-dim); font-weight: 500; font-size: 10.5px; letter-spacing: 0.1em; padding: 0.5rem 0.85rem; border-bottom: 1px solid var(--term-line); }
+  .mon__procs td { padding: 0.4rem 0.85rem; border-bottom: 1px solid #131b27; font-variant-numeric: tabular-nums; }
+  .mon__procs td:nth-child(2) { color: var(--term-blue); }
+  .mon__procs .r { text-align: right; }
+  .mon__procs .bar { width: 26%; }
+  .mon__procs .bar i { display: block; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--term-blue), var(--term-green)); transition: width 0.9s var(--ease, ease); }
+  .mon__procs tr.is-drain { color: var(--term-dim); }
+  .mon__procs tr.is-drain td:nth-child(2) { color: var(--term-red); }
+
+  .mon__log { padding: 0.6rem 0.85rem; font-size: 11.5px; line-height: 1.6; height: 9.5em; overflow: hidden; border-bottom: 1px solid var(--term-line); }
+  .mon__log p { white-space: pre-wrap; }
+  .mon__log .t { color: var(--term-dim); }
+  .mon__log .info { color: var(--term-green); }
+  .mon__log .warn { color: var(--term-amber); }
+  .mon__log .err  { color: var(--term-red); }
+  .mon__log .cmd  { color: var(--term-blue); }
+
+  .mon__cli { display: flex; align-items: center; gap: 0.55rem; padding: 0.6rem 0.85rem; background: var(--term-bg2); }
+  .mon__prompt { color: var(--term-dim); white-space: nowrap; }
+  .mon__prompt b { color: var(--term-green); font-weight: 400; }
+  .mon__cli input { flex: 1; background: transparent; border: none; outline: none; color: var(--term-fg); font-family: var(--fam); font-size: 13px; padding: 0.1rem 0; caret-color: var(--term-green); }
+  .mon__cli input::placeholder { color: var(--term-dim); opacity: 0.8; }
+
+  /* ============================================================
+     02 — IDE (own dark surface, real px)
+     ============================================================ */
+  .ide {
+    --ide-bg: #0d1117; --ide-bg2: #010409; --ide-line: #21262d;
+    --ide-fg: #c9d1d9; --ide-dim: #6e7681; --ide-blue: #79c0ff;
+    --ide-kw: #ff7b72; --ide-fn: #d2a8ff; --ide-st: #a5d6ff; --ide-cm: #8b949e;
+    --ide-ty: #ffa657; --ide-vr: #c9d1d9; --ide-green: #3fb950; --ide-red: #f85149;
+    background: var(--ide-bg); color: var(--ide-fg); font-size: 13px;
+  }
+  /* ss01/ss02 stylistic alternates on the live code */
+  .ide.ide--alt .ide__code { font-feature-settings: 'ss01' 1, 'ss02' 1, 'zero' 1; }
+  .ide__tabs { display: flex; align-items: stretch; background: var(--ide-bg2); border-bottom: 1px solid var(--ide-line); font-size: 12px; }
+  .ide__tabs button, .ide__tabs span { display: flex; align-items: center; gap: 0.4rem; color: var(--ide-dim); padding: 0.55rem 0.95rem; border-right: 1px solid var(--ide-line); }
+  .ide__tabs button { background: transparent; border-top: none; border-bottom: none; border-left: none; font: inherit; cursor: pointer; }
+  .ide__tabs button[role="tab"].is-on { color: var(--ide-fg); background: var(--ide-bg); }
+  .ide__tabs button[role="tab"].is-on i { color: var(--ide-blue); font-size: 9px; font-style: normal; }
+  .ide__alt { margin-left: auto; color: var(--ide-dim); letter-spacing: 0.06em; }
+  .ide__alt sub { font-size: 0.72em; }
+  .ide__alt[aria-pressed="true"] { color: var(--ide-bg2); background: var(--ide-blue); }
+  .ide__branch { border-right: none !important; color: var(--ide-blue) !important; }
+
+  .ide__main { counter-reset: ln; }
+  .ide__code { margin: 0; padding: 0.7rem 0; font-size: 13px; line-height: 1.65; overflow-x: auto; counter-reset: ln; }
+  .ide__code[hidden] { display: none; }
+  .ide__code code { display: block; }
+  .ide__code .ln { display: block; counter-increment: ln; position: relative; padding: 0 1rem 0 4.2rem; white-space: pre; min-height: 1.65em; }
+  .ide__code .ln::before { content: counter(ln); position: absolute; left: 0; width: 2.2rem; text-align: right; color: var(--ide-dim); }
+  .ide__code .ln::after { content: attr(data-g); position: absolute; left: 2.7rem; width: 1ch; color: var(--ide-dim); }
+  .ide__code .ln.add { background: rgba(63,185,80,0.12); }
+  .ide__code .ln.add::after { color: var(--ide-green); }
+  .ide__code .ln.del { background: rgba(248,81,73,0.12); }
+  .ide__code .ln.del::after { color: var(--ide-red); }
+  .ide__code .kw { color: var(--ide-kw); }
+  .ide__code .fn { color: var(--ide-fn); }
+  .ide__code .st { color: var(--ide-st); }
+  .ide__code .cm { color: var(--ide-cm); font-style: italic; }
+  .ide__code .ty { color: var(--ide-ty); }
+  .ide__code .vr { color: var(--ide-vr); }
+  .ide__code .pn { color: var(--ide-dim); }
+  /* css/md token colours */
+  .ide__code .sel { color: var(--ide-ty); }
+  .ide__code .prop { color: var(--ide-blue); }
+  .ide__code .num2 { color: var(--ide-st); }
+  .ide__code .unit { color: var(--ide-kw); }
+  .ide__code .hex { color: var(--ide-st); }
+  .ide__code--md { line-height: 1.8; }
+  .ide__code .h1 { color: var(--ide-fn); font-weight: 600; }
+  .ide__code .bul { color: var(--ide-kw); }
+  .ide__code .bold { color: var(--ide-fg); font-weight: 600; }
+  .ide__code .code { color: var(--ide-st); background: rgba(110,118,129,0.18); padding: 0 0.25em; border-radius: 3px; }
+
+  .ide__repl { border-top: 1px solid var(--ide-line); background: var(--ide-bg2); padding: 0.6rem 1rem; font-size: 12.5px; line-height: 1.7; }
+  .ide__repl .p { color: var(--ide-green); }
+  .ide__replcmd { color: var(--ide-fg); }
+  .ide__replout { color: var(--ide-blue); }
+  .ide__replform { display: flex; align-items: center; gap: 0.35rem; color: var(--ide-fg); flex-wrap: wrap; }
+  .ide__replpre { color: var(--ide-dim); white-space: pre; }
+  .ide__replpre .st { color: var(--ide-st); }
+  .ide__repl input { background: rgba(110,118,129,0.14); border: 1px solid var(--ide-line); border-radius: 4px; color: var(--ide-st); font-family: var(--fam); font-size: 12.5px; padding: 0.1rem 0.4rem; outline: none; width: 11ch; }
+  .ide__repl input:focus { border-color: var(--ide-blue); }
+  .ide.ide--alt .ide__repl input { font-feature-settings: 'ss01' 1, 'ss02' 1, 'zero' 1; }
+  .ide__tokens { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+  .ide__tokens .tok { display: inline-flex; flex-direction: column; align-items: center; min-width: 2.1ch; padding: 0.15rem 0.3rem; border-radius: 4px; border: 1px solid var(--ide-line); background: var(--ide-bg); line-height: 1.2; }
+  .ide.ide--alt .ide__tokens .tok b { font-feature-settings: 'ss01' 1, 'ss02' 1, 'zero' 1; }
+  .ide__tokens .tok b { font-size: 14px; font-weight: 600; }
+  .ide__tokens .tok i { font-style: normal; font-size: 8px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ide-dim); margin-top: 1px; }
+  .ide__tokens .tok--ambig { border-color: var(--ide-kw); }
+  .ide__tokens .tok--ambig b { color: var(--ide-kw); }
+  .ide__tokens .tok--ambig i { color: var(--ide-kw); }
+  .ide__tokens .tok--digit b { color: var(--ide-st); }
+  .ide__tokens .tok--alpha b { color: var(--ide-fg); }
+  .ide__tokens .tok--space { border-style: dashed; }
+  .ide__tokens .tok--space b { color: var(--ide-dim); }
+
+  .ide__status { display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 1rem; background: var(--ide-blue); color: var(--ide-bg2); font-size: 11px; font-weight: 500; }
+  .ide__status i { font-style: normal; }
+  .ide__status .add { color: #033a16; } .ide__status .del { color: #4d0b08; }
+
+  /* ============================================================
+     03 — ASCII BOX-DRAWING DIAGRAM (own surface, real px)
+     ============================================================ */
+  .ascii { background: #0c1118; color: #b7c4d4; }
+  .ascii__head { display: flex; justify-content: space-between; padding: 0.55rem 0.95rem; background: #0f1521; border-bottom: 1px solid #1d2734; color: #5d6b7e; font-size: 11.5px; letter-spacing: 0.04em; }
+  .ascii__scroll { overflow-x: auto; }
+  .ascii__art { margin: 0; padding: 1.1rem 0.95rem; font-size: 13px; line-height: 1.32; white-space: pre; color: #9fb6cf; letter-spacing: 0; }
+  .ascii__hot { color: #fff; background: var(--term-amber, #fbbf24); border-radius: 2px; box-shadow: 0 0 10px 2px rgba(251,191,36,0.55); }
+
+  /* ============================================================
+     04 — BOARDING PASS (container-query scaled card)
+     ============================================================ */
+  .pass { display: grid; grid-template-columns: 1fr 32%; background: #f4f1ea; color: #15181d; }
+  .pass__main { padding: 5cqi 5cqi 4cqi; display: flex; flex-direction: column; gap: 4cqi; }
+  .pass__brand { display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #15181d; padding-bottom: 2.5cqi; }
+  .pass__logo { font-weight: 700; font-size: 3.6cqi; letter-spacing: 0.06em; }
+  .pass__fig { font-family: var(--fam); font-size: 2cqi; letter-spacing: 0.16em; color: #15181d; background: transparent; border: 1px solid #15181d; border-radius: 999px; padding: 0.9cqi 2.2cqi; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .pass__fig[aria-pressed="true"] { background: #15181d; color: #f4f1ea; }
+  .pass__route { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 3cqi; }
+  .pass__city b { display: block; font-size: 11cqi; font-weight: 700; line-height: 0.9; letter-spacing: 0.01em; }
+  .pass__city span { font-size: 2.4cqi; color: #6b7280; letter-spacing: 0.05em; }
+  .pass__city--r { text-align: right; }
+  .pass__plane { font-size: 5cqi; color: #c1121f; }
+  /* unified single grid for all six fields */
+  .pass__rows { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.4cqi 2cqi; }
+  .pass__rows > div { display: flex; flex-direction: column; gap: 0.6cqi; }
+  .pass__k { font-size: 2cqi; letter-spacing: 0.16em; color: #9aa1ac; }
+  .pass__v { font-size: 3.6cqi; font-weight: 600; letter-spacing: 0.02em; }
+  .pass__num { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: 'tnum' 1, 'lnum' 1, 'zero' 1; }
+  .pass.pass--ss02 .pass__num { font-feature-settings: 'ss02' 1, 'tnum' 1; transition: none; }
+  .pass__barcode { height: 7cqi; margin-top: 1cqi; background-image: repeating-linear-gradient(90deg, #15181d 0 0.6cqi, transparent 0.6cqi 1cqi, #15181d 1cqi 1.3cqi, transparent 1.3cqi 2.1cqi, #15181d 2.1cqi 3.1cqi, transparent 3.1cqi 3.7cqi); }
+
+  .pass__stub { position: relative; background: #15181d; color: #f4f1ea; padding: 5cqi 3cqi 4cqi; display: flex; flex-direction: column; gap: 3.4cqi; }
+  .pass__perf { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-left: 0.4cqi dashed #f4f1ea; opacity: 0.4; }
+  .pass__stub .pass__logo { font-size: 2.8cqi; }
+  .pass__stubrows { display: flex; flex-direction: column; gap: 2.4cqi; }
+  .pass__stubrows > div { display: flex; flex-direction: column; gap: 0.5cqi; }
+  .pass__stub .pass__k { color: #8b94a3; }
+  .pass__stub .pass__v { font-size: 3.4cqi; }
+  .pass__seq { margin-top: auto; font-size: 2.4cqi; letter-spacing: 0.1em; color: #8b94a3; }
+
+  /* ============================================================
+     05 — SORTABLE LEDGER (theme tokens, real px)
+     ============================================================ */
+  .led { background: var(--bg); }
+  .led__bar { display: flex; justify-content: space-between; align-items: baseline; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); }
+  .led__title { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .led__sum { font-size: 14px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .led__table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .led__table th { text-align: left; color: var(--fg-3); font-weight: 500; font-size: 10.5px; letter-spacing: 0.1em; padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--fg); cursor: pointer; user-select: none; white-space: nowrap; }
+  .led__table th:hover { color: var(--fg); }
+  .led__table th.num { text-align: right; }
+  .led__table th[data-active]::after { content: ' ↓'; color: var(--accent); }
+  .led__table th[data-active='asc']::after { content: ' ↑'; }
+  .led__table td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line-soft); }
+  .led__table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .led__table .dim { color: var(--fg-3); }
+  .led__table .strong { color: var(--fg); font-weight: 600; }
+  .led__table .u { color: var(--fg-3); font-size: 0.82em; margin-left: 1px; }
+  .led__table .hot { color: #e0533d; }
+  .led__table tbody tr { transition: background 0.15s var(--ease); will-change: transform; }
+  .led__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .led__table td:first-child { color: var(--fg); }
+
+  /* ---------------- responsive ---------------- */
+  @container (max-width: 640px) {
+    .mon { font-size: 12px; }
+    .mon__stat b { font-size: 17px; }
+    .ide__code .ln { padding-left: 3.6rem; }
+    .ascii__art { font-size: 11px; line-height: 1.3; }
+    .pass__city b { font-size: 9.5cqi; }
+  }
+  @container (max-width: 460px) {
+    .mon__grid { grid-template-columns: repeat(2, 1fr); }
+    .mon__procs .bar { display: none; }
+    .mon__procs th:last-child, .mon__procs td:last-child { display: none; }
+    /* keep diagram legible: hold a real px floor and let the scroll container pan */
+    .ascii__art { font-size: 10.5px; }
+    .led__table th:nth-child(2), .led__table td:nth-child(2) { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mon__live i { animation: none; }
+    .mon__procs .bar i { transition: none; }
+    .led__table tbody tr { transition: none; }
   }
 </style>

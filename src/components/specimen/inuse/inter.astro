@@ -3,23 +3,88 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
-const rows = [
-  { src: 'Direct', v: 18420, c: '4.8%', r: 92840 },
-  { src: 'Organic search', v: 12950, c: '3.1%', r: 41200 },
-  { src: 'Referral', v: 8310, c: '5.2%', r: 38760 },
-  { src: 'Social', v: 6740, c: '1.9%', r: 12030 },
-  { src: 'Email', v: 4980, c: '6.4%', r: 28590 },
+
+// --- 01 · Analytics dashboard (interactive, real device scale) -----------
+// Per-tab KPI + chart + table data; tabular figures hold columns on sort.
+const tableRows = [
+  { src: 'Direct', v: 18420, c: 4.8, r: 92840 },
+  { src: 'Organic search', v: 12950, c: 3.1, r: 41200 },
+  { src: 'Referral', v: 8310, c: 5.2, r: 38760 },
+  { src: 'Social', v: 6740, c: 1.9, r: 12030 },
+  { src: 'Email', v: 4980, c: 6.4, r: 28590 },
+  { src: 'Affiliates', v: 3120, c: 4.1, r: 19470 },
 ];
+
+// --- 02 · Mobile banking app — the disambiguation case (real phone scale) -
+// The scene's whole argument: on a money screen, 0-vs-O and 1-vs-l-vs-I cannot
+// be guessed. Inter's slashed zero ('zero'/cv'01) + tabular figures ('tnum')
+// make every account, card and reference ID *unambiguous* at 11–28px on glass.
+// Account identifiers are deliberately built from the colliding glyph pairs:
+//   0/O · 1/l/I · 5/S · 8/B · 2/Z — so the feature toggle is visibly load-bearing.
+const accounts = [
+  {
+    id: 'everyday', name: 'Everyday', sub: '·· 4471', bal: 4820.55, delta: '+128.40',
+    card: '4051  10O8  2BIl  9O5S',     // masked-style full number, glyph-collision heavy
+    iban: 'GB29 NW01 5O18 8B2l O5S0 71', // sort/IBAN with O, 0, l, 1, B, 8
+    sort: '60-O1-08', ref: 'NWB-2O25-Il5O8',
+    tx: [
+      ['Transfer to Savings', 'Today · 09:14', -250.0, 'in'],
+      ['Apple Store', 'Today · 08:02', -19.0, 'shopping'],
+      ['Salary — Northwind Inc', 'Yesterday', 4310.0, 'pay'],
+      ['Whole Foods Market', 'Yesterday', -86.42, 'groceries'],
+    ] as [string, string, number, string][],
+  },
+  {
+    id: 'savings', name: 'Savings', sub: '·· 9920', bal: 21940.0, delta: '+1,250.00',
+    card: '4051  10O8  771O  99ZO', iban: 'GB80 NW01 5O18 99ZO 1O80 44',
+    sort: '60-O1-15', ref: 'NWB-2O25-S9ZlO',
+    tx: [
+      ['Transfer from Everyday', 'Today · 09:14', 250.0, 'in'],
+      ['Interest', '1 Jun', 38.21, 'pay'],
+      ['Round-ups', '1 Jun', 14.07, 'in'],
+      ['Standing order', '28 May', 1000.0, 'in'],
+    ] as [string, string, number, string][],
+  },
+  {
+    id: 'travel', name: 'Travel', sub: '·· 1180', bal: 612.30, delta: '−214.60',
+    card: '4051  10O8  3B1l  O72S', iban: 'GB15 NW01 5O18 3B1l O72S 60',
+    sort: '60-O1-22', ref: 'NWB-2O25-T3B1l',
+    tx: [
+      ['SNCF — Paris→Lyon', 'Today · 07:48', -58.0, 'travel'],
+      ['Le Comptoir', 'Yesterday', -42.5, 'food'],
+      ['Hotel Lumière', '3 Jun', -188.0, 'travel'],
+      ['Top-up', '2 Jun', 400.0, 'in'],
+    ] as [string, string, number, string][],
+  },
+];
+const a0 = accounts[0];
+const money = (n: number) =>
+  (n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// --- 03 · Command palette (interactive, real device scale) ---------------
+const commands = [
+  ['Create new document', '⌘N', 'Actions', '◇'],
+  ['Open settings…', '⌘,', 'Navigate', '⚙'],
+  ['Switch workspace', '⌘K W', 'Navigate', '⇄'],
+  ['Invite teammates', '', 'Team', '＋'],
+  ['Toggle dark mode', '⌘⇧L', 'Preferences', '◐'],
+  ['Export as PDF', '⌘⇧E', 'Actions', '↧'],
+  ['Search docs & people', '⌘P', 'Navigate', '⌕'],
+  ['Archive project', '', 'Actions', '▢'],
+  ['Connect integration', '', 'Team', '⌬'],
+  ['View keyboard shortcuts', '?', 'Preferences', '⌨'],
+] as [string, string, string, string][];
 ---
 <div class="iu" style={`--fam:${fam}`}>
-  <!-- 01 — realistic, interactive product dashboard -->
+
+  <!-- 01 — analytics dashboard (interactive, real device scale) -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — a real analytics dashboard</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — analytics dashboard, real device scale</span></figcaption>
     <div class="iu__scene">
       <div class="iu__device dash" data-dash>
-        <div class="iu__chrome">
-          <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">app.northwind.io/analytics</span>
+        <div class="dash__chrome">
+          <div class="dash__dots"><i></i><i></i><i></i></div>
+          <span class="dash__addr">app.northwind.io/analytics</span>
         </div>
         <div class="dash__bar">
           <span class="dash__logo">◆ Northwind</span>
@@ -28,34 +93,34 @@ const rows = [
             <button data-tab="audience">Audience</button>
             <button data-tab="revenue">Revenue</button>
           </nav>
-          <span class="dash__search">⌕ Search…</span>
+          <span class="dash__range" data-range>Last 30 days</span>
           <span class="dash__avatar">RA</span>
         </div>
         <div class="dash__body">
           <div class="dash__kpis">
-            <div class="dash__kpi"><span class="dash__k">Visitors</span><b data-kpi="v">51,400</b><i class="up">▲ 12.4%</i></div>
-            <div class="dash__kpi"><span class="dash__k">Conversion</span><b data-kpi="c">4.18%</b><i class="up">▲ 0.6%</i></div>
-            <div class="dash__kpi"><span class="dash__k">Revenue</span><b data-kpi="r">$213,420</b><i class="up">▲ 8.1%</i></div>
-            <div class="dash__kpi"><span class="dash__k">Churn</span><b data-kpi="x">1.08%</b><i class="dn">▼ 0.3%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Visitors</span><b data-kpi="v">51,400</b><i class="up" data-trend="v">▲ 12.4%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Conversion</span><b data-kpi="c">4.18%</b><i class="up" data-trend="c">▲ 0.6%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Revenue</span><b data-kpi="r">$213,420</b><i class="up" data-trend="r">▲ 8.1%</i></div>
+            <div class="dash__kpi"><span class="dash__k">Avg. session</span><b data-kpi="s">2m 41s</b><i class="dn" data-trend="s">▼ 0.3%</i></div>
           </div>
-          <div class="dash__chart" aria-hidden="true">
+          <div class="dash__chart" data-chart aria-hidden="true">
             {[42,60,38,72,55,81,64,90,48,76,58,96,70,84].map((h)=>(<span style={`height:${h}%`}></span>))}
           </div>
           <table class="dash__table" data-table>
             <thead>
               <tr>
                 <th data-sort="src">Source</th>
-                <th data-sort="v" class="num">Visitors</th>
+                <th data-sort="v" class="num" data-active="desc">Visitors</th>
                 <th data-sort="c" class="num">Conv.</th>
                 <th data-sort="r" class="num">Revenue</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((r)=>(
-                <tr data-v={r.v} data-c={parseFloat(r.c)} data-r={r.r}>
+              {tableRows.map((r)=>(
+                <tr data-v={r.v} data-c={r.c} data-r={r.r}>
                   <td>{r.src}</td>
                   <td class="num">{r.v.toLocaleString()}</td>
-                  <td class="num">{r.c}</td>
+                  <td class="num">{r.c.toFixed(1)}%</td>
                   <td class="num">${r.r.toLocaleString()}</td>
                 </tr>
               ))}
@@ -64,65 +129,364 @@ const rows = [
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Switch tabs, sort the table — Inter at real interface sizes.</p>
+    <p class="iu__hint label">Switch tabs and sort the table — Inter's tabular figures keep every number column aligned at 12–13px.</p>
   </figure>
 
-  <!-- 02 — product / brand poster -->
+  <!-- 02 — mobile banking app (interactive, real phone scale) -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — product launch wall</span></figcaption>
-    <div class="iu__scene scene16">
-      <div class="iu__poster iposter">
-        <div class="iposter__top"><span>Northwind OS</span><span>v3.0</span></div>
-        <h3 class="iposter__head">Clarity,<br/>by default.</h3>
-        <p class="iposter__sub">A workspace that gets out of the way. Set in Inter — the typeface drawn for the screens you read all day.</p>
-        <div class="iposter__row">
-          <span class="iposter__chip">Download</span>
-          <span class="iposter__meta">Free · macOS · Windows · Web</span>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Product UI — mobile banking app, true phone scale</span></figcaption>
+    <div class="iu__scene iu__scene--phone">
+      <div class="iu__device bank" data-bank>
+        <div class="bank__chrome">
+          <span class="bank__time">9:41</span>
+          <span class="bank__status">
+            <svg class="bank__wifi" viewBox="0 0 16 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect x="12" y="0" width="3" height="12" rx="0.6"/></svg>
+            <svg class="bank__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="16" height="8" rx="1" fill="currentColor"/></svg>
+          </span>
+        </div>
+        <div class="bank__head">
+          <span class="bank__hello">Good morning, Rasmus</span>
+          <span class="bank__bell">◔</span>
+        </div>
+        <div class="bank__pills" role="tablist">
+          {accounts.map((ac, i) => (
+            <button class={`bank__pill ${i === 0 ? 'is-on' : ''}`} data-acct={ac.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+              {ac.name}
+            </button>
+          ))}
+        </div>
+        <div class="bank__card" data-card>
+          <span class="bank__card-label" data-clabel>{a0.name} <i>{a0.sub}</i></span>
+          <span class="bank__balance" data-balance>{money(a0.bal)}</span>
+          <span class="bank__delta is-up" data-delta>{a0.delta} this month</span>
+        </div>
+
+        <!-- the disambiguation moment: account details where 0/O · 1/l/I must not be guessed -->
+        <div class="bank__ids" data-ids>
+          <div class="bank__ids-top">
+            <span class="bank__ids-h">Account &amp; card details</span>
+            <button class="bank__toggle" data-dz role="switch" aria-checked="true" aria-label="Slashed zero and disambiguation">
+              <span class="bank__toggle-knob"></span>
+              <em>Slashed&nbsp;0</em>
+            </button>
+          </div>
+          <dl class="bank__id-grid" data-idgrid>
+            <div class="bank__id bank__id--wide"><dt>Card number</dt><dd class="bank__mono" data-id-card>{a0.card}</dd></div>
+            <div class="bank__id"><dt>Sort code</dt><dd class="bank__mono" data-id-sort>{a0.sort}</dd></div>
+            <div class="bank__id"><dt>Payment ref</dt><dd class="bank__mono" data-id-ref>{a0.ref}</dd></div>
+            <div class="bank__id bank__id--wide"><dt>IBAN</dt><dd class="bank__mono" data-id-iban>{a0.iban}</dd></div>
+          </dl>
+          <p class="bank__id-note" data-dznote>Slashed zero &amp; tabular figures on — 0 vs O, 1 vs l, 8 vs B read at a glance.</p>
+        </div>
+
+        <div class="bank__actions">
+          <span class="bank__act"><i>↑</i>Send</span>
+          <span class="bank__act"><i>↓</i>Request</span>
+          <span class="bank__act"><i>⇄</i>Move</span>
+          <span class="bank__act"><i>＋</i>Top up</span>
+        </div>
+        <div class="bank__feed-h">Transactions</div>
+        <ul class="bank__feed" data-feed>
+          {a0.tx.map((t) => (
+            <li class="bank__tx">
+              <span class={`bank__tx-ic bank__tx-ic--${t[3]}`}>{t[2] < 0 ? '–' : '+'}</span>
+              <span class="bank__tx-main">
+                <b>{t[0]}</b>
+                <i>{t[1]}</i>
+              </span>
+              <span class={`bank__tx-amt ${t[2] < 0 ? '' : 'is-in'}`}>{money(t[2])}</span>
+            </li>
+          ))}
+        </ul>
+        <div class="bank__nav">
+          <span class="is-on">⌂<em>Home</em></span>
+          <span>◧<em>Cards</em></span>
+          <span>◑<em>Insights</em></span>
+          <span>○<em>You</em></span>
         </div>
       </div>
     </div>
+    <p class="iu__hint label">Tap an account, then toggle <b>Slashed&nbsp;0</b>: the card, sort code, IBAN and reference flip between Inter's default and disambiguation set (<code>'zero'</code>, <code>cv01</code>, <code>'tnum'</code>) — 0 vs O, 1 vs l, 8 vs B stop being a guess.</p>
+  </figure>
+
+  <!-- 03 — command palette (interactive, real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Product UI — command palette, keyboard-driven</span></figcaption>
+    <div class="iu__scene cmd-scene">
+      <div class="iu__device cmdwrap" data-cmd>
+        <div class="cmd__ghost">
+          <span class="cmd__ghost-bar"></span>
+          <span class="cmd__ghost-bar"></span>
+          <span class="cmd__ghost-bar"></span>
+          <span class="cmd__ghost-hint">Press <kbd>⌘K</kbd> to open the command palette</span>
+        </div>
+        <div class="cmd">
+          <div class="cmd__search">
+            <span class="cmd__search-ic">⌕</span>
+            <input class="cmd__input" type="text" value="" placeholder="Type a command or search…" data-input aria-label="Command palette search" />
+            <kbd class="cmd__esc">esc</kbd>
+          </div>
+          <ul class="cmd__list" data-list>
+            {commands.map((c, i) => (
+              <li class={`cmd__row ${i === 0 ? 'is-active' : ''}`} data-row data-name={c[0].toLowerCase()} data-group={c[2].toLowerCase()}>
+                <span class="cmd__row-ic">{c[3]}</span>
+                <span class="cmd__row-name">{c[0]}</span>
+                <span class="cmd__row-group">{c[2]}</span>
+                {c[1] && <kbd class="cmd__row-key">{c[1]}</kbd>}
+              </li>
+            ))}
+          </ul>
+          <div class="cmd__foot">
+            <span class="cmd__foot-keys"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+            <span class="cmd__foot-keys"><kbd>↵</kbd> select</span>
+            <span class="cmd__foot-count" data-count>{commands.length} results</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Type to filter — matched letters highlight, the count updates. The dense 13px UI list is exactly Inter's home turf.</p>
+  </figure>
+
+  <!-- 04 — product marketing hero (opsz / weight-axis display) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Marketing — product hero, optical size & weight axis</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="hero" data-hero>
+        <div class="hero__nav">
+          <span class="hero__logo">◆ Northwind</span>
+          <span class="hero__nav-links"><b>Product</b><b>Pricing</b><b>Docs</b></span>
+          <span class="hero__cta">Get started</span>
+        </div>
+        <div class="hero__body">
+          <span class="hero__eyebrow">Northwind OS · v3.0</span>
+          <h3 class="hero__head">The workspace<br/>that <span class="hero__em" data-em>disappears.</span></h3>
+          <p class="hero__sub">A single, fast surface for docs, data and decisions — set in Inter, the typeface drawn to be invisible on the screens you read all day.</p>
+          <div class="hero__row">
+            <span class="hero__btn">Start free</span>
+            <span class="hero__btn hero__btn--ghost">Watch the demo</span>
+          </div>
+        </div>
+        <div class="hero__strip">
+          <span class="hero__stat"><b>180k+</b><i>teams shipping</i></span>
+          <span class="hero__stat"><b>99.99%</b><i>uptime SLA</i></span>
+          <span class="hero__stat"><b>40ms</b><i>median sync</i></span>
+          <span class="hero__stat"><b>SOC 2</b><i>type II audited</i></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The headline breathes across Inter's weight axis; tiny caption type stays crisp — the same family, two optical worlds.</p>
   </figure>
 </div>
 
+<script id="inter-bank-data" type="application/json" set:html={JSON.stringify(accounts)} is:inline></script>
+
 <script>
+  // ============ 01 · DASHBOARD ============
   document.querySelectorAll<HTMLElement>('[data-dash]').forEach((dash) => {
-    // tabs
-    const kpis: Record<string, string[]> = {
-      overview: ['51,400', '4.18%', '$213,420', '1.08%'],
-      audience: ['38,910', '3.04%', '$148,210', '1.41%'],
-      revenue: ['51,400', '5.92%', '$402,880', '0.76%'],
+    const ranges: Record<string, string> = { overview: 'Last 30 days', audience: 'Last 30 days', revenue: 'Last quarter' };
+    const kpis: Record<string, [string, string, string, string, string]> = {
+      // [visitors, conv, revenue, session, trendVisitors]
+      overview: ['51,400', '4.18%', '$213,420', '2m 41s', '▲ 12.4%'],
+      audience: ['38,910', '3.04%', '$148,210', '3m 12s', '▲ 5.2%'],
+      revenue: ['51,400', '5.92%', '$402,880', '4m 06s', '▲ 18.7%'],
     };
-    const order = ['v', 'c', 'r', 'x'];
+    const order = ['v', 'c', 'r', 's'];
     dash.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) =>
       b.addEventListener('click', () => {
+        const key = b.dataset.tab!;
         dash.querySelectorAll('[data-tab]').forEach((x) => x.classList.remove('is-on'));
         b.classList.add('is-on');
-        const vals = kpis[b.dataset.tab!] || kpis.overview;
+        const vals = kpis[key] || kpis.overview;
         order.forEach((k, i) => {
           const el = dash.querySelector(`[data-kpi="${k}"]`);
           if (el) el.textContent = vals[i];
         });
-        const bars = dash.querySelectorAll<HTMLElement>('.dash__chart span');
-        bars.forEach((s) => (s.style.height = 30 + ((Math.sin(b.dataset.tab!.length + Array.from(bars).indexOf(s)) + 1) * 33) + '%'));
+        const tv = dash.querySelector('[data-trend="v"]');
+        if (tv) tv.textContent = vals[4];
+        const range = dash.querySelector('[data-range]');
+        if (range) range.textContent = ranges[key] || 'Last 30 days';
+        const bars = dash.querySelectorAll<HTMLElement>('[data-chart] span');
+        bars.forEach((s, i) => {
+          const seed = Math.sin(key.length * 3.7 + i * 1.3);
+          s.style.height = Math.round(34 + (seed + 1) * 31) + '%';
+        });
       })
     );
+
     // sortable table
     const table = dash.querySelector('[data-table]') as HTMLTableElement;
     const tbody = table.querySelector('tbody')!;
+    let activeKey = 'v';
     let asc = false;
+    function sortBy(key: string) {
+      if (key === activeKey) asc = !asc;
+      else { activeKey = key; asc = false; }
+      table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+      const th = table.querySelector(`[data-sort="${key}"]`);
+      if (th) th.setAttribute('data-active', asc ? 'asc' : 'desc');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort((ra, rb) => {
+        const av = key === 'src' ? ra.children[0].textContent! : +ra.dataset[key]!;
+        const bv = key === 'src' ? rb.children[0].textContent! : +rb.dataset[key]!;
+        return (av < bv ? -1 : av > bv ? 1 : 0) * (asc ? 1 : -1);
+      });
+      rows.forEach((r) => tbody.appendChild(r));
+    }
     table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
-      th.addEventListener('click', () => {
-        const key = th.dataset.sort!;
-        asc = !asc;
-        table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
-        th.setAttribute('data-active', asc ? 'asc' : 'desc');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        rows.sort((a, b) => {
-          const av = key === 'src' ? a.children[0].textContent! : +a.dataset[key]!;
-          const bv = key === 'src' ? b.children[0].textContent! : +b.dataset[key]!;
-          return (av < bv ? -1 : av > bv ? 1 : 0) * (asc ? 1 : -1);
-        });
-        rows.forEach((r) => tbody.appendChild(r));
+      th.addEventListener('click', () => sortBy(th.dataset.sort!))
+    );
+  });
+
+  // ============ 02 · BANKING APP ============
+  type Acct = {
+    id: string; name: string; sub: string; bal: number; delta: string;
+    card: string; iban: string; sort: string; ref: string;
+    tx: [string, string, number, string][];
+  };
+  const bankIsland = document.getElementById('inter-bank-data');
+  let accts: Acct[] = [];
+  try { accts = bankIsland ? JSON.parse(bankIsland.textContent || '[]') : []; } catch { accts = []; }
+  const byId: Record<string, Acct> = {};
+  accts.forEach((a) => (byId[a.id] = a));
+  const fmtMoney = (n: number) =>
+    (n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  document.querySelectorAll<HTMLElement>('[data-bank]').forEach((bank) => {
+    if (!accts.length) return;
+    const q = (s: string) => bank.querySelector(s) as HTMLElement | null;
+    const clabel = q('[data-clabel]')!, balance = q('[data-balance]')!, delta = q('[data-delta]')!;
+    const feed = q('[data-feed]')!;
+    const idGrid = q('[data-idgrid]');
+    const idCard = q('[data-id-card]'), idSort = q('[data-id-sort]');
+    const idIban = q('[data-id-iban]'), idRef = q('[data-id-ref]');
+    const dzBtn = q('[data-dz]') as HTMLButtonElement | null;
+    const dzNote = q('[data-dznote]');
+
+    function render(id: string) {
+      const a = byId[id];
+      if (!a) return;
+      if (idCard) idCard.textContent = a.card;
+      if (idSort) idSort.textContent = a.sort;
+      if (idIban) idIban.textContent = a.iban;
+      if (idRef) idRef.textContent = a.ref;
+      clabel.replaceChildren();
+      clabel.append(document.createTextNode(a.name + ' '));
+      const sub = document.createElement('i');
+      sub.textContent = a.sub;
+      clabel.append(sub);
+      balance.textContent = fmtMoney(a.bal);
+      const up = !a.delta.startsWith('−');
+      delta.textContent = a.delta + ' this month';
+      delta.classList.toggle('is-up', up);
+      delta.classList.toggle('is-dn', !up);
+
+      feed.replaceChildren();
+      a.tx.forEach((t) => {
+        const li = document.createElement('li');
+        li.className = 'bank__tx';
+        const ic = document.createElement('span');
+        ic.className = `bank__tx-ic bank__tx-ic--${t[3]}`;
+        ic.textContent = t[2] < 0 ? '–' : '+';
+        const main = document.createElement('span');
+        main.className = 'bank__tx-main';
+        const name = document.createElement('b');
+        name.textContent = t[0];
+        const when = document.createElement('i');
+        when.textContent = t[1];
+        main.append(name, when);
+        const amt = document.createElement('span');
+        amt.className = 'bank__tx-amt' + (t[2] < 0 ? '' : ' is-in');
+        amt.textContent = fmtMoney(t[2]);
+        li.append(ic, main, amt);
+        feed.appendChild(li);
+      });
+
+      bank.querySelectorAll('[data-acct]').forEach((p) => {
+        const on = (p as HTMLElement).dataset.acct === id;
+        p.classList.toggle('is-on', on);
+        p.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    bank.querySelectorAll<HTMLButtonElement>('[data-acct]').forEach((btn) =>
+      btn.addEventListener('click', () => render(btn.dataset.acct!))
+    );
+
+    // disambiguation toggle: flip Inter's 'zero'/cv01 (slashed zero) + 'tnum'
+    if (dzBtn && idGrid) {
+      const setDz = (on: boolean) => {
+        idGrid.classList.toggle('is-plain', !on);
+        dzBtn.setAttribute('aria-checked', on ? 'true' : 'false');
+        dzBtn.classList.toggle('is-off', !on);
+        if (dzNote) {
+          dzNote.textContent = on
+            ? 'Slashed zero & tabular figures on — 0 vs O, 1 vs l, 8 vs B read at a glance.'
+            : 'Defaults: dotted/oval zero, proportional digits — the colliding glyphs are a guess.';
+        }
+      };
+      dzBtn.addEventListener('click', () =>
+        setDz(dzBtn.getAttribute('aria-checked') !== 'true')
+      );
+    }
+  });
+
+  // ============ 03 · COMMAND PALETTE ============
+  document.querySelectorAll<HTMLElement>('[data-cmd]').forEach((wrap) => {
+    const input = wrap.querySelector('[data-input]') as HTMLInputElement;
+    const list = wrap.querySelector('[data-list]') as HTMLElement;
+    const count = wrap.querySelector('[data-count]') as HTMLElement;
+    const rows = Array.from(wrap.querySelectorAll<HTMLElement>('[data-row]'));
+    const names = rows.map((r) => r.querySelector('.cmd__row-name')!.textContent || '');
+
+    function highlight(rowName: HTMLElement, label: string, query: string) {
+      rowName.replaceChildren();
+      if (!query) { rowName.textContent = label; return; }
+      const idx = label.toLowerCase().indexOf(query.toLowerCase());
+      if (idx < 0) { rowName.textContent = label; return; }
+      rowName.append(document.createTextNode(label.slice(0, idx)));
+      const mark = document.createElement('mark');
+      mark.textContent = label.slice(idx, idx + query.length);
+      rowName.append(mark);
+      rowName.append(document.createTextNode(label.slice(idx + query.length)));
+    }
+
+    function filter() {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      let firstActive = false;
+      rows.forEach((row, i) => {
+        const hay = (row.dataset.name || '') + ' ' + (row.dataset.group || '');
+        const ok = !q || hay.includes(q);
+        row.classList.toggle('is-hidden', !ok);
+        row.classList.remove('is-active');
+        const nameEl = row.querySelector('.cmd__row-name') as HTMLElement;
+        highlight(nameEl, names[i], q);
+        if (ok) {
+          shown++;
+          if (!firstActive) { row.classList.add('is-active'); firstActive = true; }
+        }
+      });
+      count.textContent = `${shown} result${shown === 1 ? '' : 's'}`;
+    }
+    input.addEventListener('input', filter);
+
+    // arrow-key navigation among visible rows
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      const vis = rows.filter((r) => !r.classList.contains('is-hidden'));
+      if (!vis.length) return;
+      let cur = vis.findIndex((r) => r.classList.contains('is-active'));
+      vis.forEach((r) => r.classList.remove('is-active'));
+      cur = e.key === 'ArrowDown' ? (cur + 1) % vis.length : (cur - 1 + vis.length) % vis.length;
+      vis[cur].classList.add('is-active');
+      vis[cur].scrollIntoView({ block: 'nearest' });
+    });
+
+    rows.forEach((row) =>
+      row.addEventListener('mouseenter', () => {
+        rows.forEach((r) => r.classList.remove('is-active'));
+        row.classList.add('is-active');
       })
     );
   });
@@ -131,49 +495,236 @@ const rows = [
 <style>
   .iu__item { margin: 0; }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .scene16 { aspect-ratio: 16 / 9; }
+  .iu * { font-family: var(--fam); }
 
-  /* ---- Dashboard (realistic px sizing) ---- */
+  /* shared scene framing — matches InUse.astro / oswald.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 10; } }
+
+  .iu__device {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); overflow: hidden;
+  }
+
+  /* ============ 01 · DASHBOARD (real px) ============ */
   .dash { font-size: 13px; line-height: 1.4; }
-  .dash__bar { display: flex; align-items: center; gap: 1.2rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); }
-  .dash__logo { font-weight: 700; color: var(--accent); font-size: 14px; }
+  .dash__chrome { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--line); background: var(--bg-2); flex: none; }
+  .dash__dots { display: flex; gap: 6px; }
+  .dash__dots i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 20%, transparent); }
+  .dash__addr { font-size: 11px; color: var(--fg-3); background: color-mix(in srgb, var(--fg) 5%, transparent); border-radius: 6px; padding: 3px 10px; margin: 0 auto; font-feature-settings: 'tnum'; }
+  .dash__bar { display: flex; align-items: center; gap: 1.1rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); flex: none; }
+  .dash__logo { font-weight: 700; color: var(--accent); font-size: 14px; letter-spacing: -0.01em; }
   .dash__tabs { display: flex; gap: 0.3rem; }
-  .dash__tabs button { font-size: 12.5px; color: var(--fg-3); padding: 0.3rem 0.6rem; border-radius: 6px; }
+  .dash__tabs button { font-size: 12.5px; color: var(--fg-3); padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer; background: transparent; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
   .dash__tabs button:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
   .dash__tabs button.is-on { color: var(--fg); font-weight: 600; background: color-mix(in srgb, var(--accent) 12%, transparent); }
-  .dash__search { margin-left: auto; color: var(--fg-3); font-size: 12px; border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.7rem; }
-  .dash__avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 11px; font-weight: 600; }
-  .dash__body { padding: 1.1rem; display: grid; gap: 1.1rem; }
-  .dash__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
-  .dash__kpi { border: 1px solid var(--line); border-radius: 8px; padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .dash__range { margin-left: auto; color: var(--fg-3); font-size: 12px; border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.7rem; white-space: nowrap; font-feature-settings: 'tnum'; }
+  .dash__avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 11px; font-weight: 600; flex: none; }
+  .dash__body { padding: 1.1rem; display: grid; gap: 1.1rem; align-content: start; overflow: auto; }
+  .dash__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+  .dash__kpi { border: 1px solid var(--line); border-radius: 9px; padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.25rem; background: color-mix(in srgb, var(--fg) 1.5%, var(--bg)); }
   .dash__k { color: var(--fg-3); font-size: 11.5px; }
-  .dash__kpi b { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; font-feature-settings: 'tnum'; }
-  .dash__kpi i { font-size: 11.5px; font-style: normal; }
+  .dash__kpi b { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; font-feature-settings: 'tnum'; }
+  .dash__kpi i { font-size: 11.5px; font-style: normal; font-weight: 500; font-feature-settings: 'tnum'; }
   .dash__kpi .up { color: #1f9d57; } .dash__kpi .dn { color: #d3402f; }
-  .dash__chart { display: flex; align-items: flex-end; gap: 4px; height: 90px; padding: 0.4rem 0; }
-  .dash__chart span { flex: 1; background: var(--accent); opacity: 0.85; border-radius: 2px 2px 0 0; transition: height 0.5s var(--ease); }
-  .dash__chart span:nth-child(even) { opacity: 0.4; }
+  .dash__chart { display: flex; align-items: flex-end; gap: 5px; height: 86px; padding: 0.2rem 0; }
+  .dash__chart span { flex: 1; background: var(--accent); opacity: 0.85; border-radius: 3px 3px 0 0; transition: height 0.55s var(--ease); }
+  .dash__chart span:nth-child(even) { opacity: 0.42; }
   .dash__table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  .dash__table th { text-align: left; color: var(--fg-3); font-weight: 500; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--fg); cursor: pointer; user-select: none; white-space: nowrap; }
+  .dash__table th { text-align: left; color: var(--fg-3); font-weight: 500; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--fg); cursor: pointer; user-select: none; white-space: nowrap; transition: color 0.15s var(--ease); }
   .dash__table th:hover { color: var(--fg); }
   .dash__table th[data-active]::after { content: ' ↓'; color: var(--accent); }
   .dash__table th[data-active='asc']::after { content: ' ↑'; }
   .dash__table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line-soft); }
   .dash__table .num { text-align: right; font-feature-settings: 'tnum'; }
-  .dash__table tbody tr { transition: background 0.15s var(--ease); cursor: default; }
+  .dash__table tbody tr { transition: background 0.15s var(--ease); }
   .dash__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
 
   @container (max-width: 640px) {
     .dash__kpis { grid-template-columns: repeat(2, 1fr); }
-    .dash__search { display: none; }
+    .dash__range { display: none; }
+    .dash__bar { gap: 0.7rem; }
+  }
+  @container (max-width: 420px) {
+    .dash__tabs button { padding: 0.3rem 0.4rem; font-size: 11.5px; }
+    .dash__logo { font-size: 12.5px; }
   }
 
-  /* ---- Product poster ---- */
-  .iposter { background: var(--fg); color: var(--bg); padding: 5cqi; display: flex; flex-direction: column; }
-  .iposter__top { display: flex; justify-content: space-between; font-size: 2.4cqi; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
-  .iposter__head { font-size: 15cqi; line-height: 0.92; font-weight: 700; letter-spacing: -0.03em; margin: auto 0 0; }
-  .iposter__sub { font-size: 3cqi; line-height: 1.4; max-width: 60%; margin-top: 3cqi; opacity: 0.8; }
-  .iposter__row { display: flex; align-items: center; gap: 3cqi; margin-top: 4cqi; }
-  .iposter__chip { background: var(--accent); color: var(--accent-contrast); font-size: 2.8cqi; font-weight: 600; padding: 1.4cqi 3cqi; border-radius: 100px; }
-  .iposter__meta { font-size: 2.4cqi; opacity: 0.7; }
+  /* ============ 02 · BANKING APP (real phone px) ============ */
+  .iu__scene--phone {
+    aspect-ratio: auto;
+    display: grid; place-items: center;
+    padding: clamp(20px, 4cqi, 48px) 0;
+    background: var(--bg-2);
+  }
+
+  .iu__scene--phone .bank {
+    position: relative; inset: auto;
+    width: 336px; max-width: 92%; height: auto; flex: none;
+    border-radius: 32px; border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.7), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+  .bank { font-size: 13px; --pos: #1f9d57; }
+  .bank__chrome { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1.2rem 0.4rem; flex: none; border-radius: 32px 32px 0 0; }
+  .bank__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
+  .bank__status { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); }
+  .bank__wifi { width: 15px; height: 11px; } .bank__wifi rect { fill: currentColor; }
+  .bank__batt { width: 22px; height: 10px; }
+  .bank__head { display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 1.2rem 0.55rem; flex: none; }
+  .bank__hello { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .bank__bell { font-size: 16px; color: var(--fg-3); }
+  .bank__pills { display: flex; gap: 6px; padding: 0 1.2rem 0.65rem; flex: none; }
+  .bank__pill { flex: 1; font-size: 12px; font-weight: 600; color: var(--fg-3); padding: 7px 4px; border-radius: 100px; background: color-mix(in srgb, var(--fg) 5%, transparent); cursor: pointer; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
+  .bank__pill.is-on { color: var(--accent-contrast); background: var(--accent); }
+  .bank__card { margin: 0 1.2rem; padding: 0.85rem 1.1rem 0.9rem; border-radius: 16px; background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #000)); color: var(--accent-contrast); display: flex; flex-direction: column; gap: 4px; flex: none; box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--accent) 70%, transparent); }
+  .bank__card-label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; opacity: 0.85; text-transform: uppercase; }
+  .bank__card-label i { font-style: normal; opacity: 0.7; font-feature-settings: 'tnum'; margin-left: 3px; }
+  .bank__balance { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; font-feature-settings: 'tnum'; }
+  .bank__delta { font-size: 11.5px; font-weight: 600; font-feature-settings: 'tnum'; opacity: 0.92; }
+
+  /* the disambiguation moment — account / card identifiers */
+  .bank__ids { margin: 0.7rem 1.2rem 0; padding: 0.65rem 0.8rem 0.55rem; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--fg) 2%, var(--bg)); flex: none; }
+  .bank__ids-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 0.5rem; }
+  .bank__ids-h { font-size: 9.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .bank__toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; background: transparent; border: 0; padding: 0; color: var(--fg-2); }
+  .bank__toggle em { font-style: normal; font-size: 10px; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
+  .bank__toggle-knob { position: relative; width: 30px; height: 17px; border-radius: 100px; background: var(--accent); transition: background 0.18s var(--ease); flex: none; }
+  .bank__toggle-knob::after { content: ''; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--accent-contrast); transition: transform 0.18s var(--ease); }
+  .bank__toggle.is-off .bank__toggle-knob { background: color-mix(in srgb, var(--fg) 22%, transparent); }
+  .bank__toggle.is-off .bank__toggle-knob::after { transform: translateX(13px); background: var(--bg); }
+  @media (prefers-reduced-motion: reduce) { .bank__toggle-knob, .bank__toggle-knob::after { transition: none; } }
+
+  .bank__id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.9rem; margin: 0; }
+  .bank__id--wide { grid-column: 1 / -1; }
+  .bank__id dt { font-size: 9.5px; font-weight: 600; letter-spacing: 0.02em; color: var(--fg-3); margin: 0 0 1px; }
+  .bank__id dd { margin: 0; }
+  /* default state = Inter disambiguation ON: slashed zero + tabular + alt 1/l */
+  .bank__mono {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.01em; color: var(--fg);
+    font-variant-numeric: slashed-zero tabular-nums;
+    font-feature-settings: 'tnum' 1, 'zero' 1, 'cv01' 1, 'ss02' 1;
+    transition: none;
+  }
+  .bank__id-grid.is-plain .bank__mono {
+    font-variant-numeric: normal;
+    font-feature-settings: 'tnum' 0, 'zero' 0, 'cv01' 0, 'ss02' 0;
+    color: var(--fg-2);
+  }
+  .bank__id-note { margin: 0.55rem 0 0; font-size: 9.5px; line-height: 1.35; color: var(--fg-3); }
+
+  .bank__actions { display: flex; justify-content: space-between; padding: 0.7rem 1.4rem 0.4rem; flex: none; }
+  .bank__act { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; color: var(--fg-2); }
+  .bank__act i { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-style: normal; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+  .bank__feed-h { padding: 0.45rem 1.2rem 0.25rem; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); flex: none; }
+  .bank__feed { flex: none; overflow: hidden; margin: 0; padding: 0 1.2rem 0.5rem; list-style: none; }
+  .bank__tx { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 11px; padding: 7px 0; border-bottom: 1px solid var(--line-soft); }
+  .bank__tx:last-child { border-bottom: 0; }
+  .bank__tx-ic { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 700; background: color-mix(in srgb, var(--fg) 7%, transparent); color: var(--fg-2); }
+  .bank__tx-ic--pay, .bank__tx-ic--in { background: color-mix(in srgb, var(--pos) 16%, transparent); color: var(--pos); }
+  .bank__tx-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .bank__tx-main b { font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bank__tx-main i { font-size: 11px; font-style: normal; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .bank__tx-amt { font-size: 13.5px; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: -0.01em; white-space: nowrap; }
+  .bank__tx-amt.is-in { color: var(--pos); }
+  .bank__nav { display: flex; justify-content: space-around; padding: 0.5rem 0.6rem 0.7rem; border-top: 1px solid var(--line); flex: none; }
+  .bank__nav span { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 16px; color: var(--fg-3); }
+  .bank__nav span em { font-size: 9.5px; font-style: normal; font-weight: 600; letter-spacing: 0.02em; }
+  .bank__nav span.is-on { color: var(--accent); }
+
+  /* ============ 03 · COMMAND PALETTE (real px) ============ */
+  .cmd-scene { background: var(--bg-2); }
+  @container (max-width: 560px) { .cmd-scene { aspect-ratio: 3 / 4; } }
+  .cmdwrap { background: var(--bg); display: grid; place-items: center; padding: clamp(16px, 4cqi, 48px); }
+  .cmd__ghost { position: absolute; inset: 0; padding: clamp(20px, 5cqi, 54px); display: flex; flex-direction: column; gap: 18px; opacity: 0.5; pointer-events: none; }
+  .cmd__ghost-bar { height: 12px; border-radius: 6px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  .cmd__ghost-bar:nth-child(1) { width: 38%; }
+  .cmd__ghost-bar:nth-child(2) { width: 64%; }
+  .cmd__ghost-bar:nth-child(3) { width: 52%; }
+  .cmd__ghost-hint { margin-top: auto; font-size: 12px; color: var(--fg-3); }
+  .cmd__ghost-hint kbd { font: inherit; font-size: 11px; font-weight: 600; padding: 1px 6px; border: 1px solid var(--line); border-radius: 5px; background: var(--bg-2); }
+
+  .cmd {
+    position: relative; z-index: 1; width: 460px; max-width: 100%;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: 0 30px 70px -28px rgba(0,0,0,0.6), 0 0 0 1px var(--line-soft);
+    display: flex; flex-direction: column; overflow: hidden; font-size: 13px;
+  }
+  .cmd__search { display: flex; align-items: center; gap: 10px; padding: 13px 15px; border-bottom: 1px solid var(--line); }
+  .cmd__search-ic { font-size: 16px; color: var(--fg-3); }
+  .cmd__input { flex: 1; border: 0; background: transparent; color: var(--fg); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; outline: none; }
+  .cmd__input::placeholder { color: var(--fg-3); font-weight: 400; }
+  .cmd__esc { font: inherit; font-size: 10.5px; font-weight: 600; color: var(--fg-3); padding: 2px 7px; border: 1px solid var(--line); border-radius: 5px; }
+  .cmd__list { list-style: none; margin: 0; padding: 6px; max-height: 264px; overflow: auto; }
+  .cmd__row { display: grid; grid-template-columns: 22px 1fr auto auto; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 8px; cursor: pointer; }
+  .cmd__row.is-hidden { display: none; }
+  .cmd__row.is-active { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .cmd__row-ic { font-size: 14px; color: var(--fg-3); text-align: center; }
+  .cmd__row.is-active .cmd__row-ic { color: var(--accent); }
+  .cmd__row-name { font-size: 13.5px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cmd__row-name mark { background: color-mix(in srgb, var(--accent) 28%, transparent); color: inherit; font-weight: 700; border-radius: 3px; padding: 0 1px; }
+  .cmd__row-group { font-size: 11px; color: var(--fg-3); letter-spacing: 0.02em; }
+  .cmd__row-key { font: inherit; font-size: 11px; font-weight: 600; color: var(--fg-2); font-feature-settings: 'tnum'; padding: 2px 6px; border: 1px solid var(--line); border-radius: 5px; white-space: nowrap; }
+  .cmd__foot { display: flex; align-items: center; gap: 16px; padding: 9px 15px; border-top: 1px solid var(--line); font-size: 11px; color: var(--fg-3); }
+  .cmd__foot-keys { display: inline-flex; align-items: center; gap: 5px; }
+  .cmd__foot-keys kbd { font: inherit; font-size: 10.5px; font-weight: 600; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--fg-2); }
+  .cmd__foot-count { margin-left: auto; font-feature-settings: 'tnum'; }
+
+  @container (max-width: 460px) {
+    .cmd { width: 100%; }
+    .cmd__row-group { display: none; }
+    .cmd__list { max-height: 210px; }
+    .cmd__ghost { gap: 14px; }
+  }
+
+  /* ============ 04 · MARKETING HERO (opsz + weight axis) ============ */
+  .hero { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4cqi 5cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .hero__nav { display: flex; align-items: center; justify-content: space-between; gap: 2cqi; padding-bottom: 3cqi; border-bottom: 1px solid var(--line); }
+  .hero__logo { font-size: 2.6cqi; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+  .hero__nav-links { display: flex; gap: 2.6cqi; }
+  .hero__nav-links b { font-size: 1.9cqi; font-weight: 500; color: var(--fg-2); letter-spacing: 0.01em; }
+  .hero__cta { font-size: 1.9cqi; font-weight: 600; color: var(--accent-contrast); background: var(--accent); padding: 1cqi 2.4cqi; border-radius: 100px; }
+  .hero__body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3cqi 0; min-height: 0; }
+  .hero__eyebrow { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-feature-settings: 'tnum'; }
+  .hero__head { font-size: 11cqi; font-weight: 800; line-height: 0.96; letter-spacing: -0.04em; margin: 2cqi 0 0; }
+  .hero__em { color: var(--accent); font-variation-settings: 'wght' 800; }
+  .hero__sub { font-size: 2.6cqi; line-height: 1.45; font-weight: 400; color: var(--fg-2); max-width: 64%; margin-top: 3cqi; letter-spacing: -0.005em; }
+  .hero__row { display: flex; align-items: center; gap: 2cqi; margin-top: 4cqi; }
+  .hero__btn { font-size: 2.2cqi; font-weight: 600; padding: 1.5cqi 3.2cqi; border-radius: 10px; background: var(--accent); color: var(--accent-contrast); }
+  .hero__btn--ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+  .hero__strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2cqi; padding-top: 3cqi; border-top: 1px solid var(--line); }
+  .hero__stat { display: flex; flex-direction: column; gap: 0.4cqi; }
+  .hero__stat b { font-size: 4cqi; font-weight: 700; letter-spacing: -0.03em; font-feature-settings: 'tnum'; }
+  .hero__stat i { font-size: 1.6cqi; font-style: normal; font-weight: 500; color: var(--fg-3); letter-spacing: 0.02em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__em[data-em] { animation: hero-weight 4.5s var(--ease-out, ease-in-out) infinite alternate; }
+    @keyframes hero-weight {
+      from { font-variation-settings: 'wght' 300; letter-spacing: -0.02em; }
+      to   { font-variation-settings: 'wght' 900; letter-spacing: -0.05em; }
+    }
+  }
+
+  @container (max-width: 540px) {
+    .hero { padding: 5cqi 5cqi; }
+    .hero__head { font-size: 13cqi; }
+    .hero__sub { font-size: 3.6cqi; max-width: 100%; }
+    .hero__eyebrow { font-size: 2.8cqi; }
+    .hero__nav-links { display: none; }
+    .hero__logo { font-size: 3.6cqi; }
+    .hero__cta { font-size: 2.8cqi; }
+    .hero__btn { font-size: 3.2cqi; }
+    .hero__strip { grid-template-columns: repeat(2, 1fr); gap: 3cqi; }
+    .hero__stat b { font-size: 6cqi; }
+    .hero__stat i { font-size: 2.6cqi; }
+  }
 </style>

@@ -3,49 +3,384 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// Boutique e-commerce hero data (scene 05, interactive)
+const pieces = [
+  { id: 'AW-01', name: 'Mirabelle',  cat: 'gowns',  price: '2,480', detail: 'Silk-crepe bias gown',        tag: 'Atelier' },
+  { id: 'AW-02', name: 'Cassis',     cat: 'gowns',  price: '1,950', detail: 'Velvet column dress',         tag: '' },
+  { id: 'AW-03', name: 'Verveine',   cat: 'coats',  price: '3,200', detail: 'Wool opera coat',             tag: 'New' },
+  { id: 'AW-04', name: 'Aubépine',   cat: 'coats',  price: '2,140', detail: 'Belted cashmere trench',      tag: '' },
+  { id: 'AW-05', name: 'Pivoine',    cat: 'jewels', price: '880',   detail: 'Freshwater pearl drops',      tag: '' },
+  { id: 'AW-06', name: 'Giroflée',   cat: 'jewels', price: '1,460', detail: 'Gold signet ring',            tag: 'Fine' },
+];
 ---
 <div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — fashion magazine cover -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Masthead — a fashion title</span></figcaption>
-    <div class="iu__scene cover34 iu__scene--portrait">
-      <div class="iu__poster vogueish">
-        <div class="vg__top"><span>SPRING</span><span>MMXXVI</span></div>
-        <h3 class="vg__name">Élégance</h3>
-        <div class="vg__lines">
-          <span>The Return of the <i>Hairline</i></span>
-          <span>72 Pages of Quiet Luxury</span>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cover" data-weigh>
+        <div class="cover__top">
+          <span class="cover__no">№ 09</span>
+          <span class="cover__season">Automne / Hiver</span>
+          <span class="cover__price">€14</span>
+        </div>
+        <h3 class="cover__masthead" data-weigh-word>Maven</h3>
+        <div class="cover__lines">
+          <span class="cover__feat">The Return of the <em>Hairline</em></span>
+          <span>Couture, cut to the thinnest possible stroke</span>
+          <span>Quiet luxury &amp; the new restraint</span>
+        </div>
+        <div class="cover__foot">
+          <span class="cover__barcode" aria-hidden="true">
+            {Array.from({ length: 28 }).map((_, i) => (<i style={`width:${(i % 4) + 1}px`}></i>))}
+          </span>
+          <span class="cover__plus">+ Paris <em>at midnight</em></span>
         </div>
       </div>
     </div>
+    <p class="iu__hint label">Hover the masthead — the weight axis swells from a hairline Regular to a thunderous Black.</p>
   </figure>
 
+  <!-- 02 — wedding invitation suite -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the opening spread</span></figcaption>
-    <div class="iu__scene scene16">
-      <div class="iu__poster pf-spread">
-        <span class="pf__kicker">Profile</span>
-        <h3 class="pf__head">A Life in<br/><em>Letters</em></h3>
-        <p class="pf__deck">She drew by candlelight and printed by reason. Two centuries later, her serifs still set the tone for elegance.</p>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Invitation — a wedding suite (true italics)</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster invite" data-draw>
+        <span class="invite__over">Together with their families</span>
+        <div class="invite__names">
+          <span class="invite__n">Élodie</span>
+          <span class="invite__amp">&amp;</span>
+          <span class="invite__n">Laurent</span>
+        </div>
+        <svg class="invite__rule" viewBox="0 0 240 24" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <path class="invite__rule-l" d="M8 12 H104" />
+          <path class="invite__rule-l" d="M136 12 H232" />
+          <path class="invite__diamond" d="M120 5 L127 12 L120 19 L113 12 Z" />
+        </svg>
+        <p class="invite__req">request the pleasure of your company<br/>at the celebration of their marriage</p>
+        <div class="invite__when">
+          <span class="invite__date">the Ninth of June</span>
+          <span class="invite__year">Two Thousand Twenty-Seven</span>
+        </div>
+        <span class="invite__where">Château de Vauluisant <i>·</i> Bourgogne</span>
       </div>
     </div>
+    <p class="iu__hint label">The hairline rules and diamond draw in; the true-italic given names carry the suite.</p>
   </figure>
+
+  <!-- 03 — literary book title treatment -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Book — a literary title treatment</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster book" data-weigh>
+        <span class="book__pub">Pellier &amp; Wren · London</span>
+        <div class="book__center">
+          <span class="book__series">A Novel</span>
+          <h3 class="book__title" data-weigh-word>The<br/><em>Hours</em><br/>Between</h3>
+          <span class="book__author">Marguerite <span class="book__sc">Vail</span></span>
+        </div>
+        <div class="book__foot">
+          <span class="book__quote">“A vertiginous, hairline-fine debut.”</span>
+          <span class="book__src">— The Paris Review</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover — the title floods from Regular to Black while the italic middle word holds its hairlines.</p>
+  </figure>
+
+  <!-- 04 — editorial feature opener with drop cap -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — the feature opener</span></figcaption>
+    <div class="iu__scene scene43">
+      <div class="iu__poster spread" data-weigh>
+        <div class="spread__rail">
+          <span class="spread__folio">Feature · 072</span>
+          <span class="spread__sec">Letters</span>
+        </div>
+        <div class="spread__main">
+          <span class="spread__kicker">On Type</span>
+          <h3 class="spread__head" data-weigh-word>A Life in <em>Letters</em></h3>
+          <p class="spread__deck">She drew by candlelight and printed by reason. Two centuries on, her serifs still set the tone.</p>
+          <div class="spread__body">
+            <p><span class="spread__drop">B</span>y the seventeen-nineties the press had finally caught the eye: paper smoother, ink blacker, the burin sharper. The contrast ran riot — heavy vertical stems beside hairlines fine enough to vanish, finished with crisp round ball terminals.</p>
+            <p>Two hundred years later the same drama reads as one thing only — quiet, expensive restraint, set large on an editorial page. The thinner the stroke, the louder the elegance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the headline — the weight blooms to Black; the italic word stays a fine flourish.</p>
+  </figure>
+
+  <!-- 05 — INTERACTIVE: boutique e-commerce hero with live weight scrubber -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Product UI — boutique storefront (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device shop" data-shop>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">maison-vail.com/automne</span>
+        </div>
+        <header class="shop__head">
+          <span class="shop__logo">Vail</span>
+          <nav class="shop__filters" aria-label="Filter collection">
+            <button class="is-on" data-filter="all">All</button>
+            <button data-filter="gowns">Gowns</button>
+            <button data-filter="coats">Coats</button>
+            <button data-filter="jewels">Jewels</button>
+          </nav>
+          <span class="shop__bag">Bag · 0</span>
+        </header>
+
+        <div class="shop__hero">
+          <span class="shop__hero-kicker">Automne / Hiver — Collection privée</span>
+          <h4 class="shop__hero-word" data-wght-type>Maison</h4>
+          <p class="shop__hero-sub">Hand-finished in the seventh, delivered worldwide.</p>
+        </div>
+
+        <div class="shop__wght">
+          <label for="wght-pf">Weight — <span data-wght-val>400</span></label>
+          <input id="wght-pf" type="range" min="400" max="900" value="400" step="1" data-wght />
+          <span class="shop__wght-hint">drag — the hero word gains weight live</span>
+        </div>
+
+        <div class="shop__grid" data-grid>
+          {pieces.map((p) => (
+            <article class="card" data-cat={p.cat}>
+              <div class="card__img" aria-hidden="true">
+                <span class="card__ghost">{p.id.split('-')[1]}</span>
+                <span class="card__big">{p.name}</span>
+                {p.tag && <span class="card__tag">{p.tag}</span>}
+              </div>
+              <div class="card__meta">
+                <h5 class="card__name">{p.name}</h5>
+                <span class="card__detail">{p.detail}</span>
+                <div class="card__row">
+                  <span class="card__price">€{p.price}</span>
+                  <span class="card__id">{p.id}</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter the collection, then drag the weight axis — the hero word thickens from hairline to Black.</p>
+  </figure>
+
 </div>
+
+<script>
+  // ---- Scene 05: filter + live weight axis on hero word ----
+  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((shop) => {
+    const grid = shop.querySelector('[data-grid]') as HTMLElement;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
+    shop.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+      b.addEventListener('click', () => {
+        shop.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        const f = b.dataset.filter!;
+        cards.forEach((c) => c.classList.toggle('is-hidden', !(f === 'all' || c.dataset.cat === f)));
+      })
+    );
+
+    const slider = shop.querySelector('[data-wght]') as HTMLInputElement;
+    const val = shop.querySelector('[data-wght-val]') as HTMLElement;
+    const heads = shop.querySelectorAll<HTMLElement>('[data-wght-type]');
+    const apply = () => {
+      const v = slider.value;
+      val.textContent = v;
+      heads.forEach((h) => (h.style.fontVariationSettings = `'wght' ${v}`));
+    };
+    slider.addEventListener('input', apply);
+    apply();
+  });
+
+  // ---- Scenes 01/03/04: pointer-driven weight bloom on a display word ----
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll<HTMLElement>('[data-weigh]').forEach((scene) => {
+      const word = scene.querySelector<HTMLElement>('[data-weigh-word]');
+      if (!word) return;
+      const rest = getComputedStyle(word).getPropertyValue('--wght').trim() || '400';
+      scene.addEventListener('pointerenter', () => word.style.setProperty('--wght', '900'));
+      scene.addEventListener('pointerleave', () => word.style.setProperty('--wght', rest));
+    });
+  }
+</script>
 
 <style>
   .iu__item { margin: 0; }
-  .scene16 { aspect-ratio: 16 / 9; }
-  .cover34 { --card-ar: 3 / 4; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .scene43 { aspect-ratio: 4 / 3; }
+  .iu__scene * { font-family: var(--fam); }
 
-  .vogueish { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; padding: 5cqi; }
-  .vg__top { display: flex; justify-content: space-between; font-size: 2.8cqi; letter-spacing: 0.2em; color: var(--fg-2); }
-  .vg__name { font-size: 21cqi; line-height: 0.86; font-weight: 700; text-align: center; font-style: italic; margin: auto 0 0; color: var(--fg); }
-  .vg__lines { display: flex; flex-direction: column; gap: 1.4cqi; margin-top: 4cqi; }
-  .vg__lines span { font-size: 3.4cqi; color: var(--fg-2); }
-  .vg__lines i { color: var(--accent); }
+  /* ============================================================
+     01 — FASHION COVER
+     Black Regular→900 masthead bloom on hover; fine italic cover lines.
+     ACCENT reserved to a single small mark (the issue number).
+     ============================================================ */
+  .cover { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 5cqi 5cqi 4cqi; }
+  .cover__top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.4cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 2.4cqi; }
+  .cover__no { color: var(--accent); }
+  .cover__season { font-style: italic; letter-spacing: 0.03em; text-transform: none; color: var(--fg-3); }
+  .cover__price { color: var(--fg-3); }
+  .cover__masthead {
+    --wght: 660;
+    font-size: 40cqi; line-height: 0.82; text-align: center; letter-spacing: -0.01em;
+    margin: 4cqi 0 4.5cqi; color: var(--fg);
+    font-variation-settings: 'wght' var(--wght);
+    transition: font-variation-settings 0.55s var(--ease);
+  }
+  .cover__lines { display: flex; flex-direction: column; gap: 2.2cqi; margin-top: 2cqi; }
+  .cover__lines span { font-size: 3.9cqi; line-height: 1.08; color: var(--fg-2); font-style: italic; }
+  .cover__lines em { color: var(--fg); font-style: italic; }
+  .cover__feat { color: var(--fg) !important; font-style: italic !important; font-weight: 600; font-size: 5cqi !important; letter-spacing: -0.01em; }
+  .cover__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; margin-top: 4cqi; padding-top: 2.4cqi; border-top: 1px solid var(--line); }
+  .cover__barcode { display: flex; align-items: flex-end; gap: 2px; height: 7cqi; }
+  .cover__barcode i { background: var(--fg-3); height: 100%; }
+  .cover__plus { font-size: 2.5cqi; letter-spacing: 0.03em; color: var(--fg-2); text-align: right; }
+  .cover__plus em { color: var(--fg-3); font-style: italic; }
 
-  .pf-spread { background: var(--bg); padding: 5cqi; display: flex; flex-direction: column; justify-content: center; }
-  .pf__kicker { font-size: 2.6cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-  .pf__head { font-size: 18cqi; line-height: 0.9; font-weight: 700; margin-top: 2cqi; color: var(--fg); }
-  .pf__head em { font-style: italic; color: var(--accent); font-weight: 500; }
-  .pf__deck { font-size: 3cqi; font-style: italic; color: var(--fg-2); max-width: 66%; margin-top: 3cqi; }
+  /* ============================================================
+     02 — WEDDING INVITATION SUITE
+     Centred true-italic given names; hairline rules + diamond draw in.
+     ACCENT reserved to the single diamond + ampersand.
+     ============================================================ */
+  .invite { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 7cqi 6cqi; gap: 3.2cqi; }
+  .invite__over { font-size: 2.5cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); }
+  .invite__names { display: flex; flex-direction: column; align-items: center; gap: 0.4cqi; }
+  .invite__n { font-size: 15cqi; line-height: 0.92; font-style: italic; font-weight: 500; color: var(--fg); }
+  .invite__amp { font-size: 7cqi; line-height: 1; font-style: italic; font-weight: 400; color: var(--accent); }
+  .invite__rule { width: 60%; height: auto; }
+  .invite__rule-l { stroke: var(--line); stroke-width: 1; fill: none; }
+  .invite__diamond { fill: var(--accent); }
+  .invite__req { font-size: 2.9cqi; line-height: 1.6; font-style: italic; color: var(--fg-2); }
+  .invite__when { display: flex; flex-direction: column; gap: 0.6cqi; }
+  .invite__date { font-size: 5.2cqi; line-height: 1; font-weight: 600; color: var(--fg); }
+  .invite__year { font-size: 2.9cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2); }
+  .invite__where { font-size: 2.6cqi; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .invite__where i { font-style: normal; color: var(--accent); padding: 0 0.3em; }
+  /* hairline rules + diamond draw in on view; replay on hover */
+  .invite__rule-l { stroke-dasharray: 96; stroke-dashoffset: 0; }
+  .invite__diamond { transform-box: fill-box; transform-origin: center; }
+  @media (prefers-reduced-motion: no-preference) {
+    .invite[data-draw] .invite__rule-l { animation: pf-draw 1.1s var(--ease) both; }
+    .invite[data-draw] .invite__diamond { animation: pf-pop 0.9s var(--ease) 0.5s both; }
+    .invite[data-draw]:hover .invite__rule-l { animation: pf-draw 1s var(--ease); }
+    .invite[data-draw]:hover .invite__diamond { animation: pf-pop 0.7s var(--ease); }
+    @keyframes pf-draw { from { stroke-dashoffset: 96; } to { stroke-dashoffset: 0; } }
+    @keyframes pf-pop { 0% { opacity: 0; transform: scale(0.3) rotate(-45deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
+  }
+
+  /* ============================================================
+     03 — LITERARY BOOK TITLE
+     Stacked title, Black bloom on hover, italic middle word holds hairlines.
+     ACCENT reserved to the small-cap surname tint via the rule, not the word.
+     ============================================================ */
+  .book { --card-ar: 2 / 3; background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 6cqi 6cqi 5cqi; text-align: center; }
+  .book__pub { font-size: 2.4cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
+  .book__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2cqi; }
+  .book__series { font-size: 2.8cqi; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent); }
+  .book__title {
+    --wght: 600;
+    font-size: 22cqi; line-height: 0.92; color: var(--fg); letter-spacing: -0.005em;
+    font-variation-settings: 'wght' var(--wght);
+    transition: font-variation-settings 0.55s var(--ease);
+  }
+  .book__title em { font-style: italic; font-weight: 400; color: var(--fg); font-variation-settings: 'wght' 400; }
+  .book__author { font-size: 4.2cqi; font-style: italic; color: var(--fg-2); margin-top: 1cqi; }
+  .book__sc { font-style: normal; font-weight: 600; letter-spacing: 0.04em; }
+  .book__foot { display: flex; flex-direction: column; gap: 0.8cqi; }
+  .book__quote { font-size: 2.9cqi; font-style: italic; color: var(--fg-2); }
+  .book__src { font-size: 2.4cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+
+  /* ============================================================
+     04 — EDITORIAL FEATURE OPENER
+     Weight blooms on hover; two-column drop-cap body.
+     ACCENT reserved to the rail folio + kicker.
+     ============================================================ */
+  .spread { background: var(--bg); display: grid; grid-template-columns: 12% 1fr; padding: 4.5cqi; gap: 3.5cqi; }
+  .spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 2.5cqi; }
+  .spread__folio { font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .spread__sec { font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
+  .spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+  .spread__kicker { font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .spread__head {
+    --wght: 500;
+    font-size: 12.5cqi; line-height: 0.92; letter-spacing: -0.015em; color: var(--fg); margin-top: 1.4cqi;
+    font-variation-settings: 'wght' var(--wght);
+    transition: font-variation-settings 0.55s var(--ease);
+  }
+  .spread__head em { font-weight: 400; font-style: italic; color: var(--fg); font-variation-settings: 'wght' 400; }
+  .spread__deck { font-size: 2.9cqi; line-height: 1.18; font-style: italic; color: var(--fg-2); max-width: 80%; margin-top: 2cqi; }
+  .spread__body { columns: 2; column-gap: 3.5cqi; font-size: 2cqi; line-height: 1.5; color: var(--fg-2); margin-top: 3cqi; }
+  .spread__body p { margin: 0 0 0.9em; }
+  .spread__drop { float: left; font-size: 9cqi; line-height: 0.72; font-weight: 700; padding: 0.06em 0.1em 0 0; color: var(--fg); }
+
+  /* ============================================================
+     05 — BOUTIQUE STOREFRONT UI (real px sizing)
+     Hero word driven live by the weight axis; filterable grid.
+     ============================================================ */
+  .shop { font-size: 13px; line-height: 1.4; background: var(--bg); }
+  .shop__head { display: flex; align-items: center; gap: 1.2rem; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .shop__logo { font-size: 24px; font-weight: 700; letter-spacing: 0.01em; color: var(--fg); }
+  .shop__filters { display: flex; gap: 0.25rem; margin-left: 0.6rem; }
+  .shop__filters button { font-size: 13px; color: var(--fg-3); padding: 0.3rem 0.7rem; border-radius: 100px; letter-spacing: 0.02em; transition: color .15s var(--ease), background .15s var(--ease); }
+  .shop__filters button:hover { color: var(--fg); }
+  .shop__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-weight: 600; }
+  .shop__bag { margin-left: auto; font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); }
+
+  .shop__hero { padding: 1.6rem 1.1rem 1.2rem; text-align: center; border-bottom: 1px solid var(--line); background: var(--bg-2); }
+  .shop__hero-kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
+  .shop__hero-word { font-size: clamp(48px, 12vw, 88px); line-height: 0.95; color: var(--fg); margin: 0.3rem 0 0.4rem; font-variation-settings: 'wght' 400; letter-spacing: -0.01em; }
+  .shop__hero-sub { font-size: 14px; font-style: italic; color: var(--fg-2); }
+
+  .shop__wght { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .shop__wght label { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); white-space: nowrap; }
+  .shop__wght label span { color: var(--accent); font-feature-settings: 'tnum'; }
+  .shop__wght-hint { font-size: 11.5px; font-style: italic; color: var(--fg-3); margin-left: auto; }
+  .shop__wght input[type='range'] { -webkit-appearance: none; appearance: none; width: 180px; height: 2px; background: var(--line); border-radius: 2px; cursor: pointer; }
+  .shop__wght input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+  .shop__wght input[type='range']::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+  .shop__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); padding: 1px; }
+  .card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; transition: opacity .25s var(--ease); }
+  .card.is-hidden { display: none; }
+  .card__img { position: relative; flex: 1; min-height: 170px; background: var(--bg-2); display: grid; place-items: center; overflow: hidden; padding: 0.8rem; container-type: inline-size; }
+  .card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
+  .card__ghost { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(60px, 50cqi, 120px); font-weight: 900; letter-spacing: -0.03em; color: var(--fg); opacity: 0.05; font-feature-settings: 'tnum'; pointer-events: none; }
+  .card__big { position: relative; font-size: clamp(22px, 16cqi, 32px); line-height: 0.95; text-align: center; color: var(--fg); font-style: italic; font-weight: 500; max-width: 100%; }
+  .card__tag { position: absolute; top: 0.8rem; left: 0.8rem; z-index: 2; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
+  .card__meta { padding: 0.7rem 0.8rem 0.9rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .card__name { font-size: 18px; font-weight: 600; color: var(--fg); }
+  .card__detail { font-size: 12px; font-style: italic; color: var(--fg-3); }
+  .card__row { display: flex; align-items: baseline; justify-content: space-between; margin-top: 0.35rem; }
+  .card__price { font-size: 14px; color: var(--fg); font-feature-settings: 'tnum'; }
+  .card__id { font-size: 11px; letter-spacing: 0.1em; color: var(--fg-3); font-feature-settings: 'tnum'; }
+
+  /* ---- responsive ---- */
+  @container (max-width: 640px) {
+    .shop__grid { grid-template-columns: repeat(2, 1fr); }
+    .shop__wght-hint { display: none; }
+    .shop__filters { margin-left: 0; }
+  }
+  @container (max-width: 460px) {
+    .shop__head { flex-wrap: wrap; }
+    .shop__bag { display: none; }
+    .shop__wght input[type='range'] { width: 110px; }
+    .shop__grid { grid-template-columns: 1fr; }
+  }
+  @container (max-width: 560px) {
+    .spread { grid-template-columns: 1fr; }
+    .spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
+    .spread__sec { writing-mode: horizontal-tb; }
+    .spread__main { grid-column: 1; }
+    .spread__body { columns: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .cover__masthead, .book__title, .spread__head { transition: none; }
+  }
 </style>

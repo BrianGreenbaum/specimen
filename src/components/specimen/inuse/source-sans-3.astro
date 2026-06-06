@@ -1,0 +1,710 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+// Mono companion for code/IDs (loaded site-wide in Layout.astro).
+const mono = "'IBM Plex Mono', ui-monospace, monospace";
+
+// --- 01 · Case-management records table (INTERACTIVE) --------------------
+// A municipal permits queue: sortable columns, status filter chips.
+// Tabular figures keep the ref / fee / day columns rock-steady on re-sort.
+type Rec = {
+  ref: string; applicant: string; type: string;
+  status: 'review' | 'approved' | 'pending' | 'denied';
+  fee: number; days: number; ward: number;
+};
+const records: Rec[] = [
+  { ref: 'BP-2024-04817', applicant: 'Okafor Residence',        type: 'Building',  status: 'review',   fee: 1240.00, days: 12, ward: 3 },
+  { ref: 'BP-2024-04822', applicant: 'Lindqvist Café',          type: 'Signage',   status: 'approved', fee: 285.50,  days: 4,  ward: 7 },
+  { ref: 'BP-2024-04830', applicant: 'Riverside Apartments LLC', type: 'Demolition', status: 'pending',  fee: 3920.00, days: 21, ward: 2 },
+  { ref: 'BP-2024-04841', applicant: 'M. Castellanos',          type: 'Electrical', status: 'approved', fee: 175.00,  days: 2,  ward: 7 },
+  { ref: 'BP-2024-04855', applicant: 'Harborview Diner',        type: 'Plumbing',  status: 'denied',   fee: 410.25,  days: 9,  ward: 5 },
+  { ref: 'BP-2024-04863', applicant: 'Greenwood School Dist.',  type: 'Building',  status: 'review',   fee: 8640.00, days: 31, ward: 1 },
+  { ref: 'BP-2024-04871', applicant: 'T. Nakamura',             type: 'Mechanical', status: 'pending',  fee: 530.75,  days: 6,  ward: 4 },
+  { ref: 'BP-2024-04888', applicant: 'Aurora Coworking',        type: 'Signage',   status: 'approved', fee: 285.50,  days: 3,  ward: 7 },
+];
+const statusLabel: Record<Rec['status'], string> = {
+  review: 'In review', approved: 'Approved', pending: 'Pending', denied: 'Denied',
+};
+
+// --- 03 · Civic income-tax worksheet ------------------------------------
+const taxLines = [
+  ['1',  'Wages, salaries, tips (W-2 box 1)',          '64,820.00', false],
+  ['2a', 'Tax-exempt interest',                         '0.00',      false],
+  ['2b', 'Taxable interest',                            '312.44',    false],
+  ['3a', 'Qualified dividends',                         '1,205.00',  false],
+  ['4b', 'IRA distributions — taxable amount',          '0.00',      false],
+  ['8',  'Additional income from Schedule 1, line 10',  '2,140.00',  false],
+  ['9',  'Total income — add lines 1 through 8',        '68,477.44', true],
+  ['10', 'Adjustments to income (Schedule 1, line 25)', '3,500.00',  false],
+  ['11', 'Adjusted gross income — subtract line 10',    '64,977.44', true],
+  ['12', 'Standard deduction (single)',                 '14,600.00', false],
+  ['15', 'Taxable income',                              '50,377.44', true],
+] as [string, string, string, boolean][];
+---
+<div class="iu" style={`--fam:${fam}; --mono:${mono}`}>
+
+  <!-- 01 — INTERACTIVE permits records table (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — permits records desk, sortable &amp; filterable</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device rec" data-rec>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">permits.cityofmarrow.gov / queue</span>
+        </div>
+        <div class="rec__bar">
+          <span class="rec__crumb">Building &amp; Safety<i>›</i>Active queue</span>
+          <span class="rec__count"><b data-count>8</b> of 8 applications</span>
+        </div>
+        <div class="rec__filters" role="group" aria-label="Filter by status">
+          <button class="rec__chip is-on" data-filter="all">All</button>
+          <button class="rec__chip" data-filter="review">In review</button>
+          <button class="rec__chip" data-filter="approved">Approved</button>
+          <button class="rec__chip" data-filter="pending">Pending</button>
+          <button class="rec__chip" data-filter="denied">Denied</button>
+        </div>
+        <table class="rec__table" data-table>
+          <thead>
+            <tr>
+              <th data-sort="ref">Permit&nbsp;ref</th>
+              <th data-sort="applicant">Applicant</th>
+              <th data-sort="type">Type</th>
+              <th data-sort="status">Status</th>
+              <th data-sort="fee" class="num">Fee</th>
+              <th data-sort="days" class="num">Age</th>
+            </tr>
+          </thead>
+          <tbody data-rows>
+            {records.map((r) => (
+              <tr data-status={r.status} data-ref={r.ref} data-applicant={r.applicant} data-type={r.type} data-fee={r.fee} data-days={r.days}>
+                <td class="rec__ref">{r.ref}</td>
+                <td class="rec__name">{r.applicant}</td>
+                <td class="rec__type">{r.type}</td>
+                <td><span class={`rec__pill rec__pill--${r.status}`}>{statusLabel[r.status]}</span></td>
+                <td class="num rec__fee">${r.fee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td class="num rec__age">{r.days}d</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div class="rec__foot">
+          <span>Fees shown <i>this view</i>: <b data-sum>$15,287.50</b></span>
+          <span class="rec__page">Page 1 · 8 of 214</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter by status, sort any column — the tabular fee &amp; age figures snap back into perfect columns. Source Sans 3 at true 13px desk-tool scale.</p>
+  </figure>
+
+  <!-- 02 — documentation site (sidebar + prose + code, real scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Reading — developer documentation at real scale</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device docs" data-docs>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr" data-docs-addr>docs.meridian.dev / guides / pagination</span>
+        </div>
+        <div class="docs__body">
+          <aside class="docs__nav">
+            <span class="docs__navh">Guides</span>
+            <a>Quick start</a>
+            <a>Authentication</a>
+            <a class="is-on" data-page="pagination" data-addr="docs.meridian.dev / guides / pagination" data-toc="Cursor parameters|Walking a collection|Stable ordering">Pagination</a>
+            <a data-page="ratelimits" data-addr="docs.meridian.dev / guides / rate-limits" data-toc="Reading the headers|Staying under budget|Burst handling">Rate limits</a>
+            <a data-page="webhooks" data-addr="docs.meridian.dev / guides / webhooks" data-toc="Verifying signatures|Retries &amp; idempotency|Event ordering">Webhooks</a>
+            <span class="docs__navh">Reference</span>
+            <a>REST API</a>
+            <a>Errors</a>
+          </aside>
+          <article class="docs__main" data-docs-main data-scroll-spy>
+            <!-- PAGE: pagination -->
+            <div data-doc="pagination">
+              <span class="docs__kicker">Guides</span>
+              <h3 class="docs__h1">Pagination</h3>
+              <p class="docs__lede">Every list endpoint returns results in pages. You walk the
+                collection by following an opaque <code>cursor</code> rather than counting offsets —
+                so results stay stable even as records are written underneath you.</p>
+              <h4 class="docs__h2" id="docs-s1">Cursor parameters</h4>
+              <p class="docs__p">Pass <code>limit</code> to set the page size (max 100) and
+                <code>after</code> to continue from the previous page&rsquo;s <code>next_cursor</code>.
+                The fields read the way you&rsquo;d say them aloud, which is the whole point of a
+                humanist sans at body sizes: you read the prose, not the letterforms.</p>
+              <pre class="docs__code"><code><span class="tk-c"># fetch the second page of invoices</span>
+<span class="tk-k">GET</span> /v2/invoices?<span class="tk-a">limit</span>=<span class="tk-n">50</span>&amp;<span class="tk-a">after</span>=<span class="tk-s">"crsr_8fK2x"</span>
+
+<span class="tk-p">{`{`}</span>
+  <span class="tk-a">"data"</span>: [ <span class="tk-c">/* … 50 records … */</span> ],
+  <span class="tk-a">"has_more"</span>: <span class="tk-k">true</span>,
+  <span class="tk-a">"next_cursor"</span>: <span class="tk-s">"crsr_Lp93m"</span>
+<span class="tk-p">{`}`}</span></code></pre>
+              <h4 class="docs__h2" id="docs-s2">Walking a collection</h4>
+              <p class="docs__p">Loop until <code>has_more</code> is <code>false</code>, threading
+                each <code>next_cursor</code> into the following request. Because the cursor is opaque,
+                you never reason about offsets — newly inserted rows can&rsquo;t shift a page out from
+                under your feet mid-walk.</p>
+              <h4 class="docs__h2" id="docs-s3">Stable ordering</h4>
+              <p class="docs__p">A cursor encodes both position and sort. Keep <code>sort</code>
+                identical across the walk and every record is visited exactly once, in order, even
+                under concurrent writes.</p>
+              <div class="docs__note">
+                <span class="docs__note-tag">Note</span>
+                <p>Cursors are tied to the sort order of the request. Changing <code>sort</code>
+                  between calls invalidates an existing cursor.</p>
+              </div>
+            </div>
+            <!-- PAGE: ratelimits -->
+            <div data-doc="ratelimits" hidden>
+              <span class="docs__kicker">Guides</span>
+              <h3 class="docs__h1">Rate limits</h3>
+              <p class="docs__lede">Requests are metered per token on a sliding one-minute window.
+                Read the budget straight off the response headers — no guessing, no exponential
+                back-off lottery.</p>
+              <h4 class="docs__h2" id="docs-s1">Reading the headers</h4>
+              <p class="docs__p">Every response carries <code>X-RateLimit-Remaining</code> and
+                <code>X-RateLimit-Reset</code>. When the remaining count hits zero you receive a
+                <code>429</code>; the reset value tells you, to the second, when to resume.</p>
+              <pre class="docs__code"><code><span class="tk-c"># headers on every response</span>
+<span class="tk-a">X-RateLimit-Limit</span>: <span class="tk-n">600</span>
+<span class="tk-a">X-RateLimit-Remaining</span>: <span class="tk-n">412</span>
+<span class="tk-a">X-RateLimit-Reset</span>: <span class="tk-n">1718041260</span>
+
+<span class="tk-c"># once exhausted</span>
+<span class="tk-k">HTTP</span>/2 <span class="tk-n">429</span> <span class="tk-s">Too Many Requests</span></code></pre>
+              <h4 class="docs__h2" id="docs-s2">Staying under budget</h4>
+              <p class="docs__p">Batch with a generous <code>limit</code> and walk by cursor rather
+                than polling. One paginated sweep of 600 records costs twelve calls — a tiny dent in
+                the per-minute budget.</p>
+              <h4 class="docs__h2" id="docs-s3">Burst handling</h4>
+              <p class="docs__p">Short bursts are forgiven by the sliding window. Sustained traffic
+                above the ceiling earns a <code>429</code>; honour <code>Reset</code> and you&rsquo;ll
+                never be hard-blocked.</p>
+              <div class="docs__note">
+                <span class="docs__note-tag">Note</span>
+                <p>Limits are per token, not per IP. Issue separate tokens to isolate a noisy
+                  service from your interactive traffic.</p>
+              </div>
+            </div>
+            <!-- PAGE: webhooks -->
+            <div data-doc="webhooks" hidden>
+              <span class="docs__kicker">Guides</span>
+              <h3 class="docs__h1">Webhooks</h3>
+              <p class="docs__lede">Rather than poll, subscribe. We <code>POST</code> a signed
+                payload to your endpoint the instant an event fires, so your systems react in real
+                time without burning rate-limit budget.</p>
+              <h4 class="docs__h2" id="docs-s1">Verifying signatures</h4>
+              <p class="docs__p">Each delivery carries an <code>X-Meridian-Signature</code> header —
+                an HMAC of the raw body keyed by your signing secret. Recompute it and compare in
+                constant time before you trust a single byte.</p>
+              <pre class="docs__code"><code><span class="tk-c"># verify before processing</span>
+<span class="tk-k">POST</span> /hooks/meridian
+<span class="tk-a">X-Meridian-Signature</span>: <span class="tk-s">"sha256=9f2c…a1"</span>
+
+<span class="tk-p">{`{`}</span>
+  <span class="tk-a">"event"</span>: <span class="tk-s">"invoice.paid"</span>,
+  <span class="tk-a">"id"</span>: <span class="tk-s">"evt_7Hn2",</span>
+  <span class="tk-a">"created"</span>: <span class="tk-n">1718041260</span>
+<span class="tk-p">{`}`}</span></code></pre>
+              <h4 class="docs__h2" id="docs-s2">Retries &amp; idempotency</h4>
+              <p class="docs__p">A non-<code>2xx</code> reply is retried with back-off for up to
+                24 hours. Dedupe on the event <code>id</code> so a re-delivery never books the same
+                work twice.</p>
+              <h4 class="docs__h2" id="docs-s3">Event ordering</h4>
+              <p class="docs__p">Deliveries are best-effort in order, never guaranteed. Treat each
+                event as self-describing and reconcile against the API when sequence truly matters.</p>
+              <div class="docs__note">
+                <span class="docs__note-tag">Note</span>
+                <p>Respond <code>200</code> fast and process asynchronously — slow handlers count
+                  against the delivery timeout and trigger needless retries.</p>
+              </div>
+            </div>
+          </article>
+          <nav class="docs__toc" data-docs-toc>
+            <span class="docs__toch">On this page</span>
+            <a class="is-on" data-spy="docs-s1">Cursor parameters</a>
+            <a data-spy="docs-s2">Walking a collection</a>
+            <a data-spy="docs-s3">Stable ordering</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Sidebar nav, justified prose, syntax-lit code — the humanist skeleton stays warm in running text and crisp in the monospace fallback for IDs.</p>
+  </figure>
+
+  <!-- 03 — civic income-tax worksheet (clarity under density) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Civic — income-tax worksheet, clarity under density</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="form1040">
+        <div class="form1040__masthead">
+          <div class="form1040__seal" aria-hidden="true">★</div>
+          <div class="form1040__title">
+            <span class="form1040__dept">Department of Revenue · Form RV-1</span>
+            <h3>Resident Income Tax Return</h3>
+          </div>
+          <div class="form1040__year">
+            <span>Tax year</span><b>2024</b>
+          </div>
+        </div>
+        <div class="form1040__id">
+          <label class="form1040__field"><span>First name &amp; initial</span><i>Dolores R.</i></label>
+          <label class="form1040__field"><span>Last name</span><i>Acharya</i></label>
+          <label class="form1040__field form1040__field--ssn"><span>SSN</span><i class="mono">•••&nbsp;••&nbsp;4012</i></label>
+          <label class="form1040__field form1040__field--check"><span>Filing status</span><i>Single</i></label>
+        </div>
+        <div class="form1040__income" data-countup>
+          <div class="form1040__incomehead"><span>Income</span><span>Amount</span></div>
+          {taxLines.map(([n, label, amt, total]) => (
+            <div class={`form1040__line ${total ? 'is-total' : ''}`}>
+              <span class="form1040__ln">{n}</span>
+              <span class="form1040__label">{label}</span>
+              <span class="form1040__dollar">$</span>
+              <span class="form1040__amt mono" data-amt={amt}>{amt}</span>
+            </div>
+          ))}
+        </div>
+        <div class="form1040__foot">
+          <span class="form1040__sign">Under penalties of perjury, I declare this return is true, correct, and complete.</span>
+          <span class="form1040__pg">Page 1 of 2 · RV-1 (Rev. 2024)</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A real tax worksheet: line numbers, ruled rows, right-aligned tabular dollars that hold the decimal. Dense official information that still reads calmly — the workhorse&rsquo;s home turf.</p>
+  </figure>
+
+  <!-- 04 — settings / account panel (form-heavy UI, interactive toggles) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Product UI — account settings, dense form chrome</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device prefs" data-prefs>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">app.northgate.io / settings / notifications</span>
+        </div>
+        <div class="prefs__head">
+          <h3>Notifications</h3>
+          <p>Choose how Northgate reaches you. Changes save automatically.</p>
+        </div>
+        <div class="prefs__body">
+          <section class="prefs__group">
+            <span class="prefs__grouph">Email</span>
+            <label class="prefs__row">
+              <span class="prefs__txt"><b>Weekly digest</b><i>A Monday summary of activity across your projects.</i></span>
+              <button class="prefs__sw is-on" data-sw role="switch" aria-checked="true"><i></i></button>
+            </label>
+            <label class="prefs__row">
+              <span class="prefs__txt"><b>Mentions</b><i>When a teammate @-mentions you in a comment.</i></span>
+              <button class="prefs__sw is-on" data-sw role="switch" aria-checked="true"><i></i></button>
+            </label>
+            <label class="prefs__row">
+              <span class="prefs__txt"><b>Product updates</b><i>Occasional news about new features and releases.</i></span>
+              <button class="prefs__sw" data-sw role="switch" aria-checked="false"><i></i></button>
+            </label>
+          </section>
+          <section class="prefs__group">
+            <span class="prefs__grouph">Delivery</span>
+            <label class="prefs__row prefs__row--select">
+              <span class="prefs__txt"><b>Quiet hours</b><i>Mute push notifications during this window.</i></span>
+              <span class="prefs__select">22:00 – 07:00 <i>▾</i></span>
+            </label>
+            <label class="prefs__row prefs__row--select">
+              <span class="prefs__txt"><b>Time zone</b><i>Used to schedule digests and quiet hours.</i></span>
+              <span class="prefs__select">GMT−05:00 Eastern <i>▾</i></span>
+            </label>
+          </section>
+        </div>
+        <div class="prefs__foot">
+          <span class="prefs__saved" data-saved>All changes saved</span>
+          <span class="prefs__btns"><button class="prefs__btn">Reset</button><button class="prefs__btn prefs__btn--p">Done</button></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Toggle a switch — the status line confirms the save. Setting/label/help-text hierarchy at real form sizes, where a large x-height earns its keep.</p>
+  </figure>
+</div>
+
+<script>
+  // --- 01 · permits table: filter chips + sortable columns ---
+  document.querySelectorAll<HTMLElement>('[data-rec]').forEach((rec) => {
+    const table = rec.querySelector('[data-table]') as HTMLTableElement;
+    const tbody = rec.querySelector('[data-rows]') as HTMLElement;
+    const allRows = Array.from(tbody.querySelectorAll<HTMLElement>('tr'));
+    const count = rec.querySelector('[data-count]') as HTMLElement;
+    const sum = rec.querySelector('[data-sum]') as HTMLElement;
+    let filter = 'all';
+    const fmt = (n: number) =>
+      '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+    function refresh() {
+      let shown = 0, total = 0;
+      allRows.forEach((row) => {
+        const ok = filter === 'all' || row.dataset.status === filter;
+        row.classList.toggle('is-hidden', !ok);
+        if (ok) { shown++; total += +(row.dataset.fee || '0'); }
+      });
+      count.textContent = String(shown);
+      sum.textContent = fmt(total);
+    }
+
+    rec.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        rec.querySelectorAll('[data-filter]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        filter = btn.dataset.filter!;
+        refresh();
+      })
+    );
+
+    const numeric = new Set(['fee', 'days']);
+    let sortKey = '', asc = true;
+    table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort!;
+        asc = sortKey === key ? !asc : true;
+        sortKey = key;
+        table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+        th.setAttribute('data-active', asc ? 'asc' : 'desc');
+        const sorted = allRows.slice().sort((a, b) => {
+          let av: string | number, bv: string | number;
+          if (numeric.has(key)) { av = +a.dataset[key]!; bv = +b.dataset[key]!; }
+          else { av = (a.dataset[key] || '').toLowerCase(); bv = (b.dataset[key] || '').toLowerCase(); }
+          return (av < bv ? -1 : av > bv ? 1 : 0) * (asc ? 1 : -1);
+        });
+        sorted.forEach((r) => tbody.appendChild(r));
+      })
+    );
+    refresh();
+  });
+
+  // --- 02 · docs: live page-swap nav + scroll-spy TOC ---
+  document.querySelectorAll<HTMLElement>('[data-docs]').forEach((docs) => {
+    const main = docs.querySelector('[data-docs-main]') as HTMLElement;
+    const toc = docs.querySelector('[data-docs-toc]') as HTMLElement;
+    const addr = docs.querySelector('[data-docs-addr]') as HTMLElement;
+    const navLinks = Array.from(docs.querySelectorAll<HTMLElement>('[data-page]'));
+    const pages = Array.from(main.querySelectorAll<HTMLElement>('[data-doc]'));
+    const tocLinks = Array.from(toc.querySelectorAll<HTMLElement>('[data-spy]'));
+
+    // scroll-spy: highlight the TOC entry whose section is nearest the top.
+    let ticking = false;
+    function spy() {
+      ticking = false;
+      const top = main.getBoundingClientRect().top + 8;
+      let active = tocLinks[0]?.dataset.spy || '';
+      // find the last visible section heading at/above the fold line
+      const visiblePage = pages.find((p) => !p.hidden);
+      if (visiblePage) {
+        const heads = Array.from(visiblePage.querySelectorAll<HTMLElement>('h4[id]'));
+        for (const h of heads) {
+          if (h.getBoundingClientRect().top <= top + 40) active = h.id;
+        }
+      }
+      tocLinks.forEach((l) => l.classList.toggle('is-on', l.dataset.spy === active));
+    }
+    main.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(spy); }
+    });
+
+    function setTocLabels(spec: string) {
+      const labels = spec.split('|');
+      tocLinks.forEach((l, i) => { l.textContent = labels[i] || ''; });
+    }
+
+    navLinks.forEach((link) =>
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.dataset.page!;
+        navLinks.forEach((l) => l.classList.toggle('is-on', l === link));
+        pages.forEach((p) => { p.hidden = p.dataset.doc !== page; });
+        if (link.dataset.addr) addr.textContent = link.dataset.addr;
+        if (link.dataset.toc) setTocLabels(link.dataset.toc.replace(/&amp;/g, '&'));
+        main.scrollTop = 0;
+        spy();
+      })
+    );
+    spy();
+  });
+
+  // --- 03 · tax worksheet: scroll-into-view count-up on dollar amounts ---
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-countup]').forEach((box) => {
+    const cells = Array.from(box.querySelectorAll<HTMLElement>('[data-amt]'));
+    const parse = (s: string) => parseFloat(s.replace(/,/g, '')) || 0;
+    const fmt = (n: number) =>
+      n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function run() {
+      cells.forEach((cell, i) => {
+        const target = parse(cell.dataset.amt || '0');
+        const start = performance.now();
+        const dur = 900;
+        const delay = i * 70;
+        function frame(now: number) {
+          const t = Math.min(1, Math.max(0, (now - start - delay) / dur));
+          const eased = 1 - Math.pow(1 - t, 3);
+          cell.textContent = fmt(target * eased);
+          if (t < 1) requestAnimationFrame(frame);
+          else cell.textContent = cell.dataset.amt!;
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    if (prefersReduced) return; // leave server-rendered final values in place
+    // hold at zero until revealed
+    cells.forEach((c) => { c.textContent = fmt(0); });
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) { run(); obs.disconnect(); }
+      });
+    }, { threshold: 0.35 });
+    io.observe(box);
+  });
+
+  // --- 04 · settings switches + autosave confirmation ---
+  document.querySelectorAll<HTMLElement>('[data-prefs]').forEach((prefs) => {
+    const saved = prefs.querySelector('[data-saved]') as HTMLElement;
+    let t: number | undefined;
+    prefs.querySelectorAll<HTMLButtonElement>('[data-sw]').forEach((sw) =>
+      sw.addEventListener('click', (e) => {
+        e.preventDefault();
+        const on = sw.classList.toggle('is-on');
+        sw.setAttribute('aria-checked', on ? 'true' : 'false');
+        saved.textContent = 'Saving…';
+        saved.classList.add('is-busy');
+        window.clearTimeout(t);
+        t = window.setTimeout(() => {
+          saved.textContent = 'All changes saved';
+          saved.classList.remove('is-busy');
+        }, 650);
+      })
+    );
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches InUse.astro / inter.astro / oswald.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
+
+  .iu__device {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); overflow: hidden;
+  }
+  .iu__chrome {
+    display: flex; align-items: center; gap: 0.7rem; flex: none;
+    padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--line); background: var(--bg-2);
+  }
+  .iu__dots { display: flex; gap: 6px; }
+  .iu__dots i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 22%, transparent); }
+  .iu__addr {
+    font-size: 11.5px; color: var(--fg-3); letter-spacing: 0.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    background: color-mix(in srgb, var(--fg) 5%, transparent);
+    padding: 3px 10px; border-radius: 6px; margin: 0 auto 0 4px; max-width: 70%;
+  }
+  .mono { font-family: var(--mono) !important; }
+
+  /* ============ 01 · PERMITS RECORDS TABLE (real px desk tool) ============ */
+  .rec { font-size: 13px; line-height: 1.4; }
+  .rec__bar {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex: none;
+    padding: 0.75rem 1rem 0.5rem;
+  }
+  .rec__crumb { font-size: 13px; font-weight: 600; color: var(--fg); display: inline-flex; align-items: baseline; gap: 0.5rem; }
+  .rec__crumb i { font-style: normal; color: var(--fg-3); font-weight: 400; }
+  .rec__count { font-size: 12px; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .rec__count b { color: var(--fg); font-weight: 600; }
+  .rec__filters { display: flex; gap: 0.35rem; flex: none; padding: 0.2rem 1rem 0.7rem; flex-wrap: wrap; }
+  .rec__chip {
+    font-size: 12px; font-weight: 500; color: var(--fg-2); cursor: pointer;
+    padding: 0.28rem 0.7rem; border-radius: 100px; border: 1px solid var(--line);
+    background: transparent; transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .rec__chip:hover { color: var(--fg); border-color: color-mix(in srgb, var(--fg) 28%, transparent); }
+  .rec__chip.is-on { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); font-weight: 600; }
+  .rec__table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .rec__table th {
+    text-align: left; color: var(--fg-3); font-weight: 600; font-size: 11px;
+    letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; user-select: none;
+    padding: 0.5rem 1rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--fg);
+    white-space: nowrap; transition: color 0.15s var(--ease);
+  }
+  .rec__table th:hover { color: var(--fg); }
+  .rec__table th[data-active]::after { content: ' ↓'; color: var(--accent); }
+  .rec__table th[data-active='asc']::after { content: ' ↑'; }
+  .rec__table th.num, .rec__table td.num { text-align: right; }
+  .rec__table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--line-soft); }
+  .rec__table tbody tr { transition: background 0.12s var(--ease); }
+  .rec__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .rec__table tr.is-hidden { display: none; }
+  .rec__ref { font-family: var(--mono) !important; font-size: 11.5px; color: var(--fg-2); letter-spacing: -0.01em; }
+  .rec__name { font-weight: 600; color: var(--fg); }
+  .rec__type { color: var(--fg-2); }
+  .rec__fee, .rec__age { font-feature-settings: 'tnum'; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .rec__age { color: var(--fg-3); }
+  .rec__pill {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
+    padding: 2px 9px; border-radius: 100px; white-space: nowrap;
+  }
+  .rec__pill--review   { color: #1d6fb8; background: color-mix(in srgb, #1d6fb8 14%, transparent); }
+  .rec__pill--approved { color: #1f8a4c; background: color-mix(in srgb, #1f8a4c 15%, transparent); }
+  .rec__pill--pending  { color: #b07908; background: color-mix(in srgb, #b07908 16%, transparent); }
+  .rec__pill--denied   { color: #c0392b; background: color-mix(in srgb, #c0392b 13%, transparent); }
+  .rec__foot {
+    margin-top: auto; flex: none; display: flex; align-items: baseline; justify-content: space-between;
+    padding: 0.7rem 1rem; border-top: 1px solid var(--line); font-size: 12px; color: var(--fg-3);
+  }
+  .rec__foot i { font-style: normal; }
+  .rec__foot b { color: var(--fg); font-weight: 700; font-feature-settings: 'tnum'; font-variant-numeric: tabular-nums; }
+  .rec__page { font-feature-settings: 'tnum'; }
+
+  @container (max-width: 600px) {
+    .rec__type, .rec__table th[data-sort='type'] { display: none; }
+    .rec__ref { font-size: 10.5px; }
+  }
+  @container (max-width: 460px) {
+    .rec__age, .rec__table th[data-sort='days'] { display: none; }
+  }
+
+  /* ============ 02 · DOCUMENTATION (real px reading) ============ */
+  .docs { font-size: 13px; }
+  .docs__body { flex: 1; display: grid; grid-template-columns: 168px 1fr 150px; min-height: 0; overflow: hidden; }
+  .docs__nav { display: flex; flex-direction: column; gap: 1px; padding: 1rem 0.6rem; border-right: 1px solid var(--line); overflow: auto; }
+  .docs__navh { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); padding: 0.7rem 0.6rem 0.3rem; }
+  .docs__navh:first-child { padding-top: 0; }
+  .docs__nav a { font-size: 12.5px; color: var(--fg-2); padding: 0.32rem 0.6rem; border-radius: 6px; cursor: pointer; transition: background 0.12s, color 0.12s; }
+  .docs__nav a:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); color: var(--fg); }
+  .docs__nav a.is-on { background: color-mix(in srgb, var(--accent) 13%, transparent); color: var(--accent); font-weight: 600; }
+  .docs__main { padding: 1.4rem 1.6rem; overflow: auto; min-width: 0; }
+  .docs__kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .docs__h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; margin: 0.25rem 0 0.7rem; color: var(--fg); }
+  .docs__h2 { font-size: 15px; font-weight: 700; letter-spacing: -0.005em; margin: 1.3rem 0 0.5rem; color: var(--fg); }
+  .docs__lede { font-size: 14.5px; line-height: 1.55; color: var(--fg); margin: 0 0 0.9rem; }
+  .docs__p { font-size: 13.5px; line-height: 1.62; color: var(--fg-2); margin: 0 0 0.9rem; }
+  .docs__main code { font-family: var(--mono) !important; font-size: 0.88em; background: color-mix(in srgb, var(--fg) 7%, transparent); padding: 0.05em 0.36em; border-radius: 4px; color: var(--fg); }
+  .docs__code { font-family: var(--mono) !important; background: color-mix(in srgb, var(--fg) 92%, var(--bg)); color: var(--bg); border-radius: 8px; padding: 0.85rem 1rem; font-size: 12px; line-height: 1.65; overflow: auto; margin: 0.6rem 0 1rem; }
+  .docs__code code { font-family: var(--mono) !important; background: none; padding: 0; color: inherit; }
+  .tk-c { color: color-mix(in srgb, var(--bg) 50%, transparent); }
+  .tk-k { color: #d98ad9; font-weight: 600; }
+  .tk-a { color: #8fc7ff; }
+  .tk-s { color: #9fe0a6; }
+  .tk-n { color: #f0b87a; }
+  .tk-p { color: color-mix(in srgb, var(--bg) 75%, transparent); }
+  .docs__note { display: flex; gap: 0.7rem; align-items: flex-start; background: color-mix(in srgb, var(--accent) 9%, transparent); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 0.7rem 0.9rem; }
+  .docs__note-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 0.15rem; flex: none; }
+  .docs__note p { font-size: 12.5px; line-height: 1.5; color: var(--fg-2); margin: 0; }
+  .docs__toc { display: flex; flex-direction: column; gap: 1px; padding: 1.4rem 0.8rem; border-left: 1px solid var(--line); }
+  .docs__toch { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 0.4rem; }
+  .docs__toc a { font-size: 12px; color: var(--fg-3); padding: 0.25rem 0; border-left: 2px solid transparent; padding-left: 0.6rem; cursor: pointer; transition: color 0.12s; }
+  .docs__toc a:hover { color: var(--fg-2); }
+  .docs__toc a.is-on { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+  @container (max-width: 680px) { .docs__toc { display: none; } .docs__body { grid-template-columns: 148px 1fr; } }
+  @container (max-width: 500px) { .docs__nav { display: none; } .docs__body { grid-template-columns: 1fr; } }
+
+  /* ============ 03 · CIVIC TAX WORKSHEET (clarity under density) ============ */
+  .form1040 { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 3.4cqi 4cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .form1040__masthead { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2.4cqi; border-bottom: 0.5cqi solid var(--fg); padding-bottom: 1.8cqi; }
+  .form1040__seal { width: 7cqi; height: 7cqi; border: 0.35cqi solid var(--accent); border-radius: 50%; display: grid; place-items: center; color: var(--accent); font-size: 3.6cqi; }
+  .form1040__dept { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); display: block; }
+  .form1040__title h3 { font-size: 4.2cqi; font-weight: 700; letter-spacing: -0.01em; line-height: 1.05; margin: 0.4cqi 0 0; }
+  .form1040__year { text-align: right; }
+  .form1040__year span { font-size: 1.7cqi; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); display: block; }
+  .form1040__year b { font-size: 5cqi; font-weight: 700; font-feature-settings: 'tnum'; line-height: 1; color: var(--accent); }
+
+  .form1040__id { display: grid; grid-template-columns: 1.3fr 1.3fr 1fr 1fr; gap: 0; border: 1px solid var(--line); border-top: 0; }
+  .form1040__field { display: flex; flex-direction: column; gap: 0.5cqi; padding: 1.4cqi 1.8cqi; border-right: 1px solid var(--line); }
+  .form1040__field:last-child { border-right: 0; }
+  .form1040__field span { font-size: 1.55cqi; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--fg-3); }
+  .form1040__field i { font-style: normal; font-size: 2.5cqi; font-weight: 500; color: var(--fg); }
+  .form1040__field--ssn i { font-feature-settings: 'tnum'; letter-spacing: 0.04em; }
+
+  .form1040__income { margin-top: 2.4cqi; border: 1px solid var(--line); }
+  .form1040__incomehead { display: grid; grid-template-columns: 1fr auto; padding: 1.1cqi 1.8cqi; background: color-mix(in srgb, var(--fg) 6%, transparent); border-bottom: 1px solid var(--fg); }
+  .form1040__incomehead span { font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
+  .form1040__line { display: grid; grid-template-columns: 4.5cqi 1fr 2.4cqi auto; align-items: baseline; gap: 1.4cqi; padding: 1.15cqi 1.8cqi; border-bottom: 1px solid var(--line-soft); }
+  .form1040__line:last-child { border-bottom: 0; }
+  .form1040__ln { font-size: 1.95cqi; font-weight: 700; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .form1040__label { font-size: 2.1cqi; color: var(--fg-2); line-height: 1.25; }
+  .form1040__dollar { font-size: 2cqi; color: var(--fg-3); text-align: right; }
+  .form1040__amt { font-size: 2.3cqi; font-weight: 500; color: var(--fg); text-align: right; font-feature-settings: 'tnum'; letter-spacing: 0.01em; min-width: 16cqi; }
+  .form1040__line.is-total { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .form1040__line.is-total .form1040__label { font-weight: 700; color: var(--fg); }
+  .form1040__line.is-total .form1040__amt { font-weight: 700; }
+  .form1040__line.is-total .form1040__ln { color: var(--accent); }
+
+  .form1040__foot { margin-top: auto; padding-top: 1.8cqi; display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi; }
+  .form1040__sign { font-size: 1.7cqi; font-style: italic; color: var(--fg-3); line-height: 1.3; max-width: 70%; }
+  .form1040__pg { font-size: 1.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum'; white-space: nowrap; }
+
+  @container (max-width: 560px) {
+    .form1040__id { grid-template-columns: 1fr 1fr; }
+    .form1040__field:nth-child(2) { border-right: 0; }
+    .form1040__field:nth-child(1), .form1040__field:nth-child(2) { border-bottom: 1px solid var(--line); }
+    .form1040__label { font-size: 2.7cqi; }
+    .form1040__amt { font-size: 3cqi; }
+    .form1040__ln { font-size: 2.5cqi; }
+    .form1040__sign { display: none; }
+    .form1040__title h3 { font-size: 5cqi; }
+  }
+
+  /* ============ 04 · SETTINGS PANEL (real px form chrome) ============ */
+  .prefs { font-size: 13px; }
+  .prefs__head { flex: none; padding: 1.1rem 1.3rem 0.9rem; border-bottom: 1px solid var(--line); }
+  .prefs__head h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin: 0; color: var(--fg); }
+  .prefs__head p { font-size: 12.5px; color: var(--fg-3); margin: 0.2rem 0 0; }
+  .prefs__body { flex: 1; overflow: auto; padding: 0.4rem 1.3rem; }
+  .prefs__group { padding: 0.9rem 0; border-bottom: 1px solid var(--line-soft); }
+  .prefs__group:last-child { border-bottom: 0; }
+  .prefs__grouph { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 0.55rem; }
+  .prefs__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; cursor: pointer; }
+  .prefs__txt { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
+  .prefs__txt b { font-size: 13.5px; font-weight: 600; color: var(--fg); }
+  .prefs__txt i { font-style: normal; font-size: 12px; line-height: 1.4; color: var(--fg-3); }
+  .prefs__sw {
+    flex: none; width: 38px; height: 22px; border-radius: 100px; cursor: pointer;
+    background: color-mix(in srgb, var(--fg) 22%, transparent); border: none; padding: 0;
+    position: relative; transition: background 0.18s var(--ease);
+  }
+  .prefs__sw i { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: left 0.18s var(--ease); }
+  .prefs__sw.is-on { background: var(--accent); }
+  .prefs__sw.is-on i { left: 18px; }
+  .prefs__row--select { cursor: default; }
+  .prefs__select { flex: none; font-size: 12.5px; font-weight: 500; color: var(--fg); border: 1px solid var(--line); border-radius: 7px; padding: 0.35rem 0.7rem; display: inline-flex; align-items: center; gap: 0.5rem; font-feature-settings: 'tnum'; white-space: nowrap; }
+  .prefs__select i { font-style: normal; color: var(--fg-3); font-size: 10px; }
+  .prefs__foot { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1.3rem; border-top: 1px solid var(--line); }
+  .prefs__saved { font-size: 12px; color: var(--fg-3); display: inline-flex; align-items: center; gap: 0.4rem; }
+  .prefs__saved::before { content: '✓'; color: #1f8a4c; font-weight: 700; }
+  .prefs__saved.is-busy::before { content: '⋯'; color: var(--fg-3); }
+  .prefs__btns { display: flex; gap: 0.5rem; }
+  .prefs__btn { font-size: 12.5px; font-weight: 600; padding: 0.4rem 0.95rem; border-radius: 7px; cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--fg-2); transition: background 0.12s, color 0.12s; }
+  .prefs__btn:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .prefs__btn--p { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .prefs__btn--p:hover { background: color-mix(in srgb, var(--accent) 88%, #000); color: var(--accent-contrast); }
+
+  @container (max-width: 460px) {
+    .prefs__txt i { display: none; }
+    .prefs__select { font-size: 11.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rec__table tbody tr, .prefs__sw, .prefs__sw i, .rec__chip, .docs__nav a { transition: none; }
+  }
+</style>

@@ -47,6 +47,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "agentation": "^3.0.2"
+    "agentation": "^3.0.2",
+    "puppeteer-core": "^25.1.0"
   }
 }

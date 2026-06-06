@@ -1,0 +1,530 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// Restaurant menu data (scene 04, interactive reservation/menu UI — real device scale)
+const menu = {
+  entrées: [
+    { name: 'Oysters & Mignonette', detail: 'Belon · cucumber · finger lime',        price: '24' },
+    { name: 'Burrata di Andria',    detail: 'heirloom tomato · basil oil · sea salt', price: '21' },
+    { name: 'Steak Tartare',        detail: 'hand-cut · cured yolk · sourdough',      price: '26' },
+  ],
+  plats: [
+    { name: 'Turbot, Beurre Blanc', detail: 'leek · champagne · caviar',              price: '52' },
+    { name: 'Canard à l’Orange',    detail: 'aged duck · bitter orange · endive',     price: '46' },
+    { name: 'Risotto al Tartufo',   detail: 'carnaroli · black truffle · parmigiano', price: '38' },
+  ],
+  desserts: [
+    { name: 'Soufflé au Chocolat',  detail: 'Valrhona · crème anglaise',              price: '18' },
+    { name: 'Tarte Tatin',          detail: 'caramelised apple · crème fraîche',      price: '16' },
+    { name: 'Affogato',             detail: 'espresso · vanilla · amaretto',          price: '14' },
+  ],
+};
+const courses = Object.keys(menu) as (keyof typeof menu)[];
+
+// Boutique lookbook (scene 05, interactive hover-reveal hero)
+const pieces = [
+  { id: 'I',   name: 'La Robe Noire',  detail: 'Silk crêpe, bias cut',    price: '2,850' },
+  { id: 'II',  name: 'Cape Monceau',   detail: 'Double wool, hand-felled', price: '3,400' },
+  { id: 'III', name: 'Soie Blanche',   detail: 'Charmeuse, draped',        price: '1,980' },
+];
+---
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — FASHION / CULTURE MAGAZINE COVER -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the culture cover</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cover" data-reveal-cover>
+        <div class="cover__top">
+          <span class="cover__no">Issue 19</span>
+          <span class="cover__season">Spring / Été</span>
+          <span class="cover__price">$14</span>
+        </div>
+        <div class="cover__mast">
+          <h3 class="cover__word" data-cover-word>Mode</h3>
+          <span class="cover__amp" aria-hidden="true">&amp;</span>
+          <h3 class="cover__word cover__word--it" data-cover-word>Manière</h3>
+        </div>
+        <div class="cover__lines">
+          <p class="cover__feat">The Return of the <em>Hairline</em></p>
+          <p class="cover__sub">Forty pages on couture, contrast &amp; the new restraint</p>
+          <p class="cover__sub">Tilda Swinton, in her own words</p>
+        </div>
+        <div class="cover__foot">
+          <span class="cover__bar" aria-hidden="true">
+            {Array.from({ length: 26 }).map((_, i) => (<i style={`width:${(i % 3) + 1}px`}></i>))}
+          </span>
+          <span class="cover__plus">Plus — <em>a season in Parma</em></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Roman and true italic share the masthead; the cover lines rise in on scroll.</p>
+  </figure>
+
+  <!-- 02 — RESTAURANT IDENTITY / HOSPITALITY (giant contrast-revealing monogram) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Identity — restaurant &amp; hospitality mark</span></figcaption>
+    <div class="iu__scene scene-16">
+      <div class="iu__poster maison" data-reveal-rule>
+        <!-- LEFT: a giant initial cropped at the bowl so the thick-stem→hairline-serif
+             transition is the entire image. -->
+        <div class="maison__crop" aria-hidden="true">
+          <span class="maison__glyph">C</span>
+          <span class="maison__note maison__note--stem">thick stem</span>
+          <span class="maison__note maison__note--hair">hairline serif</span>
+        </div>
+        <!-- RIGHT: the actual identity, supporting type set tiny against the giant letter. -->
+        <div class="maison__id">
+          <div class="maison__est">
+            <span>Restaurant</span>
+            <span class="maison__dot"></span>
+            <span>est. 1921</span>
+          </div>
+          <div class="maison__name">
+            <h3 class="maison__word">Crillon</h3>
+            <span class="maison__sub">Hôtel &amp; Table — Place de la Concorde</span>
+          </div>
+          <div class="maison__foot">
+            <span>Paris VIII<sup>e</sup></span>
+            <span class="maison__sep">·</span>
+            <span>Bracketed serif, cut for the page</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The mark is built on the face itself — a cropped initial whose thick stem falls to a hairline bracketed serif, with the identity set tiny beside it.</p>
+  </figure>
+
+  <!-- 03 — EDITORIAL FEATURE OPENER: roman vs the true italic -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — feature opener, roman vs italic</span></figcaption>
+    <div class="iu__scene scene-43">
+      <div class="iu__poster spread">
+        <div class="spread__rail">
+          <span class="spread__folio">Essay · 072</span>
+          <span class="spread__sec">On Contrast</span>
+        </div>
+        <div class="spread__main">
+          <span class="spread__kicker">The thick & the thin</span>
+          <h3 class="spread__head">
+            A letter drawn to <span class="spread__it">vanish</span>
+          </h3>
+          <p class="spread__deck">How the Didone serif taught the page to whisper and shout in a single line.</p>
+          <div class="spread__body">
+            <p><span class="spread__drop">B</span>y the 1790s the press had finally caught the eye — paper smoother, ink blacker, the burin sharper. Firmin Didot in Paris and Bodoni in Parma let the contrast run riot: heavy stems beside hairlines fine enough to cut.</p>
+            <p>Two centuries on, the same drama still reads as one thing only — pure luxury, set large on a cover. The thinner the stroke, the louder the couture. <em>The italic, meanwhile, leans into the curve and keeps the secret.</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The roman headline anchors; one word swaps to the true italic — the family’s second voice.</p>
+  </figure>
+
+  <!-- 04 — INTERACTIVE: restaurant menu + reservation UI (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Menu &amp; reservation UI (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device carte" data-carte>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">crillon.paris/la-carte</span>
+        </div>
+        <header class="carte__head">
+          <span class="carte__logo">Crillon</span>
+          <nav class="carte__tabs" aria-label="Menu sections">
+            {courses.map((c, i) => (
+              <button class={i === 0 ? 'is-on' : ''} data-course={c}>{c}</button>
+            ))}
+          </nav>
+        </header>
+        <div class="carte__panel">
+          {courses.map((c, i) => (
+            <ul class={`carte__list${i === 0 ? ' is-on' : ''}`} data-panel={c}>
+              {menu[c].map((d) => (
+                <li class="dish">
+                  <div class="dish__row">
+                    <span class="dish__name">{d.name}</span>
+                    <span class="dish__dots" aria-hidden="true"></span>
+                    <span class="dish__price">{d.price}</span>
+                  </div>
+                  <span class="dish__detail">{d.detail}</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+        <div class="carte__resa">
+          <span class="carte__resa-h">Réservez</span>
+          <div class="carte__party">
+            <span class="carte__plabel">Table for</span>
+            <div class="carte__steps" data-party>
+              <button data-step="-1" aria-label="Fewer guests">–</button>
+              <span class="carte__count" data-count>2</span>
+              <button data-step="1" aria-label="More guests">+</button>
+            </div>
+          </div>
+          <button class="carte__book" data-book>Book — <span data-book-n>2</span> guests</button>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Switch courses, set your party size — the booking line restates it in display italic.</p>
+  </figure>
+
+  <!-- 05 — INTERACTIVE: boutique e-commerce editorial hero, hover-reveal -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Boutique hero — editorial e-commerce (interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device shop" data-shop>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">atelier-crillon.com/collection</span>
+        </div>
+        <header class="shop__head">
+          <span class="shop__logo">Atelier</span>
+          <nav class="shop__nav"><span>Collection</span><span>Atelier</span><span class="shop__bag">Bag · 0</span></nav>
+        </header>
+        <div class="shop__stage" data-stage>
+          <span class="shop__ghost" data-ghost>01</span>
+          <div class="shop__lockup">
+            <span class="shop__no" data-no>Look 01</span>
+            <h4 class="shop__name" data-name>La Robe Noire</h4>
+            <span class="shop__detail" data-detail>Silk crêpe, bias cut</span>
+            <span class="shop__price" data-price>$2,850</span>
+          </div>
+        </div>
+        <div class="shop__thumbs" data-thumbs>
+          {pieces.map((p, i) => (
+            <button
+              class={`thumb${i === 0 ? ' is-on' : ''}`}
+              data-look={String(i)}
+              data-name={p.name} data-detail={p.detail} data-price={p.price} data-id={p.id}
+            >
+              <span class="thumb__no">{p.id}</span>
+              <span class="thumb__name">{p.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover or tap a look — the display name cross-fades and the giant ghost numeral scales in.</p>
+  </figure>
+
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- 01 + 02: scroll-reveal (kinetic rise / hairline draw) ----
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }),
+      { threshold: 0.35 }
+    );
+    document.querySelectorAll('[data-reveal-cover],[data-reveal-rule]').forEach((el) => io.observe(el));
+  } else {
+    document.querySelectorAll('[data-reveal-cover],[data-reveal-rule]').forEach((el) => el.classList.add('is-in'));
+  }
+
+  // ---- 04: restaurant menu tabs + party stepper + reservation line ----
+  document.querySelectorAll<HTMLElement>('[data-carte]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-course]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        tabs.forEach((x) => x.classList.remove('is-on'));
+        t.classList.add('is-on');
+        const c = t.dataset.course!;
+        panels.forEach((p) => p.classList.toggle('is-on', p.dataset.panel === c));
+      })
+    );
+
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+    const bookN = root.querySelector<HTMLElement>('[data-book-n]')!;
+    let party = 2;
+    const render = () => { count.textContent = String(party); bookN.textContent = String(party); };
+    root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
+      b.addEventListener('click', () => {
+        party = Math.min(8, Math.max(1, party + Number(b.dataset.step)));
+        render();
+      })
+    );
+    render();
+  });
+
+  // ---- 05: boutique look switcher (hover + click), cross-fade display name ----
+  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((root) => {
+    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
+    const ghost = root.querySelector<HTMLElement>('[data-ghost]')!;
+    const no = root.querySelector<HTMLElement>('[data-no]')!;
+    const name = root.querySelector<HTMLElement>('[data-name]')!;
+    const detail = root.querySelector<HTMLElement>('[data-detail]')!;
+    const price = root.querySelector<HTMLElement>('[data-price]')!;
+    const thumbs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-look]'));
+
+    let active = 0;
+    const set = (i: number) => {
+      if (i === active) return;
+      active = i;
+      const t = thumbs[i];
+      thumbs.forEach((x) => x.classList.toggle('is-on', x === t));
+      stage.classList.remove('is-swap'); void stage.offsetWidth; stage.classList.add('is-swap');
+      ghost.textContent = t.dataset.id!;
+      no.textContent = `Look ${String(i + 1).padStart(2, '0')}`;
+      name.textContent = t.dataset.name!;
+      detail.textContent = t.dataset.detail!;
+      price.textContent = `$${t.dataset.price!}`;
+    };
+    thumbs.forEach((t, i) => {
+      t.addEventListener('click', () => set(i));
+      t.addEventListener('pointerenter', () => { if (!reduce) set(i); });
+    });
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
+  .scene-16 { aspect-ratio: 16 / 9; }
+  .scene-43 { aspect-ratio: 4 / 3; }
+  .iu__scene * { font-family: var(--fam); }
+
+  /* ============================================================
+     01 — CULTURE COVER
+     High-contrast display serif at masthead scale: roman + true italic
+     sharing the title. Accent reserved to a SINGLE small mark (issue no.).
+     ============================================================ */
+  .cover { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 5.5cqi 5.5cqi 4.5cqi; }
+  .cover__top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 3cqi;
+  }
+  .cover__no { color: var(--accent); }
+  .cover__season { font-style: italic; font-family: var(--fam); letter-spacing: 0.02em; text-transform: none; }
+  .cover__mast { display: flex; flex-direction: column; align-items: center; margin: 7cqi 0 4cqi; line-height: 0.82; }
+  .cover__word { font-size: 26cqi; line-height: 0.8; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
+  .cover__word--it { font-style: italic; letter-spacing: 0; }
+  .cover__amp { font-style: italic; font-size: 9cqi; color: var(--accent); line-height: 1; margin: 0.4cqi 0; }
+  .cover__lines { display: flex; flex-direction: column; gap: 2.4cqi; margin-top: auto; }
+  .cover__feat { font-size: 6.4cqi; line-height: 1; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
+  .cover__feat em { font-style: italic; color: var(--fg); }
+  .cover__sub { font-size: 3.4cqi; line-height: 1.15; font-style: italic; color: var(--fg-2); margin: 0; }
+  .cover__foot {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi;
+    margin-top: 5cqi; padding-top: 3cqi; border-top: 1px solid var(--line);
+  }
+  .cover__bar { display: flex; align-items: flex-end; gap: 2px; height: 7cqi; }
+  .cover__bar i { background: var(--fg-3); height: 100%; }
+  .cover__plus { font-family: var(--font-mono); font-size: 2.3cqi; letter-spacing: 0.06em; color: var(--fg-2); text-align: right; }
+  .cover__plus em { font-family: var(--fam); font-style: italic; color: var(--fg-3); letter-spacing: 0; }
+
+  /* kinetic reveal: masthead + lines rise in */
+  @media (prefers-reduced-motion: no-preference) {
+    .cover.is-in .cover__word, .cover.is-in .cover__amp, .cover.is-in .cover__lines > * {
+      animation: cover-rise 0.7s var(--ease) both;
+    }
+    @keyframes cover-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    .cover.is-in .cover__word--it { animation-delay: 0.08s; }
+    .cover.is-in .cover__amp { animation-delay: 0.05s; }
+    .cover.is-in .cover__lines > *:nth-child(1) { animation-delay: 0.18s; }
+    .cover.is-in .cover__lines > *:nth-child(2) { animation-delay: 0.26s; }
+    .cover.is-in .cover__lines > *:nth-child(3) { animation-delay: 0.34s; }
+  }
+
+  /* ============================================================
+     02 — RESTAURANT / HOSPITALITY IDENTITY
+     The mark IS the typeface: a giant initial cropped so the thick-stem→
+     hairline bracketed-serif transition fills the frame, annotated, with the
+     identity set tiny beside it. Extreme size jump = unmistakably DM Serif Display.
+     ============================================================ */
+  .maison {
+    background: var(--bg); display: grid; grid-template-columns: 44% 1fr;
+    align-items: stretch; gap: 0; overflow: hidden;
+  }
+
+  /* --- the cropped contrast specimen --- */
+  .maison__crop {
+    position: relative; overflow: hidden; border-right: 1px solid var(--line);
+    background: color-mix(in srgb, var(--fg) 4%, var(--bg)); display: block;
+  }
+  .maison__glyph {
+    position: absolute; left: -8cqi; bottom: -22cqi;
+    font-size: 92cqi; line-height: 1; color: var(--fg);
+    /* DM Serif Display has no italic 'C'; the roman shows the bracket best */
+    letter-spacing: 0;
+  }
+  /* annotation: the two extremes of the stroke, set in the open counter of the C
+     (the dark area inside the bowl) with a short rule pointing at each stroke. */
+  .maison__note {
+    position: absolute; font-family: var(--font-mono); font-size: 1.7cqi;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+    display: flex; align-items: center; gap: 0.8cqi; white-space: nowrap;
+  }
+  .maison__note::before {
+    content: ''; width: 4cqi; height: 1.5px; background: var(--accent); flex: none;
+  }
+  /* thick stem → points left, into the heavy lower-left curve */
+  .maison__note--stem { left: 19cqi; bottom: 20cqi; }
+  /* hairline serif → points left, up at the thin top terminal */
+  .maison__note--hair { left: 21cqi; top: 13cqi; }
+
+  /* --- the identity, set deliberately small against the giant letter --- */
+  .maison__id {
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 5cqi 5cqi 4.5cqi;
+  }
+  .maison__est {
+    display: flex; align-items: center; gap: 1.6cqi;
+    font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .maison__dot { width: 0.6cqi; height: 0.6cqi; border-radius: 50%; background: var(--accent); }
+  .maison__name { display: flex; flex-direction: column; gap: 1.4cqi; }
+  .maison__word { font-size: 13cqi; line-height: 0.84; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
+  .maison__sub { font-size: 2.6cqi; line-height: 1.2; font-style: italic; color: var(--fg-2); max-width: 34cqi; }
+  .maison__foot {
+    display: flex; align-items: baseline; gap: 1.4cqi; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 1.7cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .maison__sep { color: var(--accent); }
+  .maison__foot sup { font-size: 0.7em; }
+
+  /* reveal: the giant glyph slides up into the crop; ticks/notes fade after */
+  @media (prefers-reduced-motion: no-preference) {
+    .maison .maison__glyph { transform: translateY(8cqi); opacity: 0; }
+    .maison .maison__note { opacity: 0; }
+    .maison.is-in .maison__glyph { animation: maison-glyph 0.7s var(--ease) both; }
+    .maison.is-in .maison__note--stem { animation: maison-mark 0.45s var(--ease) 0.18s both; }
+    .maison.is-in .maison__note--hair { animation: maison-mark 0.45s var(--ease) 0.3s both; }
+    @keyframes maison-glyph { from { transform: translateY(8cqi); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes maison-mark { from { opacity: 0; } to { opacity: 1; } }
+  }
+
+  /* ============================================================
+     03 — EDITORIAL FEATURE OPENER (roman vs the true italic)
+     Big roman headline; one word in the true italic. Accent = rail folio.
+     ============================================================ */
+  .spread { background: var(--bg); display: grid; grid-template-columns: 13% 1fr; gap: 4cqi; padding: 5cqi; }
+  .spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 3cqi; }
+  .spread__folio { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .spread__sec { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
+  .spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+  .spread__kicker { font-family: var(--font-mono); font-size: 2cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .spread__head { font-size: 13cqi; line-height: 0.92; color: var(--fg); margin: 1.5cqi 0 0; letter-spacing: -0.015em; }
+  .spread__it { font-style: italic; color: var(--fg); }
+  .spread__deck { font-size: 3.2cqi; line-height: 1.2; font-style: italic; color: var(--fg-2); max-width: 80%; margin: 3cqi 0 0; }
+  .spread__body { columns: 2; column-gap: 4cqi; font-size: 2.1cqi; line-height: 1.55; color: var(--fg-2); margin-top: 3.5cqi; }
+  .spread__body p { margin: 0 0 0.9em; }
+  .spread__body em { font-style: italic; color: var(--fg); }
+  .spread__drop { float: left; font-size: 10cqi; line-height: 0.66; padding: 0.06em 0.12em 0 0; color: var(--fg); }
+
+  /* ============================================================
+     04 — RESTAURANT MENU + RESERVATION UI (real px, interactive)
+     ============================================================ */
+  .carte { font-size: 14px; line-height: 1.45; background: var(--bg); }
+  .carte__head { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem 0.85rem; border-bottom: 1px solid var(--line); }
+  .carte__logo { font-size: 26px; line-height: 1; color: var(--fg); letter-spacing: 0.01em; }
+  .carte__tabs { display: flex; gap: 0.2rem; margin-left: auto; }
+  .carte__tabs button {
+    font-family: var(--fam); font-style: italic; font-size: 16px; color: var(--fg-3);
+    padding: 0.25rem 0.7rem; border-radius: 100px; cursor: pointer; transition: color 0.18s var(--ease), background 0.18s var(--ease);
+    text-transform: capitalize;
+  }
+  .carte__tabs button:hover { color: var(--fg); }
+  .carte__tabs button.is-on { color: var(--accent-contrast); background: var(--accent); }
+  .carte__panel { padding: 0.5rem 1.2rem 0.4rem; min-height: 184px; }
+  .carte__list { list-style: none; margin: 0; padding: 0; display: none; }
+  .carte__list.is-on { display: block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .carte__list.is-on { animation: carte-fade 0.4s var(--ease); }
+    @keyframes carte-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  }
+  .dish { padding: 0.7rem 0; border-bottom: 1px solid var(--line-soft); }
+  .dish:last-child { border-bottom: 0; }
+  .dish__row { display: flex; align-items: baseline; gap: 0.5rem; }
+  .dish__name { font-size: 19px; color: var(--fg); white-space: nowrap; }
+  .dish__dots { flex: 1; border-bottom: 1px dotted var(--line); transform: translateY(-3px); }
+  .dish__price { font-size: 16px; color: var(--accent); font-feature-settings: 'tnum'; }
+  .dish__price::before { content: '$'; color: var(--fg-3); font-size: 0.8em; margin-right: 0.1em; }
+  .dish__detail { display: block; font-size: 13px; font-style: italic; color: var(--fg-3); margin-top: 0.15rem; }
+
+  .carte__resa { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.2rem; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 3%, var(--bg)); flex-wrap: wrap; }
+  .carte__resa-h { font-size: 22px; font-style: italic; color: var(--fg); }
+  .carte__party { display: flex; align-items: center; gap: 0.7rem; margin-left: auto; }
+  .carte__plabel { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .carte__steps { display: flex; align-items: center; gap: 0.2rem; border: 1px solid var(--line); border-radius: 100px; padding: 0.15rem; }
+  .carte__steps button { width: 26px; height: 26px; border-radius: 50%; font-family: var(--font-mono); font-size: 16px; color: var(--fg-2); cursor: pointer; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
+  .carte__steps button:hover { color: var(--fg); background: var(--line-soft); }
+  .carte__count { min-width: 22px; text-align: center; font-size: 18px; color: var(--fg); font-feature-settings: 'tnum'; }
+  .carte__book { font-family: var(--fam); font-style: italic; font-size: 17px; color: var(--accent-contrast); background: var(--accent); padding: 0.45rem 1.2rem; border-radius: 100px; cursor: pointer; transition: filter 0.15s var(--ease); }
+  .carte__book:hover { filter: brightness(1.08); }
+  .carte__book span { font-feature-settings: 'tnum'; }
+
+  /* ============================================================
+     05 — BOUTIQUE EDITORIAL HERO (real px, interactive hover-reveal)
+     ============================================================ */
+  .shop { font-size: 14px; line-height: 1.45; background: var(--bg); }
+  .shop__head { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); }
+  .shop__logo { font-size: 22px; color: var(--fg); letter-spacing: 0.02em; }
+  .shop__nav { display: flex; gap: 1.1rem; margin-left: auto; align-items: baseline; }
+  .shop__nav span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .shop__bag { color: var(--fg-2) !important; }
+
+  .shop__stage { position: relative; min-height: 300px; display: grid; place-items: center; overflow: hidden; padding: 1.6rem; background: var(--bg-2); }
+  .shop__ghost {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: 300px; line-height: 1; color: var(--accent); opacity: 0.1; pointer-events: none;
+    font-style: italic; user-select: none; letter-spacing: -0.04em;
+  }
+  .shop__lockup { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.35rem; }
+  .shop__no { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .shop__name { font-size: 56px; line-height: 0.92; font-style: italic; color: var(--fg); margin: 0.1rem 0; letter-spacing: -0.005em; }
+  .shop__detail { font-size: 14px; font-style: italic; color: var(--fg-3); }
+  .shop__price { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.1em; color: var(--fg-2); margin-top: 0.3rem; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .shop__stage.is-swap .shop__lockup { animation: shop-swap 0.45s var(--ease); }
+    .shop__stage.is-swap .shop__ghost { animation: shop-ghost 0.55s var(--ease); }
+    @keyframes shop-swap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @keyframes shop-ghost { from { opacity: 0; transform: scale(0.86); } to { opacity: 0.1; transform: none; } }
+  }
+
+  .shop__thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+  .thumb { display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; padding: 0.8rem 1rem; background: var(--bg); cursor: pointer; text-align: left; transition: background 0.18s var(--ease); }
+  .thumb:hover { background: var(--bg-2); }
+  .thumb__no { font-size: 20px; font-style: italic; color: var(--fg-3); line-height: 1; transition: color 0.18s var(--ease); }
+  .thumb__name { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); transition: color 0.18s var(--ease); }
+  .thumb.is-on { background: var(--bg-2); }
+  .thumb.is-on .thumb__no { color: var(--accent); }
+  .thumb.is-on .thumb__name { color: var(--fg); }
+
+  /* ---- responsive ---- */
+  @container (max-width: 560px) {
+    .maison { grid-template-columns: 38% 1fr; }
+    .maison__glyph { font-size: 84cqi; left: -6cqi; bottom: -18cqi; }
+    .maison__sub { max-width: none; }
+    .spread { grid-template-columns: 1fr; }
+    .spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
+    .spread__sec { writing-mode: horizontal-tb; }
+    .spread__main { grid-column: 1; }
+    .spread__body { columns: 1; }
+  }
+  @container (max-width: 480px) {
+    .carte__head { flex-wrap: wrap; }
+    .carte__tabs { margin-left: 0; width: 100%; justify-content: space-between; }
+    .carte__resa { gap: 0.7rem; }
+    .carte__resa-h { width: 100%; }
+    .carte__party { margin-left: 0; }
+    .shop__name { font-size: 36px; }
+    .shop__ghost { font-size: 180px; }
+    .shop__thumbs { grid-template-columns: 1fr; }
+    .thumb { flex-direction: row; align-items: baseline; gap: 0.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carte__tabs button, .carte__steps button, .carte__book, .thumb, .thumb__no, .thumb__name { transition: none; }
+  }
+</style>

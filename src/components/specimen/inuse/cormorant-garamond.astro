@@ -1,54 +1,449 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import BrandScene from '../BrandScene.astro';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// ── Scene 05 (interactive boutique lookbook) data ───────────────────────────
+const looks = [
+  { id: 'AW-01', name: 'Verveine',   cat: 'eau',    price: '210', vol: '100 ml', note: 'Bergamot · Neroli · White Cedar', tag: 'New' },
+  { id: 'AW-02', name: 'Foudre',     cat: 'eau',    price: '245', vol: '100 ml', note: 'Black Fig · Vetiver · Ambrette',  tag: '' },
+  { id: 'AW-03', name: 'Linceul',    cat: 'extrait',price: '380', vol: '50 ml',  note: 'Oud · Iris · Smoked Leather',     tag: 'Rare' },
+  { id: 'AW-04', name: 'Aubépine',   cat: 'eau',    price: '195', vol: '100 ml', note: 'Hawthorn · Mimosa · Soft Musk',   tag: '' },
+  { id: 'AW-05', name: 'Sève',       cat: 'extrait',price: '340', vol: '50 ml',  note: 'Galbanum · Tuberose · Sandalwood',tag: '' },
+  { id: 'AW-06', name: 'Crépuscule', cat: 'home',   price: '120', vol: '320 g',  note: 'Beeswax · Tonka · Cade Wood',     tag: '' },
+];
 ---
 <div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — fashion / luxury magazine cover -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Invitation — the wedding suite</span></figcaption>
-    <div class="iu__scene invite-scene">
-      <div class="iu__poster invite">
-        <span class="inv__eyebrow">together with their families</span>
-        <p class="inv__pre">request the pleasure of your company at the marriage of</p>
-        <h3 class="inv__names">Eleanor<span class="inv__amp"> &amp; </span>Auguste</h3>
-        <div class="inv__rule" aria-hidden="true"><span>✦</span></div>
-        <p class="inv__detail">the twelfth of September · half past four<br/>The Old Print Works · Birmingham</p>
-        <span class="inv__rsvp">Black Tie · Reply by August</span>
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cg-cover" data-reveal-cover>
+        <div class="cg-cover__top">
+          <span class="cg-cover__no">Numéro <span class="num">21</span></span>
+          <span class="cg-cover__season">Automne · Hiver</span>
+          <span class="cg-cover__price">£<span class="num">14</span></span>
+        </div>
+        <h3 class="cg-cover__masthead" data-cover-word>Lumière</h3>
+        <div class="cg-cover__lines">
+          <span class="cg-cover__feat"><em>The Architecture</em> of Lightness</span>
+          <span>Paris couture, cut from a single hairline</span>
+          <span>The vanishing serif &amp; the new restraint</span>
+        </div>
+        <div class="cg-cover__foot">
+          <span class="cg-cover__barcode" aria-hidden="true">
+            {Array.from({length:26}).map((_,i)=>(<i style={`width:${(i%4)+1}px`}></i>))}
+          </span>
+          <span class="cg-cover__plus">+ Saint Laurent <em>revisited</em></span>
+        </div>
       </div>
     </div>
+    <p class="iu__hint label">Hover the masthead — the hairlines thin to their lightest and the cover lines tilt to true italic.</p>
   </figure>
 
+  <!-- 02 — fine-dining menu (frac fractions, italic dish lines, tabular prices) -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a couture logotype</span></figcaption>
-    <div class="iu__scene brand-scene">
-      <BrandScene font={font} variant="wordmark" />
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Hospitality — the tasting menu</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cg-menu">
+        <header class="cg-menu__head">
+          <span class="cg-menu__estd">Established MCMXII</span>
+          <h3 class="cg-menu__name">Maison <em>du Sel</em></h3>
+          <span class="cg-menu__sub">Menu Dégustation · Printemps</span>
+        </header>
+
+        <ol class="cg-menu__list">
+          <li class="cg-dish">
+            <span class="cg-dish__no">i</span>
+            <span class="cg-dish__body">
+              <span class="cg-dish__name">Oysters &amp; Verjus Granité</span>
+              <span class="cg-dish__desc"><em>Fine de claire, green apple, a 1½-year cider mignonette</em></span>
+            </span>
+            <span class="cg-dish__lead" aria-hidden="true"></span>
+            <span class="cg-dish__price num">28</span>
+          </li>
+          <li class="cg-dish">
+            <span class="cg-dish__no">ii</span>
+            <span class="cg-dish__body">
+              <span class="cg-dish__name">Hand-Dived Scallop</span>
+              <span class="cg-dish__desc"><em>Cauliflower, brown butter, 3/4 spoon of Oscietra</em></span>
+            </span>
+            <span class="cg-dish__lead" aria-hidden="true"></span>
+            <span class="cg-dish__price num">36</span>
+          </li>
+          <li class="cg-dish">
+            <span class="cg-dish__no">iii</span>
+            <span class="cg-dish__body">
+              <span class="cg-dish__name">Aged Hereford, Bone Marrow</span>
+              <span class="cg-dish__desc"><em>Salsify, 21-day rib, a 1/2 glass of the house Syrah</em></span>
+            </span>
+            <span class="cg-dish__lead" aria-hidden="true"></span>
+            <span class="cg-dish__price num">52</span>
+          </li>
+          <li class="cg-dish">
+            <span class="cg-dish__no">iv</span>
+            <span class="cg-dish__body">
+              <span class="cg-dish__name">Tarte Fine aux Pommes</span>
+              <span class="cg-dish__desc"><em>Caramel of Calvados, crème double, 1/2 vanilla pod</em></span>
+            </span>
+            <span class="cg-dish__lead" aria-hidden="true"></span>
+            <span class="cg-dish__price num">18</span>
+          </li>
+        </ol>
+
+        <footer class="cg-menu__foot">
+          <span>Four courses · <span class="num">96</span></span>
+          <span class="cg-menu__pair">with wine pairing · <span class="num">64</span></span>
+        </footer>
+      </div>
     </div>
+    <p class="iu__hint label">Real <code>frac</code> fractions (1½, 3/4, 1/2) and tabular figures align the prices down a hairline column.</p>
   </figure>
+
+  <!-- 03 — perfume / wedding luxury brand identity -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — perfumer's identity &amp; flacon</span></figcaption>
+    <div class="iu__scene cg-scene-16">
+      <div class="iu__poster cg-maison" data-maison>
+        <div class="cg-maison__id">
+          <span>Parfumeur</span>
+          <span class="cg-maison__dot" aria-hidden="true"></span>
+          <span>Grasse · Paris</span>
+        </div>
+        <div class="cg-maison__center">
+          <span class="cg-maison__rule" aria-hidden="true"></span>
+          <h3 class="cg-maison__word" data-maison-word>Aubépine<span class="cg-maison__amp"> &amp; </span>Cie</h3>
+          <span class="cg-maison__sub">Extrait de Parfum · depuis <span class="num">1911</span></span>
+          <span class="cg-maison__rule" aria-hidden="true"></span>
+        </div>
+        <div class="cg-maison__flacon" aria-label="flacon label">
+          <span class="cg-maison__mono">A</span>
+          <span class="cg-maison__flacon-r">Linceul<br/><i>Extrait · 50 ml e</i></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The wordmark settles in on a slow draw, its italic ampersand the one accent mark.</p>
+  </figure>
+
+  <!-- 04 — editorial feature opener -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — the feature opener</span></figcaption>
+    <div class="iu__scene cg-scene-43">
+      <div class="iu__poster cg-spread" data-reveal-cover>
+        <div class="cg-spread__rail">
+          <span class="cg-spread__folio">Feature · <span class="num">072</span></span>
+          <span class="cg-spread__sec">Atelier</span>
+        </div>
+        <div class="cg-spread__main">
+          <span class="cg-spread__kicker">On craft</span>
+          <h3 class="cg-spread__head" data-cover-word>The <em>Vanishing</em> Stroke</h3>
+          <p class="cg-spread__deck">How a Swiss astronomer filed the Garamond serif to a needle, and let it bloom only at the size of a whisper.</p>
+          <div class="cg-spread__body">
+            <p><span class="cg-spread__drop">F</span>or four centuries the Garamond serif kept its weight, sturdy enough to survive the spread of ink across damp rag paper. Cormorant takes the opposite vow: it assumes a screen, a fine press, and a generous size — and files every ending to a point.</p>
+            <p>The counters close, the contrast runs high, the accents climb tall above the cap line. Set small it would collapse; set large and light it becomes the quietest kind of luxury — the letter that asks to be looked at, never read in a hurry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the headline — the display weight lightens to a hairline and the italic word leads.</p>
+  </figure>
+
+  <!-- 05 — INTERACTIVE boutique lookbook (real px, filter + sort + hover) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Product UI — boutique lookbook (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device cg-shop" data-shop>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">aubepine.paris/collection/automne</span>
+        </div>
+        <header class="cg-shop__head">
+          <span class="cg-shop__logo">Aubépine <em>&amp; Cie</em></span>
+          <nav class="cg-shop__filters" aria-label="Filter collection">
+            <button class="is-on" data-filter="all">Tout</button>
+            <button data-filter="eau">Eau de Parfum</button>
+            <button data-filter="extrait">Extrait</button>
+            <button data-filter="home">Maison</button>
+          </nav>
+          <div class="cg-shop__sort">
+            <span class="cg-shop__sortlabel">Trier</span>
+            <button data-sort aria-pressed="false"><span data-sort-label>Nouveautés</span></button>
+          </div>
+        </header>
+
+        <div class="cg-shop__grid" data-grid>
+          {looks.map((l, i)=>{
+            const hero = i === 0;
+            return (
+            <article class={`cg-card${hero ? ' cg-card--hero' : ''}`} data-cat={l.cat} data-price={l.price} data-id={l.id}>
+              <div class="cg-card__img" aria-hidden="true">
+                <span class="cg-card__ghost">{l.name.slice(0,1)}</span>
+                <span class="cg-card__word">{l.name}</span>
+                {l.tag && <span class="cg-card__tag">{l.tag}</span>}
+                <span class="cg-card__cta">View · Ajouter</span>
+              </div>
+              <div class="cg-card__meta">
+                <div class="cg-card__row cg-card__row--top">
+                  <h4 class="cg-card__name">{l.name}</h4>
+                  <span class="cg-card__price num">£{l.price}</span>
+                </div>
+                <span class="cg-card__note"><em>{l.note}</em></span>
+                <div class="cg-card__row cg-card__row--foot">
+                  <span class="cg-card__vol">{l.vol}</span>
+                  <span class="cg-card__id num">{l.id}</span>
+                </div>
+              </div>
+            </article>
+          );})}
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter by family and re-sort by price — hover any flacon to reveal the live italic note &amp; add-to-bag.</p>
+  </figure>
+
 </div>
+
+<script>
+  // ── Scene 05: filter + sort + hover lookbook ──────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((shop) => {
+    const grid = shop.querySelector<HTMLElement>('[data-grid]')!;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.cg-card'));
+    const order = cards.slice();
+
+    let filter = 'all';
+    let byPrice = false;
+
+    const relayout = () => {
+      // filter
+      cards.forEach((c) => {
+        const show = filter === 'all' || c.dataset.cat === filter;
+        c.classList.toggle('is-hidden', !show);
+      });
+      // sort (only meaningful re-order; hero keeps its span)
+      const visible = (byPrice
+        ? order.slice().sort((a, b) => +a.dataset.price! - +b.dataset.price!)
+        : order
+      );
+      visible.forEach((c) => grid.appendChild(c));
+    };
+
+    shop.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+      b.addEventListener('click', () => {
+        shop.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        filter = b.dataset.filter!;
+        relayout();
+      })
+    );
+
+    const sortBtn = shop.querySelector<HTMLButtonElement>('[data-sort]');
+    const sortLabel = shop.querySelector<HTMLElement>('[data-sort-label]');
+    sortBtn?.addEventListener('click', () => {
+      byPrice = !byPrice;
+      sortBtn.setAttribute('aria-pressed', String(byPrice));
+      if (sortLabel) sortLabel.textContent = byPrice ? 'Prix · ↑' : 'Nouveautés';
+      relayout();
+    });
+  });
+</script>
 
 <style>
   .iu__item { margin: 0; }
-  .brand-scene { aspect-ratio: 16 / 9; }
-  /* Full-width frame; the portrait invitation is centred within it. */
-  .invite-scene { aspect-ratio: 16 / 9; display: grid; place-items: center; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
+  .cg-scene-16 { aspect-ratio: 16 / 9; }
+  .cg-scene-43 { aspect-ratio: 4 / 3; }
+  /* every glyph in every scene resolves to Cormorant Garamond */
+  .iu__scene * { font-family: var(--fam); }
+  /* real, tabular figures wherever .num is used */
+  .iu__scene .num { font-feature-settings: 'lnum' 1, 'tnum' 1; font-variant-numeric: lining-nums tabular-nums; }
 
-  .invite {
-    /* cancel the global absolute fill so the card can be a centred object */
-    position: relative; inset: auto;
-    height: 100%; width: auto; aspect-ratio: 4 / 5;
-    container-type: inline-size; /* cqi now sizes to the card, not the frame */
-    background: var(--bg); color: var(--fg);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; gap: 2.4cqi; padding: 7cqi 6cqi;
+  /* ============================================================
+     01 — FASHION COVER
+     Light (300) masthead, razor hairlines at huge size; the one accent
+     is the issue number. Hover lightens the hairlines + tilts cover lines.
+     ============================================================ */
+  .cg-cover { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 5.5cqi 6cqi 5cqi; }
+  .cg-cover__top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.6cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 3cqi; }
+  .cg-cover__no { color: var(--accent); }
+  .cg-cover__season { font-style: italic; font-weight: 400; letter-spacing: 0.06em; text-transform: none; font-size: 3cqi; color: var(--fg-3); }
+  .cg-cover__masthead {
+    font-size: 35cqi; line-height: 0.92; text-align: center;
+    font-weight: 300; letter-spacing: 0.005em; margin: 0; color: var(--fg);
+    display: flex; align-items: center; justify-content: center; flex: 1 1 auto; min-height: 0;
+    transition: font-weight 0.6s var(--ease), letter-spacing 0.6s var(--ease);
   }
-  .inv__eyebrow { font-size: 2.6cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); }
-  .inv__pre { font-size: 3.2cqi; font-style: italic; color: var(--fg-2); max-width: 78%; }
-  .inv__names { font-size: 16cqi; line-height: 0.95; font-weight: 500; }
-  .inv__amp { font-style: italic; color: var(--accent); }
-  .inv__rule { display: flex; align-items: center; gap: 2cqi; width: 44%; color: var(--accent); }
-  .inv__rule::before, .inv__rule::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: 0.5; }
-  .inv__detail { font-size: 3cqi; line-height: 1.7; color: var(--fg-2); }
-  .inv__rsvp { font-size: 2.2cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); margin-top: 1cqi; }
+  .cg-cover__lines { display: flex; flex-direction: column; gap: 2.6cqi; margin-top: 0; }
+  .cg-cover__lines span { font-size: 4cqi; line-height: 1.12; color: var(--fg-2); }
+  .cg-cover__feat { color: var(--fg) !important; font-size: 6cqi !important; line-height: 1.04 !important; font-weight: 400; letter-spacing: 0; }
+  .cg-cover__feat em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .cg-cover__lines em { font-style: italic; font-weight: 400; }
+  .cg-cover__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; margin-top: 5cqi; padding-top: 3cqi; border-top: 1px solid var(--line); }
+  .cg-cover__barcode { display: flex; align-items: flex-end; gap: 2px; height: 6cqi; }
+  .cg-cover__barcode i { background: var(--fg-3); height: 100%; }
+  .cg-cover__plus { font-size: 2.8cqi; letter-spacing: 0.06em; color: var(--fg-2); text-align: right; }
+  .cg-cover__plus em { color: var(--fg-3); font-style: italic; font-weight: 400; }
+
+  /* ============================================================
+     02 — TASTING MENU
+     Italic descriptions, frac fractions, leader-dot price column (tnum).
+     ============================================================ */
+  .cg-menu { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 6cqi 6.5cqi 5cqi; }
+  .cg-menu__head { text-align: center; display: flex; flex-direction: column; gap: 1.8cqi; }
+  .cg-menu__estd { font-size: 2.3cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-menu__name { font-size: 14cqi; line-height: 0.95; font-weight: 300; }
+  .cg-menu__name em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .cg-menu__sub { font-size: 2.8cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-2); }
+
+  .cg-menu__list { list-style: none; margin: 5cqi 0 0; padding: 5cqi 0; display: flex; flex-direction: column; gap: 4.2cqi; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); flex: 1; justify-content: center; width: 100%; }
+  .cg-dish { display: grid; grid-template-columns: 5cqi 1fr auto auto; align-items: baseline; column-gap: 2cqi; }
+  .cg-dish__no { font-style: italic; font-weight: 400; font-size: 3.4cqi; color: var(--accent); text-transform: lowercase; }
+  .cg-dish__body { display: flex; flex-direction: column; gap: 0.6cqi; min-width: 0; }
+  .cg-dish__name { font-size: 4.6cqi; line-height: 1.02; font-weight: 400; color: var(--fg); }
+  .cg-dish__desc { font-size: 3cqi; line-height: 1.28; color: var(--fg-2); }
+  .cg-dish__desc em { font-style: italic; font-weight: 400; }
+  .cg-dish__desc em { font-feature-settings: 'frac' 1, 'liga' 1; }
+  .cg-dish__lead { align-self: start; min-width: 6cqi; border-bottom: 1px dotted var(--line); transform: translateY(2.6cqi); margin: 0 0.6cqi; }
+  .cg-dish__price { font-size: 4.4cqi; font-weight: 400; color: var(--fg); align-self: start; padding-top: 0.1cqi; }
+
+  .cg-menu__foot { display: flex; align-items: baseline; justify-content: space-between; padding-top: 3.4cqi; font-size: 3cqi; letter-spacing: 0.04em; color: var(--fg); }
+  .cg-menu__foot .num { color: var(--accent); }
+  .cg-menu__pair { font-style: italic; font-weight: 400; color: var(--fg-2); }
+  .cg-menu__pair .num { font-style: normal; }
+
+  /* ============================================================
+     03 — PERFUMER IDENTITY
+     Light wordmark, italic ampersand the single accent. Slow draw-in.
+     ============================================================ */
+  .cg-maison { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 6cqi; }
+  .cg-maison__id { display: flex; align-items: center; justify-content: center; gap: 2.4cqi; font-size: 2.4cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-maison__dot { width: 0.7cqi; height: 0.7cqi; border-radius: 50%; background: var(--accent); }
+  .cg-maison__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6cqi; }
+  .cg-maison__rule { width: 30cqi; height: 1px; background: var(--line); }
+  .cg-maison__word { font-size: 14cqi; line-height: 0.92; font-weight: 300; letter-spacing: 0.01em; color: var(--fg); text-align: center; }
+  .cg-maison__amp { font-style: italic; font-weight: 400; color: var(--accent); }
+  .cg-maison__sub { font-size: 2.6cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-2); }
+  .cg-maison__flacon { display: flex; align-items: center; gap: 3cqi; justify-self: center; border: 1px solid var(--line); padding: 2.6cqi 4cqi; }
+  .cg-maison__mono { font-size: 9cqi; line-height: 1; font-weight: 300; color: var(--fg); }
+  .cg-maison__flacon-r { font-size: 2.9cqi; line-height: 1.3; color: var(--fg-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .cg-maison__flacon-r i { font-style: italic; font-weight: 400; color: var(--fg-3); text-transform: none; letter-spacing: 0.02em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cg-maison__word { animation: cg-draw 1.4s var(--ease) both; }
+    .cg-maison__rule { animation: cg-rule 1.2s var(--ease) both; }
+    @keyframes cg-draw { from { opacity: 0; letter-spacing: 0.16em; } to { opacity: 1; letter-spacing: 0.01em; } }
+    @keyframes cg-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  }
+
+  /* ============================================================
+     04 — EDITORIAL FEATURE OPENER
+     Light display headline, italic lead word; drop-cap two-column body.
+     ============================================================ */
+  .cg-spread { background: var(--bg); display: grid; grid-template-columns: 13% 1fr; padding: 4.5cqi 5cqi; gap: 4cqi; }
+  .cg-spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 3cqi; }
+  .cg-spread__folio { font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .cg-spread__sec { font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
+  .cg-spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+  .cg-spread__kicker { font-size: 2.2cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 1.4cqi; }
+  .cg-spread__head {
+    font-size: 12cqi; line-height: 0.94; font-weight: 300; letter-spacing: 0.005em; color: var(--fg);
+    transition: font-weight 0.6s var(--ease), letter-spacing 0.6s var(--ease);
+  }
+  .cg-spread__head em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .cg-spread__deck { font-size: 3.2cqi; line-height: 1.28; font-style: italic; font-weight: 400; color: var(--fg-2); max-width: 84%; margin-top: 2.4cqi; }
+  .cg-spread__body { columns: 2; column-gap: 4cqi; font-size: 2.15cqi; line-height: 1.46; color: var(--fg-2); margin-top: 3cqi; }
+  .cg-spread__body p { margin: 0 0 0.8em; }
+  .cg-spread__drop { float: left; font-size: 9cqi; line-height: 0.66; font-weight: 300; padding: 0.04em 0.12em 0 0; color: var(--accent); }
+
+  /* ── shared hover for cover/spread: lighten the display, lead the italic ── */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal-cover]:hover [data-cover-word],
+    [data-reveal-cover]:focus-within [data-cover-word] { letter-spacing: 0.04em; }
+    .cg-cover[data-reveal-cover]:hover .cg-cover__lines em { color: var(--accent); }
+  }
+
+  /* ============================================================
+     05 — BOUTIQUE LOOKBOOK UI (real px sizing)
+     Hero flacon spans 2 cols; hover reveals italic note + CTA.
+     ============================================================ */
+  .cg-shop { font-size: 13px; line-height: 1.4; background: var(--bg); }
+  .cg-shop__head { display: flex; align-items: center; gap: 1.2rem; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .cg-shop__logo { font-size: 26px; font-weight: 400; letter-spacing: 0.01em; color: var(--fg); }
+  .cg-shop__logo em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .cg-shop__filters { display: flex; gap: 0.2rem; margin-left: 0.4rem; }
+  .cg-shop__filters button { font-size: 13px; font-style: italic; color: var(--fg-3); padding: 0.32rem 0.7rem; border-radius: 100px; transition: color .15s var(--ease), background .15s var(--ease); }
+  .cg-shop__filters button:hover { color: var(--fg); }
+  .cg-shop__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-style: normal; }
+  .cg-shop__sort { margin-left: auto; display: flex; align-items: baseline; gap: 0.5rem; }
+  .cg-shop__sortlabel { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-shop__sort button { font-size: 13.5px; font-style: italic; color: var(--fg); border-bottom: 1px solid var(--line); padding-bottom: 1px; }
+  .cg-shop__sort button:hover { border-color: var(--accent); }
+
+  .cg-shop__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr auto; grid-auto-flow: dense;
+    gap: 1px; background: var(--line); padding: 1px;
+  }
+  .cg-card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .cg-card.is-hidden { display: none; }
+  .cg-card__img { position: relative; flex: 1; min-height: 168px; background: var(--bg-2); display: grid; place-items: center; overflow: hidden; padding: 0.8rem; container-type: inline-size; }
+  .cg-card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
+  .cg-card__ghost {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: clamp(64px, 34cqi, 120px); font-weight: 300; color: var(--fg);
+    opacity: 0.045; pointer-events: none; line-height: 1; overflow: hidden;
+  }
+  .cg-card__word { position: relative; font-size: clamp(20px, 15cqi, 30px); line-height: 0.98; text-align: center; color: var(--fg); font-style: italic; font-weight: 400; max-width: 100%; transition: opacity .25s var(--ease), transform .25s var(--ease); }
+  .cg-card__tag { position: absolute; top: 0.7rem; left: 0.7rem; z-index: 2; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
+  .cg-card__cta {
+    position: absolute; left: 50%; bottom: 0.9rem; transform: translate(-50%, 0.6rem);
+    z-index: 2; font-size: 12.5px; font-style: italic; letter-spacing: 0.02em;
+    color: var(--accent-contrast); background: var(--accent); padding: 0.3rem 0.9rem; border-radius: 100px;
+    opacity: 0; transition: opacity .2s var(--ease), transform .2s var(--ease); white-space: nowrap; pointer-events: none;
+  }
+  .cg-card:hover .cg-card__cta { opacity: 1; transform: translate(-50%, 0); }
+  .cg-card:hover .cg-card__word { transform: translateY(-0.5rem); opacity: 0.85; }
+
+  .cg-card__meta { padding: 0.7rem 0.85rem 0.9rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .cg-card__row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+  .cg-card__name { font-size: 19px; font-weight: 400; letter-spacing: 0; color: var(--fg); }
+  .cg-card__price { font-size: 15px; color: var(--fg); }
+  .cg-card__note { font-size: 12.5px; font-style: italic; font-weight: 400; color: var(--fg-3); line-height: 1.25; }
+  .cg-card__row--foot { margin-top: 0.25rem; }
+  .cg-card__vol { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-card__id { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--fg-3); }
+
+  /* hero flacon: spans two columns + two rows, large italic word */
+  .cg-card--hero { grid-column: 1 / span 2; grid-row: 1 / span 2; }
+  .cg-card--hero .cg-card__img { flex: 1; min-height: 0; }
+  .cg-card--hero .cg-card__ghost { font-size: clamp(110px, 30cqi, 140px); opacity: 0.05; }
+  .cg-card--hero .cg-card__word { font-size: clamp(34px, 11cqi, 64px); }
+  .cg-card--hero .cg-card__name { font-size: 24px; }
+  .cg-card--hero .cg-card__tag { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+
+  @container (max-width: 640px) {
+    .cg-shop__grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto auto auto; }
+    .cg-card--hero { grid-column: 1 / span 2; grid-row: 1; }
+    .cg-card--hero .cg-card__img { min-height: 220px; }
+  }
+  @container (max-width: 460px) {
+    .cg-shop__head { gap: 0.7rem; }
+    .cg-shop__sort { margin-left: 0; }
+    .cg-shop__filters { flex-wrap: wrap; }
+  }
+
+  /* ── responsive: editorial scenes restack ── */
+  @container (max-width: 560px) {
+    .cg-spread { grid-template-columns: 1fr; }
+    .cg-spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
+    .cg-spread__sec { writing-mode: horizontal-tb; }
+    .cg-spread__main { grid-column: 1; }
+    .cg-spread__body { columns: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cg-cover__masthead, .cg-spread__head, .cg-card__word, .cg-card__cta { transition: none; }
+  }
 </style>

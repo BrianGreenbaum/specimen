@@ -3,56 +3,437 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// E-commerce lookbook data (scene 05, interactive)
+const looks = [
+  { id: 'LB-01', name: 'Soie Noire', cat: 'gowns',  price: '4,200',  detail: 'Silk-faille column gown',   tag: 'Atelier' },
+  { id: 'LB-02', name: 'Hauteville', cat: 'coats',  price: '6,850',  detail: 'Wool-cashmere opera coat',  tag: '' },
+  { id: 'LB-03', name: 'Verre Brisé',cat: 'gowns',  price: '5,400',  detail: 'Crystal-pleated bias dress',tag: 'Runway' },
+  { id: 'LB-04', name: 'Monceau',    cat: 'coats',  price: '3,990',  detail: 'Belted gabardine trench',   tag: '' },
+  { id: 'LB-05', name: 'Lumière',    cat: 'jewels', price: '12,000', detail: 'Pavé diamond collar',       tag: 'Fine' },
+  { id: 'LB-06', name: 'Étoile',     cat: 'jewels', price: '2,750',  detail: 'Baguette drop earrings',    tag: '' },
+];
 ---
 <div class="iu" style={`--fam:${fam}`}>
+  <!-- 01 — fashion magazine cover -->
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
-    <div class="iu__scene cover-scene iu__scene--portrait">
-      <div class="iu__poster cover">
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cover" data-bloom>
         <div class="cover__top">
-          <span>№ 04</span><span>Autumn</span><span>$12</span>
+          <span class="cover__no">№ 04</span><span class="cover__season">Autumn / Hiver</span><span>£12</span>
         </div>
-        <h3 class="cover__masthead">MODA</h3>
+        <h3 class="cover__masthead" data-bloom-word>MODA</h3>
         <div class="cover__lines">
-          <span>The Architecture of Elegance</span>
-          <span class="cover__feat">Paris · in 48 hairlines</span>
-          <span>Couture for the Algorithm Age</span>
+          <span class="cover__feat">The Architecture of Elegance</span>
+          <span>Paris couture, cut in <em>forty-eight hairlines</em></span>
+          <span>Diamonds &amp; the new minimalism</span>
         </div>
-        <div class="cover__barcode" aria-hidden="true">
-          {Array.from({length:28}).map((_,i)=>(<i style={`width:${(i%4)+1}px`}></i>))}
+        <div class="cover__foot">
+          <span class="cover__barcode" aria-hidden="true">
+            {Array.from({length:30}).map((_,i)=>(<i style={`width:${(i%4)+1}px`}></i>))}
+          </span>
+          <span class="cover__plus">+ Saint Laurent <em>at sixty</em></span>
         </div>
       </div>
     </div>
+    <p class="iu__hint label">Hover the masthead — the optical-size axis blooms the hairlines razor-thin.</p>
   </figure>
 
+  <!-- 02 — luxury brand identity / packaging -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the feature opener</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — maison identity &amp; packaging</span></figcaption>
     <div class="iu__scene scene16">
-      <div class="iu__poster spread">
-        <span class="spread__folio">Feature · 064</span>
-        <h3 class="spread__head">The<br/><em>Hairline</em></h3>
-        <p class="spread__deck">On the vanishing stroke, and the two hundred years it took to make a letter this thin.</p>
+      <div class="iu__poster maison" data-breathe>
+        <div class="maison__id">
+          <span class="maison__estd">Maison fondée en</span>
+          <span class="maison__year">1804</span>
+        </div>
+        <div class="maison__center">
+          <span class="maison__line" aria-hidden="true"></span>
+          <h3 class="maison__word" data-breathe-word>Bellecour</h3>
+          <span class="maison__sub">Parfumeur <i class="maison__dot" aria-hidden="true"></i> Paris</span>
+          <span class="maison__line" aria-hidden="true"></span>
+        </div>
+        <div class="maison__box" aria-label="packaging">
+          <span class="maison__box-l">B</span>
+          <span class="maison__box-r">Crème de Soie<br/><i>50 ml &middot; e</i></span>
+        </div>
       </div>
     </div>
+    <p class="iu__hint label">The wordmark breathes the opsz axis on a slow loop — hairlines swell and vanish.</p>
+  </figure>
+
+  <!-- 03 — perfume bottle, type wrapped via SVG textPath -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Packaging — flacon &amp; engraved label (SVG textPath)</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster flacon" data-flacon>
+        <span class="flacon__house">Bellecour · Paris</span>
+        <svg class="flacon__svg" viewBox="0 0 360 440" role="img" aria-label="Noir Absolu eau de parfum flacon with engraved typography">
+          <defs>
+            <!-- shoulder curve the top legend rides on -->
+            <path id="bm-shoulder" d="M 96 132 C 140 104 220 104 264 132" fill="none" />
+            <!-- the oval the maison notes engrave around (outside the centred lockup) -->
+            <path id="bm-oval" d="M 180 232 m -118 0 a 118 120 0 1 0 236 0 a 118 120 0 1 0 -236 0" fill="none" />
+            <!-- base legend curve -->
+            <path id="bm-base" d="M 104 398 C 140 410 220 410 256 398" fill="none" />
+          </defs>
+
+          <!-- glass body -->
+          <g class="flacon__glass">
+            <rect x="156" y="30" width="48" height="30" rx="3" />
+            <path d="M 64 92 C 64 72 80 62 104 62 L 256 62 C 280 62 296 72 296 92 L 296 380 C 296 404 278 416 252 416 L 108 416 C 82 416 64 404 64 380 Z" />
+          </g>
+          <!-- engraved oval frame -->
+          <ellipse class="flacon__frame" cx="180" cy="232" rx="118" ry="120" />
+
+          <!-- type that rides the glass -->
+          <text class="flacon__shoulder"><textPath href="#bm-shoulder" startOffset="50%" text-anchor="middle">LE NOUVEAU PARFUM</textPath></text>
+          <text class="flacon__engrave"><textPath href="#bm-oval" startOffset="25%" text-anchor="middle">EAU DE PARFUM · IRIS · OUD · AMBRE · CUIR · 100 ML ·</textPath></text>
+          <text class="flacon__base"><textPath href="#bm-base" startOffset="50%" text-anchor="middle">VOL. 3.4 FL OZ · PARIS</textPath></text>
+
+          <!-- centered display lockup -->
+          <text class="flacon__noir"  x="180" y="222" text-anchor="middle">Noir</text>
+          <text class="flacon__absolu" x="180" y="276" text-anchor="middle">Absolu</text>
+          <line class="flacon__hair" x1="146" y1="240" x2="214" y2="240" />
+        </svg>
+      </div>
+    </div>
+    <p class="iu__hint label">Live SVG <code>textPath</code> engraves the type around the flacon — it draws in on hover.</p>
+  </figure>
+
+  <!-- 04 — editorial masthead / feature opener -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — the feature opener</span></figcaption>
+    <div class="iu__scene scene43">
+      <div class="iu__poster spread" data-bloom>
+        <div class="spread__rail">
+          <span class="spread__folio">Feature · 064</span>
+          <span class="spread__sec">Style</span>
+        </div>
+        <div class="spread__main">
+          <h3 class="spread__head" data-bloom-word>The <em>Hairline</em></h3>
+          <p class="spread__deck">On the vanishing stroke, and the two hundred years it took to make a letter this thin.</p>
+          <div class="spread__body">
+            <p><span class="spread__drop">B</span>y the 1790s the press had finally caught the eye: paper smoother, ink blacker, steel sharper. Bodoni let the contrast run riot — heavy stems beside hairlines fine enough to cut, finished with flat serifs snapped on at a perfect right angle.</p>
+            <p>Two centuries on, the same drama still reads as one thing only: pure luxury, set large on a fashion page. The thinner the stroke, the louder the couture.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the headline — opsz drives the hairlines to their finest. Two-column drop-cap body below.</p>
+  </figure>
+
+  <!-- 05 — INTERACTIVE: e-commerce lookbook with live optical-size slider -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Product UI — couture lookbook (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device shop" data-shop>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">bellecour.paris/lookbook/automne</span>
+        </div>
+        <header class="shop__head">
+          <span class="shop__logo">Bellecour</span>
+          <nav class="shop__filters" aria-label="Filter collection">
+            <button class="is-on" data-filter="all">All</button>
+            <button data-filter="gowns">Gowns</button>
+            <button data-filter="coats">Coats</button>
+            <button data-filter="jewels">Jewels</button>
+          </nav>
+          <span class="shop__bag">Bag · 0</span>
+        </header>
+
+        <div class="shop__opsz">
+          <label for="opsz-bm">Optical size — <span data-opsz-val>96</span></label>
+          <input id="opsz-bm" type="range" min="11" max="96" value="96" step="1" data-opsz />
+          <span class="shop__opsz-hint">drag — the hero word blooms with it</span>
+        </div>
+
+        <div class="shop__grid" data-grid>
+          {looks.map((l, i)=>{
+            const hero = i === 0;
+            return (
+            <article class={`card${hero ? ' card--hero' : ''}`} data-cat={l.cat}>
+              <div class="card__img" aria-hidden="true">
+                <span class="card__ghost">£{l.price}</span>
+                {hero
+                  ? <span class="card__hero-word" data-opsz-type>{l.name}</span>
+                  : <span class="card__big">{l.name}</span>}
+                {l.tag && <span class="card__tag">{l.tag}</span>}
+              </div>
+              <div class="card__meta">
+                <h4 class="card__name">{l.name}</h4>
+                <span class="card__detail">{l.detail}</span>
+                <div class="card__row">
+                  <span class="card__price">£{l.price}</span>
+                  <span class="card__id">{l.id}</span>
+                </div>
+              </div>
+            </article>
+          );})}
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter the collection, then drag the optical-size axis — the contrast blooms live on the hero gown.</p>
   </figure>
 </div>
 
+<script>
+  // ---- Scene 05: filter + live optical-size axis on hero word ----
+  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((shop) => {
+    const grid = shop.querySelector('[data-grid]') as HTMLElement;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
+    shop.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+      b.addEventListener('click', () => {
+        shop.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        const f = b.dataset.filter!;
+        cards.forEach((c) => {
+          const show = f === 'all' || c.dataset.cat === f;
+          c.classList.toggle('is-hidden', !show);
+        });
+      })
+    );
+
+    const slider = shop.querySelector('[data-opsz]') as HTMLInputElement;
+    const val = shop.querySelector('[data-opsz-val]') as HTMLElement;
+    const heads = shop.querySelectorAll<HTMLElement>('[data-opsz-type]');
+    const apply = () => {
+      const v = slider.value;
+      val.textContent = v;
+      heads.forEach((h) => (h.style.fontVariationSettings = `'opsz' ${v}, 'wght' 500`));
+    };
+    slider.addEventListener('input', apply);
+    apply();
+  });
+
+  // ---- Scenes 01 + 04: pointer-driven opsz bloom on a masthead/headline ----
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll<HTMLElement>('[data-bloom]').forEach((scene) => {
+      const word = scene.querySelector<HTMLElement>('[data-bloom-word]');
+      if (!word) return;
+      // rest opsz is authored in CSS (72 — hairlines present); hover blooms to 96 (razor-thin)
+      const rest = getComputedStyle(word).getPropertyValue('--opsz').trim() || '72';
+      scene.addEventListener('pointerenter', () => word.style.setProperty('--opsz', '96'));
+      scene.addEventListener('pointerleave', () => word.style.setProperty('--opsz', rest));
+    });
+  }
+</script>
+
 <style>
   .iu__item { margin: 0; }
-  .cover-scene { --card-ar: 3 / 4; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
+  .scene16 { aspect-ratio: 16 / 9; }
+  .scene43 { aspect-ratio: 4 / 3; }
+  .iu__scene * { font-family: var(--fam); }
 
-  .cover { background: var(--bg); display: flex; flex-direction: column; padding: 5cqi; }
-  .cover__top { display: flex; justify-content: space-between; font-size: 2.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 2cqi; }
-  .cover__masthead { font-size: 30cqi; line-height: 0.8; font-weight: 700; text-align: center; letter-spacing: -0.01em; margin: 4cqi 0 3cqi; color: var(--fg); }
-  .cover__lines { display: flex; flex-direction: column; gap: 2cqi; margin-top: auto; }
-  .cover__lines span { font-size: 4cqi; line-height: 1.1; color: var(--fg-2); font-style: italic; }
-  .cover__feat { color: var(--accent) !important; font-style: normal !important; font-weight: 600; }
-  .cover__barcode { display: flex; align-items: flex-end; gap: 2px; height: 8cqi; margin-top: 3cqi; }
+  /* ============================================================
+     01 — FASHION COVER
+     opsz blooms on hover; thunderous Black masthead over fine italics.
+     RED reserved to a SINGLE small mark (the issue number).
+     ============================================================ */
+  .cover { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 5cqi 5cqi 4cqi; }
+  .cover__top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.5cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 2.4cqi; }
+  .cover__no { color: var(--accent); font-feature-settings: 'tnum'; }
+  .cover__season { font-style: italic; letter-spacing: 0.04em; text-transform: none; color: var(--fg-3); }
+  .cover__masthead {
+    --opsz: 72;
+    font-size: 38cqi; line-height: 0.78; text-align: center;
+    font-weight: 900; letter-spacing: -0.005em; margin: 4cqi 0 3cqi; color: var(--fg);
+    font-variation-settings: 'opsz' var(--opsz), 'wght' 900;
+    transition: font-variation-settings 0.6s var(--ease);
+  }
+  .cover__lines { display: flex; flex-direction: column; gap: 2.2cqi; margin-top: auto; }
+  .cover__lines span { font-size: 4.1cqi; line-height: 1.08; color: var(--fg-2); font-style: italic; }
+  .cover__lines em { color: var(--fg); font-style: italic; }
+  .cover__feat { color: var(--fg) !important; font-style: italic !important; font-weight: 600; font-size: 5.2cqi !important; letter-spacing: -0.01em; }
+  .cover__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; margin-top: 4cqi; padding-top: 2.4cqi; border-top: 1px solid var(--line); }
+  .cover__barcode { display: flex; align-items: flex-end; gap: 2px; height: 7cqi; }
   .cover__barcode i { background: var(--fg-3); height: 100%; }
+  .cover__plus { font-size: 2.6cqi; letter-spacing: 0.04em; color: var(--fg-2); text-align: right; }
+  .cover__plus em { color: var(--fg-3); font-style: italic; }
 
-  .spread { background: var(--bg); padding: 5cqi; display: flex; flex-direction: column; justify-content: center; }
-  .spread__folio { font-size: 2.6cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-  .spread__head { font-size: 22cqi; line-height: 0.86; font-weight: 700; letter-spacing: -0.02em; margin-top: 2cqi; color: var(--fg); }
-  .spread__head em { font-weight: 400; font-style: italic; color: var(--accent); }
-  .spread__deck { font-size: 3.2cqi; font-style: italic; color: var(--fg-2); max-width: 70%; margin-top: 3cqi; }
+  /* ============================================================
+     02 — MAISON IDENTITY / PACKAGING
+     RED reserved to a SINGLE small mark (the dot in the sub-rule).
+     Wordmark breathes the opsz axis on a slow loop.
+     ============================================================ */
+  .maison { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 6cqi; }
+  .maison__id { display: flex; align-items: baseline; justify-content: center; gap: 1.6cqi; font-style: italic; color: var(--fg-3); }
+  .maison__estd { font-size: 2.4cqi; letter-spacing: 0.04em; }
+  .maison__year { font-size: 2.8cqi; font-variation-settings: 'onum' 1; font-feature-settings: 'onum'; color: var(--fg-2); }
+  .maison__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2cqi; }
+  .maison__line { width: 26cqi; height: 1px; background: var(--line); }
+  .maison__word {
+    --opsz: 72;
+    font-size: 16cqi; line-height: 0.9; font-weight: 500; letter-spacing: 0.01em; color: var(--fg);
+    font-variation-settings: 'opsz' var(--opsz), 'wght' 500; text-align: center;
+  }
+  .maison__sub { display: inline-flex; align-items: center; gap: 0.6em; font-size: 2.8cqi; letter-spacing: 0.4em; text-transform: uppercase; color: var(--fg-2); padding-left: 0.4em; }
+  .maison__dot { width: 0.5cqi; height: 0.5cqi; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .maison__box { display: flex; align-items: center; gap: 3cqi; justify-self: center; border: 1px solid var(--line); padding: 2.6cqi 4cqi; }
+  .maison__box-l { font-size: 9cqi; line-height: 1; font-weight: 700; color: var(--fg); font-variation-settings: 'opsz' 60, 'wght' 700; }
+  .maison__box-r { font-size: 2.7cqi; line-height: 1.3; color: var(--fg-2); letter-spacing: 0.04em; }
+  .maison__box-r i { font-style: italic; color: var(--fg-3); font-size: 2.3cqi; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .maison__word { animation: bm-breathe 9s var(--ease) infinite; }
+    @keyframes bm-breathe {
+      0%, 100% { font-variation-settings: 'opsz' 24, 'wght' 500; }
+      50%      { font-variation-settings: 'opsz' 96, 'wght' 500; }
+    }
+  }
+
+  /* ============================================================
+     03 — FLACON: type engraved around a perfume bottle via SVG textPath
+     A distinct concept: silhouette + curved type, no centered-word formula.
+     RED reserved to a SINGLE small mark (the "Absolu" — small, not giant).
+     ============================================================ */
+  .flacon { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 5cqi 5cqi 4cqi; }
+  .flacon__house { font-size: 2.6cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-3); padding-left: 0.34em; }
+  .flacon__svg { width: 100%; height: auto; margin: auto 0; display: block; }
+  .flacon__glass rect,
+  .flacon__glass path { fill: var(--bg-2); stroke: var(--line); stroke-width: 1; }
+  .flacon__frame { fill: none; stroke: var(--line); stroke-width: 1; }
+
+  .flacon__svg text { fill: var(--fg); }
+  .flacon__shoulder { font-size: 10px; letter-spacing: 5px; fill: var(--fg-3); }
+  .flacon__engrave { font-size: 9px; letter-spacing: 3px; fill: var(--fg-3); }
+  .flacon__base { font-size: 9px; letter-spacing: 3px; fill: var(--fg-3); }
+  .flacon__hair { stroke: var(--fg-3); stroke-width: 0.75; }
+  .flacon__noir {
+    font-size: 60px; font-weight: 900; fill: var(--fg);
+    font-variation-settings: 'opsz' 96, 'wght' 900;
+  }
+  .flacon__absolu {
+    font-size: 44px; font-style: italic; font-weight: 400; fill: var(--accent);
+    font-variation-settings: 'opsz' 96, 'wght' 400;
+  }
+
+  /* Motion is HOVER-ONLY so the artifact is always fully rendered by default (no-JS,
+     reduced-motion, and every screenshot show the finished flacon). On hover the engraved
+     frame re-draws its stroke and the lockup re-engraves — a tasteful, fitting replay. */
+  .flacon__frame { stroke-dasharray: 760; stroke-dashoffset: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .flacon:hover .flacon__frame { animation: bm-redraw 1.3s var(--ease); }
+    .flacon:hover .flacon__noir,
+    .flacon:hover .flacon__absolu { animation: bm-reengrave 1s var(--ease); }
+    .flacon:hover .flacon__shoulder,
+    .flacon:hover .flacon__engrave,
+    .flacon:hover .flacon__base { animation: bm-reengrave 1.2s var(--ease); }
+    @keyframes bm-redraw { from { stroke-dashoffset: 760; } to { stroke-dashoffset: 0; } }
+    @keyframes bm-reengrave { 0% { opacity: 0; } 40% { opacity: 0; } 100% { opacity: 1; } }
+  }
+
+  /* ============================================================
+     04 — EDITORIAL FEATURE OPENER
+     opsz blooms on hover. RED reserved to a SINGLE small mark (folio).
+     Headline restrained so the two-column drop-cap body renders in frame.
+     ============================================================ */
+  .spread { background: var(--bg); display: grid; grid-template-columns: 12% 1fr; padding: 4.5cqi; gap: 3.5cqi; }
+  .spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 2.5cqi; }
+  .spread__folio { font-size: 2cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .spread__sec { font-size: 2cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
+  .spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+  .spread__head {
+    --opsz: 72;
+    font-size: 13cqi; line-height: 0.9; font-weight: 700; letter-spacing: -0.02em; color: var(--fg);
+    font-variation-settings: 'opsz' var(--opsz), 'wght' 700;
+    transition: font-variation-settings 0.6s var(--ease);
+  }
+  .spread__head em { font-weight: 400; font-style: italic; color: var(--fg); font-variation-settings: 'opsz' var(--opsz), 'wght' 400; }
+  .spread__deck { font-size: 2.9cqi; line-height: 1.18; font-style: italic; color: var(--fg-2); max-width: 80%; margin-top: 2cqi; }
+  .spread__body { columns: 2; column-gap: 3.5cqi; font-size: 2.05cqi; line-height: 1.5; color: var(--fg-2); margin-top: 3cqi; }
+  .spread__body p { margin: 0 0 0.9em; }
+  .spread__drop {
+    float: left; font-size: 9cqi; line-height: 0.72; font-weight: 700; padding: 0.06em 0.1em 0 0; color: var(--fg);
+    font-variation-settings: 'opsz' 72, 'wght' 700;
+  }
+  /* the one red mark in the body: the descender hairline of the drop cap reads neutral;
+     accent stays only on the rail folio. */
+
+  /* ============================================================
+     05 — LOOKBOOK UI (real px sizing)
+     Hero card spans 2 cols with live opsz word + ghosted price.
+     ============================================================ */
+  .shop { font-size: 13px; line-height: 1.4; background: var(--bg); }
+  .shop__head { display: flex; align-items: center; gap: 1.2rem; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .shop__logo { font-size: 22px; font-weight: 600; letter-spacing: 0.01em; color: var(--fg); font-variation-settings: 'opsz' 40, 'wght' 600; }
+  .shop__filters { display: flex; gap: 0.25rem; margin-left: 0.6rem; }
+  .shop__filters button { font-size: 13px; color: var(--fg-3); padding: 0.3rem 0.7rem; border-radius: 100px; letter-spacing: 0.02em; transition: color .15s var(--ease), background .15s var(--ease); }
+  .shop__filters button:hover { color: var(--fg); }
+  .shop__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-weight: 600; }
+  .shop__bag { margin-left: auto; font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); }
+
+  .shop__opsz { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .shop__opsz label { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); white-space: nowrap; }
+  .shop__opsz label span { color: var(--accent); font-feature-settings: 'tnum'; }
+  .shop__opsz-hint { font-size: 11.5px; font-style: italic; color: var(--fg-3); margin-left: auto; }
+  .shop__opsz input[type='range'] { -webkit-appearance: none; appearance: none; width: 180px; height: 2px; background: var(--line); border-radius: 2px; cursor: pointer; }
+  .shop__opsz input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+  .shop__opsz input[type='range']::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+  .shop__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr auto; grid-auto-flow: dense;
+    gap: 1px; background: var(--line); padding: 1px;
+  }
+  .card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; transition: opacity .25s var(--ease); }
+  .card.is-hidden { display: none; }
+  .card__img { position: relative; flex: 1; min-height: 200px; background: var(--bg-2); display: grid; place-items: center; overflow: hidden; padding: 0.8rem; container-type: inline-size; }
+  .card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
+  .card__ghost {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: clamp(40px, 34cqi, 90px); font-weight: 900; letter-spacing: -0.03em; color: var(--fg);
+    opacity: 0.05; font-feature-settings: 'tnum'; pointer-events: none; white-space: nowrap;
+    font-variation-settings: 'opsz' 96, 'wght' 900;
+  }
+  .card__big { position: relative; font-size: clamp(22px, 16cqi, 30px); line-height: 0.95; text-align: center; color: var(--fg); font-style: italic; font-variation-settings: 'opsz' 80, 'wght' 500; max-width: 100%; }
+  .card__tag { position: absolute; top: 0.8rem; left: 0.8rem; z-index: 2; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
+  .card__meta { padding: 0.7rem 0.8rem 0.9rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .card__name { font-size: 17px; font-weight: 600; letter-spacing: 0; color: var(--fg); font-variation-settings: 'opsz' 24, 'wght' 600; }
+  .card__detail { font-size: 12px; font-style: italic; color: var(--fg-3); }
+  .card__row { display: flex; align-items: baseline; justify-content: space-between; margin-top: 0.35rem; }
+  .card__price { font-size: 14px; color: var(--fg); font-feature-settings: 'tnum'; }
+  .card__id { font-size: 11px; letter-spacing: 0.1em; color: var(--fg-3); font-feature-settings: 'tnum'; }
+
+  /* hero featured card: spans two columns AND two rows, big live opsz word */
+  .card--hero { grid-column: 1 / span 2; grid-row: 1 / span 2; }
+  .card--hero .card__img { aspect-ratio: auto; flex: 1; min-height: 0; }
+  .card--hero .card__ghost { font-size: clamp(90px, 40cqi, 180px); opacity: 0.06; }
+  .card__hero-word {
+    position: relative; font-size: clamp(28px, 8.5cqi, 64px); line-height: 0.9; text-align: center; font-style: italic;
+    color: var(--fg); font-variation-settings: 'opsz' 96, 'wght' 500;
+    transition: font-variation-settings .1s linear; max-width: 100%; padding: 0 0.3em;
+  }
+  .card--hero .card__tag { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+
+  @container (max-width: 640px) {
+    .shop__grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto auto auto; }
+    .card--hero { grid-column: 1 / span 2; grid-row: 1; }
+    .shop__opsz-hint { display: none; }
+    .shop__filters { margin-left: 0; }
+  }
+  @container (max-width: 460px) {
+    .shop__head { flex-wrap: wrap; }
+    .shop__bag { display: none; }
+    .shop__opsz input[type='range'] { width: 110px; }
+  }
+
+  /* ---- responsive: portrait/editorial scenes restack on narrow screens ---- */
+  @container (max-width: 560px) {
+    .spread { grid-template-columns: 1fr; }
+    .spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
+    .spread__sec { writing-mode: horizontal-tb; }
+    .spread__main { grid-column: 1; }
+    .spread__body { columns: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card__hero-word, .cover__masthead, .spread__head, .spread__head em { transition: none; }
+  }
 </style>

@@ -1,43 +1,520 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import BrandScene from '../BrandScene.astro';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// --- 03 · Architectural wayfinding directory ------------------------------
+// [level, name, category, side] — a museum/gallery floor directory you can filter.
+const directory = [
+  ['L4', 'Roof Terrace & Café', 'visit', 'right'],
+  ['L3', 'Modern & Contemporary', 'galleries', 'left'],
+  ['L3', 'Photography', 'galleries', 'left'],
+  ['L2', 'Design & Architecture', 'galleries', 'right'],
+  ['L1', 'Members Lounge', 'visit', 'right'],
+  ['G', 'Main Entrance & Tickets', 'visit', 'left'],
+  ['G', 'Bookshop', 'shop', 'right'],
+  ['B1', 'Conservation Studios', 'galleries', 'left'],
+] as [string, string, string, string][];
 ---
 <div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — Bauhaus geometric poster with construction overlay -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Poster — a Bauhaus composition</span></figcaption>
-    <div class="iu__scene scene-sq iu__scene--portrait">
-      <div class="iu__poster bau">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Poster — Bauhaus exhibition, with the o drawn on its compass</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="bau" data-bau>
+        <!-- elementary shapes: circle · triangle · square -->
         <span class="bau__circle" aria-hidden="true"></span>
         <span class="bau__tri" aria-hidden="true"></span>
-        <span class="bau__bar" aria-hidden="true"></span>
-        <span class="bau__year">1919—2026</span>
-        <h3 class="bau__head">AUS<br/>STELL<br/>UNG</h3>
-        <span class="bau__foot">die neue typografie · halle 7</span>
+        <span class="bau__square" aria-hidden="true"></span>
+        <svg class="bau__rule" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="0" x2="100" y2="100" />
+        </svg>
+
+        <header class="bau__top">
+          <span>STAATLICHES BAUHAUS</span>
+          <span>1919 — 2026</span>
+        </header>
+
+        <div class="bau__hero">
+          <span class="bau__sub">Die Neue Typographie</span>
+          <!-- the O carries a compass-drawn construction overlay -->
+          <h3 class="bau__word">
+            <span class="bau__glyph">F</span><span class="bau__glyph bau__glyph--o">O<i class="bau__compass" aria-hidden="true"></i></span><span class="bau__glyph">R</span><span class="bau__glyph">M</span>
+          </h3>
+          <span class="bau__rule-x">FOLGT DER FUNKTION</span>
+        </div>
+
+        <footer class="bau__foot">
+          <span>AUSSTELLUNG · HALLE SIEBEN</span>
+          <span class="bau__foot-date">14.4 — 30.9</span>
+        </footer>
       </div>
     </div>
+    <p class="iu__hint label">The whole face is rebuilt from the circle, triangle and square; FORM breathes across the weight axis and the O wears the compass it was drawn with.</p>
   </figure>
 
+  <!-- 02 — Fashion / architecture brand lookbook -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — a modernist identity sheet</span></figcaption>
-    <div class="iu__scene brand-scene">
-      <BrandScene font={font} variant="grid" />
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Identity — a fashion house lookbook cover, hairline to black</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="look" data-look>
+        <div class="look__frame">
+          <header class="look__top">
+            <span class="look__mark">M—N</span>
+            <span class="look__cap">AUTUMN / WINTER 26</span>
+          </header>
+
+          <div class="look__center">
+            <span class="look__eyebrow">THE MONOLINE COLLECTION</span>
+            <!-- the variable axis IS the subject: hairline locked against black -->
+            <h3 class="look__name">
+              <span class="look__name-l look__name-l--hair">HAIR</span>
+              <span class="look__name-l look__name-l--black">LINE</span>
+            </h3>
+            <span class="look__line"></span>
+            <p class="look__note">One axis, two extremes — from a couture hairline to a confident black, cut to the circle and the straight line.</p>
+          </div>
+
+          <div class="look__rail" aria-hidden="true">
+            <span class="look__dot"></span>
+            <span class="look__rail-line"></span>
+            <span class="look__rail-cap">WGHT&nbsp;&nbsp;100</span>
+            <span class="look__rail-cap look__rail-cap--end">900</span>
+            <span class="look__dot look__dot--fill"></span>
+          </div>
+
+          <footer class="look__foot">
+            <span>PARIS · MILAN · TOKYO</span>
+            <span class="look__idx">N<sup>o</sup> 04</span>
+          </footer>
+        </div>
+      </div>
     </div>
+    <p class="iu__hint label">Jost's variable axis runs from a couture hairline to a confident black; the wordmark tracks open on reveal the way a fashion logotype breathes.</p>
+  </figure>
+
+  <!-- 03 — Architectural wayfinding / signage directory (own dark surface) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Wayfinding — gallery signage directory, filterable</span></figcaption>
+    <div class="iu__scene">
+      <div class="sign" data-sign>
+        <div class="sign__head">
+          <div class="sign__id">
+            <span class="sign__arrow" aria-hidden="true"></span>
+            <span class="sign__title">DIRECTORY</span>
+          </div>
+          <div class="sign__filters" role="group" aria-label="Filter directory">
+            <button class="sign__filter is-on" data-filter="all">ALL</button>
+            <button class="sign__filter" data-filter="galleries">GALLERIES</button>
+            <button class="sign__filter" data-filter="visit">VISIT</button>
+            <button class="sign__filter" data-filter="shop">SHOP</button>
+          </div>
+        </div>
+        <div class="sign__rows" data-rows>
+          {directory.map((d) => (
+            <div class="sign__row" data-cat={d[2]}>
+              <span class="sign__lvl">{d[0]}</span>
+              <span class="sign__name">{d[1]}</span>
+              <span class="sign__slot" aria-hidden="true"><i class={`sign__dir sign__dir--${d[3]}`}></i></span>
+            </div>
+          ))}
+        </div>
+        <div class="sign__foot"><span data-count>8 destinations</span><span>YOU ARE HERE · LEVEL G</span></div>
+      </div>
+    </div>
+    <p class="iu__hint label">Filter the directory — rows re-stack and the cap-height level codes hold a perfect column, the way good signage must.</p>
+  </figure>
+
+  <!-- 04 — Interactive product UI: smart thermostat at real device scale -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Product UI — climate app, drag the dial (real device scale, interactive)</span></figcaption>
+    <div class="iu__scene iu__scene--phone">
+      <div class="iu__device clim" data-clim>
+        <div class="clim__chrome">
+          <span class="clim__time">9:41</span>
+          <span class="clim__title">ATRIUM</span>
+          <span class="clim__status">
+            <svg class="clim__wifi" viewBox="0 0 16 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect x="12" y="0" width="3" height="12" rx="0.6"/></svg>
+            <svg class="clim__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="16" height="8" rx="1" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="clim__mode" role="tablist">
+          <button class="clim__modebtn is-on" data-mode="heat" role="tab" aria-selected="true">HEAT</button>
+          <button class="clim__modebtn" data-mode="cool" role="tab" aria-selected="false">COOL</button>
+          <button class="clim__modebtn" data-mode="eco" role="tab" aria-selected="false">ECO</button>
+        </div>
+
+        <div class="clim__dialwrap">
+          <div class="clim__dial" data-dial role="slider" aria-valuemin="15" aria-valuemax="28" aria-valuenow="21" aria-label="Target temperature" tabindex="0">
+            <svg class="clim__ring" viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="clim__track" cx="100" cy="100" r="86" />
+              <circle class="clim__prog" data-prog cx="100" cy="100" r="86" />
+              <g class="clim__ticks" data-ticks></g>
+            </svg>
+            <div class="clim__readout">
+              <span class="clim__temp" data-temp>21</span>
+              <span class="clim__unit">°C</span>
+              <span class="clim__set" data-setlabel>HEATING TO</span>
+            </div>
+            <span class="clim__knob" data-knob aria-hidden="true"></span>
+          </div>
+          <p class="clim__hint">Drag the ring</p>
+        </div>
+
+        <div class="clim__stats">
+          <div class="clim__stat"><span class="clim__stat-v" data-current>19.4°</span><span class="clim__stat-k">CURRENT</span></div>
+          <div class="clim__stat"><span class="clim__stat-v" data-humid>46%</span><span class="clim__stat-k">HUMIDITY</span></div>
+          <div class="clim__stat"><span class="clim__stat-v" data-eta>24 min</span><span class="clim__stat-k">TO TARGET</span></div>
+        </div>
+
+        <div class="clim__rooms">
+          <button class="clim__room is-on" data-room>Atrium<b>21°</b></button>
+          <button class="clim__room" data-room>Studio<b>20°</b></button>
+          <button class="clim__room" data-room>Loft<b>18°</b></button>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the ring (or arrow-key it): the target number swells from thin to black across Jost's weight axis as it warms, and the geometric dial fills.</p>
   </figure>
 </div>
 
+<script>
+  // --- 03 · directory filter (user-driven, reduced-motion safe) ---
+  document.querySelectorAll<HTMLElement>('[data-sign]').forEach((sign) => {
+    const rows = Array.from(sign.querySelectorAll<HTMLElement>('.sign__row'));
+    const count = sign.querySelector('[data-count]') as HTMLElement;
+    function apply(filter: string) {
+      let shown = 0;
+      rows.forEach((row) => {
+        const ok = filter === 'all' || row.dataset.cat === filter;
+        row.classList.toggle('is-hidden', !ok);
+        if (ok) shown++;
+      });
+      count.textContent = `${shown} destination${shown === 1 ? '' : 's'}`;
+    }
+    sign.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        sign.querySelectorAll('[data-filter]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        apply(btn.dataset.filter!);
+      })
+    );
+  });
+
+  // --- 04 · climate dial (drag / keyboard, drives weight axis) ---
+  document.querySelectorAll<HTMLElement>('[data-clim]').forEach((clim) => {
+    const dial = clim.querySelector('[data-dial]') as HTMLElement;
+    const prog = clim.querySelector('[data-prog]') as SVGCircleElement;
+    const knob = clim.querySelector('[data-knob]') as HTMLElement;
+    const temp = clim.querySelector('[data-temp]') as HTMLElement;
+    const ticksG = clim.querySelector('[data-ticks]') as SVGGElement;
+    const setLabel = clim.querySelector('[data-setlabel]') as HTMLElement;
+    const eta = clim.querySelector('[data-eta]') as HTMLElement;
+    const current = clim.querySelector('[data-current]') as HTMLElement;
+
+    const MIN = 15, MAX = 28;
+    // ring spans 270deg, gap at the bottom (start -135deg .. +135deg)
+    const SPAN = 270, START = -135;
+    const R = 86, C = 2 * Math.PI * R; // circumference
+    let value = 21;
+    let mode = 'heat';
+
+    // build geometric tick marks (Jost = constructed from lines)
+    const TICKS = 14;
+    for (let i = 0; i <= TICKS; i++) {
+      const a = (START + (SPAN * i) / TICKS) * (Math.PI / 180);
+      const r1 = 70, r2 = i % 7 === 0 ? 60 : 65;
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', String(100 + r1 * Math.cos(a)));
+      ln.setAttribute('y1', String(100 + r1 * Math.sin(a)));
+      ln.setAttribute('x2', String(100 + r2 * Math.cos(a)));
+      ln.setAttribute('y2', String(100 + r2 * Math.sin(a)));
+      ln.setAttribute('class', 'clim__tick');
+      ticksG.appendChild(ln);
+    }
+
+    function render() {
+      const frac = (value - MIN) / (MAX - MIN);
+      // progress arc: fill up to 270deg of the ring proportionally, gap at bottom
+      const arcLen = (SPAN / 360) * C;            // full 270deg arc length
+      prog.style.strokeDasharray = `${arcLen * frac} ${C}`;
+      // rotate so the arc starts at the same point as the track (gap centered at bottom)
+      prog.style.transform = 'rotate(135deg)';
+      prog.style.transformOrigin = '100px 100px';
+
+      // knob position
+      const a = (START + SPAN * frac) * (Math.PI / 180);
+      const kr = 86;
+      knob.style.left = `${50 + (kr * Math.cos(a)) / 200 * 100}%`;
+      knob.style.top = `${50 + (kr * Math.sin(a)) / 200 * 100}%`;
+
+      // weight axis: warmer = heavier (200 -> 800)
+      const wght = Math.round(200 + frac * 600);
+      temp.style.fontVariationSettings = `'wght' ${wght}`;
+      temp.textContent = String(value);
+
+      // contextual numbers
+      const cur = mode === 'cool' ? 24.8 : 19.4;
+      current.textContent = `${cur}°`;
+      const diff = Math.abs(value - cur);
+      eta.textContent = diff < 0.6 ? 'At target' : `${Math.max(1, Math.round(diff * 11))} min`;
+
+      dial.setAttribute('aria-valuenow', String(value));
+      clim.dataset.mode = mode;
+    }
+
+    function setFromPointer(clientX: number, clientY: number) {
+      const rect = dial.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      let ang = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI); // -180..180
+      // normalize into the START..START+SPAN window
+      let rel = ang - START;
+      if (rel < 0) rel += 360;
+      if (rel > SPAN) {
+        // snap to nearest end of the gap
+        rel = rel - SPAN < 360 - rel ? SPAN : 0;
+      }
+      const frac = Math.min(1, Math.max(0, rel / SPAN));
+      value = Math.round(MIN + frac * (MAX - MIN));
+      render();
+    }
+
+    let dragging = false;
+    dial.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      dial.setPointerCapture(e.pointerId);
+      setFromPointer(e.clientX, e.clientY);
+    });
+    dial.addEventListener('pointermove', (e) => { if (dragging) setFromPointer(e.clientX, e.clientY); });
+    dial.addEventListener('pointerup', () => { dragging = false; });
+    dial.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight') { value = Math.min(MAX, value + 1); render(); e.preventDefault(); }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') { value = Math.max(MIN, value - 1); render(); e.preventDefault(); }
+    });
+
+    // mode tabs
+    clim.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        clim.querySelectorAll('[data-mode]').forEach((b) => { b.classList.remove('is-on'); b.setAttribute('aria-selected', 'false'); });
+        btn.classList.add('is-on'); btn.setAttribute('aria-selected', 'true');
+        mode = btn.dataset.mode!;
+        setLabel.textContent = mode === 'cool' ? 'COOLING TO' : mode === 'eco' ? 'ECO HOLD' : 'HEATING TO';
+        render();
+      })
+    );
+
+    // room switcher (cosmetic state)
+    const roomTargets: Record<string, number> = { Atrium: 21, Studio: 20, Loft: 18 };
+    clim.querySelectorAll<HTMLButtonElement>('[data-room]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        clim.querySelectorAll('[data-room]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        const label = (btn.childNodes[0].textContent || '').trim();
+        if (roomTargets[label] != null) { value = roomTargets[label]; render(); }
+      })
+    );
+
+    render();
+  });
+</script>
+
 <style>
   .iu__item { margin: 0; }
-  .scene-sq { --card-ar: 4 / 5; }
-  .brand-scene { aspect-ratio: 16 / 9; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
 
-  .bau { background: var(--bg); overflow: hidden; padding: 5cqi; }
-  .bau__circle { position: absolute; width: 34cqi; height: 34cqi; border-radius: 50%; background: var(--accent); top: 6cqi; right: 6cqi; }
-  .bau__tri { position: absolute; width: 0; height: 0; border-left: 14cqi solid transparent; border-right: 14cqi solid transparent; border-bottom: 24cqi solid var(--fg); bottom: 16cqi; right: 10cqi; opacity: 0.9; }
-  .bau__bar { position: absolute; width: 60cqi; height: 4cqi; background: var(--accent); left: -10cqi; bottom: 30cqi; transform: rotate(-24deg); }
-  .bau__year { position: relative; font-size: 3cqi; letter-spacing: 0.2em; color: var(--fg-2); }
-  .bau__head { position: relative; font-size: 22cqi; line-height: 0.86; font-weight: 700; letter-spacing: -0.02em; margin-top: 4cqi; color: var(--fg); }
-  .bau__foot { position: absolute; bottom: 5cqi; left: 5cqi; font-size: 2.6cqi; letter-spacing: 0.1em; color: var(--fg-2); }
+  /* shared scene framing — matches oswald.astro / inter.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 5 / 6; } }
+
+  .iu__scene--phone {
+    aspect-ratio: 16 / 10;
+    display: grid; place-items: center;
+    padding: clamp(14px, 3cqi, 34px) 0;
+  }
+  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
+  .iu__device { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+
+  /* ============ 01 · BAUHAUS POSTER ============ */
+  .bau { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 6cqi 6cqi 5cqi; display: flex; flex-direction: column; overflow: hidden; }
+  /* elementary shapes */
+  .bau__circle { position: absolute; width: 46cqi; height: 46cqi; border-radius: 50%; background: var(--accent); top: -8cqi; right: -10cqi; }
+  .bau__tri { position: absolute; width: 0; height: 0; border-left: 13cqi solid transparent; border-right: 13cqi solid transparent; border-bottom: 22cqi solid var(--fg); bottom: 17cqi; left: 4cqi; opacity: 0.92; }
+  .bau__square { position: absolute; width: 14cqi; height: 14cqi; background: color-mix(in srgb, var(--accent) 26%, var(--bg)); bottom: 22cqi; right: 8cqi; }
+  .bau__rule { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .bau__rule line { stroke: var(--fg); stroke-width: 0.4; opacity: 0.16; vector-effect: non-scaling-stroke; }
+
+  .bau__top { position: relative; display: flex; justify-content: space-between; font-size: 2.3cqi; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-2); font-feature-settings: 'tnum'; }
+  .bau__hero { position: relative; margin: auto 0; }
+  .bau__sub { display: block; font-size: 3.2cqi; font-weight: 300; letter-spacing: 0.42em; text-transform: uppercase; color: var(--fg-2); margin-bottom: 2cqi; }
+  .bau__word { display: flex; font-size: 33cqi; line-height: 0.82; font-weight: 700; letter-spacing: -0.02em; margin: 0; text-transform: uppercase; }
+  .bau__glyph { position: relative; }
+  .bau__glyph--o { color: var(--accent); }
+  /* compass construction overlay on the O */
+  .bau__compass { position: absolute; inset: 8% 6%; border: 0.5cqi solid color-mix(in srgb, var(--fg) 55%, transparent); border-radius: 50%; pointer-events: none; }
+  .bau__compass::before, .bau__compass::after { content: ''; position: absolute; background: color-mix(in srgb, var(--fg) 45%, transparent); }
+  .bau__compass::before { left: 50%; top: -4%; bottom: -4%; width: 0.4cqi; transform: translateX(-50%); }
+  .bau__compass::after { top: 50%; left: -4%; right: -4%; height: 0.4cqi; transform: translateY(-50%); }
+  .bau__rule-x { display: block; font-size: 4.6cqi; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); margin-top: 1cqi; }
+  .bau__foot { position: relative; display: flex; justify-content: space-between; align-items: baseline; font-size: 2.4cqi; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2); border-top: 1px solid var(--line); padding-top: 2cqi; font-feature-settings: 'tnum'; }
+  .bau__foot-date { color: var(--accent); font-weight: 600; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bau__word { animation: bau-wght 6s var(--ease-out, ease-in-out) infinite alternate; }
+    @keyframes bau-wght {
+      from { font-variation-settings: 'wght' 320; }
+      to   { font-variation-settings: 'wght' 760; }
+    }
+    .bau__compass { animation: bau-compass 9s linear infinite; transform-origin: 50% 50%; }
+    @keyframes bau-compass { to { transform: rotate(360deg); } }
+  }
+
+  @container (max-width: 520px) {
+    .bau__word { font-size: 30cqi; }
+    .bau__square { display: none; }
+  }
+
+  /* ============ 02 · FASHION LOOKBOOK ============ */
+  .look { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 5cqi; }
+  .look__frame { position: absolute; inset: 5cqi; border: 1px solid var(--line); display: flex; flex-direction: column; padding: 4.5cqi 4.5cqi 4cqi; }
+  .look__top { display: flex; justify-content: space-between; align-items: baseline; }
+  .look__mark { font-size: 3.4cqi; font-weight: 600; letter-spacing: 0.12em; }
+  .look__cap { font-size: 2cqi; font-weight: 400; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-2); }
+  .look__center { margin: auto 0 0; }
+  .look__eyebrow { display: block; font-size: 2.2cqi; font-weight: 400; letter-spacing: 0.46em; text-transform: uppercase; color: var(--fg-2); margin-bottom: 3cqi; }
+  .look__name { margin: 0; display: flex; flex-direction: column; }
+  .look__name-l { font-size: 17cqi; line-height: 0.86; letter-spacing: 0.02em; text-transform: uppercase; }
+  /* the literal axis range: hairline locked tight against black */
+  .look__name-l--hair { font-variation-settings: 'wght' 100; font-weight: 100; color: var(--fg-2); }
+  .look__name-l--black { font-variation-settings: 'wght' 900; font-weight: 900; color: var(--fg); }
+  .look__line { display: block; height: 1px; background: var(--accent); width: 22cqi; margin: 3.2cqi 0; }
+  .look__note { font-size: 2.6cqi; font-weight: 300; line-height: 1.45; letter-spacing: 0.02em; color: var(--fg-2); max-width: 64%; margin: 0; }
+  /* lower-third axis rail — fills dead space, reinforces the wght story */
+  .look__rail { display: flex; align-items: center; gap: 1.6cqi; margin: auto 0 0; }
+  .look__rail-line { flex: 1; height: 1px; background: linear-gradient(to right, color-mix(in srgb, var(--fg) 14%, transparent), var(--fg)); }
+  .look__dot { width: 2cqi; height: 2cqi; border-radius: 50%; border: 0.5cqi solid var(--fg-2); flex: none; }
+  .look__dot--fill { background: var(--accent); border-color: var(--accent); }
+  .look__rail-cap { font-size: 1.9cqi; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-2); font-feature-settings: 'tnum'; white-space: nowrap; }
+  .look__rail-cap--end { letter-spacing: 0.16em; }
+  .look__foot { display: flex; justify-content: space-between; align-items: baseline; font-size: 2cqi; font-weight: 400; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-2); margin-top: 4cqi; }
+  .look__idx { letter-spacing: 0.1em; }
+  .look__idx sup { font-size: 0.6em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* the two locked words breathe across the axis in opposition,
+       so the hairline↔black range is unmistakable and alive */
+    .look__name-l--hair { animation: look-hair 7s var(--ease-out, ease-in-out) infinite alternate; }
+    .look__name-l--black { animation: look-black 7s var(--ease-out, ease-in-out) infinite alternate; }
+    @keyframes look-hair {
+      from { font-variation-settings: 'wght' 100; }
+      to   { font-variation-settings: 'wght' 320; }
+    }
+    @keyframes look-black {
+      from { font-variation-settings: 'wght' 900; }
+      to   { font-variation-settings: 'wght' 640; }
+    }
+  }
+
+  @container (max-width: 520px) {
+    .look__name-l { font-size: 19cqi; }
+    .look__note { max-width: 92%; font-size: 3.4cqi; }
+    .look__eyebrow { font-size: 3cqi; }
+    .look__rail-cap { font-size: 2.6cqi; }
+  }
+
+  /* ============ 03 · WAYFINDING SIGNAGE (own dark surface) ============ */
+  .sign { position: absolute; inset: 0; background: #14161a; color: #f3f1ec; padding: 3.2cqi 4cqi 2.6cqi; display: flex; flex-direction: column; }
+  .sign__head { display: flex; align-items: center; justify-content: space-between; gap: 2cqi; border-bottom: 0.4cqi solid #f3f1ec; padding-bottom: 2cqi; margin-bottom: 1.4cqi; flex-wrap: wrap; }
+  .sign__id { display: flex; align-items: center; gap: 2cqi; }
+  .sign__arrow { width: 5cqi; height: 5cqi; border: 0.7cqi solid #f3f1ec; border-bottom: 0; border-left: 0; transform: rotate(45deg); }
+  .sign__title { font-size: 5cqi; font-weight: 600; letter-spacing: 0.14em; }
+  .sign__filters { display: inline-flex; gap: 1cqi; flex-wrap: wrap; }
+  .sign__filter { font-size: 1.9cqi; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #f3f1ec99; background: transparent; border: 1px solid #f3f1ec2e; border-radius: 100px; padding: 0.8cqi 2cqi; cursor: pointer; transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap; }
+  .sign__filter:hover { color: #f3f1ec; border-color: #f3f1ec66; }
+  .sign__filter.is-on { color: #14161a; background: #f3f1ec; border-color: #f3f1ec; }
+  .sign__rows { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .sign__row { flex: 1; display: grid; grid-template-columns: 9% 1fr 7cqi; gap: 2.5cqi; align-items: center; min-height: 0; border-bottom: 1px solid #f3f1ec14; }
+  .sign__row.is-hidden { display: none; }
+  .sign__lvl { font-size: 3cqi; font-weight: 700; letter-spacing: 0.02em; color: #f3f1ec; font-feature-settings: 'tnum'; text-align: left; }
+  .sign__name { font-size: 2.8cqi; font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f3f1ecdd; }
+  /* each arrow gets one fixed slot in its own column — no overlap/zigzag */
+  .sign__slot { display: flex; align-items: center; justify-content: center; height: 100%; }
+  .sign__dir { display: block; width: 2.4cqi; height: 2.4cqi; border: 0.5cqi solid var(--accent); border-bottom: 0; }
+  .sign__dir--right { border-left: 0; transform: rotate(45deg); }
+  .sign__dir--left { border-right: 0; transform: rotate(-45deg); margin-left: 0.9cqi; }
+  .sign__foot { display: flex; justify-content: space-between; align-items: baseline; padding-top: 1.6cqi; margin-top: 0.4cqi; border-top: 1px solid #f3f1ec1f; font-size: 1.9cqi; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #f3f1ec80; font-feature-settings: 'tnum'; }
+
+  @container (max-width: 540px) {
+    .sign__title { font-size: 6cqi; }
+    .sign__row { grid-template-columns: 14% 1fr 9cqi; }
+    .sign__dir { width: 3.2cqi; height: 3.2cqi; }
+    .sign__lvl, .sign__name { font-size: 4cqi; }
+    .sign__filter { font-size: 2.8cqi; }
+  }
+
+  /* ============ 04 · CLIMATE APP (real px) ============ */
+  .iu__scene--phone .clim {
+    position: relative; inset: auto;
+    width: 348px; max-width: 100%; height: 100%; max-height: 680px;
+    aspect-ratio: 348 / 680;
+    border-radius: 34px; border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.65), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
+    font-size: 13px;
+    --warm: var(--accent);
+    --cool: #3b86c9;
+    --ring: var(--warm);
+  }
+  .clim[data-mode='cool'] { --ring: var(--cool); }
+  .clim[data-mode='eco'] { --ring: #4f9d6a; }
+
+  .clim__chrome { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; padding: 0.65rem 1.2rem 0.55rem; flex: none; border-radius: 34px 34px 0 0; }
+  .clim__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; }
+  .clim__title { font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: var(--fg-2); }
+  .clim__status { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); }
+  .clim__wifi { width: 15px; height: 11px; } .clim__wifi rect { fill: currentColor; }
+  .clim__batt { width: 22px; height: 10px; }
+
+  .clim__mode { display: flex; gap: 6px; padding: 6px 18px 4px; flex: none; }
+  .clim__modebtn { flex: 1; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; padding: 7px 0; border-radius: 100px; border: 1px solid var(--line); background: transparent; color: var(--fg-3); cursor: pointer; transition: all 0.15s var(--ease); }
+  .clim__modebtn:hover { color: var(--fg-2); }
+  .clim__modebtn.is-on { background: var(--ring); color: #fff; border-color: var(--ring); }
+
+  .clim__dialwrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 18px; min-height: 0; }
+  .clim__dial { position: relative; width: 196px; height: 196px; touch-action: none; cursor: grab; }
+  .clim__dial:active { cursor: grabbing; }
+  .clim__ring { width: 100%; height: 100%; display: block; }
+  .clim__track { fill: none; stroke: color-mix(in srgb, var(--fg) 9%, transparent); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 405.27 540.35; transform: rotate(135deg); transform-origin: 100px 100px; }
+  .clim__prog { fill: none; stroke: var(--ring); stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 0.25s var(--ease), stroke 0.25s var(--ease); }
+  .clim__tick { stroke: color-mix(in srgb, var(--fg) 22%, transparent); stroke-width: 1.4; }
+  .clim__readout { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; pointer-events: none; }
+  .clim__temp { font-size: 72px; line-height: 0.9; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: -0.01em; color: var(--fg); transition: font-variation-settings 0.2s var(--ease); }
+  .clim__unit { font-size: 18px; font-weight: 400; color: var(--fg-2); margin-top: -2px; }
+  .clim__set { font-size: 9.5px; font-weight: 600; letter-spacing: 0.18em; color: var(--ring); margin-top: 6px; }
+  .clim__knob { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--ring); border: 3px solid var(--bg); box-shadow: 0 2px 6px rgba(0,0,0,0.3); transform: translate(-50%, -50%); transition: left 0.25s var(--ease), top 0.25s var(--ease); }
+  .clim__hint { font-size: 10px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); margin: 8px 0 0; }
+
+  .clim__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 18px; flex: none; border-top: 1px solid var(--line); }
+  .clim__stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .clim__stat-v { font-size: 17px; font-weight: 600; font-feature-settings: 'tnum'; color: var(--fg); }
+  .clim__stat-k { font-size: 8.5px; font-weight: 600; letter-spacing: 0.12em; color: var(--fg-3); }
+
+  .clim__rooms { display: flex; gap: 6px; padding: 6px 18px 16px; flex: none; }
+  .clim__room { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--fg-2); cursor: pointer; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; transition: all 0.15s var(--ease); }
+  .clim__room b { font-size: 15px; font-weight: 700; font-feature-settings: 'tnum'; color: var(--fg); }
+  .clim__room:hover { border-color: var(--line); background: color-mix(in srgb, var(--fg) 4%, transparent); }
+  .clim__room.is-on { border-color: var(--ring); background: color-mix(in srgb, var(--ring) 10%, transparent); }
 </style>

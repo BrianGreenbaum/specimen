@@ -1,0 +1,30 @@
+---
+// DEV-ONLY isolation harness for iterating on In-Use scenes.
+// Renders ONLY the in-use examples for one font (no header/hero/other sections)
+// in the exact theme + font context of the real specimen page, so screenshots are
+// fast and focused. Built to zero pages in production (getStaticPaths returns []).
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import InUse from '../../components/specimen/InUse.astro';
+import { themeToStyle } from '../../lib/theme';
+
+export async function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  const fonts = await getCollection('fonts');
+  return fonts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const font = entry.data;
+const themeStyle = themeToStyle(font.theme);
+
+const inUseComponents = import.meta.glob('../../components/specimen/inuse/*.astro', { eager: true });
+const BespokeInUse = (inUseComponents[`../../components/specimen/inuse/${entry.id}.astro`] as any)?.default;
+---
+<Layout title={`lab — ${font.name}`} description="" themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <main id="in-use" class="lab" style="padding: var(--sp-5); display:flex; flex-direction:column; gap: var(--sp-6); max-width: 1200px; margin: 0 auto;">
+    {BespokeInUse
+      ? <BespokeInUse font={font} />
+      : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
+  </main>
+</Layout>

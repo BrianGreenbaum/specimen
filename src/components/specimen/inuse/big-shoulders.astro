@@ -1,0 +1,603 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+// Plain civic body companion (loaded site-wide via Layout.astro).
+const sans = "'Source Sans 3', system-ui, sans-serif";
+
+// --- 01 · Rapid-transit arrivals app (interactive, real device scale) -------
+// A Chicago-style "L" rail app. Switch lines; arrivals, tabular ETAs and the
+// line map re-key live. Tall, narrow figures hold the time columns like a clock.
+const lines = [
+  {
+    id: 'red', name: 'RED LINE', short: 'RED', color: '#d8412f',
+    head: 'HOWARD · 95TH / DAN RYAN', stop: 'CLARK / DIVISION',
+    arrivals: [
+      ['HOWARD', 2, true], ['HOWARD', 9, false], ['95TH', 14, false], ['HOWARD', 21, false],
+    ] as [string, number, boolean][],
+    stops: ['LAKE', 'GRAND', 'CHICAGO', 'CLARK/DIV', 'NORTH/CLY', 'FULLERTON'],
+    here: 3,
+  },
+  {
+    id: 'blue', name: 'BLUE LINE', short: 'BLU', color: '#2f6fd8',
+    head: "O'HARE · FOREST PARK", stop: 'DAMEN',
+    arrivals: [
+      ["O'HARE", 4, true], ['FOREST PK', 7, false], ["O'HARE", 13, false], ['FOREST PK', 19, false],
+    ] as [string, number, boolean][],
+    stops: ['CLARK/LAKE', 'GRAND', 'CHICAGO', 'DIVISION', 'DAMEN', 'WESTERN'],
+    here: 4,
+  },
+  {
+    id: 'brn', name: 'BROWN LINE', short: 'BRN', color: '#8a5a2b',
+    head: 'KIMBALL · LOOP', stop: 'ARMITAGE',
+    arrivals: [
+      ['KIMBALL', 3, true], ['LOOP', 8, false], ['KIMBALL', 16, false], ['LOOP', 24, false],
+    ] as [string, number, boolean][],
+    stops: ['MERCH MART', 'CHICAGO', 'SEDGWICK', 'ARMITAGE', 'FULLERTON', 'BELMONT'],
+    here: 3,
+  },
+];
+const l0 = lines[0];
+
+// --- 04 · Wayfinding directory (the museum sign) ----------------------------
+const directory = [
+  ['STEEL & STRUCTURE', '1', 'N', 'A'],
+  ['THE STOCKYARDS', '1', 'E', 'B'],
+  ['CITY ON THE MAKE', '2', 'N', 'C'],
+  ['RAIL & THE GRID', '2', 'W', 'D'],
+  ['SKYLINE INVENTED', '3', '↑', 'E'],
+  ['ARCHIVE & STUDY', 'LL', '↓', 'F'],
+] as [string, string, string, string][];
+---
+<div class="iu" style={`--fam:${fam}; --sans:${sans}`}>
+
+  <!-- 01 — INTERACTIVE rapid-transit arrivals app (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — rapid-transit arrivals, real device scale</span></figcaption>
+    <div class="iu__scene iu__scene--phone">
+      <div class="iu__device tr" data-tr style={`--line:${l0.color}`}>
+        <div class="tr__chrome">
+          <span class="tr__time">9:41</span>
+          <span class="tr__net">
+            <svg class="tr__sig" viewBox="0 0 16 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect x="12" y="0" width="3" height="12" rx="0.6"/></svg>
+            <svg class="tr__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="16" height="8" rx="1" fill="currentColor"/></svg>
+          </span>
+        </div>
+
+        <div class="tr__brand">
+          <span class="tr__brand-mark">CTA</span>
+          <span class="tr__brand-sub">TRANSIT · CITY OF THE BIG SHOULDERS</span>
+        </div>
+
+        <div class="tr__tabs" role="tablist">
+          {lines.map((ln, i) => (
+            <button class={`tr__tab ${i === 0 ? 'is-on' : ''}`} data-tab={ln.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'} style={`--line:${ln.color}`}>
+              <span class="tr__tab-dot"></span>
+              <span class="tr__tab-name">{ln.short}</span>
+            </button>
+          ))}
+        </div>
+
+        <div class="tr__hero" data-hero>
+          <span class="tr__stop-k">NOW APPROACHING</span>
+          <span class="tr__stop" data-stop>{l0.stop}</span>
+          <span class="tr__head" data-head>{l0.head}</span>
+        </div>
+
+        <div class="tr__next" data-next>
+          <span class="tr__next-meta">
+            <span class="tr__next-k">NEXT TRAIN</span>
+            <span class="tr__next-axis" data-nextaxis>wght 820 · 72opsz</span>
+          </span>
+          <span class="tr__next-min" data-nextmin style="font-variation-settings:'wght' 820,'opsz' 72">{l0.arrivals[0][1]}</span>
+          <span class="tr__next-unit">MIN</span>
+          <span class="tr__next-to" data-nextto>TO {l0.arrivals[0][0]}</span>
+        </div>
+
+        <div class="tr__list-h"><span>UPCOMING</span><span>ETA</span></div>
+        <ul class="tr__list" data-list>
+          {l0.arrivals.map((a) => (
+            <li class={`tr__row ${a[2] ? 'is-due' : ''}`}>
+              <span class="tr__row-dot"></span>
+              <span class="tr__row-to">{a[0]}</span>
+              <span class="tr__row-min">{a[1]}<i>min</i></span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="tr__map" data-map>
+          {l0.stops.map((s, i) => (
+            <span class={`tr__stopdot ${i === l0.here ? 'is-here' : ''}`}><i></i><b>{s}</b></span>
+          ))}
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Tap a line — colour, approaching stop and strip map re-key live; the big countdown is wired to the wght axis, thickening hairline-300 → black-900 as the train ticks in toward DUE.</p>
+  </figure>
+
+  <!-- 02 — industrial / cultural exhibition poster, kinetic wght axis -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Poster — industrial-culture exhibition, full wght axis in motion</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="exh">
+        <div class="exh__rivets" aria-hidden="true"></div>
+        <div class="exh__top">
+          <span>FIELD MUSEUM OF INDUSTRY</span>
+          <span class="exh__axis">wght 100 — 900</span>
+        </div>
+        <div class="exh__stack">
+          <span class="exh__line exh__line--thin">THE PERMANENT EXHIBITION</span>
+          <span class="exh__line exh__line--shout" data-flex style="--d:0s">HOG</span>
+          <span class="exh__line exh__line--shout exh__line--accent" data-flex style="--d:-1.9s">BUTCHER</span>
+          <span class="exh__line exh__line--shout" data-flex style="--d:-3.8s">CITY</span>
+          <span class="exh__line exh__line--sub">TOOL MAKER · STACKER OF WHEAT</span>
+        </div>
+        <div class="exh__foot">
+          <span class="exh__foot-block">OPENS<br/><b>SEP 14</b></span>
+          <span class="exh__foot-block">GALLERY<br/><b>WEST HALL</b></span>
+          <span class="exh__foot-block exh__foot-block--r">ADMISSION<br/><b>FREE</b></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Three shout lines breathe from hairline Thin to immovable Black, phase-offset — the whole 100–900 axis flexed live. Reduced-motion holds them at full Black.</p>
+  </figure>
+
+  <!-- 03 — civic / sports identity system, opsz display-vs-text contrast -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Identity — civic sports club, opsz display + text cuts</span></figcaption>
+    <div class="iu__scene scene16">
+      <div class="club">
+        <div class="club__seal">
+          <svg class="club__ring" viewBox="0 0 200 200" aria-hidden="true">
+            <defs><path id="bs-arc-t" d="M 22 100 A 78 78 0 0 1 178 100" /><path id="bs-arc-b" d="M 178 100 A 78 78 0 0 1 22 100" /></defs>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.45"/>
+            <circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="6"/>
+            <text class="club__arc"><textPath href="#bs-arc-t" startOffset="50%" text-anchor="middle">CHICAGO ATHLETIC</textPath></text>
+            <text class="club__arc"><textPath href="#bs-arc-b" startOffset="50%" text-anchor="middle">EST · MCMXIX</textPath></text>
+          </svg>
+          <div class="club__seal-core">
+            <span class="club__monogram">CA</span>
+            <span class="club__seal-yr">1919</span>
+          </div>
+        </div>
+        <div class="club__id">
+          <span class="club__kicker">CLUB IDENTITY · DISPLAY &amp; TEXT</span>
+          <h3 class="club__name">BIG<br/>SHOULDERS<br/><span class="club__name-fc">FOOTBALL CLUB</span></h3>
+          <div class="club__split">
+            <div class="club__cut club__cut--disp">
+              <span class="club__cut-k">DISPLAY · opsz 72</span>
+              <span class="club__cut-spec">Goals</span>
+            </div>
+            <div class="club__cut club__cut--text">
+              <span class="club__cut-k">TEXT · opsz 14</span>
+              <p class="club__cut-body">Founded on the West Side and named for the line a poet hung on the city, the club has worn the same red since the foundry days.</p>
+            </div>
+          </div>
+          <div class="club__strap">
+            <span>HOME · SOLDIER FIELD</span><span class="club__strap-d">·</span>
+            <span>NWSL · WEST</span><span class="club__strap-d">·</span>
+            <span class="club__strap-a">FORZA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">One family, two voices: the display cut (opsz 72) shouts the monogram and wordmark; the text cut (opsz 14) sets the founding note — drag the slider to watch the optical size morph the same word.</p>
+    <div class="iu__opsz" data-opsz>
+      <label class="iu__opsz-lab" for="bs-opsz">opsz</label>
+      <input id="bs-opsz" class="iu__opsz-range" type="range" min="10" max="72" value="72" step="0.5" aria-label="Optical size" />
+      <output class="iu__opsz-out" data-opsz-out>72</output>
+    </div>
+  </figure>
+
+  <!-- 04 — museum / transit wayfinding signage system (own surface) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Wayfinding — architectural directory, filterable</span></figcaption>
+    <div class="iu__scene scene-sign">
+      <div class="sign" data-sign>
+        <div class="sign__head">
+          <span class="sign__mark"><i class="sign__chev"></i>DIRECTORY</span>
+          <div class="sign__filters" role="group" aria-label="Filter by floor">
+            <button class="sign__filter" data-floor="all">ALL FLOORS</button>
+            <button class="sign__filter is-on" data-floor="1">LEVEL 1</button>
+            <button class="sign__filter" data-floor="2">LEVEL 2</button>
+            <button class="sign__filter" data-floor="3">LEVEL 3</button>
+          </div>
+        </div>
+        <div class="sign__rows" data-rows>
+          {directory.map((d) => (
+            <div class={`sign__row ${d[1] === '1' ? 'is-up' : 'is-down'}`} data-floor={d[1]}>
+              <span class="sign__gallery">{d[3]}</span>
+              <span class="sign__name">{d[0]}</span>
+              <span class="sign__dir">{d[2]}</span>
+              <span class="sign__floor">LV<b>{d[1]}</b></span>
+            </div>
+          ))}
+        </div>
+        <div class="sign__foot">
+          <span data-count>2 on level 1 · wght 900</span>
+          <span class="sign__foot-note">MUSEUM OF THE WORKING CITY</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Pick a level — the selection drives the type itself: that floor's names surge up the wght (600→900) and opsz (18→96) axes to display-black while the rest recede to a quiet text grade.</p>
+  </figure>
+</div>
+
+<script id="bs-line-data" type="application/json" set:html={JSON.stringify(lines)} is:inline></script>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== 01 · transit line switching + live ETA tick =====
+  type Line = {
+    id: string; name: string; short: string; color: string;
+    head: string; stop: string;
+    arrivals: [string, number, boolean][];
+    stops: string[]; here: number;
+  };
+  const island = document.getElementById('bs-line-data');
+  let lines: Line[] = [];
+  try { lines = island ? JSON.parse(island.textContent || '[]') : []; } catch { lines = []; }
+  const byId: Record<string, Line> = {};
+  lines.forEach((l) => (byId[l.id] = l));
+
+  document.querySelectorAll<HTMLElement>('[data-tr]').forEach((tr) => {
+    if (!lines.length) return;
+    const q = (s: string) => tr.querySelector(s) as HTMLElement | null;
+    const stop = q('[data-stop]')!, head = q('[data-head]')!;
+    const nextMin = q('[data-nextmin]')!, nextTo = q('[data-nextto]')!;
+    const nextAxis = q('[data-nextaxis]');
+    const list = q('[data-list]')!, map = q('[data-map]')!;
+    let current = lines[0];
+
+    // Map remaining minutes → wght: a train far out is a hairline 300;
+    // as it closes in the figure thickens to an immovable 900 at "DUE".
+    const wghtFor = (m: number) => {
+      const t = Math.max(0, Math.min(1, (15 - m) / 15)); // 15min→0, 0min→1
+      return Math.round(300 + t * 600);
+    };
+    function setCountdown(m: number) {
+      nextMin.textContent = String(m);
+      const w = wghtFor(m);
+      nextMin.style.fontVariationSettings = `'wght' ${w}, 'opsz' 72`;
+      if (nextAxis) nextAxis.textContent = m <= 0 ? 'wght 900 · DUE' : `wght ${w} · 72opsz`;
+    }
+
+    function render(id: string) {
+      const l = byId[id];
+      if (!l) return;
+      current = l;
+      tr.style.setProperty('--line', l.color);
+      stop.textContent = l.stop;
+      // opsz-step the hero stop name to the length of the name: longer names
+      // drop to a tighter text-grade opsz so they hold the line.
+      stop.style.fontVariationSettings = `'wght' 800, 'opsz' ${l.stop.length > 12 ? 30 : 72}`;
+      head.textContent = l.head;
+      setCountdown(l.arrivals[0][1]);
+      nextTo.textContent = 'TO ' + l.arrivals[0][0];
+
+      list.replaceChildren();
+      l.arrivals.forEach((a) => {
+        const li = document.createElement('li');
+        li.className = 'tr__row' + (a[2] ? ' is-due' : '');
+        const dot = document.createElement('span'); dot.className = 'tr__row-dot';
+        const to = document.createElement('span'); to.className = 'tr__row-to'; to.textContent = a[0];
+        const min = document.createElement('span'); min.className = 'tr__row-min';
+        min.textContent = String(a[1]);
+        const u = document.createElement('i'); u.textContent = 'min'; min.appendChild(u);
+        li.append(dot, to, min);
+        list.appendChild(li);
+      });
+
+      map.replaceChildren();
+      l.stops.forEach((s, i) => {
+        const sp = document.createElement('span');
+        sp.className = 'tr__stopdot' + (i === l.here ? ' is-here' : '');
+        const i2 = document.createElement('i');
+        const b = document.createElement('b'); b.textContent = s;
+        sp.append(i2, b);
+        map.appendChild(sp);
+      });
+
+      tr.querySelectorAll('[data-tab]').forEach((t) => {
+        const on = (t as HTMLElement).dataset.tab === id;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    tr.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) =>
+      btn.addEventListener('click', () => render(btn.dataset.tab!))
+    );
+
+    // sync the initial figure weight to the seeded ETA (2 min → heavy)
+    setCountdown(lines[0].arrivals[0][1]);
+    stop.style.fontVariationSettings = `'wght' 800, 'opsz' ${lines[0].stop.length > 12 ? 30 : 72}`;
+
+    // live countdown: the lead ETA ticks toward arrival, and the big figure
+    // gains weight (wght 300→900) as the train closes in — the axis is driven
+    // by the clock, not decoration. (reduced-motion: holds static.)
+    if (!reduce) {
+      setInterval(() => {
+        let m = parseInt(nextMin.textContent || '0', 10);
+        m = m <= 0 ? current.arrivals[0][1] : m - 1;
+        setCountdown(m);
+      }, 2200);
+    }
+  });
+
+  // ===== 03 · opsz slider — morph the optical size of the spec word =====
+  document.querySelectorAll<HTMLElement>('[data-opsz]').forEach((wrap) => {
+    const range = wrap.querySelector('.iu__opsz-range') as HTMLInputElement | null;
+    const out = wrap.querySelector('[data-opsz-out]') as HTMLElement | null;
+    const fig = wrap.closest('.iu__item');
+    const spec = fig?.querySelector('.club__cut-spec') as HTMLElement | null;
+    if (!range || !spec) return;
+    const apply = () => {
+      const v = parseFloat(range.value);
+      spec.style.fontVariationSettings = `'opsz' ${v}, 'wght' 800`;
+      if (out) out.textContent = String(Math.round(v));
+    };
+    range.addEventListener('input', apply);
+    apply();
+  });
+
+  // ===== 04 · wayfinding floor filter — the selection DRIVES the axis =====
+  // Picking a level doesn't hide rows; it promotes that level's names up the
+  // wght+opsz axes to display-black while the rest recede to a text grade.
+  document.querySelectorAll<HTMLElement>('[data-sign]').forEach((sign) => {
+    const rows = Array.from(sign.querySelectorAll<HTMLElement>('.sign__row'));
+    const count = sign.querySelector('[data-count]') as HTMLElement | null;
+    function apply(floor: string) {
+      let hits = 0;
+      rows.forEach((r) => {
+        const match = r.dataset.floor === floor;
+        if (floor === 'all') {
+          r.classList.remove('is-up', 'is-down');
+        } else {
+          r.classList.toggle('is-up', match);
+          r.classList.toggle('is-down', !match);
+          if (match) hits++;
+        }
+      });
+      if (count) {
+        count.textContent = floor === 'all'
+          ? '6 galleries'
+          : `${hits} on level ${floor} · wght 900`;
+      }
+    }
+    sign.querySelectorAll<HTMLButtonElement>('[data-floor]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        sign.querySelectorAll('[data-floor]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        apply(btn.dataset.floor!);
+      })
+    );
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches InUse.astro / inter.astro */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene16 { aspect-ratio: 16 / 9; }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
+  .scene-sign { aspect-ratio: 4 / 3; }
+  @container (max-width: 560px) { .scene-sign { aspect-ratio: 3 / 4; } }
+
+  /* phone-frame variant */
+  .iu__scene--phone {
+    aspect-ratio: 16 / 10;
+    display: grid; place-items: center;
+    padding: clamp(14px, 3cqi, 34px) 0;
+  }
+  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
+
+  .iu__device { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+  .iu__scene--phone .tr {
+    position: relative; inset: auto;
+    width: 348px; max-width: 100%; height: 100%; max-height: 668px;
+    aspect-ratio: 348 / 668;
+    border-radius: 30px; border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.7), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+
+  /* ============ 01 · TRANSIT ARRIVALS (real px) ============ */
+  .tr { font-size: 13px; --line: #d8412f; }
+  .tr__chrome {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
+    padding: 0.55rem 1.1rem 0.45rem; border-radius: 30px 30px 0 0; flex: none;
+    background: var(--bg-2); border-bottom: 1px solid var(--line-soft);
+  }
+  .tr__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
+  .tr__net { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); }
+  .tr__sig { width: 15px; height: 11px; } .tr__sig rect { fill: currentColor; }
+  .tr__batt { width: 22px; height: 10px; }
+
+  .tr__brand {
+    flex: none; display: flex; flex-direction: column; gap: 1px;
+    padding: 11px 18px 12px; border-bottom: 1px solid var(--line);
+  }
+  .tr__brand-mark { font-size: 30px; font-weight: 900; letter-spacing: 0.04em; line-height: 0.9; color: var(--fg); }
+  .tr__brand-sub { font-size: 8.5px; font-weight: 600; letter-spacing: 0.22em; color: var(--fg-3); }
+
+  .tr__tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); flex: none; }
+  .tr__tab {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 6px; background: transparent; cursor: pointer;
+    border-right: 1px solid var(--line-soft); border-bottom: 2px solid transparent;
+    transition: background 0.15s var(--ease); min-width: 0;
+  }
+  .tr__tab:last-child { border-right: 0; }
+  .tr__tab:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .tr__tab.is-on { border-bottom-color: var(--line); background: color-mix(in srgb, var(--line) 12%, transparent); }
+  .tr__tab-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); flex: none; }
+  .tr__tab-name { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; color: var(--fg-2); }
+  .tr__tab.is-on .tr__tab-name { color: var(--fg); }
+
+  .tr__hero {
+    flex: none; padding: 15px 18px 14px; display: flex; flex-direction: column; gap: 3px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--line) 13%, transparent), transparent 85%);
+  }
+  .tr__stop-k { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; color: var(--fg-3); }
+  .tr__stop { font-size: 27px; letter-spacing: 0.01em; line-height: 0.95; color: var(--fg); text-transform: uppercase; font-variation-settings: 'wght' 800, 'opsz' 72; transition: font-variation-settings 0.35s var(--ease, ease); }
+  .tr__head { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--fg-3); text-transform: uppercase; }
+
+  .tr__next {
+    flex: none; display: grid; grid-template-columns: 1fr auto auto; align-items: baseline;
+    column-gap: 7px; padding: 13px 18px; border-bottom: 1px solid var(--line);
+  }
+  .tr__next-meta { grid-column: 1; align-self: center; display: flex; flex-direction: column; gap: 3px; }
+  .tr__next-k { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; color: var(--fg-3); }
+  .tr__next-axis { font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: var(--line); font-feature-settings: 'tnum'; transition: color 0.4s var(--ease, ease); }
+  .tr__next-min { grid-column: 2; font-size: 46px; line-height: 0.8; font-feature-settings: 'tnum'; color: var(--line); font-variation-settings: 'wght' 300, 'opsz' 72; transition: font-variation-settings 0.5s var(--ease, ease); }
+  .tr__next-unit { grid-column: 3; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--fg-2); }
+  .tr__next-to { grid-column: 2 / 4; justify-self: end; font-size: 9.5px; font-weight: 600; letter-spacing: 0.14em; color: var(--fg-3); margin-top: 3px; }
+
+  .tr__list-h { flex: none; display: flex; justify-content: space-between; padding: 10px 18px 5px; font-size: 8.5px; font-weight: 600; letter-spacing: 0.2em; color: var(--fg-3); }
+  .tr__list { flex: 1; margin: 0; padding: 0 18px; list-style: none; display: flex; flex-direction: column; overflow: auto; }
+  .tr__row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 11px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+  .tr__row:last-child { border-bottom: 0; }
+  .tr__row-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fg-3); }
+  .tr__row.is-due .tr__row-dot { background: var(--line); }
+  .tr__row-to { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-2); }
+  .tr__row.is-due .tr__row-to { color: var(--fg); }
+  .tr__row-min { font-size: 21px; font-weight: 800; font-feature-settings: 'tnum'; line-height: 1; color: var(--fg); }
+  .tr__row-min i { font-size: 9px; font-style: normal; font-weight: 600; letter-spacing: 0.08em; color: var(--fg-3); margin-left: 3px; }
+
+  .tr__map {
+    flex: none; display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 13px 18px 16px; border-top: 1px solid var(--line); position: relative;
+  }
+  .tr__map::before { content: ''; position: absolute; left: 22px; right: 22px; top: 18px; height: 2px; background: var(--line); }
+  .tr__stopdot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+  .tr__stopdot i { width: 9px; height: 9px; border-radius: 50%; background: var(--bg); box-shadow: 0 0 0 2px var(--fg-3); z-index: 1; }
+  .tr__stopdot.is-here i { background: var(--line); box-shadow: 0 0 0 2px var(--line), 0 0 0 5px color-mix(in srgb, var(--line) 30%, transparent); }
+  .tr__stopdot b { font-size: 6.5px; font-weight: 700; letter-spacing: 0.04em; color: var(--fg-3); text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); height: 44px; white-space: nowrap; }
+  .tr__stopdot.is-here b { color: var(--fg); }
+
+  @container (max-width: 380px) { .tr__stop { font-size: 23px; } .tr__next-min { font-size: 40px; } }
+
+  /* ============ 02 · INDUSTRIAL EXHIBITION POSTER (kinetic wght) ============ */
+  .exh { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4.5cqi 4.5cqi 4cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .exh::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5% - 1px), var(--line-soft) calc(12.5% - 1px), var(--line-soft) 12.5%); opacity: 0.6; }
+  .exh__rivets { position: absolute; top: 0; left: 0; right: 0; height: 2.2cqi; background: var(--accent); }
+  .exh__rivets::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, color-mix(in srgb, #000 45%, transparent) 0.5cqi, transparent 0.6cqi); background-size: 4cqi 4cqi; background-position: 2cqi center; }
+  .exh__top { position: relative; display: flex; justify-content: space-between; align-items: baseline; font-size: 2cqi; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-2); padding-top: 2cqi; border-bottom: 1px solid var(--line); padding-bottom: 1.8cqi; }
+  .exh__axis { color: var(--accent); font-feature-settings: 'tnum'; }
+  .exh__stack { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.2cqi; min-height: 0; padding: 2cqi 0; }
+  .exh__line { line-height: 0.86; text-transform: uppercase; text-align: center; white-space: nowrap; }
+  .exh__line--thin { font-size: 3cqi; font-weight: 400; letter-spacing: 0.3em; color: var(--fg-2); padding-bottom: 1.5cqi; }
+  .exh__line--shout { font-size: 26cqi; font-weight: 900; letter-spacing: -0.01em; font-variation-settings: 'wght' 900, 'opsz' 72; }
+  .exh__line--accent { color: var(--accent); }
+  .exh__line--sub { font-size: 2.6cqi; font-weight: 600; letter-spacing: 0.26em; color: var(--fg-2); padding-top: 1.8cqi; }
+  .exh__foot { position: relative; display: flex; justify-content: space-between; gap: 2cqi; border-top: 1px solid var(--line); padding-top: 2.4cqi; }
+  .exh__foot-block { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); line-height: 1.6; }
+  .exh__foot-block b { display: block; font-size: 3.6cqi; font-weight: 800; letter-spacing: 0.02em; color: var(--fg); }
+  .exh__foot-block--r { text-align: right; }
+  .exh__foot-block--r b { color: var(--accent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .exh__line--shout[data-flex] {
+      animation: exh-weight 5.5s var(--ease-out, cubic-bezier(0.45,0,0.2,1)) infinite alternate;
+      animation-delay: var(--d, 0s);
+    }
+    @keyframes exh-weight {
+      from { font-variation-settings: 'wght' 110, 'opsz' 72; letter-spacing: 0.04em; }
+      to   { font-variation-settings: 'wght' 900, 'opsz' 72; letter-spacing: -0.015em; }
+    }
+  }
+
+  @container (max-width: 520px) {
+    .exh__line--shout { font-size: 30cqi; }
+    .exh__line--thin { font-size: 3.6cqi; }
+    .exh__line--sub { font-size: 3.2cqi; }
+  }
+
+  /* ============ 03 · CIVIC SPORTS IDENTITY (opsz display vs text) ============ */
+  .club { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4.5cqi 5cqi; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 5cqi; align-items: center; overflow: hidden; }
+  .club__seal { position: relative; display: grid; place-items: center; aspect-ratio: 1; width: 100%; max-width: 42cqi; justify-self: center; color: var(--accent); }
+  .club__ring { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .club__arc { fill: var(--accent); font-size: 15px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; font-variation-settings: 'opsz' 14; }
+  .club__seal-core { display: flex; flex-direction: column; align-items: center; line-height: 0.8; }
+  .club__monogram { font-size: 17cqi; font-weight: 900; color: var(--fg); letter-spacing: 0.02em; font-variation-settings: 'wght' 900, 'opsz' 72; }
+  .club__seal-yr { font-size: 3cqi; font-weight: 700; letter-spacing: 0.3em; color: var(--accent); font-feature-settings: 'tnum'; margin-top: 1cqi; }
+
+  .club__id { display: flex; flex-direction: column; min-width: 0; }
+  .club__kicker { font-size: 1.7cqi; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+  .club__name { font-size: 10cqi; font-weight: 900; line-height: 0.82; letter-spacing: 0.01em; text-transform: uppercase; margin: 1.2cqi 0 0; font-variation-settings: 'wght' 900, 'opsz' 72; }
+  .club__name-fc { font-size: 3.3cqi; font-weight: 700; letter-spacing: 0.16em; color: var(--fg-2); display: block; margin-top: 0.6cqi; }
+  .club__split { display: grid; grid-template-columns: auto 1fr; gap: 3cqi; margin-top: 3cqi; padding-top: 2.6cqi; border-top: 1px solid var(--line); align-items: start; }
+  .club__cut { display: flex; flex-direction: column; gap: 1cqi; min-width: 0; }
+  .club__cut-k { font-size: 1.5cqi; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .club__cut-spec { font-size: 11cqi; font-weight: 800; line-height: 0.85; color: var(--fg); font-variation-settings: 'opsz' 72, 'wght' 800; }
+  .club__cut-body { font-family: var(--sans); font-size: 1.95cqi; line-height: 1.4; color: var(--fg-2); margin: 0; max-width: 32cqi; }
+  .club__strap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1.4cqi; margin-top: auto; padding-top: 2.6cqi; font-size: 1.9cqi; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
+  .club__strap-d { color: var(--fg-3); }
+  .club__strap-a { color: var(--accent); }
+
+  .iu__opsz { display: flex; align-items: center; gap: var(--sp-2); margin-top: var(--sp-2); }
+  .iu__opsz-lab { font-family: var(--font-mono, monospace); font-size: var(--step--1); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .iu__opsz-range { flex: 1; max-width: 260px; accent-color: var(--accent); height: 2px; cursor: pointer; }
+  .iu__opsz-out { font-family: var(--font-mono, monospace); font-size: var(--step--1); color: var(--accent); min-width: 2.5em; font-feature-settings: 'tnum'; }
+
+  @container (max-width: 560px) {
+    .club { grid-template-columns: 1fr; gap: 3cqi; padding: 4cqi; }
+    .club__seal { max-width: 30cqi; }
+    .club__name { font-size: 13cqi; }
+    .club__cut-spec { font-size: 16cqi; }
+    .club__cut-body { font-size: 3cqi; max-width: 100%; }
+    .club__split { grid-template-columns: 1fr; gap: 2.4cqi; }
+    .club__kicker, .club__cut-k { font-size: 2.4cqi; }
+    .club__name-fc { font-size: 4.6cqi; }
+    .club__strap { font-size: 2.8cqi; }
+  }
+
+  /* ============ 04 · WAYFINDING SIGNAGE (own surface) ============ */
+  .sign { position: absolute; inset: 0; background: #16191b; color: #eef1f2; padding: 3.4cqi 4cqi 3cqi; display: flex; flex-direction: column; }
+  .sign__head { display: flex; align-items: center; justify-content: space-between; gap: 2cqi; flex-wrap: wrap; border-bottom: 0.5cqi solid var(--accent); padding-bottom: 1.6cqi; margin-bottom: 0.6cqi; }
+  .sign__mark { display: inline-flex; align-items: center; gap: 1.6cqi; font-size: 4.8cqi; font-weight: 900; letter-spacing: 0.08em; }
+  .sign__chev { width: 0; height: 0; border-top: 1.6cqi solid transparent; border-bottom: 1.6cqi solid transparent; border-left: 2.4cqi solid var(--accent); }
+  .sign__filters { display: inline-flex; gap: 1cqi; flex-wrap: wrap; }
+  .sign__filter { font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #eef1f288; background: transparent; border: 1px solid #eef1f229; border-radius: 100px; padding: 0.7cqi 1.8cqi; cursor: pointer; transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap; }
+  .sign__filter:hover { color: #eef1f2; border-color: #eef1f266; }
+  .sign__filter.is-on { color: #16191b; background: var(--accent); border-color: var(--accent); }
+  .sign__rows { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; overflow: hidden; }
+  .sign__row { display: grid; grid-template-columns: 6cqi 1fr auto auto; align-items: center; gap: 2.4cqi; padding: 1.1cqi 0; border-bottom: 1px solid #eef1f218; }
+  .sign__row:last-child { border-bottom: 0; }
+  .sign__gallery { font-size: 3.4cqi; font-weight: 900; color: var(--accent); text-align: center; line-height: 1; }
+  .sign__name { font-size: 4cqi; letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; font-variation-settings: 'wght' 600, 'opsz' 18; transition: font-variation-settings 0.4s var(--ease, ease), color 0.4s var(--ease, ease); }
+  /* a selected level promotes its rows: the name drives UP the wght+opsz axes
+     to full display-black, while unselected rows recede to a quiet text grade. */
+  .sign__row.is-up .sign__name { font-variation-settings: 'wght' 900, 'opsz' 96; color: #fff; }
+  .sign__row.is-down { opacity: 0.38; }
+  .sign__row.is-down .sign__name { font-variation-settings: 'wght' 400, 'opsz' 14; }
+  .sign__row.is-down .sign__gallery, .sign__row.is-down .sign__dir, .sign__row.is-down .sign__floor b { opacity: 0.7; }
+  .sign__dir { font-size: 4.4cqi; font-weight: 900; color: #eef1f2; width: 6cqi; text-align: center; }
+  .sign__floor { font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.1em; color: #eef1f280; display: flex; align-items: baseline; gap: 0.6cqi; }
+  .sign__floor b { font-size: 4cqi; font-weight: 900; color: #eef1f2; letter-spacing: 0; }
+  .sign__foot { display: flex; align-items: baseline; justify-content: space-between; padding-top: 2cqi; margin-top: 0.6cqi; border-top: 1px solid #eef1f229; font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #eef1f288; }
+
+  @container (max-width: 560px) {
+    .sign__name { font-size: 5.4cqi; }
+    .sign__row { grid-template-columns: 6cqi 1fr auto auto; gap: 1.6cqi; }
+    .sign__mark { font-size: 6cqi; }
+    .sign__filter { font-size: 2.6cqi; }
+    .sign__foot-note { display: none; }
+  }
+</style>

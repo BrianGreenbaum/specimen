@@ -1,0 +1,529 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// ── Scene 05 (interactive boutique-hotel reservation) data ──────────────────
+const rooms = [
+  { id: 'GR', name: 'Garden Room',     cat: 'classic',  rate: '420', sqm: '32', view: 'Cloister courtyard',  beds: 'Queen',      avail: true  },
+  { id: 'JS', name: 'Junior Suite',    cat: 'suite',    rate: '680', sqm: '48', view: 'Olive terrace',       beds: 'King',       avail: true  },
+  { id: 'PS', name: 'Palazzo Suite',   cat: 'suite',    rate: '1,240', sqm: '74', view: 'Duomo & rooftops',  beds: 'King + sofa', avail: false },
+  { id: 'BR', name: 'Belvedere Room',  cat: 'classic',  rate: '510', sqm: '36', view: 'Hill & vineyards',    beds: 'Twin/King',  avail: true  },
+  { id: 'LA', name: 'Loggia Apartment',cat: 'apartment',rate: '1,580', sqm: '96', view: 'Private loggia',    beds: 'Two bedrooms', avail: true },
+];
+// Calendar — a single month for the date picker
+const monthName = 'September';
+const monthYear = 'MMXXVI';
+const firstWeekday = 1; // Sep 1 falls on a Monday-index (0=Mon)
+const daysInMonth = 30;
+---
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — luxury hotel identity & wayfinding -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Brand — hotel identity &amp; wayfinding</span></figcaption>
+    <div class="iu__scene mc-scene-16">
+      <div class="iu__poster mc-id" data-draw>
+        <div class="mc-id__top">
+          <span class="mc-id__estd">Albergo · Firenze</span>
+          <span class="mc-id__estd mc-id__estd--r">Dal MCMXXIV</span>
+        </div>
+
+        <div class="mc-id__center">
+          <span class="mc-id__monogram" aria-hidden="true">SP</span>
+          <h3 class="mc-id__word" data-draw-word>San Procolo</h3>
+          <span class="mc-id__sub">Hotel &middot; Terme &middot; Giardino</span>
+        </div>
+
+        <nav class="mc-id__way" aria-label="Wayfinding directory">
+          <span class="mc-id__row"><span class="mc-id__dest">Reception &amp; Concierge</span><span class="mc-id__dot" aria-hidden="true"></span><span class="mc-id__lvl">Piano Terra</span></span>
+          <span class="mc-id__row"><span class="mc-id__dest">Spa &amp; Thermal Bath</span><span class="mc-id__dot" aria-hidden="true"></span><span class="mc-id__lvl">Livello −I</span></span>
+          <span class="mc-id__row"><span class="mc-id__dest">Ristorante Belvedere</span><span class="mc-id__dot" aria-hidden="true"></span><span class="mc-id__lvl">Piano IV</span></span>
+        </nav>
+      </div>
+    </div>
+    <p class="iu__hint label">A carved-stone wordmark over a wayfinding directory — hover to watch the name set itself out, letter by letter, the way an inscription is spaced on a wall.</p>
+  </figure>
+
+  <!-- 02 — museum / gallery exhibition wall -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Exhibition — the gallery title wall</span></figcaption>
+    <div class="iu__scene mc-scene-43">
+      <div class="iu__poster mc-wall" data-draw>
+        <div class="mc-wall__head">
+          <span class="mc-wall__museo">Museo dell&rsquo;Opera</span>
+          <span class="mc-wall__room">Sala VIII · MMXXVI</span>
+        </div>
+
+        <div class="mc-wall__center">
+          <span class="mc-wall__kicker">An exhibition of Roman lettering</span>
+          <h3 class="mc-wall__title" data-draw-word><span>Cut</span><span>In</span><span>Stone</span></h3>
+        </div>
+
+        <div class="mc-wall__foot">
+          <span class="mc-wall__sub">Inscriptions &amp; the Imperial Capital</span>
+          <span class="mc-wall__dates">XII Marzo — XXX Agosto</span>
+          <span class="mc-wall__free">Ingresso Libero</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A full-bleed title wall set the way a museum cuts its lettering — three monumental lines of titling caps held by architectural rules. The lines space themselves open on reveal.</p>
+  </figure>
+
+  <!-- 03 — wedding suite / formal invitation -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Invitation — the wedding suite</span></figcaption>
+    <div class="iu__scene mc-scene-43">
+      <div class="iu__poster mc-inv" data-draw>
+        <svg class="mc-inv__frame" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="mc-inv__rect" x="12" y="12" width="376" height="276" fill="none" />
+        </svg>
+
+        <!-- left: the formal text column -->
+        <div class="mc-inv__col">
+          <span class="mc-inv__kicker">Together with their families</span>
+
+          <div class="mc-inv__names">
+            <span class="mc-inv__name">Eleanor</span>
+            <span class="mc-inv__name">Thomas</span>
+          </div>
+
+          <span class="mc-inv__line">request the honour of your presence<br/>at the celebration of their marriage</span>
+
+          <span class="mc-inv__rule" aria-hidden="true"></span>
+
+          <div class="mc-inv__when">
+            <span class="mc-inv__date">Saturday · the Fourteenth of June</span>
+            <span class="mc-inv__yr">Two Thousand &amp; Twenty-Six</span>
+            <span class="mc-inv__where">Villa San Procolo &middot; Fiesole</span>
+          </div>
+        </div>
+
+        <!-- right: the oversized ampersand as artwork -->
+        <div class="mc-inv__art" aria-hidden="true">
+          <span class="mc-inv__amp" data-draw-word>&amp;</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A formal suite built around an oversized Marcellus ampersand as artwork — titling caps for the names, the great &amp; rising the full height of the card. The flourish draws itself open on reveal.</p>
+  </figure>
+
+  <!-- 04 — editorial gallery opener (Marcellus title + Spectral body) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — the gallery opener</span></figcaption>
+    <div class="iu__scene mc-scene-43">
+      <div class="iu__poster mc-spread" data-draw>
+        <div class="mc-spread__rail">
+          <span class="mc-spread__folio">Catalogue · No. XIV</span>
+          <span class="mc-spread__sec">Lapidaria</span>
+        </div>
+        <div class="mc-spread__main">
+          <span class="mc-spread__kicker">On the Roman capital</span>
+          <h3 class="mc-spread__head" data-draw-word>The Letters<br/>of the Republic</h3>
+          <p class="mc-spread__deck">How a signwriter&rsquo;s brush and a mason&rsquo;s chisel settled the shape of our alphabet, two thousand years before the press.</p>
+          <div class="mc-spread__body">
+            <p><span class="mc-spread__drop">B</span>efore there was type there was the wall. A Roman signwriter laid out each line with a flat brush — wide M, narrow E, the S leaning ever so slightly into its own curve — and a mason followed with a chisel, finishing every stroke with the small flick we now call a serif.</p>
+            <p>What survives on Trajan&rsquo;s Column and across the imperial city is not a font but a standard: proportion, balance, and a calm that no later age has improved upon. Marcellus carries that standard onto the page, asking only to be set large, spaced well, and read slowly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Marcellus titling over a <em>Spectral</em> reading column — the display caps lead, the body serif carries the long copy. Hover the headline to re-space it.</p>
+  </figure>
+
+  <!-- 05 — INTERACTIVE boutique-hotel reservation (real px) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Product UI — boutique-hotel reservation (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device mc-book" data-book>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">sanprocolo.it/reserve</span>
+        </div>
+
+        <header class="mc-book__head">
+          <span class="mc-book__logo">San Procolo</span>
+          <span class="mc-book__loc">Firenze</span>
+        </header>
+
+        <div class="mc-book__grid">
+          <!-- left: stay controls -->
+          <aside class="mc-book__panel">
+            <h4 class="mc-book__h">Plan your stay</h4>
+
+            <div class="mc-cal" data-cal>
+              <div class="mc-cal__bar">
+                <span class="mc-cal__month">{monthName} <span class="mc-cal__yr">{monthYear}</span></span>
+                <span class="mc-cal__sel" data-cal-sel>Select arrival &amp; departure</span>
+              </div>
+              <div class="mc-cal__dow">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+              </div>
+              <div class="mc-cal__days" data-cal-days>
+                {Array.from({ length: firstWeekday }).map(() => (<span class="mc-cal__pad"></span>))}
+                {Array.from({ length: daysInMonth }).map((_, i) => (
+                  <button class="mc-cal__day" data-day={i + 1} type="button">{i + 1}</button>
+                ))}
+              </div>
+            </div>
+
+            <div class="mc-guests">
+              <span class="mc-guests__label">Guests</span>
+              <div class="mc-stepper" data-stepper>
+                <button class="mc-stepper__btn" data-step="-1" type="button" aria-label="One fewer guest">&minus;</button>
+                <span class="mc-stepper__val num" data-guests>2</span>
+                <button class="mc-stepper__btn" data-step="1" type="button" aria-label="One more guest">+</button>
+              </div>
+            </div>
+          </aside>
+
+          <!-- right: room tabs + list -->
+          <section class="mc-book__rooms">
+            <nav class="mc-tabs" aria-label="Room category">
+              <button class="is-on" data-cat="all" type="button">All</button>
+              <button data-cat="classic" type="button">Rooms</button>
+              <button data-cat="suite" type="button">Suites</button>
+              <button data-cat="apartment" type="button">Apartments</button>
+            </nav>
+
+            <ul class="mc-rooms" data-rooms>
+              {rooms.map((r) => (
+                <li class={`mc-room${r.avail ? '' : ' is-soldout'}`} data-cat={r.cat}>
+                  <div class="mc-room__left">
+                    <span class="mc-room__name">{r.name}</span>
+                    <span class="mc-room__meta">{r.sqm} m² · {r.beds} · {r.view}</span>
+                  </div>
+                  <div class="mc-room__right">
+                    <span class="mc-room__rate"><span class="num">€{r.rate}</span><span class="mc-room__per">/ night</span></span>
+                    {r.avail
+                      ? <button class="mc-room__btn" data-reserve={r.name} type="button">Reserve</button>
+                      : <span class="mc-room__sold">Sold out</span>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div class="mc-summary" data-summary>
+              <span class="mc-summary__nights" data-summary-text>Select your dates to see nights &amp; total</span>
+              <span class="mc-summary__total num" data-summary-total></span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A working reservation flow: pick arrival &amp; departure on the calendar, step the guests, filter the room types, and reserve — Marcellus titling pairs with <em>Spectral</em> for every line of UI text.</p>
+  </figure>
+
+</div>
+
+<script>
+  // ── Scene 05: reservation flow (date range + stepper + tabs + reserve) ─────
+  document.querySelectorAll<HTMLElement>('[data-book]').forEach((book) => {
+    // -- room category tabs --
+    const rooms = Array.from(book.querySelectorAll<HTMLElement>('.mc-room'));
+    book.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach((b) =>
+      b.addEventListener('click', () => {
+        book.querySelectorAll('[data-cat]').forEach((x) => x.classList.remove('is-on'));
+        b.classList.add('is-on');
+        const f = b.dataset.cat!;
+        rooms.forEach((r) => r.classList.toggle('is-hidden', !(f === 'all' || r.dataset.cat === f)));
+      })
+    );
+
+    // -- guest stepper --
+    const guestEl = book.querySelector<HTMLElement>('[data-guests]')!;
+    let guests = 2;
+    book.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
+      b.addEventListener('click', () => {
+        guests = Math.min(6, Math.max(1, guests + Number(b.dataset.step)));
+        guestEl.textContent = String(guests);
+      })
+    );
+
+    // -- date range picker --
+    const dayBtns = Array.from(book.querySelectorAll<HTMLButtonElement>('.mc-cal__day'));
+    const selEl = book.querySelector<HTMLElement>('[data-cal-sel]')!;
+    const sumText = book.querySelector<HTMLElement>('[data-summary-text]')!;
+    const sumTotal = book.querySelector<HTMLElement>('[data-summary-total]')!;
+    let start: number | null = null;
+    let end: number | null = null;
+
+    // cheapest available room used as the nightly basis for the running total
+    const cheapest = Math.min(
+      ...rooms
+        .filter((r) => !r.classList.contains('is-soldout'))
+        .map((r) => {
+          const n = r.querySelector('.num')?.textContent?.replace(/[^0-9]/g, '') ?? '0';
+          return Number(n);
+        })
+    );
+
+    const paint = () => {
+      dayBtns.forEach((b) => {
+        const d = Number(b.dataset.day);
+        b.classList.toggle('is-start', d === start);
+        b.classList.toggle('is-end', d === end);
+        b.classList.toggle('is-between', start !== null && end !== null && d > start && d < end);
+      });
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const M = months[8]; // September
+      if (start && end) {
+        const nights = end - start;
+        selEl.textContent = `${M} ${start} — ${M} ${end}`;
+        const total = nights * cheapest;
+        sumText.textContent = `${nights} night${nights > 1 ? 's' : ''} · from`;
+        sumTotal.textContent = `€${total.toLocaleString('en-US')}`;
+        book.classList.add('is-priced');
+      } else if (start) {
+        selEl.textContent = `${M} ${start} — select departure`;
+        sumText.textContent = 'Select your departure date';
+        sumTotal.textContent = '';
+        book.classList.remove('is-priced');
+      } else {
+        selEl.textContent = 'Select arrival & departure';
+        sumText.textContent = 'Select your dates to see nights & total';
+        sumTotal.textContent = '';
+        book.classList.remove('is-priced');
+      }
+    };
+
+    dayBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        const d = Number(b.dataset.day);
+        if (start === null || (start !== null && end !== null)) {
+          start = d; end = null;
+        } else if (d <= start) {
+          start = d; end = null;
+        } else {
+          end = d;
+        }
+        paint();
+      })
+    );
+    paint();
+
+    // -- reserve confirmation --
+    book.querySelectorAll<HTMLButtonElement>('[data-reserve]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const name = b.dataset.reserve!;
+        const range = start && end ? selEl.textContent : 'your selected dates';
+        sumText.textContent = `${name} held for ${guests} guest${guests > 1 ? 's' : ''} · ${range}`;
+        book.querySelectorAll('.mc-room__btn').forEach((x) => x.classList.remove('is-held'));
+        b.classList.add('is-held');
+      })
+    );
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint em { font-style: italic; color: var(--fg-2); }
+  .mc-scene-16 { aspect-ratio: 16 / 9; }
+  .mc-scene-43 { aspect-ratio: 4 / 3; }
+
+  /* every glyph of DISPLAY type resolves to Marcellus … */
+  .iu__scene * { font-family: var(--fam); }
+  /* … but body / UI copy is set in the loaded companion serif, Spectral */
+  .mc-spread__deck, .mc-spread__body,
+  .mc-book__head, .mc-book__panel, .mc-book__rooms,
+  .mc-room__meta, .mc-room__per, .mc-summary,
+  .mc-cal, .mc-guests, .mc-tabs { font-family: 'Spectral', Georgia, serif; }
+  /* …yet titling moments inside the UI return to Marcellus */
+  .mc-book__logo, .mc-book__h, .mc-room__name, .mc-cal__month,
+  .mc-room__rate .num, .mc-summary__total { font-family: var(--fam); }
+
+  .iu__scene .num { font-feature-settings: 'lnum' 1, 'tnum' 1; font-variant-numeric: lining-nums tabular-nums; }
+
+  /* the single accent mark per scene */
+  .mc-id__estd--r, .mc-wall__free, .mc-spread__folio { color: var(--accent); }
+
+  /* ============================================================
+     01 — HOTEL IDENTITY & WAYFINDING
+     Carved wordmark over a directory; letter-spacing "sets out" on reveal.
+     ============================================================ */
+  .mc-id { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 3.6cqi 6cqi; }
+  .mc-id__top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.2cqi; letter-spacing: 0.32em; text-transform: uppercase; color: var(--fg-3); }
+  .mc-id__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2cqi; text-align: center; }
+  .mc-id__monogram { font-size: 7.5cqi; line-height: 1; letter-spacing: 0.12em; color: var(--accent); opacity: 0.9; }
+  .mc-id__word { font-size: 11.5cqi; line-height: 0.96; letter-spacing: 0.06em; color: var(--fg); }
+  .mc-id__sub { font-size: 2.4cqi; letter-spacing: 0.42em; text-transform: uppercase; color: var(--fg-2); padding-left: 0.42em; }
+  .mc-id__way { display: flex; flex-direction: column; gap: 1.3cqi; border-top: 1px solid var(--line); padding-top: 2.4cqi; }
+  .mc-id__row { display: flex; align-items: baseline; gap: 1.4cqi; font-size: 2.5cqi; }
+  .mc-id__dest { color: var(--fg); letter-spacing: 0.02em; white-space: nowrap; }
+  .mc-id__lvl { color: var(--fg-3); letter-spacing: 0.18em; text-transform: uppercase; font-size: 2.1cqi; white-space: nowrap; }
+  .mc-id__dot { flex: 1; height: 1px; border-bottom: 1px dotted var(--line); transform: translateY(-0.35em); }
+
+  /* ============================================================
+     02 — EXHIBITION TITLE WALL  (full-bleed landscape)
+     Three monumental lines fill the frame, held by architectural rules.
+     ============================================================ */
+  .mc-wall { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 3.4cqi 4cqi; }
+  .mc-wall__head { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.9cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 2cqi; }
+  .mc-wall__center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 0; }
+  .mc-wall__kicker { font-size: 2cqi; letter-spacing: 0.36em; text-transform: uppercase; color: var(--fg-2); margin-bottom: 1.6cqi; }
+  .mc-wall__title { display: flex; flex-direction: column; align-items: center; font-size: 17cqi; line-height: 0.92; letter-spacing: 0.06em; color: var(--fg); text-transform: uppercase; width: 100%; }
+  .mc-wall__title span { display: block; }
+  /* the middle word is the smaller hinge between the two big words */
+  .mc-wall__title span:nth-child(2) { font-size: 0.62em; letter-spacing: 0.42em; color: var(--accent); padding: 0.18em 0 0.1em; padding-left: 0.42em; }
+  .mc-wall__foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; font-size: 1.9cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); border-top: 1px solid var(--line); padding-top: 2cqi; }
+  .mc-wall__dates { text-align: center; color: var(--accent); letter-spacing: 0.16em; }
+  .mc-wall__free { text-align: right; }
+
+  /* ============================================================
+     03 — WEDDING INVITATION  (full-bleed landscape, & as artwork)
+     Text column on the left; an oversized Marcellus ampersand fills the right.
+     ============================================================ */
+  .mc-inv { background: var(--bg); display: grid; grid-template-columns: 1fr 0.82fr; align-items: stretch; padding: 0; }
+  .mc-inv__frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+  .mc-inv__rect { stroke: var(--line); stroke-width: 1; }
+  .mc-inv__col { display: flex; flex-direction: column; justify-content: center; gap: 2cqi; padding: 6cqi 1cqi 6cqi 7cqi; }
+  .mc-inv__kicker { font-size: 2.1cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
+  .mc-inv__names { display: flex; flex-direction: column; gap: 0.2cqi; }
+  .mc-inv__name { font-size: 11cqi; line-height: 0.94; letter-spacing: 0.03em; color: var(--fg); }
+  .mc-inv__line { font-size: 2.4cqi; line-height: 1.5; letter-spacing: 0.04em; color: var(--fg-2); margin-top: 1cqi; }
+  .mc-inv__rule { width: 12cqi; height: 1px; background: var(--line); margin: 1.4cqi 0; }
+  .mc-inv__when { display: flex; flex-direction: column; gap: 0.7cqi; }
+  .mc-inv__date { font-size: 2.7cqi; letter-spacing: 0.04em; color: var(--fg); white-space: nowrap; }
+  .mc-inv__yr { font-size: 2.1cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); }
+  .mc-inv__where { font-size: 2.1cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-top: 0.6cqi; }
+  /* the ampersand panel — a subtly distinct ground, with the glyph bled large */
+  .mc-inv__art { position: relative; display: grid; place-items: center; overflow: hidden; border-left: 1px solid var(--line); background: color-mix(in srgb, var(--accent) 5%, var(--bg)); }
+  .mc-inv__amp { font-size: 58cqi; line-height: 0.8; color: var(--accent); font-style: italic; transform: translateY(0.02em); }
+
+  /* ============================================================
+     04 — EDITORIAL OPENER (Marcellus title + SPECTRAL body)
+     ============================================================ */
+  .mc-spread { background: var(--bg); display: grid; grid-template-columns: 14% 1fr; padding: 4.5cqi 5cqi; gap: 4cqi; }
+  .mc-spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 3cqi; }
+  .mc-spread__folio { font-size: 2.1cqi; letter-spacing: 0.16em; text-transform: uppercase; }
+  .mc-spread__sec { font-size: 2.1cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
+  .mc-spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+  .mc-spread__kicker { font-size: 2.3cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 1.6cqi; }
+  .mc-spread__head { font-size: 9.5cqi; line-height: 1.0; letter-spacing: 0.03em; color: var(--fg); }
+  .mc-spread__deck { font-size: 3cqi; line-height: 1.34; font-style: italic; color: var(--fg-2); max-width: 88%; margin-top: 2.4cqi; }
+  .mc-spread__body { columns: 2; column-gap: 4cqi; font-size: 2.1cqi; line-height: 1.56; color: var(--fg-2); margin-top: 3cqi; }
+  .mc-spread__body p { margin: 0 0 0.8em; }
+  .mc-spread__drop { float: left; font-family: var(--fam); font-size: 9cqi; line-height: 0.74; padding: 0.06em 0.12em 0 0; color: var(--accent); }
+
+  /* ============================================================
+     05 — RESERVATION UI (real px sizing) — Marcellus titling + Spectral UI
+     ============================================================ */
+  .mc-book { font-size: 13px; line-height: 1.45; background: var(--bg); }
+  .mc-book__head { display: flex; align-items: baseline; gap: 0.7rem; padding: 1.1rem 1.3rem 0.9rem; border-bottom: 1px solid var(--line); }
+  .mc-book__logo { font-size: 25px; letter-spacing: 0.06em; color: var(--fg); }
+  .mc-book__loc { font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-3); }
+
+  .mc-book__grid { display: grid; grid-template-columns: 248px 1fr; }
+  .mc-book__panel { padding: 1.2rem 1.3rem; border-right: 1px solid var(--line); }
+  .mc-book__h { font-size: 18px; letter-spacing: 0.04em; color: var(--fg); margin: 0 0 0.9rem; }
+
+  /* calendar */
+  .mc-cal { border: 1px solid var(--line); padding: 0.8rem 0.85rem 0.9rem; }
+  .mc-cal__bar { display: flex; flex-direction: column; gap: 0.15rem; margin-bottom: 0.7rem; }
+  .mc-cal__month { font-size: 16px; letter-spacing: 0.04em; color: var(--fg); }
+  .mc-cal__yr { color: var(--fg-3); letter-spacing: 0.1em; }
+  .mc-cal__sel { font-size: 11px; font-style: italic; color: var(--accent); min-height: 1.2em; }
+  .mc-cal__dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 0.3rem; }
+  .mc-cal__dow span { text-align: center; font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
+  .mc-cal__days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+  .mc-cal__pad { aspect-ratio: 1; }
+  .mc-cal__day {
+    aspect-ratio: 1; display: grid; place-items: center; font-family: var(--fam);
+    font-size: 12px; color: var(--fg-2); border-radius: 2px; cursor: pointer;
+    transition: background .12s var(--ease), color .12s var(--ease);
+  }
+  .mc-cal__day:hover { background: var(--bg-2); color: var(--fg); }
+  .mc-cal__day.is-between { background: color-mix(in srgb, var(--accent) 14%, var(--bg)); color: var(--fg); border-radius: 0; }
+  .mc-cal__day.is-start, .mc-cal__day.is-end { background: var(--accent); color: var(--accent-contrast); }
+  .mc-cal__day.is-start { border-radius: 2px 0 0 2px; }
+  .mc-cal__day.is-end { border-radius: 0 2px 2px 0; }
+
+  /* guest stepper */
+  .mc-guests { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; }
+  .mc-guests__label { font-size: 13px; letter-spacing: 0.04em; color: var(--fg-2); }
+  .mc-stepper { display: flex; align-items: center; gap: 0.2rem; border: 1px solid var(--line); }
+  .mc-stepper__btn { width: 30px; height: 30px; display: grid; place-items: center; font-size: 16px; color: var(--fg-2); cursor: pointer; transition: color .12s var(--ease), background .12s var(--ease); }
+  .mc-stepper__btn:hover { background: var(--bg-2); color: var(--fg); }
+  .mc-stepper__val { min-width: 28px; text-align: center; font-size: 15px; color: var(--fg); }
+
+  /* room tabs + list */
+  .mc-book__rooms { padding: 1.2rem 1.3rem; display: flex; flex-direction: column; min-height: 0; }
+  .mc-tabs { display: flex; gap: 0.25rem; margin-bottom: 0.9rem; }
+  .mc-tabs button { font-size: 12.5px; letter-spacing: 0.02em; color: var(--fg-3); padding: 0.3rem 0.75rem; border-radius: 100px; cursor: pointer; transition: color .15s var(--ease), background .15s var(--ease); }
+  .mc-tabs button:hover { color: var(--fg); }
+  .mc-tabs button.is-on { color: var(--accent-contrast); background: var(--accent); }
+
+  .mc-rooms { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .mc-room { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.85rem 0; border-top: 1px solid var(--line); }
+  .mc-room:first-child { border-top: 0; }
+  .mc-room.is-hidden { display: none; }
+  .mc-room__name { display: block; font-size: 18px; letter-spacing: 0.03em; color: var(--fg); }
+  .mc-room__meta { display: block; font-size: 11.5px; color: var(--fg-3); margin-top: 0.1rem; }
+  .mc-room__right { display: flex; align-items: center; gap: 0.9rem; white-space: nowrap; }
+  .mc-room__rate { display: flex; align-items: baseline; gap: 0.25rem; }
+  .mc-room__rate .num { font-size: 17px; color: var(--fg); }
+  .mc-room__per { font-size: 10.5px; color: var(--fg-3); }
+  .mc-room__btn { font-family: var(--fam); font-size: 12.5px; letter-spacing: 0.08em; color: var(--fg); border: 1px solid var(--line); padding: 0.38rem 0.95rem; cursor: pointer; transition: background .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease); }
+  .mc-room__btn:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .mc-room__btn.is-held { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .mc-room__btn.is-held::after { content: ' ✓'; }
+  .mc-room.is-soldout { opacity: 0.5; }
+  .mc-room__sold { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+
+  .mc-summary { margin-top: auto; padding-top: 0.9rem; border-top: 1px solid var(--line); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .mc-summary__nights { font-size: 12.5px; font-style: italic; color: var(--fg-2); }
+  .mc-summary__total { font-size: 21px; letter-spacing: 0.02em; color: var(--accent); }
+
+  /* ── draw-in reveals (composition / kinetic, no variable axis) ── */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-draw-word] { animation: mc-set 1.4s var(--ease) both; }
+    @keyframes mc-set { from { opacity: 0; letter-spacing: 0.34em; } to { opacity: 1; } }
+    /* invitation border draws itself */
+    .mc-inv__rect { stroke-dasharray: 1290; stroke-dashoffset: 1290; animation: mc-draw 1.8s var(--ease) 0.2s both; }
+    @keyframes mc-draw { to { stroke-dashoffset: 0; } }
+    /* hover re-spaces the headline / wordmark */
+    [data-draw]:hover [data-draw-word],
+    [data-draw]:focus-within [data-draw-word] { letter-spacing: 0.16em; transition: letter-spacing 0.7s var(--ease); }
+    .mc-id:hover .mc-id__word { letter-spacing: 0.14em; transition: letter-spacing 0.7s var(--ease); }
+  }
+  /* the title-wall keeps its wider native spacing through the keyframe */
+  .mc-wall__title[data-draw-word] { letter-spacing: 0.06em; }
+  /* the oversized ampersand scales/fades in as its own flourish */
+  @media (prefers-reduced-motion: no-preference) {
+    .mc-inv__amp[data-draw-word] { animation: mc-amp 1.6s var(--ease) 0.2s both; }
+    @keyframes mc-amp { from { opacity: 0; transform: translateY(0.02em) scale(0.86); } to { opacity: 1; transform: translateY(0.02em) scale(1); } }
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @container (max-width: 620px) {
+    .mc-spread { grid-template-columns: 1fr; }
+    .mc-spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
+    .mc-spread__sec { writing-mode: horizontal-tb; }
+    .mc-spread__main { grid-column: 1; }
+    .mc-spread__body { columns: 1; }
+  }
+
+  @container (max-width: 640px) {
+    .mc-book__grid { grid-template-columns: 1fr; }
+    .mc-book__panel { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+  /* invitation: relax the date line so it can wrap on narrow cards */
+  @container (max-width: 520px) {
+    .mc-inv__date { white-space: normal; }
+    .mc-inv { grid-template-columns: 1fr 0.7fr; }
+    .mc-inv__col { padding-left: 5cqi; }
+  }
+  @container (max-width: 460px) {
+    .mc-room { flex-wrap: wrap; gap: 0.5rem; }
+    .mc-room__right { width: 100%; justify-content: space-between; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-draw-word], .mc-cal__day, .mc-room__btn, .mc-tabs button { transition: none; }
+    .mc-inv__rect { stroke-dashoffset: 0; }
+  }
+</style>

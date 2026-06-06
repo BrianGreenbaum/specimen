@@ -1,0 +1,648 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+// Text companion already loaded site-wide for body copy where the grotesque steps back.
+const mono = "var(--font-mono)";
+
+// --- 03 · Editorial CMS workspace (interactive, real device scale) -------
+// Three drafts the editor can switch between; tabular figures hold the
+// metrics column, the "preview" headline re-cuts its opsz when you resize it.
+const drafts = [
+  {
+    id: 'a', section: 'Culture', status: 'In review', live: true,
+    title: 'The seams are the point',
+    dek: 'How a deliberately uneven grotesque became the house voice of a post-minimal web.',
+    author: 'Margaux Field', words: 1840, mins: 8, edits: 27, ver: '4.2',
+    score: 92, fig: ['2022', '37,400', '1.9k'],
+    body: [
+      'Most type wants to disappear. Bricolage walks in with its collar up — a flicked leg here, an open ear there — and somehow the page feels more honest for it.',
+      'Set small it behaves; set large the quirks step forward. That single range is why a newsroom can run one file from caption to cover.',
+    ],
+  },
+  {
+    id: 'b', section: 'Design', status: 'Scheduled', live: false,
+    title: 'A field guide to wonky',
+    dek: 'Twelve faces that traded neutrality for a pulse, and the studios that bet on them.',
+    author: 'Dev Okonkwo', words: 2310, mins: 11, edits: 41, ver: '7.0',
+    score: 88, fig: ['2024', '54,902', '3.3k'],
+    body: [
+      'There is a difference between a wall painted by a machine and one painted by a person. The irregularities are not mistakes; they are the signature.',
+      'Our survey ran twelve families through the same fourteen-point body test. Half held their colour. The other half sang.',
+    ],
+  },
+  {
+    id: 'c', section: 'Interviews', status: 'Draft', live: false,
+    title: 'Mathieu Triay on giving it away',
+    dek: 'The designer of Bricolage on rough edges, open licences, and refusing to be neutral.',
+    author: 'Priya Raman', words: 1290, mins: 6, edits: 12, ver: '1.4',
+    score: 74, fig: ['2018', '9,118', '402'],
+    body: [
+      'I did not want another perfect grotesque. There are enough of those. I wanted one that remembered it was drawn by a hand.',
+      'Open source was never charity. It was the fastest way to see the thing used in places I would never have been invited.',
+    ],
+  },
+];
+const d0 = drafts[0];
+
+// --- 04 · Exhibition poster lineup ---------------------------------------
+const programme: [string, string, string][] = [
+  ['01', 'OPENING NIGHT', 'THU 18:00'],
+  ['02', 'TYPE & THE HAND', 'FRI 14:00'],
+  ['03', 'VARIABLE FUTURES', 'SAT 11:00'],
+  ['04', 'CLOSING / OPEN BAR', 'SUN 17:00'],
+];
+---
+<div class="iu" style={`--fam:${fam}; --mono:${mono}`}>
+
+  <!-- 01 — Culture magazine cover: opsz contrast, breathing masthead -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Cover — culture quarterly, optical-size contrast top to bottom</span></figcaption>
+    <div class="iu__scene scene-cover">
+      <div class="cov" data-cov>
+        <div class="cov__top">
+          <span class="cov__mast">ASSEMBLAGE</span>
+          <span class="cov__meta">ISSUE 14 · €16 · SUMMER</span>
+        </div>
+        <div class="cov__hero">
+          <span class="cov__kicker">The handmade web</span>
+          <h3 class="cov__title">
+            <span class="cov__title-1" data-breathe>ROUGH</span>
+            <span class="cov__title-2">EDGES,</span>
+            <span class="cov__title-3" data-breathe>ON</span>
+            <span class="cov__title-4">PURPOSE</span>
+          </h3>
+        </div>
+        <div class="cov__foot">
+          <p class="cov__dek">A grotesque assembled from odd parts — rational bones, humanist quirks — and the studios betting their house style on the seams.</p>
+          <ul class="cov__bill">
+            <li><b>p.34</b> The flicked leg</li>
+            <li><b>p.52</b> Triay, in his own words</li>
+            <li><b>p.88</b> Twelve faces with a pulse</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">One face, two axes: the hairline masthead is cut at small opsz, ROUGH / ON ride display opsz and breathe, while EDGES, / PURPOSE drop to a compressed wdth 75 — wide and narrow locked in tension down the page.</p>
+  </figure>
+
+  <!-- 02 — INTERACTIVE: drive the optical-size axis on a real headline -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Optical size — drag a feature headline from text cut to display cut</span></figcaption>
+    <div class="iu__scene scene-opsz">
+      <div class="opsz" data-opsz>
+        <div class="opsz__bar">
+          <span class="opsz__tag">opsz axis</span>
+          <span class="opsz__val"><i data-opsz-out>96</i> pt</span>
+        </div>
+        <h3 class="opsz__word" data-opsz-word>Bricolage</h3>
+        <input class="opsz__range" type="range" data-opsz-axis min="12" max="96" step="1" value="96" aria-label="Optical size" />
+        <div class="opsz__compare">
+          <div class="opsz__cell">
+            <span class="opsz__cell-h">12 pt · text cut</span>
+            <p class="opsz__text">At small sizes the bowls open, the contrast calms and the spacing loosens — the letters stop performing and settle into a column you can read for an hour.</p>
+          </div>
+          <div class="opsz__cell opsz__cell--big">
+            <span class="opsz__cell-h">96 pt · display cut</span>
+            <span class="opsz__big">Bricolage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the slider — the same outline ramps from a calm 12pt reading cut to a tightened, high-contrast 96pt display cut. One file, two personalities.</p>
+  </figure>
+
+  <!-- 03 — REAL UI, device scale, interactive: editorial CMS workspace -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Product UI — editorial CMS, real device scale, interactive</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device cms" data-cms>
+        <div class="cms__chrome">
+          <div class="cms__dots"><i></i><i></i><i></i></div>
+          <span class="cms__addr">assemblage.studio / desk</span>
+          <span class="cms__env">DRAFT</span>
+        </div>
+        <div class="cms__bar">
+          <span class="cms__logo">Assemblage</span>
+          <nav class="cms__tabs" role="tablist">
+            {drafts.map((dr, i) => (
+              <button class={`cms__tab ${i === 0 ? 'is-on' : ''}`} data-tab={dr.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{dr.section}</button>
+            ))}
+          </nav>
+          <button class="cms__pub" data-pub>Publish</button>
+        </div>
+        <div class="cms__body">
+          <div class="cms__editor">
+            <div class="cms__statusline">
+              <span class={`cms__pill ${d0.live ? 'is-live' : ''}`} data-pill><i></i><span data-pilltxt>{d0.status}</span></span>
+              <span class="cms__ver" data-ver>v{d0.ver}</span>
+            </div>
+            <span class="cms__section" data-section>{d0.section}</span>
+            <h4 class="cms__title" data-title>{d0.title}</h4>
+            <p class="cms__dek" data-dek>{d0.dek}</p>
+            <div class="cms__feat">
+              <span class="cms__feat-h">Body rendering</span>
+              <button class="cms__chip is-on" data-feat="liga" aria-pressed="true">Ligatures</button>
+              <button class="cms__chip" data-feat="tnum" aria-pressed="false">Tabular figures</button>
+            </div>
+            <div class="cms__copy" data-copy>
+              <p data-p0>{d0.body[0]}</p>
+              <p data-p1>{d0.body[1]}</p>
+            </div>
+          </div>
+          <aside class="cms__rail">
+            <span class="cms__rail-h">Document</span>
+            <dl class="cms__stats">
+              <div class="cms__stat"><dt>Words</dt><dd data-words>{d0.words.toLocaleString()}</dd></div>
+              <div class="cms__stat"><dt>Read time</dt><dd data-mins>{d0.mins} min</dd></div>
+              <div class="cms__stat"><dt>Revisions</dt><dd data-edits>{d0.edits}</dd></div>
+            </dl>
+            <div class="cms__gauge">
+              <div class="cms__gauge-top"><span>Readability</span><span data-score>{d0.score}</span></div>
+              <span class="cms__track"><i data-fill style={`width:${d0.score}%`}></i></span>
+            </div>
+            <span class="cms__rail-h cms__rail-h--sub">Author</span>
+            <span class="cms__author" data-author>{d0.author}</span>
+            <div class="cms__metrics">
+              <div class="cms__metric"><span data-f0>{d0.fig[0]}</span><em>since</em></div>
+              <div class="cms__metric"><span data-f1>{d0.fig[1]}</span><em>reads</em></div>
+              <div class="cms__metric"><span data-f2>{d0.fig[2]}</span><em>saves</em></div>
+            </div>
+          </aside>
+        </div>
+        <div class="cms__toast" data-toast aria-hidden="true">Published to assemblage.studio</div>
+      </div>
+    </div>
+    <p class="iu__hint label">Switch desks, toggle Tabular figures — the metric column snaps into alignment — flip ligatures on the copy, then hit Publish.</p>
+  </figure>
+
+  <!-- 04 — Exhibition poster: kinetic width + weight -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Poster — type biennale, kinetic width &amp; weight</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="post">
+        <div class="post__rail"><span>wdth 75–100</span><span>wght 200–800</span></div>
+        <div class="post__top">
+          <span>TYPE BIENNALE</span>
+          <span>ATELIER HALL · 18–21 SEP</span>
+        </div>
+        <div class="post__stack">
+          <span class="post__line post__line--sm">A FESTIVAL OF</span>
+          <span class="post__line post__line--shout" data-kin style="--d:0s">MADE</span>
+          <span class="post__line post__line--shout post__line--accent" data-kin style="--d:-2.6s">BY</span>
+          <span class="post__line post__line--shout" data-kin style="--d:-1.3s">HAND</span>
+        </div>
+        <ol class="post__prog">
+          {programme.map((p) => (
+            <li><span class="post__prog-n">{p[0]}</span><span class="post__prog-t">{p[1]}</span><span class="post__prog-d">{p[2]}</span></li>
+          ))}
+        </ol>
+        <div class="post__foot">
+          <span>FREE ENTRY · ALL WELCOME</span>
+          <span class="post__url">assemblage.studio</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The three shout lines compress and swell across the width and weight axes, phase-offset — Bricolage's full variable range, kinetic.</p>
+  </figure>
+
+</div>
+
+<script id="bricolage-cms-data" type="application/json" set:html={JSON.stringify(drafts)} is:inline></script>
+
+<script>
+  // ---- 02 · optical-size scrubber on a live headline ----
+  document.querySelectorAll<HTMLElement>('[data-opsz]').forEach((root) => {
+    const word = root.querySelector<HTMLElement>('[data-opsz-word]')!;
+    const out = root.querySelector<HTMLElement>('[data-opsz-out]')!;
+    const range = root.querySelector<HTMLInputElement>('[data-opsz-axis]')!;
+    const apply = (v: number) => {
+      const t = (v - 12) / (96 - 12);            // 0 small → 1 display
+      const wght = Math.round(420 - t * 120);     // text wants more weight, display less
+      const ls = (0.005 - t * 0.035).toFixed(3);  // tighten as it grows
+      word.style.fontVariationSettings = `'opsz' ${v}, 'wght' ${wght}, 'wdth' 100`;
+      word.style.letterSpacing = `${ls}em`;
+      out.textContent = String(v);
+    };
+    range.addEventListener('input', () => apply(+range.value));
+    apply(+range.value);
+  });
+
+  // ---- 03 · editorial CMS workspace ----
+  type Draft = {
+    id: string; section: string; status: string; live: boolean;
+    title: string; dek: string; author: string;
+    words: number; mins: number; edits: number; ver: string;
+    score: number; fig: string[]; body: string[];
+  };
+  const island = document.getElementById('bricolage-cms-data');
+  let drafts: Draft[] = [];
+  try { drafts = island ? JSON.parse(island.textContent || '[]') : []; } catch { drafts = []; }
+  const byId: Record<string, Draft> = {};
+  drafts.forEach((d) => (byId[d.id] = d));
+
+  document.querySelectorAll<HTMLElement>('[data-cms]').forEach((cms) => {
+    if (!drafts.length) return;
+    const q = (s: string) => cms.querySelector(s) as HTMLElement | null;
+    const featState: Record<string, boolean> = { liga: true, tnum: false };
+
+    function applyFeats() {
+      const copy = q('[data-copy]')!;
+      const feats = Object.entries(featState).map(([k, v]) => `'${k}' ${v ? 1 : 0}`).join(', ');
+      copy.style.fontFeatureSettings = feats;
+      // tabular figures are what the metric column needs
+      cms.querySelectorAll<HTMLElement>('[data-words],[data-mins],[data-edits],[data-f0],[data-f1],[data-f2],[data-score],[data-ver]')
+        .forEach((el) => { el.style.fontFeatureSettings = `'tnum' ${featState.tnum ? 1 : 0}, 'liga' ${featState.liga ? 1 : 0}`; });
+    }
+
+    function render(id: string) {
+      const d = byId[id];
+      if (!d) return;
+      q('[data-section]')!.textContent = d.section;
+      q('[data-title]')!.textContent = d.title;
+      q('[data-dek]')!.textContent = d.dek;
+      q('[data-p0]')!.textContent = d.body[0];
+      q('[data-p1]')!.textContent = d.body[1];
+      q('[data-author]')!.textContent = d.author;
+      q('[data-words]')!.textContent = d.words.toLocaleString();
+      q('[data-mins]')!.textContent = `${d.mins} min`;
+      q('[data-edits]')!.textContent = String(d.edits);
+      q('[data-ver]')!.textContent = `v${d.ver}`;
+      q('[data-score]')!.textContent = String(d.score);
+      (q('[data-fill]') as HTMLElement).style.width = `${d.score}%`;
+      q('[data-f0]')!.textContent = d.fig[0];
+      q('[data-f1]')!.textContent = d.fig[1];
+      q('[data-f2]')!.textContent = d.fig[2];
+      const pill = q('[data-pill]')!;
+      pill.classList.toggle('is-live', d.live);
+      q('[data-pilltxt]')!.textContent = d.status;
+      cms.querySelectorAll('[data-tab]').forEach((t) => {
+        const on = (t as HTMLElement).dataset.tab === id;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      applyFeats();
+    }
+
+    cms.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) =>
+      btn.addEventListener('click', () => render(btn.dataset.tab!)));
+
+    cms.querySelectorAll<HTMLButtonElement>('[data-feat]').forEach((btn) => {
+      const feat = btn.dataset.feat!;
+      btn.addEventListener('click', () => {
+        featState[feat] = !featState[feat];
+        btn.classList.toggle('is-on', featState[feat]);
+        btn.setAttribute('aria-pressed', String(featState[feat]));
+        applyFeats();
+      });
+    });
+
+    const pub = cms.querySelector<HTMLButtonElement>('[data-pub]');
+    const toast = cms.querySelector<HTMLElement>('[data-toast]');
+    pub?.addEventListener('click', () => {
+      if (!toast) return;
+      toast.classList.add('is-up');
+      window.clearTimeout((toast as any)._t);
+      (toast as any)._t = window.setTimeout(() => toast.classList.remove('is-up'), 1900);
+    });
+
+    applyFeats();
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing — matches the other In-Use components */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 10; } }
+
+  .iu__device {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); overflow: hidden;
+  }
+
+  /* ============ 01 · CULTURE COVER (opsz contrast) ============ */
+  .scene-cover { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-cover { aspect-ratio: 5 / 6; } }
+  .cov {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column; padding: 5cqi 5.5cqi;
+    overflow: hidden;
+  }
+  .cov__top {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi;
+    border-bottom: 1px solid var(--line); padding-bottom: 2.4cqi;
+  }
+  /* hairline masthead — small optical-size cut, even though it is set large */
+  .cov__mast {
+    font-size: 7cqi; letter-spacing: 0.04em; line-height: 1;
+    font-variation-settings: 'opsz' 14, 'wght' 360, 'wdth' 100;
+    color: var(--fg);
+  }
+  .cov__meta {
+    font-size: 2cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3); font-feature-settings: 'tnum'; white-space: nowrap;
+  }
+  .cov__hero { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; padding: 3cqi 0; }
+  .cov__kicker {
+    font-size: 2.6cqi; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 1.5cqi;
+  }
+  .cov__title {
+    margin: 0; line-height: 0.82; text-transform: uppercase;
+    display: flex; flex-direction: column;
+  }
+  .cov__title span { display: block; white-space: nowrap; }
+  /* DISPLAY cut — wide, full display opsz, heavy: the loud half */
+  .cov__title-1, .cov__title-3 {
+    font-variation-settings: 'opsz' 96, 'wght' 780, 'wdth' 100;
+    letter-spacing: -0.025em;
+  }
+  .cov__title-1 { font-size: 27cqi; }
+  .cov__title-3 { font-size: 27cqi; color: var(--accent); }
+  /* COMPRESSED cut — narrow wdth 75, heavy weight so the width axis is unmistakable;
+     the same word can run far larger because the glyphs are narrowed. Right-aligned
+     so the wide/narrow lines lock into deliberate vertical tension. */
+  .cov__title-2, .cov__title-4 {
+    font-variation-settings: 'opsz' 60, 'wght' 740, 'wdth' 75;
+    font-feature-settings: 'wdth' 75;
+    letter-spacing: 0.005em; color: var(--fg); text-align: right;
+  }
+  .cov__title-2 { font-size: 23cqi; }
+  .cov__title-4 { font-size: 23cqi; }
+  .cov__foot {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 4cqi; align-items: end;
+    border-top: 1px solid var(--line); padding-top: 2.8cqi;
+  }
+  .cov__dek {
+    font-size: 2.7cqi; line-height: 1.34; color: var(--fg-2); margin: 0;
+    font-variation-settings: 'opsz' 16, 'wght' 400, 'wdth' 100;
+  }
+  .cov__bill { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.4cqi; }
+  .cov__bill li {
+    font-size: 2.4cqi; line-height: 1.1; color: var(--fg);
+    font-variation-settings: 'opsz' 18, 'wght' 500, 'wdth' 100;
+    display: flex; gap: 1.4cqi; align-items: baseline;
+  }
+  .cov__bill b { color: var(--accent); font-weight: 700; font-feature-settings: 'tnum'; flex: none; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cov__title [data-breathe] { animation: cov-breathe 6s var(--ease-out, ease-in-out) infinite alternate; }
+    .cov__title-3[data-breathe] { animation-delay: -3s; }
+    @keyframes cov-breathe {
+      from { font-variation-settings: 'opsz' 40, 'wght' 760, 'wdth' 100; letter-spacing: 0.005em; }
+      to   { font-variation-settings: 'opsz' 96, 'wght' 760, 'wdth' 100; letter-spacing: -0.025em; }
+    }
+  }
+
+  @container (max-width: 460px) {
+    .cov__foot { grid-template-columns: 1fr; gap: 2.4cqi; }
+    .cov__mast { font-size: 8.5cqi; }
+    .cov__title-1, .cov__title-3 { font-size: 30cqi; }
+    .cov__title-2, .cov__title-4 { font-size: 26cqi; }
+  }
+
+  /* ============ 02 · OPTICAL-SIZE SCRUBBER ============ */
+  .scene-opsz { background: var(--bg); aspect-ratio: 16 / 11; }
+  .opsz {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 5cqi 5.5cqi; display: flex; flex-direction: column; gap: 2.6cqi;
+  }
+  .opsz__bar {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--mono); font-size: 2.4cqi; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .opsz__val { color: var(--accent); }
+  .opsz__val i { font-style: normal; font-feature-settings: 'tnum'; }
+  .opsz__word {
+    font-size: 22cqi; line-height: 0.84; margin: 0; color: var(--fg);
+    font-variation-settings: 'opsz' 96, 'wght' 300, 'wdth' 100;
+    letter-spacing: -0.03em; white-space: nowrap;
+  }
+  .opsz__range {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--line), var(--accent));
+    border-radius: 2px; cursor: pointer; margin: 0.5cqi 0;
+  }
+  .opsz__range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 3.6cqi; height: 3.6cqi; min-width: 18px; min-height: 18px;
+    border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  .opsz__range::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  .opsz__compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4cqi; align-items: start;
+    border-top: 1px solid var(--line); padding-top: 3cqi;
+  }
+  .opsz__cell-h {
+    display: block; font-family: var(--mono); font-size: 1.8cqi; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--fg-3); margin-bottom: 1.4cqi;
+  }
+  .opsz__text {
+    margin: 0; font-size: 2.3cqi; line-height: 1.5; color: var(--fg-2); max-width: 42ch;
+    font-variation-settings: 'opsz' 12, 'wght' 400, 'wdth' 100;
+  }
+  .opsz__cell--big { text-align: right; }
+  .opsz__big {
+    font-size: 11cqi; line-height: 0.82; color: var(--accent);
+    font-variation-settings: 'opsz' 96, 'wght' 600, 'wdth' 90;
+    letter-spacing: -0.02em;
+  }
+
+  @container (max-width: 540px) {
+    .opsz__compare { grid-template-columns: 1fr; gap: 3cqi; }
+    .opsz__cell--big { text-align: left; }
+    .opsz__word { font-size: 19cqi; }
+    .opsz__big { font-size: 16cqi; }
+  }
+
+  /* ============ 03 · EDITORIAL CMS (real px UI) ============ */
+  .cms { font-size: 13px; }
+  .cms__chrome {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--line);
+    background: var(--bg-2); flex: none;
+  }
+  .cms__dots { display: inline-flex; gap: 6px; }
+  .cms__dots i { width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 22%, transparent); }
+  .cms__addr {
+    font-family: var(--mono); font-size: 11px; color: var(--fg-3);
+    letter-spacing: 0.02em; margin: 0 auto 0 0.4rem;
+  }
+  .cms__env {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em;
+    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 100px; padding: 0.1rem 0.5rem;
+  }
+  .cms__bar {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.55rem 0.95rem; border-bottom: 1px solid var(--line); flex: none;
+  }
+  .cms__logo {
+    font-size: 18px; color: var(--fg); letter-spacing: -0.01em;
+    font-variation-settings: 'opsz' 36, 'wght' 600, 'wdth' 100;
+  }
+  .cms__tabs { display: flex; gap: 0.2rem; margin-left: 0.4rem; }
+  .cms__tab {
+    font-size: 12px; font-weight: 500; color: var(--fg-3);
+    padding: 0.3rem 0.7rem; border-radius: 100px; border: 1px solid transparent;
+    cursor: pointer; background: transparent; transition: all 0.15s var(--ease);
+    white-space: nowrap;
+  }
+  .cms__tab:hover { color: var(--fg); }
+  .cms__tab.is-on { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .cms__pub {
+    margin-left: auto; font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+    color: var(--accent-contrast); background: var(--accent); border: 0;
+    border-radius: 7px; padding: 0.4rem 0.95rem; cursor: pointer;
+    transition: filter 0.15s var(--ease);
+  }
+  .cms__pub:hover { filter: brightness(1.06); }
+  .cms__pub:active { transform: translateY(1px); }
+
+  .cms__body { flex: 1; display: grid; grid-template-columns: 1fr 200px; min-height: 0; }
+  .cms__editor { padding: 1.2rem 1.4rem; overflow: auto; border-right: 1px solid var(--line); }
+  .cms__statusline { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+  .cms__pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--fg-3); border: 1px solid var(--line); border-radius: 100px;
+    padding: 0.15rem 0.6rem;
+  }
+  .cms__pill i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.45; }
+  .cms__pill.is-live { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+  .cms__pill.is-live i { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cms__pill.is-live i { animation: cms-pulse 1.5s ease-in-out infinite; }
+    @keyframes cms-pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); } 70% { box-shadow: 0 0 0 5px transparent; } }
+  }
+  .cms__ver { font-family: var(--mono); font-size: 10.5px; color: var(--fg-3); letter-spacing: 0.04em; }
+  .cms__section { display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .cms__title {
+    font-size: 27px; line-height: 1.05; margin: 0.35rem 0 0.5rem; color: var(--fg);
+    font-variation-settings: 'opsz' 72, 'wght' 600, 'wdth' 100; letter-spacing: -0.015em;
+  }
+  .cms__dek {
+    font-size: 15px; line-height: 1.4; color: var(--fg-2); margin: 0 0 1rem;
+    font-variation-settings: 'opsz' 18, 'wght' 400, 'wdth' 100;
+  }
+  .cms__feat {
+    display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    padding: 0.7rem 0; margin-bottom: 0.6rem;
+    border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft);
+  }
+  .cms__feat-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); margin-right: 0.3rem; }
+  .cms__chip {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.02em;
+    color: var(--fg-3); padding: 0.25rem 0.6rem; border-radius: 100px;
+    border: 1px solid var(--line); cursor: pointer; background: transparent;
+    transition: all 0.15s var(--ease); white-space: nowrap;
+  }
+  .cms__chip:hover { color: var(--fg); border-color: var(--fg-3); }
+  .cms__chip.is-on { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+  .cms__copy { font-size: 14px; }
+  .cms__copy p {
+    margin: 0 0 0.7rem; line-height: 1.55; color: var(--fg);
+    font-variation-settings: 'opsz' 14, 'wght' 400, 'wdth' 100;
+  }
+  .cms__copy p:last-child { margin-bottom: 0; }
+
+  .cms__rail { padding: 1.2rem 1.1rem; display: flex; flex-direction: column; gap: 0.85rem; overflow: auto; background: color-mix(in srgb, var(--fg) 2.5%, var(--bg)); }
+  .cms__rail-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .cms__rail-h--sub { padding-top: 0.4rem; border-top: 1px solid var(--line-soft); }
+  .cms__stats { margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .cms__stat { display: flex; align-items: baseline; justify-content: space-between; }
+  .cms__stat dt { font-size: 12px; color: var(--fg-3); margin: 0; }
+  .cms__stat dd { margin: 0; font-size: 15px; font-weight: 600; color: var(--fg); font-variation-settings: 'opsz' 24, 'wght' 600; letter-spacing: 0.01em; }
+  .cms__gauge { display: flex; flex-direction: column; gap: 0.4rem; }
+  .cms__gauge-top { display: flex; align-items: baseline; justify-content: space-between; font-size: 12px; color: var(--fg-3); }
+  .cms__gauge-top span:last-child { font-size: 14px; font-weight: 700; color: var(--accent); }
+  .cms__track { display: block; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .cms__track i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.45s var(--ease); }
+  .cms__author { font-size: 14px; font-weight: 600; color: var(--fg); font-variation-settings: 'opsz' 24, 'wght' 600; }
+  .cms__metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  .cms__metric { display: flex; flex-direction: column; }
+  .cms__metric span { font-size: 14px; font-weight: 700; color: var(--fg); font-variation-settings: 'opsz' 28, 'wght' 700; letter-spacing: 0; }
+  .cms__metric em { font-style: normal; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
+
+  .cms__toast {
+    position: absolute; left: 50%; bottom: 14px; transform: translate(-50%, 20px);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+    color: var(--accent-contrast); background: var(--accent);
+    padding: 0.5rem 1rem; border-radius: 8px; opacity: 0; pointer-events: none;
+    box-shadow: 0 12px 28px -10px color-mix(in srgb, var(--accent) 70%, transparent);
+    transition: opacity 0.25s var(--ease), transform 0.25s var(--ease-out);
+  }
+  .cms__toast.is-up { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) { .cms__toast { transition: opacity 0.2s linear; } .cms__toast.is-up { transform: translate(-50%, 0); } }
+
+  @container (max-width: 560px) {
+    .cms__body { grid-template-columns: 1fr; }
+    .cms__rail { display: none; }
+    .cms__addr { display: none; }
+    .cms__title { font-size: 23px; }
+  }
+
+  /* ============ 04 · TYPE BIENNALE POSTER (kinetic wdth + wght) ============ */
+  .post { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .post__rail {
+    position: absolute; top: 50%; right: 1.2cqi; transform: translateY(-50%);
+    writing-mode: vertical-rl; display: flex; gap: 3cqi;
+    font-family: var(--mono); font-size: 1.7cqi; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum';
+  }
+  .post__top {
+    display: flex; justify-content: space-between; gap: 2cqi;
+    font-size: 2.1cqi; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi;
+    font-feature-settings: 'tnum';
+  }
+  .post__stack { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.2cqi; padding: 2cqi 0; min-height: 0; }
+  .post__line { line-height: 0.86; text-transform: uppercase; white-space: nowrap; }
+  .post__line--sm { font-size: 3.6cqi; letter-spacing: 0.3em; color: var(--fg-2); font-weight: 400; padding-bottom: 1cqi; }
+  .post__line--shout { font-size: 30cqi; letter-spacing: -0.01em; font-variation-settings: 'opsz' 96, 'wght' 700, 'wdth' 100; }
+  .post__line--accent { color: var(--accent); }
+  .post__prog { list-style: none; margin: 2cqi 0 0; padding: 2cqi 0 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 1cqi; }
+  .post__prog li { display: grid; grid-template-columns: auto 1fr auto; gap: 2cqi; align-items: baseline; }
+  .post__prog-n { font-family: var(--mono); font-size: 1.9cqi; color: var(--accent); font-feature-settings: 'tnum'; }
+  .post__prog-t { font-size: 2.7cqi; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-variation-settings: 'opsz' 24, 'wght' 600, 'wdth' 100; }
+  .post__prog-d { font-size: 2.1cqi; color: var(--fg-3); letter-spacing: 0.08em; text-transform: uppercase; font-feature-settings: 'tnum'; }
+  .post__foot { display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi; font-size: 2.1cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); border-top: 1px solid var(--line); padding-top: 1.6cqi; margin-top: 2cqi; }
+  .post__url { color: var(--accent); font-weight: 600; letter-spacing: 0.02em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .post__line--shout[data-kin] {
+      animation: post-kin 5.5s var(--ease-out, ease-in-out) infinite alternate;
+      animation-delay: var(--d, 0s);
+    }
+    @keyframes post-kin {
+      from { font-variation-settings: 'opsz' 96, 'wght' 240, 'wdth' 100; letter-spacing: 0.02em; }
+      to   { font-variation-settings: 'opsz' 96, 'wght' 800, 'wdth' 75;  letter-spacing: -0.02em; }
+    }
+  }
+
+  @container (max-width: 520px) {
+    .post__line--shout { font-size: 26cqi; }
+    .post__rail { display: none; }
+    .post__prog-d { font-size: 1.9cqi; }
+  }
+</style>
