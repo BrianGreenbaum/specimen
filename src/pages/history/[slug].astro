@@ -127,7 +127,7 @@ const hasFaces = eraFonts.length > 0 || timelineFaces.length > 0;
           <h2>Defining traits, drawn</h2>
           <span class="label">Where the era shows on the letter</span>
         </div>
-        <DetailCallouts callouts={e.traitCallouts} family={fam} />
+        <DetailCallouts callouts={e.traitCallouts} family={fam} editCollection="eras" editId={entry.id} editField="traitCallouts" />
       </section>
     )}
 

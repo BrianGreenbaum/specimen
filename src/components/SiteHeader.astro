@@ -74,10 +74,111 @@ const lexSections = [
         </div>
       </div>
 
+      {import.meta.env.DEV && (
+        <button
+          class="header-link label glyph-edit-btn"
+          data-glyph-edit-toggle
+          type="button"
+          aria-pressed="false"
+          title="Toggle glyph edit mode (local only)"
+        >✎ Glyphs</button>
+      )}
+
       {showToggle && <ColorModeToggle />}
     </nav>
+
+    <button
+      class="nav-toggle"
+      data-nav-toggle
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Open menu"
+    >
+      <span class="nav-toggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile navigation drawer (shown via the hamburger ≤760px).
+     Must live OUTSIDE <header>: the header's backdrop-filter would otherwise
+     become the containing block for this position:fixed panel. -->
+<div class="mnav" id="mobile-nav" data-mnav aria-hidden="true">
+    <nav class="mnav__inner container" aria-label="Primary">
+      <div class="mnav__block">
+        <a class="mnav__primary" href="/history">History</a>
+        <div class="mnav__sub">
+          {eras.map((e) => (
+            <a class="mnav__subitem" href={`/history/${e.data.slug}`}>
+              <span class="mnav__idx">{String(e.data.order).padStart(2, '0')}</span>
+              <span>{e.data.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="mnav__block">
+        <a class="mnav__primary" href="/#index">Fonts</a>
+        <div class="mnav__sub mnav__sub--grid">
+          {fonts.map((f) => (
+            <a class="mnav__subitem" href={`/fonts/${f.id}`}>
+              <span class="mnav__subname" style={`font-family:${f.data.fontFamily}`}>{f.data.name}</span>
+              <span class="mnav__meta">{f.data.category}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="mnav__block">
+        <a class="mnav__primary" href="/compare">Compare</a>
+      </div>
+
+      <div class="mnav__block">
+        <a class="mnav__primary" href="/glossary">Lexicon</a>
+        <div class="mnav__sub">
+          {lexSections.map((s, i) => (
+            <a class="mnav__subitem" href={`/glossary#${s.id}`}>
+              <span class="mnav__idx">{String(i + 1).padStart(2, '0')}</span>
+              <span>{s.name}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {showToggle && (
+        <div class="mnav__foot"><ColorModeToggle /></div>
+      )}
+    </nav>
+  </div>
+
+<script>
+  // Mobile drawer: toggle, Escape to close, scroll-lock, close on navigation.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const btn = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-mnav]');
+  if (btn && panel) {
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      panel.setAttribute('aria-hidden', String(!open));
+      panel.classList.toggle('is-open', open);
+      document.body.classList.toggle('mnav-open', open);
+      // anchor the drawer just below the (sticky) header
+      if (open && header) panel.style.setProperty('--header-h', `${header.offsetHeight}px`);
+    };
+    btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    panel.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') setOpen(false);
+    });
+    // close if the viewport grows back to desktop
+    window.matchMedia('(min-width: 761px)').addEventListener('change', (m) => {
+      if (m.matches) setOpen(false);
+    });
+  }
+</script>
 
 <style>
   .site-header {
@@ -117,6 +218,9 @@ const lexSections = [
   /* legible by default (not the faint --fg-3 the .label utility ships with) */
   .header-link { color: var(--fg-2); transition: color 0.2s var(--ease); }
   .header-link:hover { color: var(--accent); }
+  .glyph-edit-btn { cursor: pointer; }
+  .glyph-edit-btn[aria-pressed='true'] { color: var(--accent); }
+  .glyph-edit-btn[aria-pressed='true']::before { content: '● '; }
 
   /* --- Hover/focus dropdown menus --- */
   .navitem { position: relative; display: flex; align-items: center; }
@@ -188,10 +292,80 @@ const lexSections = [
     white-space: nowrap;
   }
 
-  @media (max-width: 640px) {
+  /* --- Hamburger toggle (mobile only) --- */
+  .nav-toggle { display: none; margin-left: auto; padding: 0.5rem; }
+  .nav-toggle__bars { display: block; width: 26px; height: 16px; position: relative; }
+  .nav-toggle__bars i {
+    position: absolute; left: 0; width: 100%; height: 2px; border-radius: 2px;
+    background: var(--fg-2);
+    transition: transform 0.28s var(--ease), opacity 0.2s var(--ease), top 0.28s var(--ease), background 0.2s var(--ease);
+  }
+  .nav-toggle__bars i:nth-child(1) { top: 0; }
+  .nav-toggle__bars i:nth-child(2) { top: 7px; }
+  .nav-toggle__bars i:nth-child(3) { top: 14px; }
+  .nav-toggle:hover .nav-toggle__bars i { background: var(--accent); }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars i:nth-child(1) { top: 7px; transform: rotate(45deg); }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars i:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bars i:nth-child(3) { top: 7px; transform: rotate(-45deg); }
+
+  /* --- Mobile drawer --- */
+  .mnav {
+    position: fixed;
+    inset: var(--header-h, 64px) 0 0 0;
+    z-index: 110;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    backdrop-filter: saturate(1.4) blur(18px);
+    -webkit-backdrop-filter: saturate(1.4) blur(18px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.26s var(--ease), transform 0.26s var(--ease), visibility 0.26s;
+  }
+  .mnav.is-open { opacity: 1; visibility: visible; transform: none; }
+  .mnav__inner { display: flex; flex-direction: column; padding-block: var(--sp-4) var(--sp-7); }
+  .mnav__block { padding-block: var(--sp-3); border-top: 1px solid var(--line-soft); }
+  .mnav__block:first-child { border-top: 0; }
+  .mnav__primary {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 640;
+    font-size: clamp(1.8rem, 9vw, 2.6rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--fg);
+    transition: color 0.2s var(--ease);
+  }
+  .mnav__primary:active { color: var(--accent); }
+  .mnav__sub {
+    margin-top: var(--sp-3);
+    display: flex; flex-direction: column; gap: 0.15rem;
+  }
+  .mnav__sub--grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.15rem 1rem;
+  }
+  .mnav__subitem {
+    display: flex; align-items: baseline; gap: 0.7rem;
+    padding: 0.5rem 0; color: var(--fg-2);
+  }
+  .mnav__subitem:active { color: var(--accent); }
+  .mnav__idx { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); }
+  .mnav__subname { font-size: var(--step-0); margin-right: auto; }
+  .mnav__meta {
+    font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .mnav__foot { margin-top: var(--sp-4); }
+
+  @media (max-width: 760px) {
     .breadcrumb { display: none; }
     .site-header__inner { gap: var(--sp-2); }
-    /* touch devices can't hover — fall back to the plain links */
-    .dropdown { display: none; }
+    .site-header__nav { display: none; }
+    .nav-toggle { display: inline-flex; align-items: center; }
+  }
+  @media (min-width: 761px) {
+    /* drawer never participates on desktop, even if a stale class lingers */
+    .mnav { display: none; }
   }
 </style>

@@ -5,8 +5,12 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props {
   callouts: CollectionEntry<'fonts'>['data']['callouts'];
   family: string;
+  /** Source identity, so the dev Glyph-edit tool can save changes back. */
+  editCollection?: 'fonts' | 'eras';
+  editId?: string;
+  editField?: string;
 }
-const { callouts, family } = Astro.props;
+const { callouts, family, editCollection = 'fonts', editId, editField = 'callouts' } = Astro.props;
 ---
 <div class="callouts" data-glossary style={`--fam:${family}; --term-fam:'${family}'`}>
   {callouts.map((c, i) => (
@@ -19,6 +23,11 @@ const { callouts, family } = Astro.props;
           data-weight={c.weight}
           data-guides={JSON.stringify(c.guides)}
           data-focus={JSON.stringify(c.focus)}
+          data-family={family}
+          data-edit-collection={editId ? editCollection : undefined}
+          data-edit-id={editId}
+          data-edit-field={editId ? editField : undefined}
+          data-edit-index={i}
           preserveAspectRatio="xMidYMid meet"
           role="img"
           aria-label={`${c.glyph} — ${c.title}`}
@@ -50,6 +59,10 @@ const { callouts, family } = Astro.props;
         guides: JSON.parse(svg.dataset.guides || '[]'),
         focus: JSON.parse(svg.dataset.focus || '[]'),
         fill: 0.62,
+      }).then((layout) => {
+        (svg as any).__layout = layout;
+        // let the dev Glyph-edit tool (if active) attach to freshly drawn plates
+        document.dispatchEvent(new CustomEvent('glyph-diagram-drawn', { detail: { svg } }));
       });
     });
   };

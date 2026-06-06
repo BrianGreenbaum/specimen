@@ -1,0 +1,69 @@
+---
+name: Martian Mono
+order: 25
+era: digital
+historyNote: A monospace for the variable-font age — fixed-width, yet adjustable in weight and width.
+designer: Roman Shchedov
+foundry: Evil Martians
+year: 2022
+classification: Variable Monospace
+category: Monospace
+blurb: A boxy, technical monospace with a twist — it keeps perfect columns while letting you tune weight and width.
+googleFontsUrl: https://fonts.google.com/specimen/Martian+Mono
+sourceUrl: https://github.com/evilmartians/mono
+license: SIL Open Font License 1.1
+fontFamily: 'Martian Mono Variable'
+isVariable: true
+hasItalic: false
+axes:
+  - { tag: 'wght', name: 'Weight', min: 100, max: 800, default: 400, step: 1 }
+  - { tag: 'wdth', name: 'Width', min: 75, max: 112, default: 100, step: 0.5 }
+weights:
+  - { name: 'Thin', weight: 100 }
+  - { name: 'Extra Light', weight: 200 }
+  - { name: 'Light', weight: 300 }
+  - { name: 'Regular', weight: 400 }
+  - { name: 'Medium', weight: 500 }
+  - { name: 'Semi Bold', weight: 600 }
+  - { name: 'Bold', weight: 700 }
+  - { name: 'Extra Bold', weight: 800 }
+headline: Telemetry
+sampleText: const signal = await probe.read(0x1F);  // every column holds its place
+pangram: Sphinx of black quartz, judge my vow — 0123456789 {}[]()<>
+feelings: ['Technical', 'Precise', 'Spacey', 'Geometric', 'Modern']
+languages: ['Latin', 'Latin Extended', 'Cyrillic']
+pairsWith:
+  - { name: 'Space Grotesk', role: 'Headlines & UI' }
+  - { name: 'Source Sans 3', role: 'Documentation body' }
+openType:
+  - { tag: 'zero', label: 'Slashed zero', sample: '0 vs O', on: true }
+  - { tag: 'tnum', label: 'Tabular figures', sample: '0123456789', on: true }
+  - { tag: 'ss01', label: 'Stylistic set', sample: 'flag {} =>', on: false }
+callouts:
+  - { glyph: '0', title: 'Disambiguated zero', body: 'A monospace lives or dies by whether you can tell a zero from a capital O at 2 a.m. Martian gives the zero a clear slash and keeps the figures inside the same fixed cell as every other glyph.', guides: ['cap', 'baseline'], focus: [{ x: 0.5, y: 0.5, r: 0.2, label: 'slash' }] }
+  - { glyph: 'g', title: 'Boxy single-storey g', body: 'Curves are pulled square and the descender cut short so the letter sits comfortably in a fixed-width box — the geometric, almost engineered look that derives from the foundry’s Martian Grotesk.', guides: ['x', 'baseline', 'descender'] }
+  - { glyph: 'M', title: 'Held to the cell', body: 'Naturally wide letters like M and W and narrow ones like i and l are all spaced to the same advance, so code lines up into perfect columns. The width axis rescales that grid without ever breaking it.', guides: ['cap', 'baseline'] }
+inUse:
+  - { kind: 'terminal', label: 'Terminal — a build log' }
+  - { kind: 'data', label: 'Data — a telemetry table' }
+  - { kind: 'orbit', label: 'Orbit — a mission insignia', word: 'Martian Mono' }
+theme:
+  mode: dark
+  bg: '#0b0e12'
+  bg2: '#161b22'
+  fg: '#e6ebf0'
+  fg2: '#aab4c0'
+  fg3: '#6b7682'
+  accent: '#ffb454'
+  accentContrast: '#0b0e12'
+  line: '#e6ebf01f'
+  lineSoft: '#e6ebf010'
+---
+
+A monospace is a constraint dressed up as a font: every glyph, fat or thin, must occupy exactly the same width so that columns of code and data line up into a clean grid. **Martian Mono**, drawn by **Roman Shchedov** at the engineering studio **Evil Martians**, accepts that constraint and then quietly modernises it. It is the monospaced sibling of the studio’s Martian Grotesk, and it carries the same boxy, geometric, faintly extraterrestrial look — letters squared to the cell, curves tightened, descenders cropped.
+
+What sets it apart from the usual coding faces is that it is variable, and on two axes at once. The weight runs the full distance from a hairline Thin to a heavy Extra Bold, while a width axis lets you compress or expand the design — all without ever breaking the fixed advance that makes a monospace a monospace. The result is a single file that can be a delicate caption, a dense terminal, or a wide, confident headline, while still holding every character in its column.
+
+The detailing is built for the places monospace actually gets used. The zero is slashed so it can never be mistaken for a capital O, the figures are tabular by nature, and the whole alphabet keeps a generous x-height and open apertures so it stays sharp at the small sizes of an editor or a log. It reads as technical without tipping into the retro, typewriter nostalgia that many coding fonts lean on.
+
+Released free and open source by a team that ships software for a living, Martian Mono is a monospace made by its own users — equally at home setting a snippet of code, a data dashboard, or the cool, machined captions of a product built by engineers.

@@ -28,6 +28,10 @@ const focusSpot = z.object({
   y: z.number(),            // 0–1 down the glyph ink box
   r: z.number().default(0.18), // radius as fraction of ink-box height
   label: z.string().optional(),
+  // Optional label offset from the spot centre (× ink-box height). Omitted →
+  // label sits centred just above the ring. Set via the Glyph edit tool.
+  lx: z.number().optional(),
+  ly: z.number().optional(),
 });
 
 const callout = z.object({
@@ -43,10 +47,14 @@ const inUseScene = z.object({
   kind: z.enum([
     'poster', 'editorial', 'app-ui', 'terminal', 'invitation',
     'article', 'magazine', 'brand', 'data',
+    // Graphic / motion scenes — type as the artwork, not just text in a box.
+    'kinetic', 'orbit', 'marquee', 'overprint',
   ]),
   label: z.string(),        // caption, e.g. 'Editorial — magazine spread'
   // For kind:'brand' — pick a BrandScene layout. Omitted → chosen deterministically.
   variant: z.enum(['wordmark', 'monogram', 'seal', 'stack', 'grid']).optional(),
+  // Optional word/short phrase override for the graphic scenes (defaults to headline/name).
+  word: z.string().optional(),
 });
 
 const fonts = defineCollection({

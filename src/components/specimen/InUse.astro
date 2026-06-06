@@ -8,6 +8,20 @@ export interface Props {
 }
 const { font, startIndex = 1 } = Astro.props;
 const fam = font.fontFamily;
+
+// Axis ranges drive the kinetic ("breathing") scene. Fall back to sane
+// defaults so the animation still reads on non-variable / single-axis faces.
+const wght = font.axes.find((a) => a.tag === 'wght');
+const wdth = font.axes.find((a) => a.tag === 'wdth');
+const wMin = wght?.min ?? 400;
+const wMax = wght?.max ?? 700;
+const wDef = wght?.default ?? 400;
+const wdMin = wdth?.min ?? 100;
+const wdMax = wdth?.max ?? 100;
+
+// Short word used by the graphic scenes (kinetic / orbit / marquee / overprint).
+const graphicWord = (scene: { word?: string }) =>
+  scene.word || font.headline || font.name;
 ---
 <div class="inuse" style={`--fam:${fam}`}>
   {font.inUse.map((scene, i) => (
@@ -141,6 +155,70 @@ const fam = font.fontFamily;
             <blockquote class="s-article__quote">“Type is a beautiful group of letters, not a group of beautiful letters.”</blockquote>
           </div>
         )}
+
+        {scene.kind === 'kinetic' && (
+          <div
+            class="s-kin"
+            data-var={font.isVariable ? 'true' : 'false'}
+            style={`--w-min:${wMin}; --w-max:${wMax}; --w-def:${wDef}; --wd-min:${wdMin}; --wd-max:${wdMax}`}
+          >
+            <div class="s-kin__rail" aria-hidden="true">
+              <span class="s-kin__tag">wght</span>
+              <span class="s-kin__nums">{wMin}<i></i>{wMax}</span>
+            </div>
+            <h3 class="s-kin__word">{graphicWord(scene)}</h3>
+            <span class="s-kin__foot">{font.isVariable ? 'Variable axis, in motion' : font.classification}</span>
+          </div>
+        )}
+
+        {scene.kind === 'orbit' && (
+          <div class="s-orbit">
+            <svg class="s-orbit__svg" viewBox="0 0 100 100" role="img" aria-label={`${font.name} set on a circle`}>
+              <defs>
+                <path id={`orbit-${font.name.replace(/\W+/g, '')}-${i}`} d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
+              </defs>
+              <text class="s-orbit__text">
+                <textPath href={`#orbit-${font.name.replace(/\W+/g, '')}-${i}`} startOffset="0">
+                  {`${graphicWord(scene)}  ✳  `.repeat(6)}
+                </textPath>
+              </text>
+            </svg>
+            <span class="s-orbit__center">{font.name.charAt(0)}</span>
+          </div>
+        )}
+
+        {scene.kind === 'marquee' && (
+          <div class="s-mq">
+            <div class="s-mq__row s-mq__row--a">
+              <div class="s-mq__track">{Array.from({ length: 2 }).map(() => (
+                <span>{`${graphicWord(scene)} ✳ `.repeat(4)}</span>
+              ))}</div>
+            </div>
+            <div class="s-mq__row s-mq__row--b">
+              <div class="s-mq__track">{Array.from({ length: 2 }).map(() => (
+                <span class="s-mq__ghost">{`${graphicWord(scene)} · `.repeat(4)}</span>
+              ))}</div>
+            </div>
+            <div class="s-mq__row s-mq__row--a">
+              <div class="s-mq__track">{Array.from({ length: 2 }).map(() => (
+                <span>{`${graphicWord(scene)} ✳ `.repeat(4)}</span>
+              ))}</div>
+            </div>
+          </div>
+        )}
+
+        {scene.kind === 'overprint' && (
+          <div class="s-over">
+            <span class="s-over__crop s-over__crop--tl" aria-hidden="true">+</span>
+            <span class="s-over__crop s-over__crop--br" aria-hidden="true">+</span>
+            <span class="s-over__label">Overprint · 2-colour</span>
+            <div class="s-over__stack">
+              <span class="s-over__layer s-over__layer--a">{graphicWord(scene)}</span>
+              <span class="s-over__layer s-over__layer--b">{graphicWord(scene)}</span>
+            </div>
+            <span class="s-over__meta">{font.name} — {font.designer}</span>
+          </div>
+        )}
       </div>
     </figure>
   ))}
@@ -262,6 +340,126 @@ const fam = font.fontFamily;
   .s-article__body { font-size: 2.5cqi; line-height: 1.55; color: var(--fg-2); max-width: 66ch; margin-top: 0.6cqi; }
   .s-article__drop { float: left; font-size: 8cqi; line-height: 0.72; font-weight: 700; padding: 0.4cqi 1.2cqi 0 0; color: var(--fg); }
   .s-article__quote { font-size: 3cqi; line-height: 1.28; font-style: italic; color: var(--fg); border-left: 2px solid var(--accent); padding-left: 3cqi; margin-top: 0.6cqi; max-width: 84%; }
+
+  /* ---------- KINETIC (variable axis in motion) ---------- */
+  .scene--kinetic { background: var(--fg); }
+  .s-kin {
+    position: absolute; inset: 0; color: var(--bg);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    gap: 3cqi; padding: 6cqi; overflow: hidden;
+  }
+  .s-kin__rail {
+    position: absolute; top: 5cqi; left: 6cqi; right: 6cqi;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono, var(--fam)); font-size: 2.3cqi;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--bg) 55%, transparent);
+  }
+  .s-kin__nums { display: flex; align-items: center; gap: 2cqi; }
+  .s-kin__nums i {
+    width: 22cqi; height: 1px; background: currentColor; opacity: 0.5;
+    position: relative;
+  }
+  .s-kin__nums i::after {
+    content: ''; position: absolute; top: 50%; width: 1.6cqi; height: 1.6cqi;
+    border-radius: 50%; background: var(--accent); transform: translateY(-50%);
+    left: 0; animation: kin-dot 5.2s var(--ease-out, ease-in-out) infinite alternate;
+  }
+  .s-kin__word {
+    font-size: 26cqi; line-height: 0.88; font-weight: 400; text-align: center;
+    letter-spacing: -0.02em; overflow-wrap: anywhere;
+    font-variation-settings: 'wght' var(--w-def), 'wdth' var(--wd-max);
+    animation: kin-breathe 5.2s var(--ease-out, ease-in-out) infinite alternate;
+  }
+  .s-kin[data-var='false'] .s-kin__word {
+    font-variation-settings: normal; font-weight: 700;
+    animation: kin-zoom 5.2s var(--ease-out, ease-in-out) infinite alternate;
+  }
+  .s-kin__foot {
+    position: absolute; bottom: 5cqi; font-size: 2.3cqi; letter-spacing: 0.18em;
+    text-transform: uppercase; color: color-mix(in srgb, var(--bg) 55%, transparent);
+  }
+  @keyframes kin-breathe {
+    from { font-variation-settings: 'wght' var(--w-min), 'wdth' var(--wd-max); }
+    to   { font-variation-settings: 'wght' var(--w-max), 'wdth' var(--wd-min); }
+  }
+  @keyframes kin-zoom {
+    from { transform: scale(0.86); letter-spacing: 0.04em; }
+    to   { transform: scale(1.04); letter-spacing: -0.03em; }
+  }
+  @keyframes kin-dot { from { left: 0; } to { left: calc(22cqi - 1.6cqi); } }
+
+  /* ---------- ORBIT (type on a circle) ---------- */
+  .scene--orbit { background: var(--bg); }
+  .s-orbit { position: absolute; inset: 0; display: grid; place-items: center; }
+  .s-orbit__svg {
+    width: 88cqi; height: 88cqi; max-height: 100%;
+    animation: orbit-spin 38s linear infinite;
+    transform-origin: 50% 50%;
+  }
+  .s-orbit__text {
+    fill: var(--fg); font-family: var(--fam);
+    font-size: 5.4px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .s-orbit__center {
+    position: absolute; font-family: var(--fam); color: var(--accent);
+    font-size: 30cqi; font-weight: 600; line-height: 1;
+  }
+  @keyframes orbit-spin { to { transform: rotate(360deg); } }
+
+  /* ---------- MARQUEE (scrolling display bands) ---------- */
+  .scene--marquee { background: var(--bg); }
+  .s-mq {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: center; gap: 1cqi; overflow: hidden;
+  }
+  .s-mq__row { overflow: hidden; white-space: nowrap; }
+  .s-mq__track { display: inline-flex; will-change: transform; }
+  .s-mq__track span {
+    font-family: var(--fam); font-size: 15cqi; font-weight: 700; line-height: 1.04;
+    letter-spacing: -0.01em; padding-right: 0.2em; white-space: nowrap; color: var(--fg);
+  }
+  .s-mq__ghost {
+    -webkit-text-stroke: 0.4cqi var(--accent); color: transparent !important;
+    font-style: italic; font-weight: 500 !important;
+  }
+  .s-mq__row--a .s-mq__track { animation: mq-left 22s linear infinite; }
+  .s-mq__row--b .s-mq__track { animation: mq-right 26s linear infinite; }
+  @keyframes mq-left  { to { transform: translateX(-50%); } }
+  @keyframes mq-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+  /* ---------- OVERPRINT (mis-registered 2-colour) ---------- */
+  .scene--overprint { background: var(--bg); }
+  .s-over { position: absolute; inset: 0; display: grid; place-items: center; padding: 7cqi; }
+  .s-over__stack { position: relative; display: grid; place-items: center; width: 100%; }
+  .s-over__layer {
+    grid-area: 1 / 1; width: 100%; font-family: var(--fam);
+    font-size: 19cqi; line-height: 0.84; white-space: nowrap;
+    font-weight: 800; letter-spacing: -0.04em; text-align: center; overflow-wrap: anywhere;
+  }
+  .s-over__layer--a { color: var(--fg); }
+  .s-over__layer--b {
+    color: var(--accent); mix-blend-mode: multiply;
+    transform: translate(2.4cqi, 2cqi);
+  }
+  :global([data-mode='dark']) .s-over__layer--b { mix-blend-mode: screen; }
+  .s-over__crop { position: absolute; color: var(--fg-3); font-size: 4cqi; line-height: 1; }
+  .s-over__crop--tl { top: 3cqi; left: 3cqi; }
+  .s-over__crop--br { bottom: 3cqi; right: 3cqi; }
+  .s-over__label {
+    position: absolute; top: 4cqi; right: 5cqi; font-family: var(--font-mono, var(--fam));
+    font-size: 2.2cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+  }
+  .s-over__meta {
+    position: absolute; bottom: 4cqi; left: 5cqi; font-family: var(--font-mono, var(--fam));
+    font-size: 2.2cqi; letter-spacing: 0.08em; color: var(--fg-3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s-kin__word { font-variation-settings: 'wght' var(--w-def), 'wdth' var(--wd-max); }
+    .s-orbit__svg, .s-mq__track, .s-kin__nums i::after { animation: none !important; }
+    .s-kin[data-var='false'] .s-kin__word { transform: none; }
+  }
 
   @media (max-width: 600px) {
     .scene { aspect-ratio: 4 / 5; }

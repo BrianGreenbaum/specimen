@@ -16,6 +16,8 @@ export interface FocusSpot {
   y: number; // 0–1 down the glyph ink box
   r: number; // radius as a fraction of the ink box height
   label?: string;
+  lx?: number; // label offset from spot centre (× ink-box height)
+  ly?: number;
 }
 
 export interface DiagramOptions {
@@ -28,6 +30,15 @@ export interface DiagramOptions {
   advanceLabel?: boolean; // draw the "advance NNN" text inside the SVG (default: follows showAdvance)
   showGuideLabels?: boolean; // text labels on the metric guides (inspector)
   fill?: number; // 0–1 fraction of the field height the type should occupy
+}
+
+/** Geometry of a rendered diagram, in SVG user units (viewBox 0 0 W H).
+ *  Returned so authoring tools can map pointer ↔ normalised focus coords. */
+export interface GlyphLayout {
+  W: number; H: number;        // viewBox extents
+  cx: number; baselineY: number; FS: number; // glyph placement (font-size in user units)
+  inkL: number; inkT: number; inkR: number; inkB: number; // ink bounding box
+  inkW: number; inkH: number;
 }
 
 const SVGNS = 'http://www.w3.org/2000/svg';
@@ -51,7 +62,7 @@ function node(tag: string, attrs: Record<string, string | number> = {}, text?: s
   return e as SVGElement;
 }
 
-export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions): Promise<void> {
+export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions): Promise<GlyphLayout> {
   const {
     family,
     glyph,
@@ -99,6 +110,8 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
     sy: inkT + f.y * inkH,
     sr: f.r * inkH,
     label: f.label,
+    lx: f.lx,
+    ly: f.ly,
   }));
 
   // mask for the accent spotlight
@@ -158,8 +171,13 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
     for (const s of spots) {
       svg.appendChild(node('circle', { class: 'dg-ring', cx: s.sx, cy: s.sy, r: s.sr, fill: 'none' }));
       if (s.label) {
-        svg.appendChild(node('text', { class: 'dg-flabel', x: s.sx, y: s.sy - s.sr - 16, 'text-anchor': 'middle' }, s.label));
+        const hasOff = typeof s.lx === 'number' || typeof s.ly === 'number';
+        const lxu = hasOff ? s.sx + (s.lx || 0) * inkH : s.sx;
+        const lyu = hasOff ? s.sy + (s.ly || 0) * inkH : s.sy - s.sr - 16;
+        svg.appendChild(node('text', { class: 'dg-flabel', x: lxu, y: lyu, 'text-anchor': 'middle' }, s.label));
       }
     }
   }
+
+  return { W, H, cx, baselineY, FS, inkL, inkT, inkR, inkB, inkW, inkH };
 }

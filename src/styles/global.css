@@ -109,8 +109,13 @@ body {
   font-feature-settings: 'ss01';
   transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
   position: relative;
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) contains horizontal overflow WITHOUT turning the body
+     into a scroll container — which is what was breaking `position: sticky` on
+     the header (it would scroll partway off and re-pin below the viewport top). */
+  overflow-x: clip;
 }
+/* lock background scroll while the mobile nav drawer is open */
+body.mnav-open { overflow: hidden; }
 
 /* Film-grain atmosphere overlay */
 body::after {

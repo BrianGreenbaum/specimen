@@ -55,6 +55,15 @@ import '@fontsource-variable/roboto-slab/wght.css';
 import '@fontsource-variable/source-sans-3/wght.css';
 import '@fontsource-variable/source-sans-3/wght-italic.css';
 
+// --- Contemporary specimens (the "five interesting faces" set) ---
+// `standard.css` ships the multi-axis (wght + wdth) face; `wght.css` is single-axis.
+import '@fontsource-variable/bricolage-grotesque/standard.css';
+import '@fontsource-variable/syne/wght.css';
+import '@fontsource-variable/big-shoulders/standard.css';
+import '@fontsource-variable/martian-mono/standard.css';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+
 // --- Timeline-only faces (shown in History chapters; no specimen page) ---
 import '@fontsource/marcellus/400.css';
 import '@fontsource-variable/oswald/wght.css';
@@ -111,6 +120,10 @@ const {
         host.id = 'agentation-root';
         document.body.appendChild(host);
         createRoot(host).render(createElement(Agentation));
+
+        // In-context glyph spotlight editor (dev only; stripped from prod with
+        // this whole block). Toggle from the nav's "✎ Glyphs" button.
+        import('../lib/glyph-edit').then((m) => m.initGlyphEdit());
       }
     </script>
 
