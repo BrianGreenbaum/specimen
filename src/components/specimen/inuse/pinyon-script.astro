@@ -1,0 +1,926 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+// Companion serif for ALL body/supporting text — never set supporting copy in Pinyon Script
+const serif = "'EB Garamond Variable', 'EB Garamond', 'Spectral', Georgia, serif";
+
+// Scene 04 — live monogram generator initial pairs
+const monoSamples = [
+  { a: 'E', b: 'M', name: 'Eleanor & Miles' },
+  { a: 'C', b: 'J', name: 'Charlotte & James' },
+  { a: 'A', b: 'R', name: 'Amelia & Robert' },
+  { a: 'V', b: 'L', name: 'Vivienne & Luca' },
+];
+---
+<div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
+
+  <!-- 01 — Wedding invitation suite -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Invitation — wedding suite</span>
+    </figcaption>
+    <div class="iu__scene ps-scene-portrait" style="container-type:inline-size">
+      <div class="ps-invite" data-invite>
+        <div class="ps-invite__card">
+          <!-- decorative border -->
+          <svg class="ps-invite__border" viewBox="0 0 360 480" aria-hidden="true" preserveAspectRatio="none">
+            <rect x="10" y="10" width="340" height="460" rx="2" fill="none" stroke="currentColor" stroke-width="0.75" class="ps-invite__border-outer"/>
+            <rect x="17" y="17" width="326" height="446" rx="1" fill="none" stroke="currentColor" stroke-width="0.35" class="ps-invite__border-inner"/>
+            <!-- corner flourishes -->
+            <g class="ps-invite__corners" fill="none" stroke="currentColor" stroke-width="0.6">
+              <path d="M 10 30 Q 10 10 30 10"/>
+              <path d="M 330 10 Q 350 10 350 30"/>
+              <path d="M 350 450 Q 350 470 330 470"/>
+              <path d="M 30 470 Q 10 470 10 450"/>
+            </g>
+          </svg>
+
+          <div class="ps-invite__inner">
+            <p class="ps-invite__together" style={`font-family:${serif}`}>Together with their families</p>
+
+            <div class="ps-invite__names">
+              <span class="ps-invite__name1">Eleanor</span>
+              <div class="ps-invite__amp-row" aria-label="and">
+                <span class="ps-invite__rule" aria-hidden="true"></span>
+                <span class="ps-invite__amp">&</span>
+                <span class="ps-invite__rule" aria-hidden="true"></span>
+              </div>
+              <span class="ps-invite__name2">Miles</span>
+            </div>
+
+            <p class="ps-invite__request" style={`font-family:${serif}`}>request the pleasure of your company</p>
+            <p class="ps-invite__request" style={`font-family:${serif}`}>at the celebration of their marriage</p>
+
+            <div class="ps-invite__divider" aria-hidden="true">
+              <span></span><span class="ps-invite__diamond">◆</span><span></span>
+            </div>
+
+            <p class="ps-invite__detail" style={`font-family:${serif}`}>Saturday the fourteenth of June</p>
+            <p class="ps-invite__detail" style={`font-family:${serif}`}>Two thousand and twenty-five</p>
+            <p class="ps-invite__detail ps-invite__detail--venue" style={`font-family:${serif}`}>Thornfield Hall · North Yorkshire</p>
+
+            <p class="ps-invite__rsvp" style={`font-family:${serif}`}>R.S.V.P. by the first of May</p>
+          </div>
+        </div>
+
+        <!-- envelope flap detail -->
+        <div class="ps-invite__env" aria-hidden="true">
+          <svg viewBox="0 0 120 40" class="ps-invite__env-svg">
+            <path d="M 0 40 L 60 8 L 120 40" fill="none" stroke="currentColor" stroke-width="0.7"/>
+            <path d="M 0 40 L 60 24 L 120 40" fill="none" stroke="currentColor" stroke-width="0.35" opacity="0.5"/>
+          </svg>
+          <span class="ps-invite__wax" aria-label="wax seal">E &amp; M</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label" style={`font-family:${serif}`}>The names are set in Pinyon Script at display scale; all supporting copy uses EB Garamond. Hover the invitation — the wax seal blooms.</p>
+  </figure>
+
+  <!-- 02 — Luxury patisserie brand identity -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Brand — a luxury patisserie identity</span>
+    </figcaption>
+    <div class="iu__scene ps-scene-wide" style="container-type:inline-size">
+      <div class="ps-patisserie" data-patisserie>
+        <!-- main identity panel -->
+        <div class="ps-pat__wordmark">
+          <span class="ps-pat__estd" style={`font-family:${serif}`}>Établie en 1887 · Paris</span>
+          <div class="ps-pat__rule" aria-hidden="true"></div>
+          <h3 class="ps-pat__name">Maison Vernet</h3>
+          <div class="ps-pat__rule" aria-hidden="true"></div>
+          <span class="ps-pat__sub" style={`font-family:${serif}`}>Pâtisserie Fine · Confiserie · Chocolat</span>
+        </div>
+
+        <!-- product labels row -->
+        <div class="ps-pat__labels">
+          <div class="ps-pat__label">
+            <span class="ps-pat__label-tier" style={`font-family:${serif}`}>Collection Printemps</span>
+            <span class="ps-pat__label-name">Madeleine</span>
+            <span class="ps-pat__label-note" style={`font-family:${serif}`}>Citron · Fleur d'Oranger</span>
+          </div>
+          <div class="ps-pat__label ps-pat__label--featured">
+            <span class="ps-pat__label-tier" style={`font-family:${serif}`}>Pièce Maîtresse</span>
+            <span class="ps-pat__label-name">Saint-Honoré</span>
+            <span class="ps-pat__label-note" style={`font-family:${serif}`}>Crème Diplomate · Caramel</span>
+          </div>
+          <div class="ps-pat__label">
+            <span class="ps-pat__label-tier" style={`font-family:${serif}`}>Chocolat Grand Cru</span>
+            <span class="ps-pat__label-name">Guanaja</span>
+            <span class="ps-pat__label-note" style={`font-family:${serif}`}>70% · Cardamome · Sel</span>
+          </div>
+        </div>
+
+        <!-- ribbon band at bottom -->
+        <div class="ps-pat__ribbon" aria-hidden="true">
+          <span style={`font-family:${serif}`}>Fait à la main · Ingrédients d'exception · Paris, France</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label" style={`font-family:${serif}`}>Product names in Pinyon Script at large display size; all supporting text in EB Garamond. Hover a label — it lifts and the gold rule extends.</p>
+  </figure>
+
+  <!-- 03 — Engraved certificate / diploma -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Certificate — engraved diploma</span>
+    </figcaption>
+    <div class="iu__scene ps-scene-landscape" style="container-type:inline-size">
+      <div class="ps-cert" data-cert>
+        <!-- outer border with corner ornaments -->
+        <svg class="ps-cert__border" viewBox="0 0 640 440" preserveAspectRatio="none" aria-hidden="true">
+          <!-- double rule border -->
+          <rect x="14" y="14" width="612" height="412" fill="none" stroke="currentColor" stroke-width="1" class="ps-cert__b1"/>
+          <rect x="22" y="22" width="596" height="396" fill="none" stroke="currentColor" stroke-width="0.4" class="ps-cert__b2"/>
+          <!-- corner ornaments -->
+          <g class="ps-cert__ornaments" stroke="currentColor" fill="none">
+            <!-- TL -->
+            <path d="M 14 44 L 14 14 L 44 14" stroke-width="2"/>
+            <circle cx="29" cy="29" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
+            <!-- TR -->
+            <path d="M 596 14 L 626 14 L 626 44" stroke-width="2"/>
+            <circle cx="611" cy="29" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
+            <!-- BR -->
+            <path d="M 626 396 L 626 426 L 596 426" stroke-width="2"/>
+            <circle cx="611" cy="411" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
+            <!-- BL -->
+            <path d="M 44 426 L 14 426 L 14 396" stroke-width="2"/>
+            <circle cx="29" cy="411" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
+          </g>
+          <!-- central divider rules -->
+          <line x1="80" y1="220" x2="268" y2="220" stroke="currentColor" stroke-width="0.6" class="ps-cert__rule-l"/>
+          <line x1="372" y1="220" x2="560" y2="220" stroke="currentColor" stroke-width="0.6" class="ps-cert__rule-r"/>
+          <!-- central diamond -->
+          <polygon points="320,210 330,220 320,230 310,220" fill="currentColor" class="ps-cert__diamond"/>
+        </svg>
+
+        <div class="ps-cert__body">
+          <p class="ps-cert__institution" style={`font-family:${serif}`}>The Royal Academy of Letters &amp; Arts</p>
+          <p class="ps-cert__presents" style={`font-family:${serif}`}>This certifies with honour that</p>
+          <h2 class="ps-cert__recipient">Catherine Ashworth</h2>
+          <p class="ps-cert__presents" style={`font-family:${serif}`}>has completed with distinction the full course of study in</p>
+          <p class="ps-cert__field" style={`font-family:${serif}`}>Illuminated Manuscript &amp; Calligraphic Arts</p>
+          <p class="ps-cert__presents" style={`font-family:${serif}`}>and is hereby awarded the degree of</p>
+          <span class="ps-cert__degree">Master of Fine Arts</span>
+
+          <div class="ps-cert__signatures" style={`font-family:${serif}`}>
+            <div class="ps-cert__sig">
+              <span class="ps-cert__sig-name">Edmund Carrington</span>
+              <span class="ps-cert__sig-rule" aria-hidden="true"></span>
+              <span class="ps-cert__sig-title">Dean of the Faculty</span>
+            </div>
+            <div class="ps-cert__seal" aria-label="seal">
+              <span class="ps-cert__seal-inner">R.A.</span>
+            </div>
+            <div class="ps-cert__sig ps-cert__sig--right">
+              <span class="ps-cert__sig-name">Margaret Frome</span>
+              <span class="ps-cert__sig-rule" aria-hidden="true"></span>
+              <span class="ps-cert__sig-title">Registrar</span>
+            </div>
+          </div>
+
+          <p class="ps-cert__date" style={`font-family:${serif}`}>London, the fourteenth day of June, in the year two thousand and twenty-five</p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label" style={`font-family:${serif}`}>Recipient name and degree title in Pinyon Script; institutional text in EB Garamond, as an engraver would compose it. Hover to see the border draw in.</p>
+  </figure>
+
+  <!-- 04 — INTERACTIVE: Live Monogram Generator -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Interactive — live monogram generator</span>
+    </figcaption>
+    <div class="iu__scene ps-scene-monogram" style="container-type:inline-size">
+      <div class="ps-mono" data-mono>
+        <div class="ps-mono__left">
+          <h3 class="ps-mono__heading" style={`font-family:${serif}`}>Monogram</h3>
+          <p class="ps-mono__sub" style={`font-family:${serif}`}>Enter two initials to compose a formal engraved monogram</p>
+
+          <div class="ps-mono__inputs">
+            <label class="ps-mono__label" style={`font-family:${serif}`}>
+              <span>Initial A</span>
+              <input
+                class="ps-mono__input"
+                type="text"
+                maxlength="1"
+                placeholder="E"
+                data-mono-a
+                aria-label="First initial"
+                style={`font-family:${fam}`}
+              />
+            </label>
+            <span class="ps-mono__and" aria-hidden="true">&amp;</span>
+            <label class="ps-mono__label" style={`font-family:${serif}`}>
+              <span>Initial B</span>
+              <input
+                class="ps-mono__input"
+                type="text"
+                maxlength="1"
+                placeholder="M"
+                data-mono-b
+                aria-label="Second initial"
+                style={`font-family:${fam}`}
+              />
+            </label>
+          </div>
+
+          <p class="ps-mono__nametext" style={`font-family:${serif}`}>Name</p>
+          <input
+            class="ps-mono__nameinput"
+            type="text"
+            placeholder="Eleanor &amp; Miles"
+            data-mono-name
+            aria-label="Couple's names"
+            style={`font-family:${serif}`}
+          />
+
+          <div class="ps-mono__samples" style={`font-family:${serif}`}>
+            {monoSamples.map((s) => (
+              <button class="ps-mono__sample" data-sample-a={s.a} data-sample-b={s.b} data-sample-name={s.name}>
+                <span class="ps-mono__sample-mono" style={`font-family:${fam}`}>{s.a}{s.b}</span>
+                <span class="ps-mono__sample-name">{s.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="ps-mono__right">
+          <div class="ps-mono__output" data-mono-output aria-live="polite">
+            <!-- SVG monogram, redrawn by JS -->
+            <svg class="ps-mono__svg" viewBox="0 0 400 420" data-mono-svg role="img" aria-label="Monogram">
+              <!-- decorative circular frame -->
+              <circle class="ps-mono__frame" cx="200" cy="195" r="162"/>
+              <circle class="ps-mono__frame-inner" cx="200" cy="195" r="150"/>
+              <!-- the two initials, slightly overlapping at centre -->
+              <text class="ps-mono__letter ps-mono__letter-a" data-mono-letter-a
+                x="148" y="236" text-anchor="middle">E</text>
+              <text class="ps-mono__letter ps-mono__letter-b" data-mono-letter-b
+                x="256" y="236" text-anchor="middle">M</text>
+              <!-- horizontal rules flanking a central diamond -->
+              <line class="ps-mono__hr" x1="44" y1="328" x2="180" y2="328"/>
+              <polygon class="ps-mono__diamond" points="200,319 210,328 200,337 190,328"/>
+              <line class="ps-mono__hr" x1="220" y1="328" x2="356" y2="328"/>
+              <!-- name beneath -->
+              <text class="ps-mono__namesvg" data-mono-namesvg
+                x="200" y="364" text-anchor="middle">Eleanor &amp; Miles</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label" style={`font-family:${serif}`}>Type two initials and a name — the engraved monogram updates live in Pinyon Script. Try a preset to see the swash capitals and connecting strokes.</p>
+  </figure>
+
+</div>
+
+<script>
+  // ── Scene 04: Live monogram generator ────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-mono]').forEach((root) => {
+    const inputA   = root.querySelector<HTMLInputElement>('[data-mono-a]')!;
+    const inputB   = root.querySelector<HTMLInputElement>('[data-mono-b]')!;
+    const inputName = root.querySelector<HTMLInputElement>('[data-mono-name]')!;
+    const letterA  = root.querySelector<SVGTextElement>('[data-mono-letter-a]')!;
+    const letterB  = root.querySelector<SVGTextElement>('[data-mono-letter-b]')!;
+    const nameEl   = root.querySelector<SVGTextElement>('[data-mono-namesvg]')!;
+    const svgEl    = root.querySelector<SVGSVGElement>('[data-mono-svg]')!;
+
+    const update = () => {
+      const a = (inputA.value || 'E').toUpperCase();
+      const b = (inputB.value || 'M').toUpperCase();
+      const name = inputName.value || 'Eleanor & Miles';
+
+      // Update letters (no innerHTML — use DOM textContent only)
+      letterA.textContent = a;
+      letterB.textContent = b;
+      nameEl.textContent  = name;
+
+      // Update aria-label safely
+      svgEl.setAttribute('aria-label', `Monogram ${a} and ${b} — ${name}`);
+
+      // Re-trigger draw-in animation by toggling a class
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduced) {
+        svgEl.classList.remove('ps-mono__svg--drawn');
+        // Force reflow
+        void svgEl.offsetWidth;
+        svgEl.classList.add('ps-mono__svg--drawn');
+      }
+    };
+
+    inputA.addEventListener('input', update);
+    inputB.addEventListener('input', update);
+    inputName.addEventListener('input', update);
+
+    // Preset samples
+    root.querySelectorAll<HTMLButtonElement>('[data-sample-a]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        inputA.value = btn.dataset.sampleA || '';
+        inputB.value = btn.dataset.sampleB || '';
+        inputName.value = btn.dataset.sampleName || '';
+        update();
+        // Highlight active preset
+        root.querySelectorAll('[data-sample-a]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+      });
+    });
+
+    // Initial render
+    update();
+  });
+
+  // ── Scene 03: certificate border draw-in on hover ────────────────────────────
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced) {
+    document.querySelectorAll<HTMLElement>('[data-cert]').forEach((cert) => {
+      cert.addEventListener('mouseenter', () => cert.classList.add('ps-cert--hovered'));
+      cert.addEventListener('mouseleave', () => cert.classList.remove('ps-cert--hovered'));
+    });
+  }
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); font-size: var(--step--1); }
+
+  /* The script face (--fam) is used ONLY for display names/short phrases.
+     All body/supporting text uses var(--serif) via inline style. */
+
+  /* Scene aspect-ratio helpers */
+  .ps-scene-portrait  { aspect-ratio: 3 / 4;  }
+  .ps-scene-wide      { aspect-ratio: 16 / 9; }
+  .ps-scene-landscape { aspect-ratio: 4 / 3;  }
+  .ps-scene-monogram  { /* no fixed ratio — fills height */ min-height: 520px; }
+
+  /* ============================================================
+     01 — WEDDING INVITATION SUITE
+     Script names at large scale; all supporting copy in --serif.
+     ============================================================ */
+  .ps-invite {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3cqi; padding: 4cqi;
+    background: var(--bg);
+  }
+  .ps-invite__card {
+    position: relative;
+    width: min(100%, 54cqi);
+    background: var(--bg);
+    box-shadow: 0 4px 40px var(--line);
+    padding: 0;
+    display: flex; flex-direction: column;
+    container-type: inline-size;
+  }
+  .ps-invite__border {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    color: var(--accent);
+    pointer-events: none;
+  }
+  .ps-invite__border-outer { opacity: 0.6; }
+  .ps-invite__border-inner { opacity: 0.3; }
+  .ps-invite__corners { opacity: 0.4; }
+
+  .ps-invite__inner {
+    padding: 8cqi 6cqi 6cqi;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 3cqi; text-align: center;
+  }
+  .ps-invite__together {
+    font-size: 2.4cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3); margin: 0;
+  }
+  .ps-invite__names {
+    display: flex; flex-direction: column; align-items: center; gap: 1.2cqi;
+    width: 100%;
+  }
+  .ps-invite__name1,
+  .ps-invite__name2 {
+    font-family: var(--fam);
+    font-size: 13cqi; line-height: 1.0;
+    color: var(--fg);
+    /* Contextual alternates (connecting forms) + ligatures */
+    font-feature-settings: 'calt' 1, 'liga' 1;
+    letter-spacing: 0.01em;
+  }
+  .ps-invite__amp-row {
+    display: flex; align-items: center; gap: 2.4cqi; width: 80%;
+  }
+  .ps-invite__rule {
+    flex: 1; height: 1px; background: var(--accent); opacity: 0.35;
+  }
+  .ps-invite__amp {
+    font-family: var(--fam);
+    font-size: 10cqi; line-height: 1;
+    color: var(--accent);
+    font-feature-settings: 'calt' 1, 'liga' 1;
+  }
+  .ps-invite__request {
+    font-size: 2.2cqi; line-height: 1.6; color: var(--fg-2); margin: 0;
+    font-style: italic;
+  }
+  .ps-invite__divider {
+    display: flex; align-items: center; gap: 2cqi; width: 60%;
+    color: var(--accent); opacity: 0.5;
+  }
+  .ps-invite__divider span:first-child,
+  .ps-invite__divider span:last-child {
+    flex: 1; height: 1px; background: currentColor;
+  }
+  .ps-invite__diamond { font-size: 1.8cqi; }
+  .ps-invite__detail {
+    font-size: 2.3cqi; color: var(--fg-2); margin: 0; line-height: 1.5;
+  }
+  .ps-invite__detail--venue {
+    font-size: 2.5cqi; color: var(--fg); letter-spacing: 0.06em;
+    text-transform: uppercase; font-style: normal; margin-top: 0.5cqi;
+  }
+  .ps-invite__rsvp {
+    font-size: 2cqi; color: var(--fg-3); margin: 0;
+    letter-spacing: 0.08em; text-transform: uppercase; font-style: italic;
+  }
+
+  /* Envelope flap detail beneath the card */
+  .ps-invite__env {
+    width: min(100%, 54cqi);
+    display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .ps-invite__env-svg { width: 100%; height: auto; color: var(--line); }
+  .ps-invite__wax {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
+    font-family: var(--fam);
+    font-size: 1.8cqi; color: var(--accentContrast, var(--bg));
+    background: var(--accent);
+    width: 6.4cqi; height: 6.4cqi; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-feature-settings: 'calt' 1;
+    letter-spacing: -0.04em;
+    box-shadow: 0 1px 6px var(--line);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  }
+  .ps-invite:hover .ps-invite__wax,
+  .ps-invite:focus-within .ps-invite__wax {
+    transform: translate(-50%, -40%) scale(1.18);
+    box-shadow: 0 4px 18px var(--line);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ps-invite__wax { transition: none; }
+  }
+
+  /* ============================================================
+     02 — LUXURY PATISSERIE IDENTITY
+     ============================================================ */
+  .ps-patisserie {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 3cqi 5cqi 2cqi;
+    gap: 1.5cqi;
+    container-type: inline-size;
+  }
+
+  .ps-pat__wordmark {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 2cqi; text-align: center;
+  }
+  .ps-pat__estd {
+    font-size: 2cqi; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .ps-pat__rule {
+    width: 28cqi; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent) 40%, var(--accent) 60%, transparent);
+    opacity: 0.45;
+  }
+  .ps-pat__name {
+    font-family: var(--fam);
+    font-size: 14cqi; line-height: 0.95;
+    color: var(--fg); margin: 0;
+    font-feature-settings: 'calt' 1, 'liga' 1;
+    letter-spacing: 0.015em;
+  }
+  .ps-pat__sub {
+    font-size: 1.8cqi; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--fg-2);
+  }
+
+  .ps-pat__labels {
+    display: grid; grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 2px; background: var(--line); flex: 1;
+    overflow: visible;
+  }
+  .ps-pat__label {
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 3cqi 2cqi 3cqi; text-align: center; gap: 0.8cqi;
+    position: relative; overflow: visible;
+    transition: background 0.3s var(--ease);
+  }
+  .ps-pat__label::before {
+    content: '';
+    position: absolute; bottom: 0; left: 12%; right: 12%; height: 1px;
+    background: var(--accent);
+    transform: scaleX(0); transform-origin: center;
+    transition: transform 0.4s var(--ease);
+    opacity: 0.4;
+  }
+  .ps-pat__label:hover::before { transform: scaleX(1); }
+  .ps-pat__label:hover { background: var(--bg-2); }
+  .ps-pat__label--featured { background: var(--bg-2); }
+  .ps-pat__label--featured::before { transform: scaleX(0.6); opacity: 0.6; }
+  .ps-pat__label--featured:hover::before { transform: scaleX(1); }
+
+  .ps-pat__label-tier {
+    font-size: 1.6cqi; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--fg-3); font-style: italic;
+  }
+  .ps-pat__label-name {
+    font-family: var(--fam);
+    font-size: 6cqi;
+    line-height: 1.0;
+    /* display:block so padding-bottom expands the layout box, keeping descenders
+       (Guanaja exit tail, Madeleine g, Saint-Honoré final stroke) within the
+       element boundary and clear of .iu__scene overflow:hidden. */
+    display: block;
+    padding-bottom: 4cqi;
+    color: var(--fg);
+    font-feature-settings: 'calt' 1, 'liga' 1;
+    transition: color 0.3s var(--ease);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: none;
+    max-width: 100%;
+  }
+  .ps-pat__label:hover .ps-pat__label-name { color: var(--accent); }
+  .ps-pat__label--featured .ps-pat__label-name { color: var(--accent); }
+
+  .ps-pat__label-note {
+    font-size: 1.5cqi; color: var(--fg-3); line-height: 1.4; font-style: italic;
+  }
+
+  .ps-pat__ribbon {
+    text-align: center; padding-top: 1.2cqi;
+    border-top: 1px solid var(--line-soft);
+    font-size: 1.5cqi; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--fg-3);
+    flex-shrink: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ps-pat__label,
+    .ps-pat__label::before,
+    .ps-pat__label-name { transition: none; }
+  }
+
+  /* ============================================================
+     03 — ENGRAVED CERTIFICATE / DIPLOMA
+     ============================================================ */
+  .ps-cert {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    container-type: inline-size;
+  }
+
+  .ps-cert__border {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    color: var(--accent); pointer-events: none;
+    opacity: 0.55;
+  }
+  .ps-cert__b1 { }
+  .ps-cert__b2 { }
+  .ps-cert__corner-dot { }
+  .ps-cert__diamond { }
+  .ps-cert__rule-l,
+  .ps-cert__rule-r { opacity: 0.5; }
+  .ps-cert__ornaments { opacity: 0.7; }
+
+  /* border draw-in on hover */
+  .ps-cert__b1 { stroke-dasharray: 2124; stroke-dashoffset: 0; }
+  .ps-cert__b2 { stroke-dasharray: 2100; stroke-dashoffset: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ps-cert--hovered .ps-cert__b1 { animation: ps-draw-border 1.8s var(--ease) both; }
+    .ps-cert--hovered .ps-cert__b2 { animation: ps-draw-border 2.2s var(--ease) 0.1s both; }
+    @keyframes ps-draw-border {
+      from { stroke-dashoffset: 2124; }
+      to   { stroke-dashoffset: 0; }
+    }
+  }
+
+  .ps-cert__body {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 1cqi;
+    padding: 5cqi 9cqi;
+    width: 100%;
+  }
+  .ps-cert__institution {
+    font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg); margin: 0;
+  }
+  .ps-cert__presents {
+    font-size: 1.9cqi; color: var(--fg-2); margin: 0;
+    font-style: italic; line-height: 1.4;
+  }
+  .ps-cert__recipient {
+    font-family: var(--fam);
+    font-size: 11cqi; line-height: 1.0;
+    color: var(--fg); margin: 0.2cqi 0;
+    font-feature-settings: 'calt' 1, 'liga' 1;
+    letter-spacing: 0.01em;
+  }
+  .ps-cert__field {
+    font-size: 2.2cqi; color: var(--fg-2); margin: 0;
+    letter-spacing: 0.06em; line-height: 1.4;
+    font-style: italic;
+  }
+  .ps-cert__degree {
+    font-family: var(--fam);
+    font-size: 6cqi; line-height: 1.0;
+    color: var(--accent);
+    font-feature-settings: 'calt' 1, 'liga' 1;
+    display: block; margin: 0.3cqi 0;
+  }
+  .ps-cert__signatures {
+    display: flex; align-items: flex-start; justify-content: center;
+    gap: 4cqi; margin-top: 1cqi; width: 80%;
+  }
+  .ps-cert__sig {
+    display: flex; flex-direction: column; align-items: center; gap: 0.8cqi;
+    flex: 1;
+  }
+  .ps-cert__sig-name {
+    font-family: var(--fam);
+    font-size: 3.8cqi; line-height: 1.1;
+    color: var(--fg);
+    font-feature-settings: 'calt' 1, 'liga' 1;
+  }
+  .ps-cert__sig-rule {
+    width: 80%; height: 1px; background: var(--fg-3); opacity: 0.4;
+  }
+  .ps-cert__sig-title {
+    font-size: 1.6cqi; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--fg-3); font-style: italic;
+  }
+  .ps-cert__seal {
+    width: 8cqi; height: 8cqi; border-radius: 50%;
+    border: 1px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 0.4cqi;
+    box-shadow: inset 0 0 0 2px var(--bg), 0 0 0 3px var(--accent);
+    opacity: 0.6;
+  }
+  .ps-cert__seal-inner {
+    font-family: var(--fam);
+    font-size: 2.8cqi; color: var(--accent);
+    font-feature-settings: 'calt' 1;
+  }
+  .ps-cert__sig--right { align-items: center; }
+  .ps-cert__date {
+    font-size: 1.8cqi; color: var(--fg-3); margin: 0;
+    letter-spacing: 0.06em; font-style: italic;
+  }
+
+  /* responsive restack on narrow viewport */
+  @container (max-width: 500px) {
+    .ps-cert__body { padding: 5cqi 6cqi; }
+    .ps-cert__signatures { flex-direction: column; align-items: center; width: 100%; }
+    .ps-cert__sig--right { align-items: center; }
+  }
+
+  /* ============================================================
+     04 — INTERACTIVE MONOGRAM GENERATOR
+     Left panel: inputs + presets. Right panel: live SVG monogram.
+     ============================================================ */
+  .ps-mono {
+    width: 100%; height: 100%;
+    min-height: 520px;
+    background: var(--bg);
+    display: grid; grid-template-columns: 1fr 1fr;
+    container-type: inline-size;
+  }
+
+  .ps-mono__left {
+    display: flex; flex-direction: column;
+    padding: 5cqi 4cqi 4cqi 5cqi; gap: 3.5cqi;
+    border-right: 1px solid var(--line);
+  }
+  .ps-mono__heading {
+    font-size: 3.5cqi; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--fg); margin: 0; font-weight: 400;
+  }
+  .ps-mono__sub {
+    font-size: 2cqi; color: var(--fg-3); line-height: 1.5;
+    font-style: italic; margin: 0;
+  }
+
+  .ps-mono__inputs {
+    display: flex; align-items: flex-end; gap: 3cqi;
+  }
+  .ps-mono__label {
+    display: flex; flex-direction: column; gap: 1cqi;
+    flex: 1;
+  }
+  .ps-mono__label > span {
+    font-size: 1.6cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .ps-mono__input {
+    font-size: 9cqi; line-height: 1; text-align: center;
+    background: var(--bg-2); border: 1px solid var(--line);
+    color: var(--fg); width: 100%; padding: 1.5cqi 0;
+    border-radius: 2px;
+    font-feature-settings: 'calt' 1, 'liga' 1;
+    text-transform: uppercase;
+    transition: border-color 0.2s var(--ease);
+  }
+  .ps-mono__input:focus {
+    outline: none; border-color: var(--accent);
+    background: var(--bg);
+  }
+  .ps-mono__and {
+    font-size: 5cqi; line-height: 1; color: var(--accent);
+    font-family: var(--fam); padding-bottom: 1.8cqi;
+    font-feature-settings: 'calt' 1;
+  }
+
+  .ps-mono__nametext {
+    font-size: 1.6cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3); margin: 0;
+  }
+  .ps-mono__nameinput {
+    font-size: 2.2cqi; padding: 1.2cqi 1.5cqi;
+    background: var(--bg-2); border: 1px solid var(--line);
+    color: var(--fg); border-radius: 2px; width: 100%;
+    font-style: italic;
+    transition: border-color 0.2s var(--ease);
+  }
+  .ps-mono__nameinput:focus { outline: none; border-color: var(--accent); background: var(--bg); }
+
+  .ps-mono__samples {
+    display: flex; flex-direction: column; gap: 1cqi;
+    margin-top: auto;
+  }
+  .ps-mono__sample {
+    display: flex; align-items: center; gap: 2cqi;
+    padding: 1.2cqi 1.6cqi; text-align: left;
+    border: 1px solid var(--line-soft);
+    border-radius: 2px; width: 100%;
+    transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .ps-mono__sample:hover { background: var(--bg-2); border-color: var(--line); }
+  .ps-mono__sample.is-on { background: var(--bg-2); border-color: var(--accent); }
+  .ps-mono__sample-mono {
+    font-size: 4cqi; line-height: 1; color: var(--fg);
+    font-feature-settings: 'calt' 1, 'liga' 1; white-space: nowrap;
+    width: 6cqi;
+  }
+  .ps-mono__sample-name {
+    font-size: 1.7cqi; color: var(--fg-2); font-style: italic;
+  }
+
+  /* Right panel: SVG output */
+  .ps-mono__right {
+    display: flex; align-items: center; justify-content: center;
+    padding: 4cqi;
+    background: var(--bg);
+  }
+  .ps-mono__output { width: 100%; max-width: 36cqi; }
+  .ps-mono__svg { width: 100%; height: auto; display: block; }
+
+  /* SVG element styles */
+  .ps-mono__frame {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    opacity: 0.35;
+  }
+  .ps-mono__frame-inner {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 0.5;
+    opacity: 0.2;
+    stroke-dasharray: 942;
+    stroke-dashoffset: 0;
+  }
+  .ps-mono__letter {
+    font-family: var(--fam);
+    font-size: 130px;
+    fill: var(--fg);
+    font-feature-settings: 'calt' 1, 'liga' 1;
+  }
+  .ps-mono__letter-a { fill: var(--fg); }
+  .ps-mono__letter-b { fill: var(--fg); opacity: 0.75; }
+  .ps-mono__hr {
+    stroke: var(--fg-3);
+    stroke-width: 0.75;
+    opacity: 0.45;
+  }
+  .ps-mono__diamond {
+    fill: var(--accent);
+    opacity: 0.55;
+  }
+  .ps-mono__namesvg {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 16px;
+    fill: var(--fg-3);
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+
+  /* Draw-in animation for the monogram SVG (circumference of r=162 circle ≈ 1018) */
+  .ps-mono__frame {
+    stroke-dasharray: 1018;
+    stroke-dashoffset: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ps-mono__svg--drawn .ps-mono__frame {
+      animation: ps-mono-draw 1.2s var(--ease) both;
+    }
+    .ps-mono__svg--drawn .ps-mono__frame-inner {
+      animation: ps-mono-draw 1.4s var(--ease) 0.1s both;
+    }
+    .ps-mono__svg--drawn .ps-mono__letter {
+      animation: ps-mono-letter 0.7s var(--ease) 0.5s both;
+    }
+    .ps-mono__svg--drawn .ps-mono__namesvg,
+    .ps-mono__svg--drawn .ps-mono__hr,
+    .ps-mono__svg--drawn .ps-mono__diamond {
+      animation: ps-mono-letter 0.5s var(--ease) 0.9s both;
+    }
+    @keyframes ps-mono-draw {
+      from { stroke-dashoffset: 1018; opacity: 0.1; }
+      to   { stroke-dashoffset: 0;    opacity: 0.35; }
+    }
+    @keyframes ps-mono-letter {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  }
+
+  /* Responsive: stack monogram panel on narrow */
+  @container (max-width: 600px) {
+    .ps-mono {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+    }
+    .ps-mono__left {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 5cqi 5cqi 4cqi;
+    }
+    .ps-mono__right { padding: 5cqi; }
+    .ps-mono__heading { font-size: 4.5cqi; }
+    .ps-mono__sub    { font-size: 2.8cqi; }
+    .ps-mono__label > span { font-size: 2.2cqi; }
+    .ps-mono__input  { font-size: 12cqi; }
+    .ps-mono__and    { font-size: 7cqi; }
+    .ps-mono__nametext { font-size: 2.2cqi; }
+    .ps-mono__nameinput { font-size: 2.8cqi; }
+    .ps-mono__sample-mono { font-size: 5cqi; }
+    .ps-mono__sample-name { font-size: 2.2cqi; }
+    .ps-mono__output { max-width: 54cqi; }
+  }
+
+  @container (max-width: 400px) {
+    .ps-mono__inputs { gap: 2cqi; }
+    .ps-mono__samples { flex-direction: row; flex-wrap: wrap; }
+    .ps-mono__sample { flex: 1 1 45%; }
+  }
+
+  /* Invitation responsive */
+  @container (max-width: 480px) {
+    .ps-invite__inner { padding: 6cqi 4cqi 4cqi; gap: 2.4cqi; }
+    .ps-invite__name1,
+    .ps-invite__name2 { font-size: 16cqi; }
+    .ps-invite__amp   { font-size: 13cqi; }
+    .ps-invite__detail { font-size: 2.8cqi; }
+  }
+
+  /* Patisserie responsive */
+  @container (max-width: 520px) {
+    .ps-pat__labels { grid-template-columns: 1fr; }
+    .ps-pat__label--featured { order: -1; }
+    .ps-pat__label-name { font-size: 12cqi; }
+  }
+
+  /* Reduced motion: disable all transitions */
+  @media (prefers-reduced-motion: reduce) {
+    .ps-mono__input,
+    .ps-mono__nameinput,
+    .ps-mono__sample,
+    .ps-pat__label,
+    .ps-pat__label::before,
+    .ps-pat__label-name { transition: none; }
+  }
+</style>

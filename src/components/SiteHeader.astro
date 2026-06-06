@@ -105,44 +105,26 @@ const lexSections = [
      become the containing block for this position:fixed panel. -->
 <div class="mnav" id="mobile-nav" data-mnav aria-hidden="true">
     <nav class="mnav__inner container" aria-label="Primary">
+      {/* Top-level destinations only — drill into a font / era / section from
+          its landing page (keeps the drawer short as the library grows). */}
       <div class="mnav__block">
         <a class="mnav__primary" href="/history">History</a>
-        <div class="mnav__sub">
-          {eras.map((e) => (
-            <a class="mnav__subitem" href={`/history/${e.data.slug}`}>
-              <span class="mnav__idx">{String(e.data.order).padStart(2, '0')}</span>
-              <span>{e.data.name}</span>
-            </a>
-          ))}
-        </div>
+        <span class="mnav__hint">The story of type, era by era</span>
       </div>
 
       <div class="mnav__block">
         <a class="mnav__primary" href="/#index">Fonts</a>
-        <div class="mnav__sub mnav__sub--grid">
-          {fonts.map((f) => (
-            <a class="mnav__subitem" href={`/fonts/${f.id}`}>
-              <span class="mnav__subname" style={`font-family:${f.data.fontFamily}`}>{f.data.name}</span>
-              <span class="mnav__meta">{f.data.category}</span>
-            </a>
-          ))}
-        </div>
+        <span class="mnav__hint">Browse every specimen</span>
       </div>
 
       <div class="mnav__block">
         <a class="mnav__primary" href="/compare">Compare</a>
+        <span class="mnav__hint">Set faces side by side</span>
       </div>
 
       <div class="mnav__block">
         <a class="mnav__primary" href="/glossary">Lexicon</a>
-        <div class="mnav__sub">
-          {lexSections.map((s, i) => (
-            <a class="mnav__subitem" href={`/glossary#${s.id}`}>
-              <span class="mnav__idx">{String(i + 1).padStart(2, '0')}</span>
-              <span>{s.name}</span>
-            </a>
-          ))}
-        </div>
+        <span class="mnav__hint">The language of letterforms</span>
       </div>
 
       {showToggle && (
@@ -338,6 +320,14 @@ const lexSections = [
     transition: color 0.2s var(--ease);
   }
   .mnav__primary:active { color: var(--accent); }
+  .mnav__hint {
+    display: block;
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--fg-3);
+  }
   .mnav__sub {
     margin-top: var(--sp-3);
     display: flex; flex-direction: column; gap: 0.15rem;

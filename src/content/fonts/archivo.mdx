@@ -1,0 +1,73 @@
+---
+name: Archivo
+order: 17
+era: grotesque
+historyNote: a high-performance grotesque drawn for screens, from display to text.
+designer: Omnibus-Type (Pablo Cosgaya & team)
+foundry: Omnibus-Type
+year: 2017
+classification: Grotesque Sans
+category: Sans
+blurb: A hard-working grotesque with a dramatic width axis — condensed to expanded in a single file.
+googleFontsUrl: https://fonts.google.com/specimen/Archivo
+sourceUrl: https://github.com/Omnibus-Type/Archivo
+license: SIL Open Font License 1.1
+fontFamily: 'Archivo Variable'
+isVariable: true
+hasItalic: true
+axes:
+  - { tag: 'wght', name: 'Weight', min: 100, max: 900, default: 400, step: 1 }
+  - { tag: 'wdth', name: 'Width', min: 62, max: 125, default: 100, step: 1 }
+weights:
+  - { name: 'Thin', weight: 100 }
+  - { name: 'Extra Light', weight: 200 }
+  - { name: 'Light', weight: 300 }
+  - { name: 'Regular', weight: 400 }
+  - { name: 'Medium', weight: 500 }
+  - { name: 'Semi Bold', weight: 600 }
+  - { name: 'Bold', weight: 700 }
+  - { name: 'Extra Bold', weight: 800 }
+  - { name: 'Black', weight: 900 }
+headline: Workhorse
+sampleText: A grotesque for the demands of modern publishing — editorial, data, and everything between.
+pangram: Pack my box with five dozen liquor jugs.
+feelings: ['Workhorse', 'Editorial', 'Functional', 'Versatile', 'American']
+languages: ['Latin', 'Latin Extended']
+pairsWith:
+  - { name: 'Libre Baskerville', role: 'Classic serif body contrast' }
+  - { name: 'IBM Plex Mono', role: 'Code and captions' }
+openType:
+  - { tag: 'liga', label: 'Standard ligatures', sample: 'fi fl office', on: true }
+  - { tag: 'tnum', label: 'Tabular figures', sample: '1,234,567.89', on: false }
+  - { tag: 'frac', label: 'Fractions', sample: '1/2 3/4 5/8', on: false }
+callouts:
+  - { glyph: 'R', title: 'Upright American grotesque', body: 'The R captures everything American about Archivo: a strongly upright leg, no-nonsense spur, and balanced bowl — deliberate, workmanlike, not trying to be beautiful.', guides: ['cap', 'baseline'], focus: [{ x: 0.68, y: 0.72, r: 0.2, label: 'the leg' }] }
+  - { glyph: 'G', title: 'Square geometry', body: 'Slightly squared curves give Archivo its distinctive stiffness — midway between the warm humanism of Inter and the pure geometry of Futura, it stands on its own.', guides: ['cap', 'baseline'], focus: [{ x: 0.82, y: 0.5, r: 0.18, label: 'spur shelf' }] }
+  - { glyph: 'a', title: 'Double-storey at work', body: 'The double-storey a is the legibility workhorse: it reads clearly at 10px in a mobile UI and commands attention at 120pt on a poster headline.', guides: ['x', 'baseline'], focus: [{ x: 0.54, y: 0.1, r: 0.22, label: 'upper bowl' }] }
+  - { glyph: '1', title: 'Tabular figures', body: 'With tnum on, every digit occupies the same advance width, so columns of prices and statistics stay perfectly aligned without invisible trickery.', guides: ['cap', 'baseline'] }
+inUse:
+  - { kind: 'app-ui', label: 'Product UI — financial dashboard, real device scale' }
+  - { kind: 'kinetic', label: 'Kinetic — width axis condensed-to-expanded poster', word: 'BROADCAST' }
+  - { kind: 'editorial', label: 'Editorial — news magazine feature spread' }
+  - { kind: 'brand', label: 'Brand — media company identity', variant: 'wordmark' }
+
+theme:
+  mode: light
+  bg: '#f5f2ed'
+  bg2: '#ede9e2'
+  fg: '#111010'
+  fg2: '#3b3733'
+  fg3: '#857f77'
+  accent: '#c8410b'
+  accentContrast: '#ffffff'
+  line: '#11101014'
+  lineSoft: '#1110100a'
+---
+
+In 2017, the Buenos Aires type studio **Omnibus-Type** published Archivo with a clear-eyed ambition: to give the web a grotesque that worked as hard as the editorial teams that would use it. The name itself is the Spanish word for *archive* or *file* — matter-of-fact, utilitarian, exactly the tone the designers were after. It was drawn first as a screen face, with generous spacing and carefully tuned ink traps, and it quickly found a home everywhere that type needs to perform without drawing attention to itself.
+
+The lineage sits squarely in the American grotesque tradition — related in spirit to the News Gothic and Franklin Gothic families that powered American newspaper and magazine typesetting for a century. Archivo shares their directness: slightly squared curves, robust strokes, a double-storey **a** and an upright posture that refuses to be charming when legibility is called for instead. But **Pablo Cosgaya** and the Omnibus-Type team drew it with contemporary screen rendering in mind, so the spacing is looser, the counters more open, and the proportions calibrated for RGB rather than ink on newsprint.
+
+What distinguishes the variable version, released as Archivo broadened its scope, is the addition of a **width axis** alongside weight. The wdth axis spans from 62 — a true condensed, suited to editorial decks and data-dense UIs where column width is precious — all the way to 125, an expanded setting that adds gravitas and air to poster headlines and brand lockups. Few grotesque variable fonts span that range in a single continuous space, and fewer still maintain the same quiet authority at both extremes. The full weight range (Thin 100 through Black 900) crosses the width axis, giving designers a two-dimensional variable space they can drive with a single `font-variation-settings` declaration.
+
+Archivo now sets everything from the navigation headers of digital-native publications to the financial dashboards of fintech products. Its particular success in data-heavy contexts owes something to the tabular figures, which keep columns of prices and statistics flush without visible tricks, and to the fractions feature, which composes proper typographic fractions on the fly. It is the kind of typeface that earns its keep by never making you think about it — and then, when you push the width axis to its extremes, shows you exactly what it has been hiding.

@@ -1,0 +1,907 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// --- 01 · Financial news dashboard (interactive, real device scale) ----------
+const marketRows = [
+  { sym: 'AAPL',  name: 'Apple Inc.',          px: '182.63', ch: '+1.42', pct: '+0.78%', vol: '62.4M', up: true  },
+  { sym: 'NVDA',  name: 'NVIDIA Corp.',         px: '875.40', ch: '+22.10', pct: '+2.59%', vol: '41.8M', up: true  },
+  { sym: 'MSFT',  name: 'Microsoft Corp.',      px: '420.17', ch: '-3.88', pct: '-0.91%', vol: '18.2M', up: false },
+  { sym: 'TSLA',  name: 'Tesla Inc.',           px: '194.05', ch: '+6.27', pct: '+3.34%', vol: '88.1M', up: true  },
+  { sym: 'META',  name: 'Meta Platforms',       px: '489.92', ch: '-1.14', pct: '-0.23%', vol: '12.7M', up: false },
+  { sym: 'AMZN',  name: 'Amazon.com Inc.',      px: '191.78', ch: '+0.33', pct: '+0.17%', vol: '29.3M', up: true  },
+] as { sym: string; name: string; px: string; ch: string; pct: string; vol: string; up: boolean }[];
+
+const portfolioRows = [
+  { sym: 'AAPL',  name: 'Apple Inc.',           value: '12,840.60', gain: '+2,840.60', gainPct: '+28.4%', shares: '70.3', up: true  },
+  { sym: 'MSFT',  name: 'Microsoft Corp.',      value: '8,403.40',  gain: '+1,403.40', gainPct: '+20.0%', shares: '20.0', up: true  },
+  { sym: 'NVDA',  name: 'NVIDIA Corp.',         value: '8,754.00',  gain: '+5,254.00', gainPct: '+150.2%', shares: '10.0', up: true },
+  { sym: 'TSLA',  name: 'Tesla Inc.',           value: '3,881.00',  gain: '-1,619.00', gainPct: '-29.4%', shares: '20.0', up: false },
+  { sym: 'META',  name: 'Meta Platforms',       value: '4,899.20',  gain: '+899.20',   gainPct: '+22.5%', shares: '10.0', up: true  },
+] as { sym: string; name: string; value: string; gain: string; gainPct: string; shares: string; up: boolean }[];
+
+const kpis = {
+  markets:   { a: '4,217.40', b: '+12.4%', c: '2.4T',   d: '18.7' },
+  portfolio: { a: '$38,777',  b: '+18.2%', c: '5 pos',  d: '1.14x' },
+  watchlist: { a: '34 items', b: '21 up',  c: '13 dn',  d: '8 new' },
+};
+---
+
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — INTERACTIVE financial news dashboard (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — financial news dashboard, real device scale</span></figcaption>
+    <div class="iu__scene">
+      <div class="fin" data-fin>
+        <div class="fin__chrome">
+          <div class="fin__dots"><i></i><i></i><i></i></div>
+          <span class="fin__addr">markets.meridian.io</span>
+          <span class="fin__badge">LIVE</span>
+        </div>
+        <div class="fin__bar">
+          <span class="fin__logo"><i class="fin__logo-mark">M</i>Meridian</span>
+          <nav class="fin__tabs" role="tablist">
+            <button class="is-on" data-tab="markets" role="tab" aria-selected="true">Markets</button>
+            <button data-tab="portfolio" role="tab" aria-selected="false">Portfolio</button>
+            <button data-tab="watchlist" role="tab" aria-selected="false">Watchlist</button>
+          </nav>
+          <span class="fin__time" data-clock>09:41 ET</span>
+        </div>
+
+        <div class="fin__kpis" data-kpis>
+          <div class="fin__kpi">
+            <span class="fin__kl">S&amp;P 500</span>
+            <b data-kpi-a>{kpis.markets.a}</b>
+            <i class="up" data-kpi-b>{kpis.markets.b}</i>
+          </div>
+          <div class="fin__kpi">
+            <span class="fin__kl">Mkt Cap</span>
+            <b data-kpi-c>{kpis.markets.c}</b>
+            <i class="up">▲ today</i>
+          </div>
+          <div class="fin__kpi">
+            <span class="fin__kl">P/E (avg)</span>
+            <b data-kpi-d>{kpis.markets.d}</b>
+            <i class="flat">index avg</i>
+          </div>
+          <div class="fin__kpi fin__kpi--accent">
+            <span class="fin__kl">Yield 10Y</span>
+            <b>4<span class="fin__frac">13/32</span>%</b>
+            <i class="dn">▼ 2bp</i>
+          </div>
+        </div>
+
+        <div class="fin__body">
+          <div class="fin__table-wrap" data-table-wrap>
+            <table class="fin__table" data-ftable>
+              <thead>
+                <tr>
+                  <th data-sort="sym">Ticker</th>
+                  <th data-sort="name" class="fin__tname">Company</th>
+                  <th data-sort="px" class="fin__num" data-active="desc">Price</th>
+                  <th data-sort="ch" class="fin__num">Change</th>
+                  <th data-sort="vol" class="fin__num fin__hide-sm">Volume</th>
+                </tr>
+              </thead>
+              <tbody data-tbody>
+                {marketRows.map((r) => (
+                  <tr data-sym={r.sym} data-px={r.px.replace(/,/g,'')} data-chval={r.ch.replace(/[+,]/g,'')} data-vol={r.vol}>
+                    <td><b class="fin__sym">{r.sym}</b></td>
+                    <td class="fin__tname fin__muted">{r.name}</td>
+                    <td class="fin__num"><b class="fin__px">{r.px}</b></td>
+                    <td class={`fin__num fin__ch ${r.up ? 'fin__up' : 'fin__dn'}`}>
+                      {r.ch}<br/><span class="fin__pct">{r.pct}</span>
+                    </td>
+                    <td class="fin__num fin__muted fin__hide-sm">{r.vol}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="fin__side">
+            <div class="fin__movers-h">Top movers</div>
+            <div class="fin__movers" data-movers>
+              {marketRows.filter(r=>r.up).slice(0,3).map(r => (
+                <div class={`fin__mover fin__mover--up`}>
+                  <span class="fin__mover-sym">{r.sym}</span>
+                  <span class="fin__mover-pct">{r.pct}</span>
+                </div>
+              ))}
+              {marketRows.filter(r=>!r.up).slice(0,2).map(r => (
+                <div class={`fin__mover fin__mover--dn`}>
+                  <span class="fin__mover-sym">{r.sym}</span>
+                  <span class="fin__mover-pct">{r.pct}</span>
+                </div>
+              ))}
+            </div>
+            <div class="fin__gauge-h">Sentiment</div>
+            <div class="fin__gauge">
+              <div class="fin__gauge-bar">
+                <span class="fin__gauge-fill" data-gfill style="width:64%"></span>
+                <span class="fin__gauge-needle" data-gneedle style="left:64%"></span>
+              </div>
+              <div class="fin__gauge-labels"><span>Fear</span><span>Greed</span></div>
+              <b class="fin__gauge-val" data-gval>64 — Greed</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Click column headers to sort; switch tabs — portfolio and watchlist views reload with fresh data. Tabular figures keep every price column flush. The 10Y yield uses a typographic fraction (frac).</p>
+  </figure>
+
+  <!-- 02 — Width-axis kinetic poster: condensed → expanded breathe -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Kinetic — wdth axis condensed&#8596;expanded poster</span></figcaption>
+    <div class="iu__scene scene-poster">
+      <div class="poster" data-poster>
+        <div class="poster__bg-grid" aria-hidden="true"></div>
+        <div class="poster__top">
+          <span class="poster__label">OMNIBUS&middot;TYPE&middot;ARCHIVO&middot;VARIABLE</span>
+          <span class="poster__year">2017</span>
+        </div>
+        <div class="poster__stage">
+          <div class="poster__word-wrap">
+            <span class="poster__word" data-wdth-word>BROADCAST</span>
+          </div>
+          <div class="poster__axis-track">
+            <span class="poster__axis-l">Condensed <em>62</em></span>
+            <div class="poster__axis-bar"><span class="poster__axis-cursor" data-axis-cursor></span></div>
+            <span class="poster__axis-r"><em>125</em> Expanded</span>
+          </div>
+        </div>
+        <div class="poster__stack">
+          <span class="poster__stack-word" data-stack-a style="--w:62;--wt:900">BOLD CONDENSED</span>
+          <span class="poster__stack-word" data-stack-b style="--w:100;--wt:400">NORMAL REGULAR</span>
+          <span class="poster__stack-word" data-stack-c style="--w:125;--wt:100">EXPANDED THIN</span>
+        </div>
+        <div class="poster__foot">
+          <span class="poster__desc">Weight 100–900 &times; Width 62–125 &middot; Two axes, one file</span>
+          <button class="poster__btn" data-poster-btn type="button">PAUSE</button>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The word breathes across the full wdth axis (62 condensed &#8594; 125 expanded) while cycling through weights. Toggle PAUSE to freeze the demonstration.</p>
+  </figure>
+
+  <!-- 03 — Editorial news spread -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — news magazine feature spread</span></figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="news">
+        <div class="news__masthead">
+          <span class="news__issue">THE MERIDIAN REPORT</span>
+          <span class="news__rule" aria-hidden="true"></span>
+          <span class="news__tagline">ECONOMICS &middot; MARKETS &middot; POLICY</span>
+        </div>
+        <div class="news__date-line">
+          <span>Vol. XLII &middot; No. 24 &middot; June 2026</span>
+        </div>
+        <div class="news__body">
+          <div class="news__col news__col--main">
+            <span class="news__kicker">Global Markets</span>
+            <h3 class="news__hed">Central banks signal coordinated pause as inflation cools</h3>
+            <p class="news__deck">After eighteen months of consecutive hikes, the Federal Reserve, ECB and Bank of England all held rates steady this week, sparking the largest single-day equity rally of 2024.</p>
+            <p class="news__byline">BY STAFF ECONOMISTS &middot; <time>4 hours ago</time></p>
+            <p class="news__body-text">The decision marks a sharp pivot from the hawkish posture that defined central bank rhetoric since late 2022. Fed Chair signalled confidence that the disinflationary trend was "durable and broad-based," citing twelve consecutive months of core PCE at or below target. Bond markets repriced immediately, pushing the 10-year Treasury yield down by 14 basis points in less than an hour — a move that rippled through every major equity index before the close.</p>
+            <p class="news__body-text news__body-text--cont">Analysts were quick to note that the pause is not a pivot; the median dot for year-end still shows rates on hold rather than cuts. But the psychological shift — from "higher for longer" to "steady and watching" — was enough to lift sentiment.</p>
+          </div>
+          <div class="news__col news__col--side">
+            <div class="news__callout">
+              <span class="news__callout-num">+2.4%</span>
+              <span class="news__callout-cap">S&amp;P 500 single-session gain — largest since November 2023</span>
+            </div>
+            <div class="news__second">
+              <span class="news__kicker">Technology</span>
+              <h4 class="news__hed-sm">Open-source AI surpasses proprietary benchmarks for the first time</h4>
+              <p class="news__deck-sm">A coalition of European universities released a 70-billion parameter model under a permissive licence, outperforming closed systems on seven standard reasoning tests.</p>
+              <p class="news__byline">6 hours ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Archivo's American grotesque authority: condensed kickers (wdth 72) frame open-measure body copy. The pull-quote stat reveals on scroll-into-view; hover the secondary story to slide in its deck. Tabular figures (tnum) keep the stat flush; kickers use wdth 72 condensed.</p>
+  </figure>
+
+  <!-- 04 — Media brand identity: masthead / wordmark with wdth-axis lock-up -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Brand — editorial media identity, width-axis wordmark system</span></figcaption>
+    <div class="iu__scene scene-brand">
+      <div class="brand" data-brand>
+        <div class="brand__bg" aria-hidden="true"></div>
+        <div class="brand__inner">
+          <div class="brand__system">
+            <span class="brand__eyebrow">Wordmark system &middot; Archivo Variable</span>
+            <div class="brand__lockups">
+              <div class="brand__lockup">
+                <span class="brand__lockup-label">Condensed Black — display</span>
+                <div class="brand__name brand__name--cond">MERIDIAN</div>
+              </div>
+              <div class="brand__divider" aria-hidden="true"></div>
+              <div class="brand__lockup">
+                <span class="brand__lockup-label">Regular Bold — masthead</span>
+                <div class="brand__name brand__name--reg">MERIDIAN</div>
+              </div>
+              <div class="brand__divider" aria-hidden="true"></div>
+              <div class="brand__lockup">
+                <span class="brand__lockup-label">Expanded Thin — motto</span>
+                <div class="brand__name brand__name--exp">MERIDIAN</div>
+              </div>
+            </div>
+          </div>
+          <div class="brand__tag">
+            <div class="brand__full-lockup">
+              <span class="brand__full-masthead" data-brand-hover>MERIDIAN</span>
+              <span class="brand__full-sub">FINANCIAL INTELLIGENCE</span>
+            </div>
+            <div class="brand__meta">
+              <div class="brand__axis-demo">
+                <span class="brand__axis-key">wdth</span>
+                <div class="brand__axis-slots">
+                  <span class="brand__slot brand__slot--cond">62</span>
+                  <span class="brand__slot brand__slot--mid">100</span>
+                  <span class="brand__slot brand__slot--exp">125</span>
+                </div>
+              </div>
+              <div class="brand__axis-demo">
+                <span class="brand__axis-key">wght</span>
+                <div class="brand__axis-slots">
+                  <span class="brand__slot brand__slot--thin">100</span>
+                  <span class="brand__slot brand__slot--reg-w">400</span>
+                  <span class="brand__slot brand__slot--blk">900</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the large masthead to cycle through the full width range (62 condensed &#8594; 125 expanded). Three lockups show how one typeface serves condensed display, standard brand, and expanded editorial cuts.</p>
+  </figure>
+
+</div>
+
+<script id="archivo-fin-data" type="application/json" set:html={JSON.stringify({ marketRows, portfolioRows, kpis })} is:inline></script>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== 01 · Financial dashboard — tab switching + column sort =====
+  type Row = { sym: string; name: string; px: string; ch: string; pct: string; vol: string; up: boolean };
+  type PortRow = { sym: string; name: string; value: string; gain: string; gainPct: string; shares: string; up: boolean };
+  type Kpis = Record<string, { a: string; b: string; c: string; d: string }>;
+  const finIsland = document.getElementById('archivo-fin-data');
+  let finData: { marketRows: Row[]; portfolioRows: PortRow[]; kpis: Kpis } =
+    { marketRows: [], portfolioRows: [], kpis: {} };
+  try { finData = finIsland ? JSON.parse(finIsland.textContent || '{}') : finData; } catch {}
+
+  function makeCell(cls: string, text: string): HTMLTableCellElement {
+    const td = document.createElement('td');
+    if (cls) td.className = cls;
+    td.textContent = text;
+    return td;
+  }
+
+  function makeBoldCell(outerCls: string, boldCls: string, text: string): HTMLTableCellElement {
+    const td = document.createElement('td');
+    if (outerCls) td.className = outerCls;
+    const b = document.createElement('b');
+    b.className = boldCls;
+    b.textContent = text;
+    td.appendChild(b);
+    return td;
+  }
+
+  function makeChangeCell(ch: string, pct: string, up: boolean): HTMLTableCellElement {
+    const td = document.createElement('td');
+    td.className = 'fin__num fin__ch ' + (up ? 'fin__up' : 'fin__dn');
+    td.textContent = ch;
+    const br = document.createElement('br');
+    const span = document.createElement('span');
+    span.className = 'fin__pct';
+    span.textContent = pct;
+    td.appendChild(br);
+    td.appendChild(span);
+    return td;
+  }
+
+  function buildMarketRow(r: Row): HTMLTableRowElement {
+    const tr = document.createElement('tr');
+    tr.dataset.sym = r.sym;
+    tr.dataset.px = r.px.replace(/,/g, '');
+    tr.dataset.chval = r.ch.replace(/[+,]/g, '');
+    tr.dataset.vol = r.vol;
+    tr.appendChild(makeBoldCell('', 'fin__sym', r.sym));
+    tr.appendChild(makeCell('fin__tname fin__muted', r.name));
+    tr.appendChild(makeBoldCell('fin__num', 'fin__px', r.px));
+    tr.appendChild(makeChangeCell(r.ch, r.pct, r.up));
+    tr.appendChild(makeCell('fin__num fin__muted fin__hide-sm', r.vol));
+    return tr;
+  }
+
+  function buildPortRow(r: PortRow): HTMLTableRowElement {
+    const tr = document.createElement('tr');
+    tr.appendChild(makeBoldCell('', 'fin__sym', r.sym));
+    tr.appendChild(makeCell('fin__tname fin__muted', r.name));
+    tr.appendChild(makeBoldCell('fin__num', 'fin__px', r.value));
+    tr.appendChild(makeChangeCell(r.gain, r.gainPct, r.up));
+    tr.appendChild(makeCell('fin__num fin__muted fin__hide-sm', r.shares + ' sh'));
+    return tr;
+  }
+
+  const watchItems = [
+    { sym: 'GOOG', name: 'Alphabet Inc.',  px: '169.30', ch: '+0.44%', up: true  },
+    { sym: 'AMD',  name: 'AMD Inc.',       px: '158.40', ch: '+1.82%', up: true  },
+    { sym: 'INTC', name: 'Intel Corp.',    px: '31.22',  ch: '-2.14%', up: false },
+    { sym: 'SPOT', name: 'Spotify',        px: '302.88', ch: '+3.61%', up: true  },
+    { sym: 'SNAP', name: 'Snap Inc.',      px: '11.04',  ch: '-0.72%', up: false },
+  ] as Row[];
+
+  document.querySelectorAll<HTMLElement>('[data-fin]').forEach((fin) => {
+    if (!finData.marketRows.length) return;
+    const q = (s: string) => fin.querySelector(s) as HTMLElement | null;
+    const tbody = q('[data-tbody]')!;
+    const table = q('[data-ftable]') as HTMLTableElement | null;
+    const kpiA = q('[data-kpi-a]'), kpiB = q('[data-kpi-b]');
+    const kpiC = q('[data-kpi-c]'), kpiD = q('[data-kpi-d]');
+    const gfill = q('[data-gfill]'), gneedle = q('[data-gneedle]'), gval = q('[data-gval]');
+    let sortKey = 'px';
+    let sortAsc = false;
+
+    function setKpis(tab: string) {
+      const k = finData.kpis[tab] || finData.kpis['markets'];
+      if (kpiA) kpiA.textContent = k.a;
+      if (kpiB) kpiB.textContent = k.b;
+      if (kpiC) kpiC.textContent = k.c;
+      if (kpiD) kpiD.textContent = k.d;
+    }
+
+    function render(tab: string) {
+      fin.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => {
+        const on = b.dataset.tab === tab;
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      setKpis(tab);
+      tbody.replaceChildren();
+      const rows: HTMLTableRowElement[] = [];
+      if (tab === 'markets') {
+        finData.marketRows.forEach((r) => rows.push(buildMarketRow(r)));
+      } else if (tab === 'portfolio') {
+        finData.portfolioRows.forEach((r) => rows.push(buildPortRow(r)));
+      } else {
+        watchItems.forEach((r) => rows.push(buildMarketRow(r)));
+      }
+      rows.forEach((r) => tbody.appendChild(r));
+    }
+
+    fin.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) =>
+      btn.addEventListener('click', () => render(btn.dataset.tab!))
+    );
+
+    if (table) {
+      table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
+        th.addEventListener('click', () => {
+          const k = th.dataset.sort!;
+          if (k === sortKey) sortAsc = !sortAsc;
+          else { sortKey = k; sortAsc = false; }
+          table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+          th.setAttribute('data-active', sortAsc ? 'asc' : 'desc');
+          const rows = Array.from(tbody.querySelectorAll('tr'));
+          rows.sort((ra, rb) => {
+            const av = k === 'sym' ? (ra.querySelector('.fin__sym')?.textContent || '')
+              : k === 'name' ? (ra.querySelector('.fin__tname')?.textContent || '')
+              : parseFloat(ra.dataset[k === 'ch' ? 'chval' : k] || '0');
+            const bv = k === 'sym' ? (rb.querySelector('.fin__sym')?.textContent || '')
+              : k === 'name' ? (rb.querySelector('.fin__tname')?.textContent || '')
+              : parseFloat(rb.dataset[k === 'ch' ? 'chval' : k] || '0');
+            return (av < bv ? -1 : av > bv ? 1 : 0) * (sortAsc ? 1 : -1);
+          });
+          rows.forEach((r) => tbody.appendChild(r));
+        })
+      );
+    }
+
+    // gentle sentiment gauge animation (reduced-motion: static)
+    if (!reduce && gfill && gneedle && gval) {
+      let dir = 1;
+      let val = 64;
+      setInterval(() => {
+        val += (Math.random() - 0.5) * 3 * dir;
+        if (val > 80) dir = -1;
+        if (val < 45) dir = 1;
+        val = Math.max(30, Math.min(85, val));
+        const pct = Math.round(val);
+        gfill.style.width = pct + '%';
+        gneedle.style.left = pct + '%';
+        gval.textContent = pct + (pct >= 60 ? ' — Greed' : pct >= 45 ? ' — Neutral' : ' — Fear');
+      }, 2400);
+    }
+  });
+
+  // ===== 02 · Width-axis poster animation =====
+  document.querySelectorAll<HTMLElement>('[data-poster]').forEach((poster) => {
+    const word = poster.querySelector('[data-wdth-word]') as HTMLElement | null;
+    const cursor = poster.querySelector('[data-axis-cursor]') as HTMLElement | null;
+    const btn = poster.querySelector('[data-poster-btn]') as HTMLButtonElement | null;
+    if (!word || !cursor) return;
+
+    const keyframes = [
+      { wdth: 62,  wght: 900 },
+      { wdth: 62,  wght: 100 },
+      { wdth: 100, wght: 400 },
+      { wdth: 125, wght: 700 },
+      { wdth: 125, wght: 100 },
+      { wdth: 80,  wght: 600 },
+    ];
+
+    let frame = 0;
+    let playing = !reduce;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    function applyFrame(f: { wdth: number; wght: number }) {
+      const fvs = `'wdth' ${f.wdth}, 'wght' ${f.wght}`;
+      if (!reduce) {
+        word.style.transition = 'font-variation-settings 0.8s cubic-bezier(0.4,0,0.2,1)';
+        cursor.style.transition = 'left 0.8s cubic-bezier(0.4,0,0.2,1)';
+      }
+      word.style.fontVariationSettings = fvs;
+      cursor.style.left = ((f.wdth - 62) / (125 - 62) * 100).toFixed(1) + '%';
+    }
+
+    function step() {
+      applyFrame(keyframes[frame]);
+      frame = (frame + 1) % keyframes.length;
+    }
+
+    function startLoop() {
+      if (intervalId) clearInterval(intervalId);
+      step();
+      intervalId = setInterval(step, 1600);
+    }
+
+    if (btn) {
+      btn.addEventListener('click', () => {
+        playing = !playing;
+        btn.textContent = playing ? 'PAUSE' : 'ANIMATE';
+        if (playing) startLoop();
+        else { if (intervalId) { clearInterval(intervalId); intervalId = null; } }
+      });
+    }
+
+    if (!reduce) {
+      startLoop();
+    } else {
+      applyFrame(keyframes[0]);
+    }
+  });
+
+  // ===== 03 · Editorial — scroll-into-view reveal on pull-quote stat =====
+  if (!reduce) {
+    const callouts = document.querySelectorAll<HTMLElement>('.news__callout');
+    if (callouts.length) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.25 });
+      callouts.forEach((el) => io.observe(el));
+    }
+  }
+
+  // ===== 04 · Brand — hover cycles wdth on masthead =====
+  document.querySelectorAll<HTMLElement>('[data-brand-hover]').forEach((el) => {
+    const steps = [62, 72, 85, 100, 112, 125];
+    let i = 0;
+    function cycle() {
+      i = (i + 1) % steps.length;
+      if (!reduce) {
+        el.style.transition = 'font-variation-settings 0.35s cubic-bezier(0.4,0,0.2,1)';
+      }
+      el.style.fontVariationSettings = `'wdth' ${steps[i]}, 'wght' 700`;
+    }
+    if (!reduce) {
+      el.addEventListener('mouseenter', cycle);
+    }
+    el.addEventListener('click', cycle);
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene-poster { aspect-ratio: 16 / 9; }
+  .scene-tall   { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
+  .scene-brand  { aspect-ratio: 4 / 3; }
+  @container (min-width: 720px) { .scene-brand { aspect-ratio: 16 / 9; } }
+
+  /* ============================================================
+     01 · FINANCIAL DASHBOARD  (real px, interactive)
+     ============================================================ */
+  .fin {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: var(--bg); font-size: 13px; color: var(--fg);
+    --fin-up: #1a8a4a; --fin-dn: #c8410b;
+    --fin-line: color-mix(in srgb, var(--fg) 10%, transparent);
+  }
+  .fin__chrome {
+    display: flex; align-items: center; gap: 0.7rem; padding: 0.45rem 0.9rem;
+    border-bottom: 1px solid var(--fin-line); background: var(--bg-2); flex: none;
+  }
+  .fin__dots { display: flex; gap: 5px; }
+  .fin__dots i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 18%, transparent); }
+  .fin__addr {
+    font-size: 11px; color: var(--fg-3);
+    background: color-mix(in srgb, var(--fg) 5%, transparent);
+    border-radius: 6px; padding: 2px 10px; margin: 0 auto; font-feature-settings: 'tnum';
+  }
+  .fin__badge {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+    color: var(--fin-up); padding: 2px 6px; border: 1px solid var(--fin-up); border-radius: 4px;
+  }
+
+  .fin__bar {
+    display: flex; align-items: center; gap: 1rem; padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--fin-line); flex: none;
+  }
+  .fin__logo {
+    font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: var(--fg);
+    display: flex; align-items: center; gap: 6px;
+    font-variation-settings: 'wdth' 100, 'wght' 800;
+  }
+  .fin__logo-mark {
+    width: 22px; height: 22px; border-radius: 5px;
+    background: var(--accent); color: var(--accent-contrast);
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 900; font-variation-settings: 'wdth' 90, 'wght' 900;
+  }
+  .fin__tabs { display: flex; gap: 0.2rem; margin-left: 0.5rem; }
+  .fin__tabs button {
+    font-size: 12.5px; color: var(--fg-3); padding: 0.3rem 0.65rem; border-radius: 6px;
+    cursor: pointer; background: transparent; transition: color 0.15s, background 0.15s;
+    font-family: var(--fam); font-variation-settings: 'wdth' 100, 'wght' 400;
+  }
+  .fin__tabs button:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .fin__tabs button.is-on {
+    color: var(--fg); font-weight: 600;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    font-variation-settings: 'wdth' 100, 'wght' 600;
+  }
+  .fin__time { margin-left: auto; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-3); font-feature-settings: 'tnum'; }
+
+  .fin__kpis {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    border-bottom: 1px solid var(--fin-line); flex: none; background: var(--fin-line);
+  }
+  .fin__kpi { padding: 0.45rem 0.9rem; background: var(--bg); display: flex; flex-direction: column; gap: 0; }
+  .fin__kpi--accent { background: color-mix(in srgb, var(--accent) 4%, var(--bg)); }
+  .fin__kl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .fin__kpi b {
+    font-size: 18px; font-weight: 700; letter-spacing: -0.02em; font-feature-settings: 'tnum';
+    font-variation-settings: 'wdth' 100, 'wght' 700;
+  }
+  .fin__frac { font-feature-settings: 'frac'; font-size: 0.9em; }
+  .fin__kpi i { font-size: 11px; font-style: normal; font-weight: 500; font-feature-settings: 'tnum'; }
+  .fin__kpi .up { color: var(--fin-up); }
+  .fin__kpi .dn { color: var(--fin-dn); }
+  .fin__kpi .flat { color: var(--fg-3); }
+
+  .fin__body { flex: 1; display: grid; grid-template-columns: 1fr minmax(148px, 180px); min-height: 0; }
+  .fin__table-wrap { overflow: auto; }
+  .fin__table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fin__table th {
+    text-align: left; color: var(--fg-3); font-weight: 500; padding: 0.5rem 0.7rem;
+    border-bottom: 2px solid var(--fin-line); cursor: pointer; user-select: none;
+    white-space: nowrap; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    font-variation-settings: 'wdth' 72, 'wght' 500; transition: color 0.15s;
+  }
+  .fin__table th:hover { color: var(--fg); }
+  .fin__table th[data-active]::after { content: ' \2193'; color: var(--accent); }
+  .fin__table th[data-active='asc']::after { content: ' \2191'; }
+  .fin__table td { padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--fin-line); vertical-align: middle; }
+  .fin__table tbody tr { transition: background 0.12s; }
+  .fin__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+  .fin__sym { font-size: 13px; font-weight: 700; letter-spacing: 0.03em; font-variation-settings: 'wdth' 100, 'wght' 700; }
+  .fin__tname { font-size: 11.5px; }
+  .fin__num { text-align: right; font-feature-settings: 'tnum'; }
+  .fin__px { font-size: 13px; font-weight: 600; font-feature-settings: 'tnum'; font-variation-settings: 'wdth' 100, 'wght' 600; }
+  .fin__ch { font-size: 11.5px; font-weight: 600; font-feature-settings: 'tnum'; line-height: 1.3; }
+  .fin__pct { font-size: 10.5px; font-weight: 500; opacity: 0.85; }
+  .fin__up { color: var(--fin-up); }
+  .fin__dn { color: var(--fin-dn); }
+  .fin__muted { color: var(--fg-3); }
+
+  .fin__side {
+    padding: 0.8rem 0.85rem; border-left: 1px solid var(--fin-line);
+    display: flex; flex-direction: column; gap: 0.6rem; overflow: hidden;
+  }
+  .fin__movers-h, .fin__gauge-h {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--fg-3); font-variation-settings: 'wdth' 72, 'wght' 700;
+  }
+  .fin__movers { display: flex; flex-direction: column; gap: 4px; }
+  .fin__mover {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 3px 6px; border-radius: 4px;
+  }
+  .fin__mover--up { background: color-mix(in srgb, var(--fin-up) 10%, transparent); }
+  .fin__mover--dn { background: color-mix(in srgb, var(--fin-dn) 10%, transparent); }
+  .fin__mover-sym { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; font-variation-settings: 'wdth' 100, 'wght' 700; }
+  .fin__mover--up .fin__mover-sym { color: var(--fin-up); }
+  .fin__mover--dn .fin__mover-sym { color: var(--fin-dn); }
+  .fin__mover-pct { font-size: 10.5px; font-weight: 600; font-feature-settings: 'tnum'; }
+  .fin__mover--up .fin__mover-pct { color: var(--fin-up); }
+  .fin__mover--dn .fin__mover-pct { color: var(--fin-dn); }
+
+  .fin__gauge { display: flex; flex-direction: column; gap: 4px; }
+  .fin__gauge-bar {
+    position: relative; height: 6px;
+    background: color-mix(in srgb, var(--fg) 10%, transparent); border-radius: 3px; overflow: hidden; margin: 2px 0;
+  }
+  .fin__gauge-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--fin-up), #f9c800, var(--fin-dn));
+    border-radius: 3px; transition: width 0.5s ease;
+  }
+  .fin__gauge-needle {
+    position: absolute; top: -2px; width: 2px; height: 10px;
+    background: var(--fg); transform: translateX(-50%); border-radius: 1px;
+    transition: left 0.5s ease;
+  }
+  .fin__gauge-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--fg-3); letter-spacing: 0.08em; }
+  .fin__gauge-val { font-size: 11px; font-weight: 700; font-feature-settings: 'tnum'; color: var(--fg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fin__gauge-fill, .fin__gauge-needle { transition: none; }
+  }
+
+  @container (max-width: 580px) {
+    .fin__kpis { grid-template-columns: repeat(2, 1fr); }
+    .fin__body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+    .fin__side {
+      border-left: none; border-top: 1px solid var(--fin-line);
+      flex-direction: row; flex-wrap: wrap; gap: 0.6rem;
+      padding: 0.55rem 0.9rem;
+    }
+    .fin__movers-h, .fin__gauge-h { width: 100%; margin-bottom: 0; }
+    .fin__movers { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+    .fin__gauge { flex: 1; min-width: 120px; }
+    .fin__hide-sm { display: none; }
+    .fin__tname { display: none; }
+  }
+  @container (max-width: 380px) {
+    .fin__tabs button { font-size: 11px; padding: 0.25rem 0.45rem; }
+    .fin__logo { font-size: 13px; }
+    .fin__kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ============================================================
+     02 · WIDTH-AXIS KINETIC POSTER
+     ============================================================ */
+  .poster {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 3.5cqi 5cqi; display: flex; flex-direction: column; overflow: hidden;
+    container-type: inline-size;
+  }
+  .poster__bg-grid {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.35;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 6cqi 6cqi;
+    mask-image: radial-gradient(ellipse 100% 60% at 50% 100%, transparent 40%, #000 100%);
+  }
+  .poster__top {
+    display: flex; justify-content: space-between; align-items: baseline; flex: none;
+    font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--fg-3); position: relative;
+    font-variation-settings: 'wdth' 72, 'wght' 600;
+  }
+  .poster__stage {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    position: relative; gap: 2cqi;
+  }
+  .poster__word-wrap { overflow: hidden; line-height: 0.85; }
+  .poster__word {
+    display: block; font-size: 14cqi; font-weight: 900; letter-spacing: -0.02em;
+    text-transform: uppercase; color: var(--fg);
+    font-variation-settings: 'wdth' 62, 'wght' 900;
+  }
+  .poster__axis-track {
+    display: flex; align-items: center; gap: 2cqi;
+    font-size: 1.5cqi; color: var(--fg-3);
+    font-variation-settings: 'wdth' 100, 'wght' 400;
+  }
+  .poster__axis-l, .poster__axis-r { white-space: nowrap; }
+  .poster__axis-l em, .poster__axis-r em {
+    font-style: normal; color: var(--accent); font-feature-settings: 'tnum';
+  }
+  .poster__axis-bar {
+    flex: 1; height: 3px; background: var(--line); border-radius: 2px; position: relative;
+  }
+  .poster__axis-cursor {
+    position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
+    width: 2.4cqi; height: 2.4cqi; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .poster__stack { display: flex; flex-direction: column; gap: 0.4cqi; position: relative; }
+  .poster__stack-word {
+    font-size: 3.4cqi; text-transform: uppercase; letter-spacing: 0.01em; color: var(--fg-2);
+    font-variation-settings: 'wdth' var(--w, 100), 'wght' var(--wt, 400); line-height: 1.1;
+  }
+  .poster__foot {
+    display: flex; justify-content: space-between; align-items: center; gap: 3cqi;
+    flex: none; padding-top: 2.2cqi; border-top: 1px solid var(--line);
+    font-size: 1.7cqi; font-variation-settings: 'wdth' 100, 'wght' 400;
+  }
+  .poster__desc { color: var(--fg-3); font-feature-settings: 'tnum'; letter-spacing: 0.06em; }
+  .poster__btn {
+    font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.18em;
+    padding: 1.2cqi 3cqi; border-radius: 100px;
+    background: var(--accent); color: var(--accent-contrast);
+    cursor: pointer; border: 0; font-family: var(--fam);
+    font-variation-settings: 'wdth' 72, 'wght' 700;
+    transition: filter 0.15s, opacity 0.15s;
+  }
+  .poster__btn:hover { filter: brightness(1.08); }
+
+  @container (max-width: 500px) {
+    .poster__word { font-size: 17cqi; }
+    .poster__stack-word { font-size: 4.5cqi; }
+    .poster__top { font-size: 2.4cqi; }
+    .poster__foot { font-size: 2.4cqi; }
+  }
+
+  /* ============================================================
+     03 · EDITORIAL NEWS SPREAD
+     ============================================================ */
+  .news {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 4.5cqi 5.5cqi; display: flex; flex-direction: column; overflow: hidden;
+    container-type: inline-size;
+  }
+  .news__masthead {
+    flex: none; display: flex; align-items: center; gap: 2cqi; padding-bottom: 0.6cqi;
+  }
+  .news__rule { flex: 1; height: 2px; background: var(--fg); position: relative; top: 0; }
+  .news__issue { font-size: 2.2cqi; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; font-variation-settings: 'wdth' 100, 'wght' 900; white-space: nowrap; }
+  .news__tagline { font-size: 1.6cqi; font-weight: 600; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; font-variation-settings: 'wdth' 72, 'wght' 600; white-space: nowrap; }
+  .news__date-line { font-size: 1.5cqi; letter-spacing: 0.1em; color: var(--fg-3); padding-bottom: 2cqi; border-bottom: 1px solid var(--line); margin-bottom: 2cqi; font-variation-settings: 'wdth' 100, 'wght' 400; }
+
+  .news__body { flex: 1; display: grid; grid-template-columns: 1fr 34%; gap: 4cqi; min-height: 0; overflow: hidden; }
+  .news__col--main { display: flex; flex-direction: column; gap: 1.2cqi; overflow: hidden; }
+  .news__kicker { font-size: 1.8cqi; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-variation-settings: 'wdth' 72, 'wght' 700; }
+  .news__hed { font-size: 5.8cqi; font-weight: 800; line-height: 1.0; letter-spacing: -0.02em; margin: 0; font-variation-settings: 'wdth' 100, 'wght' 800; }
+  .news__deck { font-size: 2.1cqi; line-height: 1.44; color: var(--fg-2); font-variation-settings: 'wdth' 100, 'wght' 400; }
+  .news__byline { font-size: 1.6cqi; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding-bottom: 1.6cqi; border-bottom: 1px solid var(--line); font-variation-settings: 'wdth' 72, 'wght' 600; }
+  .news__body-text {
+    font-size: 2cqi; line-height: 1.55; color: var(--fg-2);
+    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+    font-variation-settings: 'wdth' 100, 'wght' 400;
+  }
+  .news__body-text--cont { -webkit-line-clamp: 4; color: var(--fg-3); }
+
+  .news__col--side { display: flex; flex-direction: column; gap: 2.8cqi; }
+  .news__callout {
+    background: var(--accent); color: var(--accent-contrast);
+    padding: 2.5cqi 2.2cqi; display: flex; flex-direction: column; gap: 1cqi;
+  }
+  .news__callout-num { font-size: 11cqi; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; font-feature-settings: 'tnum'; font-variation-settings: 'wdth' 100, 'wght' 900; }
+  .news__callout-cap { font-size: 1.9cqi; line-height: 1.35; font-weight: 500; font-variation-settings: 'wdth' 100, 'wght' 500; }
+  .news__second { display: flex; flex-direction: column; gap: 1cqi; padding-top: 2cqi; border-top: 1px solid var(--line); }
+  .news__hed-sm { font-size: 2.9cqi; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin: 0; font-variation-settings: 'wdth' 100, 'wght' 700; }
+  .news__deck-sm { font-size: 1.8cqi; line-height: 1.42; color: var(--fg-2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+  /* S03 motion — scroll-reveal on callout stat + hover-reveal on secondary deck */
+  @media (prefers-reduced-motion: no-preference) {
+    .news__callout { transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1); }
+    .news__callout:not(.is-visible) { opacity: 0; transform: translateY(1.2cqi); }
+    .news__callout.is-visible { opacity: 1; transform: translateY(0); }
+    .news__deck-sm {
+      max-height: 0; opacity: 0; overflow: hidden;
+      transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.32s ease;
+      display: block; -webkit-line-clamp: unset;
+    }
+    .news__second:hover .news__deck-sm,
+    .news__second:focus-within .news__deck-sm {
+      max-height: 12cqi; opacity: 1;
+    }
+  }
+
+  @container (max-width: 520px) {
+    .news__body { grid-template-columns: 1fr; }
+    .news__col--side { display: none; }
+    .news__hed { font-size: 8cqi; }
+    .news__tagline { display: none; }
+    .news__body-text { -webkit-line-clamp: 3; }
+  }
+
+  /* ============================================================
+     04 · BRAND IDENTITY — width-axis wordmark system
+     ============================================================ */
+  .brand {
+    position: absolute; inset: 0; background: var(--bg-2); color: var(--fg);
+    display: flex; align-items: stretch; overflow: hidden;
+    container-type: inline-size;
+  }
+  .brand__bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(60% 80% at 80% 20%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 70%);
+  }
+  .brand__inner {
+    position: relative; flex: 1; display: grid; grid-template-rows: 1fr auto;
+    padding: 4cqi 5cqi; gap: 3cqi;
+  }
+  .brand__system { display: flex; flex-direction: column; gap: 2.4cqi; }
+  .brand__eyebrow { font-size: 1.6cqi; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); font-variation-settings: 'wdth' 72, 'wght' 600; }
+  .brand__lockups { display: flex; flex-direction: column; gap: 0; }
+  .brand__divider { height: 1px; background: var(--line); margin: 1.2cqi 0; }
+  .brand__lockup { display: flex; align-items: baseline; gap: 3cqi; }
+  .brand__lockup-label { font-size: 1.5cqi; color: var(--fg-3); white-space: nowrap; min-width: 26cqi; font-variation-settings: 'wdth' 100, 'wght' 400; }
+  .brand__name { text-transform: uppercase; letter-spacing: -0.01em; }
+  .brand__name--cond { font-size: 7cqi; font-variation-settings: 'wdth' 62,  'wght' 900; line-height: 1; }
+  .brand__name--reg  { font-size: 6cqi; font-variation-settings: 'wdth' 100, 'wght' 700; line-height: 1; }
+  .brand__name--exp  { font-size: 5cqi; font-variation-settings: 'wdth' 125, 'wght' 100; line-height: 1; color: var(--fg-2); letter-spacing: 0.04em; }
+
+  .brand__tag {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 3cqi; padding-top: 2.6cqi; border-top: 2px solid var(--fg);
+  }
+  .brand__full-lockup { display: flex; flex-direction: column; gap: 0.4cqi; }
+  .brand__full-masthead {
+    font-size: 9cqi; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase;
+    color: var(--fg); cursor: pointer; user-select: none;
+    font-variation-settings: 'wdth' 100, 'wght' 700;
+  }
+  .brand__full-sub { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); font-variation-settings: 'wdth' 72, 'wght' 600; }
+
+  .brand__meta { display: flex; flex-direction: column; gap: 1.4cqi; align-items: flex-end; }
+  .brand__axis-demo { display: flex; align-items: center; gap: 1.6cqi; }
+  .brand__axis-key { font-size: 1.4cqi; font-weight: 700; letter-spacing: 0.1em; color: var(--fg-3); font-variation-settings: 'wdth' 72, 'wght' 700; min-width: 6cqi; text-align: right; font-feature-settings: 'tnum'; }
+  .brand__axis-slots { display: flex; gap: 0.6cqi; }
+  .brand__slot {
+    font-size: 1.5cqi; font-weight: 600; padding: 0.4cqi 0.9cqi;
+    border: 1px solid var(--line); border-radius: 4px; color: var(--fg-2);
+    font-feature-settings: 'tnum'; letter-spacing: 0.05em;
+  }
+  .brand__slot--cond  { font-variation-settings: 'wdth' 62,  'wght' 600; }
+  .brand__slot--mid   { font-variation-settings: 'wdth' 100, 'wght' 600; background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--fg); border-color: var(--accent); }
+  .brand__slot--exp   { font-variation-settings: 'wdth' 125, 'wght' 600; }
+  .brand__slot--thin  { font-variation-settings: 'wdth' 100, 'wght' 100; }
+  .brand__slot--reg-w { font-variation-settings: 'wdth' 100, 'wght' 400; background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--fg); border-color: var(--accent); }
+  .brand__slot--blk   { font-variation-settings: 'wdth' 100, 'wght' 900; }
+
+  @container (max-width: 520px) {
+    .brand__inner { padding: 4cqi 4cqi; }
+    .brand__lockup-label { font-size: 2cqi; min-width: 0; }
+    .brand__tag { flex-direction: column; align-items: flex-start; gap: 2cqi; }
+    .brand__meta { flex-direction: row; align-items: center; }
+    .brand__name--cond { font-size: 9cqi; }
+    .brand__name--reg  { font-size: 7.5cqi; }
+    .brand__name--exp  { font-size: 6cqi; }
+    .brand__full-masthead { font-size: 10cqi; }
+  }
+</style>

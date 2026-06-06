@@ -1,0 +1,890 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// ============================================================
+// UNBOUNDED — rounded geometric variable display (wght 200–900)
+// Roman Shchupak, 2022. Screen-native, brand-forward.
+// Scenes lean into ROUNDED geometry and the full wght range.
+// NO italic. openType: liga, tnum, frac only.
+// ============================================================
+
+// --- 02 · Music streaming UI (interactive, real device scale) ---------------
+const albums = [
+  {
+    id: 'a1', artist: 'KODE9', title: 'Black Sun', genre: 'ELECTRONIC', year: '2012',
+    tracks: [
+      { n: 1, t: 'Black Sun', dur: '6:18', plays: '2.4M' },
+      { n: 2, t: 'Neon Skyline', dur: '5:42', plays: '1.8M' },
+      { n: 3, t: 'Sine Channel', dur: '4:57', plays: '3.1M' },
+      { n: 4, t: 'Subtone', dur: '7:03', plays: '980K' },
+      { n: 5, t: 'The Grid', dur: '5:29', plays: '1.2M' },
+    ],
+    hue: 260,
+  },
+  {
+    id: 'a2', artist: 'OBJEKT', title: 'Flatland', genre: 'TECHNO', year: '2014',
+    tracks: [
+      { n: 1, t: 'Agnes Apparatus', dur: '6:51', plays: '1.9M' },
+      { n: 2, t: 'Needle & Thread', dur: '8:12', plays: '2.7M' },
+      { n: 3, t: 'Dogma', dur: '7:44', plays: '1.4M' },
+      { n: 4, t: 'Agnes Apparatus II', dur: '5:33', plays: '880K' },
+      { n: 5, t: 'Flatland', dur: '9:02', plays: '3.6M' },
+    ],
+    hue: 310,
+  },
+  {
+    id: 'a3', artist: 'BURIAL', title: 'Untrue', genre: 'DUBSTEP', year: '2007',
+    tracks: [
+      { n: 1, t: 'Archangel', dur: '5:06', plays: '8.2M' },
+      { n: 2, t: 'Near Dark', dur: '4:43', plays: '6.4M' },
+      { n: 3, t: 'Ghost Hardware', dur: '5:38', plays: '5.9M' },
+      { n: 4, t: 'Endorphin', dur: '4:52', plays: '4.7M' },
+      { n: 5, t: 'Shell of Light', dur: '6:01', plays: '5.1M' },
+    ],
+    hue: 195,
+  },
+];
+const a0 = albums[0];
+
+// --- 04 · Weight ladder for identity scene -----------------------------------
+const steps = [
+  { w: 200, l: 'ExtraLight' },
+  { w: 300, l: 'Light' },
+  { w: 400, l: 'Regular' },
+  { w: 500, l: 'Medium' },
+  { w: 600, l: 'SemiBold' },
+  { w: 700, l: 'Bold' },
+  { w: 800, l: 'ExtraBold' },
+  { w: 900, l: 'Black' },
+];
+---
+
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — BRAND LAUNCH POSTER · kinetic wght 200↔900, rounded geometry dramatised -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Poster — brand launch, kinetic wght 200→900</span>
+    </figcaption>
+    <div class="iu__scene scene16">
+      <div class="lnch" data-lnch>
+        <div class="lnch__bg" aria-hidden="true">
+          <div class="lnch__orb lnch__orb--1"></div>
+          <div class="lnch__orb lnch__orb--2"></div>
+        </div>
+        <header class="lnch__top">
+          <span class="lnch__mark"><span class="lnch__dot"></span>RADIUS&nbsp;STUDIO</span>
+          <span class="lnch__meta">EST. 2024</span>
+        </header>
+        <div class="lnch__hero">
+          <span class="lnch__ghost" aria-hidden="true">R</span>
+          <span class="lnch__pre">INTRODUCING</span>
+          <h3 class="lnch__head">
+            <span class="lnch__word" data-flux style="--d:0s">ROUND</span>
+            <span class="lnch__word lnch__word--accent" data-flux style="--d:-2.2s">WORLD</span>
+          </h3>
+          <p class="lnch__tagline" aria-hidden="true">GEOMETRY&nbsp;IS&nbsp;EVERYTHING</p>
+          <p class="lnch__deck">A branding system built for the screen era. Every form softened, every edge earned.</p>
+        </div>
+        <footer class="lnch__foot">
+          <span class="lnch__cta">EXPLORE &rarr;</span>
+          <span class="lnch__wt" aria-hidden="true">wght&nbsp;<b data-wlabel>900</b></span>
+        </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">Two display words drive Unbounded&rsquo;s full 200&rarr;900 wght axis in a phase-offset breathe &mdash; counters opening at ExtraLight, crushing into circular mass at Black. The readout tracks live.</p>
+  </figure>
+
+  <!-- 02 — INTERACTIVE music streaming UI (real device scale) -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Product UI &mdash; music streaming app, real device scale</span>
+    </figcaption>
+    <div class="iu__scene iu__scene--console">
+      <div class="strm" data-strm>
+        <div class="strm__bar">
+          <span class="strm__logo">&#9673; ORBIT</span>
+          <div class="strm__tabs" role="tablist">
+            {albums.map((a, i) => (
+              <button
+                class={`strm__tab ${i === 0 ? 'is-on' : ''}`}
+                data-album={a.id} role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+              >{a.artist}</button>
+            ))}
+          </div>
+          <span class="strm__status"><i class="strm__dot"></i>LIVE</span>
+        </div>
+
+        {albums.map((a, ai) => (
+          <div class={`strm__panel ${ai === 0 ? 'is-on' : ''}`} data-panel={a.id} style={`--ahue:${a.hue}`}>
+            <div class="strm__hero">
+              <div class="strm__art" aria-hidden="true">
+                <span class="strm__art-letter">{a.artist[0]}</span>
+                <div class="strm__art-ring strm__art-ring--1"></div>
+                <div class="strm__art-ring strm__art-ring--2"></div>
+              </div>
+              <div class="strm__meta">
+                <span class="strm__genre">{a.genre} &middot; {a.year}</span>
+                <h4 class="strm__title">{a.title}</h4>
+                <span class="strm__artist">{a.artist}</span>
+                <div class="strm__controls">
+                  <button class="strm__btn strm__btn--prev" aria-label="Previous">&#9664;</button>
+                  <button class="strm__btn strm__btn--play is-playing" data-play aria-label="Play/Pause">&#9646;&#9646;</button>
+                  <button class="strm__btn strm__btn--next" aria-label="Next">&#9654;</button>
+                </div>
+              </div>
+            </div>
+            <div class="strm__list">
+              <div class="strm__list-h">
+                <span>#</span><span>TITLE</span>
+                <span class="strm__plays-h">PLAYS</span>
+                <span>TIME</span>
+              </div>
+              {a.tracks.map((tr, ti) => (
+                <button
+                  class={`strm__row ${ai === 0 && ti === 0 ? 'is-playing' : ''}`}
+                  data-track={ti}
+                  data-key={`${a.id}|${ti}`}
+                  data-title={tr.t}
+                  data-dur={tr.dur}
+                  data-artist={a.artist}
+                  aria-pressed={ai === 0 && ti === 0 ? 'true' : 'false'}
+                >
+                  <span class="strm__tn">{tr.n}</span>
+                  <span class="strm__tt">{tr.t}</span>
+                  <span class="strm__tp">{tr.plays}</span>
+                  <span class="strm__td">{tr.dur}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <div class="strm__now">
+          <span class="strm__now-artist" data-nartist>{a0.artist}</span>
+          <span class="strm__now-title" data-ntitle>{a0.tracks[0].t}</span>
+          <div class="strm__progress">
+            <div class="strm__prog-bar">
+              <i class="strm__prog-fill" data-fill></i>
+            </div>
+            <span class="strm__prog-t" data-elapsed>1:42</span>
+            <span class="strm__prog-t strm__prog-t--dur" data-dur>{a0.tracks[0].dur}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Switch artist (KODE9 / OBJEKT / BURIAL) to change album. Tap a track row to select it &mdash; the now-playing bar updates. Unbounded Black drives the album title at display scale; tabular figures keep play counts and times flush.</p>
+  </figure>
+
+  <!-- 03 — KINETIC EDITORIAL · pointer/idle drives the wght axis -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Kinetic editorial &mdash; pointer drives the weight axis</span>
+    </figcaption>
+    <div class="iu__scene scene16">
+      <div class="kn" data-kn>
+        <span class="kn__bg-letter" data-kbg aria-hidden="true">G</span>
+        <div class="kn__hud" aria-hidden="true">
+          <span class="kn__hud-l">WGHT</span>
+          <span class="kn__hud-v" data-kreadout>400</span>
+          <span class="kn__hud-r">200 &harr; 900</span>
+        </div>
+        <div class="kn__stack">
+          <span class="kn__w kn__w--0" data-kw>BOLD</span>
+          <span class="kn__w kn__w--1" data-kw>ROUND</span>
+          <span class="kn__w kn__w--2" data-kw>FREE</span>
+        </div>
+        <p class="kn__cap">Move left&ndash;right. Each word lags the last &mdash; rounded counters open at 200, collapse at Black 900.</p>
+      </div>
+    </div>
+    <p class="iu__hint label">Move the pointer left&rarr;right (or scrub on touch) across the scene. The three words ripple through the full 200&ndash;900 wght axis &mdash; the rounded geometry is most visible at the extremes. Without a pointer, the words breathe on their own.</p>
+  </figure>
+
+  <!-- 04 — CONTEMPORARY IDENTITY · wordmark + full weight ladder -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Identity &mdash; contemporary wordmark system</span>
+    </figcaption>
+    <div class="iu__scene scene-tall">
+      <div class="wm" data-wm>
+        <div class="wm__bg" aria-hidden="true">
+          <div class="wm__ring wm__ring--1"></div>
+          <div class="wm__ring wm__ring--2"></div>
+          <div class="wm__ring wm__ring--3"></div>
+        </div>
+        <header class="wm__top">
+          <span class="wm__idx">IDENTITY SYSTEM</span>
+          <span class="wm__ver">V 1.0 &middot; 2024</span>
+        </header>
+        <div class="wm__center">
+          <div class="wm__primary">
+            <span class="wm__kicker">PRIMARY MARK &mdash; UNBOUNDED BLACK</span>
+            <h3 class="wm__mark" data-wmark>RADIUS</h3>
+            <span class="wm__sub">Rounded &middot; Geometric &middot; Display</span>
+          </div>
+          <div class="wm__lockup">
+            <span class="wm__lock-light">RADIUS</span>
+            <span class="wm__lock-divider" aria-hidden="true"></span>
+            <span class="wm__lock-heavy">STUDIO</span>
+          </div>
+          <div class="wm__scale">
+            <span class="wm__scale-h">WEIGHT RANGE &middot; 200 &mdash; 900</span>
+            <div class="wm__steps">
+              {steps.map((s) => (
+                <div class="wm__step">
+                  <span
+                    class="wm__step-w"
+                    style={`font-variation-settings:'wght' ${s.w};font-weight:${s.w}`}
+                  >Gg</span>
+                  <span class="wm__step-n">{s.w}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <footer class="wm__foot">
+          <span>UNBOUNDED &middot; R. SHCHUPAK &middot; 2022</span>
+          <span class="wm__pal">
+            <i class="wm__swatch" style="--c:var(--accent)"></i>
+            <i class="wm__swatch" style="--c:var(--fg)"></i>
+            <i class="wm__swatch" style="--c:var(--fg-3)"></i>
+          </span>
+        </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">The wordmark breathes from ExtraLight 200 to Black 900 &mdash; Unbounded&rsquo;s rounded counters opening and closing. The weight ladder shows Gg at every instance, making the rounded geometry shift visible across the full range.</p>
+  </figure>
+
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== 01 · Brand poster — live wght readout tracking the CSS animation =====
+  document.querySelectorAll<HTMLElement>('[data-lnch]').forEach((lnch) => {
+    const wLabel = lnch.querySelector('[data-wlabel]') as HTMLElement | null;
+    if (!wLabel) return;
+
+    if (reduce) {
+      lnch.querySelectorAll<HTMLElement>('[data-flux]').forEach((w, i) => {
+        w.style.fontVariationSettings = `'wght' ${i === 0 ? 700 : 900}`;
+      });
+      wLabel.textContent = '900';
+      return;
+    }
+
+    const startMs = performance.now();
+    let raf = 0;
+    function tick() {
+      const t = (performance.now() - startMs) / 1000;
+      const p0 = 0.5 + 0.5 * Math.sin(t * (Math.PI / 6));
+      const p1 = 0.5 + 0.5 * Math.sin((t + 2.2) * (Math.PI / 6));
+      const w0 = Math.round(200 + p0 * 700);
+      const w1 = Math.round(200 + p1 * 700);
+      wLabel.textContent = String(Math.max(w0, w1));
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((ents) => {
+        ents.forEach((en) => {
+          if (en.isIntersecting) { if (!raf) raf = requestAnimationFrame(tick); }
+          else { cancelAnimationFrame(raf); raf = 0; }
+        });
+      }, { threshold: 0.05 });
+      io.observe(lnch);
+    }
+  });
+
+  // ===== 02 · Music streaming UI =====
+  document.querySelectorAll<HTMLElement>('[data-strm]').forEach((strm) => {
+    const nArtist = strm.querySelector('[data-nartist]') as HTMLElement | null;
+    const nTitle = strm.querySelector('[data-ntitle]') as HTMLElement | null;
+    const durEl = strm.querySelector('[data-dur]') as HTMLElement | null;
+    const fillEl = strm.querySelector('[data-fill]') as HTMLElement | null;
+    const elapsedEl = strm.querySelector('[data-elapsed]') as HTMLElement | null;
+
+    let progressPct = 0.28;
+    let totalSecs = 378; // default first track
+    let playInterval = 0;
+
+    function parseTime(dur: string): number {
+      const parts = dur.split(':');
+      return parseInt(parts[0]) * 60 + parseInt(parts[1] || '0');
+    }
+
+    function startProgress() {
+      if (reduce) return;
+      clearInterval(playInterval);
+      playInterval = window.setInterval(() => {
+        progressPct = Math.min(1, progressPct + 0.004);
+        if (fillEl) fillEl.style.width = (progressPct * 100) + '%';
+        if (elapsedEl) {
+          const elapsed = Math.round(progressPct * totalSecs);
+          elapsedEl.textContent = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}`;
+        }
+        if (progressPct >= 1) { progressPct = 0; clearInterval(playInterval); }
+      }, 200);
+    }
+
+    function selectTrack(row: HTMLButtonElement) {
+      const title = row.dataset.title || '';
+      const dur = row.dataset.dur || '0:00';
+      const artist = row.dataset.artist || '';
+      if (nArtist) nArtist.textContent = artist;
+      if (nTitle) nTitle.textContent = title;
+      if (durEl) durEl.textContent = dur;
+      totalSecs = parseTime(dur);
+      progressPct = 0;
+      if (fillEl) fillEl.style.width = '0%';
+      // update row states
+      strm.querySelectorAll<HTMLButtonElement>('[data-track]').forEach((r) => {
+        const same = r.dataset.key === row.dataset.key;
+        r.classList.toggle('is-playing', same);
+        r.setAttribute('aria-pressed', same ? 'true' : 'false');
+      });
+      startProgress();
+    }
+
+    strm.querySelectorAll<HTMLButtonElement>('[data-album]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.album!;
+        strm.querySelectorAll('[data-album]').forEach((b) => {
+          b.classList.remove('is-on');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('is-on');
+        btn.setAttribute('aria-selected', 'true');
+        strm.querySelectorAll('[data-panel]').forEach((p) => {
+          (p as HTMLElement).classList.toggle('is-on', (p as HTMLElement).dataset.panel === id);
+        });
+        // auto-play first track of new album
+        const first = strm.querySelector<HTMLButtonElement>(`[data-panel="${id}"] [data-track="0"]`);
+        if (first) selectTrack(first);
+      });
+    });
+
+    strm.querySelectorAll<HTMLButtonElement>('[data-track]').forEach((row) => {
+      row.addEventListener('click', () => selectTrack(row));
+    });
+
+    strm.querySelectorAll<HTMLButtonElement>('[data-play]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const playing = btn.classList.toggle('is-playing');
+        btn.textContent = playing ? '▊▊' : '▶';
+        if (playing) startProgress();
+        else clearInterval(playInterval);
+      });
+    });
+
+    startProgress();
+  });
+
+  // ===== 03 · Kinetic editorial — pointer drives wght =====
+  document.querySelectorAll<HTMLElement>('[data-kn]').forEach((kn) => {
+    const words = Array.from(kn.querySelectorAll<HTMLElement>('[data-kw]'));
+    const readout = kn.querySelector('[data-kreadout]') as HTMLElement | null;
+    const bgLetter = kn.querySelector('[data-kbg]') as HTMLElement | null;
+    const MIN = 200, MAX = 900;
+
+    let target = 0.5;
+    let pointerActive = false;
+    const cur = words.map(() => 0.5);
+    let bgCur = 0.5;
+
+    function apply() {
+      words.forEach((w, i) => {
+        const wght = Math.round(MIN + cur[i] * (MAX - MIN));
+        w.style.fontVariationSettings = `'wght' ${wght}`;
+      });
+      if (readout) readout.textContent = String(Math.round(MIN + cur[0] * (MAX - MIN)));
+      // bg letter uses inverted weight so it contrasts the words
+      if (bgLetter) {
+        const bgWght = Math.round(MIN + (1 - bgCur) * (MAX - MIN));
+        bgLetter.style.fontVariationSettings = `'wght' ${bgWght}`;
+      }
+    }
+
+    kn.addEventListener('pointermove', (e) => {
+      const rect = kn.getBoundingClientRect();
+      target = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+      pointerActive = true;
+    });
+    kn.addEventListener('pointerleave', () => { pointerActive = false; });
+
+    if (reduce) {
+      cur.forEach((_, i) => (cur[i] = 0.7 - i * 0.15));
+      bgCur = 0.5;
+      apply();
+      return;
+    }
+
+    let raf = 0;
+    function tick(ts: number) {
+      if (!pointerActive) {
+        target = 0.5 + 0.45 * Math.sin(ts / 1000 * 0.6);
+      }
+      cur.forEach((v, i) => {
+        const ease = Math.max(0.04, 0.14 - i * 0.035);
+        cur[i] = v + (target - v) * ease;
+      });
+      bgCur = bgCur + (target - bgCur) * 0.06;
+      apply();
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((ents) => {
+        ents.forEach((en) => {
+          if (en.isIntersecting) { if (!raf) raf = requestAnimationFrame(tick); }
+          else { cancelAnimationFrame(raf); raf = 0; }
+        });
+      }, { threshold: 0.05 });
+      io.observe(kn);
+    }
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu * { font-family: var(--fam); }
+
+  /* shared scene framing */
+  .iu__scene {
+    container-type: inline-size;
+    position: relative;
+    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+    outline: 1px solid var(--line);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+  }
+  .iu__scene * { font-family: var(--fam); }
+  .scene16 { aspect-ratio: 16 / 9; }
+  .scene-tall { aspect-ratio: 4 / 5; }
+  @container (min-width: 720px) { .scene-tall { aspect-ratio: 5 / 7; } }
+
+  .iu__scene--console { aspect-ratio: 16 / 10; padding: 0; }
+  @media (max-width: 680px) { .iu__scene--console { aspect-ratio: 9 / 16; } }
+
+  /* ============================================================
+     01 · BRAND LAUNCH POSTER (kinetic variable weight)
+     ============================================================ */
+  .lnch {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 4cqi 5cqi 4cqi; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .lnch__bg {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .lnch__orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(55px); opacity: 0.4;
+  }
+  .lnch__orb--1 {
+    width: 50cqi; height: 50cqi; top: -18cqi; right: -12cqi;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 80%, transparent) 0%, transparent 70%);
+  }
+  .lnch__orb--2 {
+    width: 32cqi; height: 32cqi; bottom: -10cqi; left: 3cqi;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 35%, transparent) 0%, transparent 70%);
+  }
+
+  .lnch__top, .lnch__hero, .lnch__foot { position: relative; }
+  .lnch__top {
+    display: flex; justify-content: space-between; align-items: center; flex: none;
+    font-size: 2cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .lnch__mark {
+    display: inline-flex; align-items: center; gap: 1.6cqi;
+    font-weight: 700; color: var(--fg); font-size: 2.2cqi;
+  }
+  .lnch__dot { width: 1.9cqi; height: 1.9cqi; border-radius: 50%; background: var(--accent); flex: none; }
+  .lnch__meta { color: var(--fg-3); font-feature-settings: 'tnum'; }
+
+  .lnch__hero { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .lnch__ghost {
+    position: absolute; right: -2cqi; top: 50%; transform: translateY(-48%);
+    font-size: 52cqi; line-height: 1; font-weight: 200;
+    font-variation-settings: 'wght' 200;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 22%, transparent);
+    text-stroke: 1px color-mix(in srgb, var(--accent) 22%, transparent);
+    letter-spacing: -0.04em; pointer-events: none; user-select: none;
+    text-transform: uppercase; z-index: 0;
+  }
+  .lnch__pre {
+    display: block; font-size: 2.2cqi; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1.6cqi;
+    position: relative;
+  }
+  .lnch__head {
+    display: flex; flex-direction: column; gap: 0; line-height: 0.86;
+    margin: 0; text-transform: uppercase; position: relative;
+  }
+  .lnch__word {
+    font-size: 14cqi; font-weight: 900; letter-spacing: -0.02em;
+    font-variation-settings: 'wght' 900;
+    white-space: nowrap;
+  }
+  .lnch__word--accent { color: var(--accent); }
+  .lnch__tagline {
+    font-size: 2.5cqi; font-weight: 200; letter-spacing: 0.36em;
+    font-variation-settings: 'wght' 200;
+    text-transform: uppercase; color: var(--fg-3);
+    margin: 1.8cqi 0 0; position: relative;
+  }
+  .lnch__deck {
+    font-size: 2.2cqi; line-height: 1.44; color: var(--fg-2); max-width: 76%;
+    margin: 1.2cqi 0 0; font-weight: 400; position: relative;
+  }
+
+  .lnch__foot {
+    display: flex; justify-content: space-between; align-items: baseline; flex: none;
+    margin-top: 2cqi; padding-top: 1.6cqi; border-top: 1px solid var(--line);
+    font-size: 2cqi; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .lnch__cta {
+    font-weight: 700; color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    padding: 0.9cqi 2.4cqi; border-radius: 100px;
+  }
+  .lnch__wt { color: var(--fg-3); font-feature-settings: 'tnum'; font-weight: 400; }
+  .lnch__wt b { color: var(--accent); font-weight: 700; min-width: 6cqi; display: inline-block; text-align: right; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .lnch__word[data-flux] {
+      animation: lnch-flux 6s cubic-bezier(0.45, 0, 0.18, 1) infinite alternate;
+      animation-delay: var(--d, 0s);
+    }
+    @keyframes lnch-flux {
+      from { font-variation-settings: 'wght' 200; letter-spacing: 0.02em; }
+      to   { font-variation-settings: 'wght' 900; letter-spacing: -0.028em; }
+    }
+  }
+
+  @container (max-width: 520px) {
+    .lnch__word { font-size: 16cqi; }
+    .lnch__deck { max-width: 100%; font-size: 3.2cqi; }
+    .lnch__foot { font-size: 2.8cqi; flex-wrap: wrap; gap: 1.2cqi; }
+    .lnch__pre { font-size: 3cqi; }
+  }
+
+  /* ============================================================
+     02 · MUSIC STREAMING UI (own dark surface, real px)
+     ============================================================ */
+  .strm {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    background: #0c0c14; color: #e8e4ff; font-size: 13px;
+    --s-accent: #7c5cfc; --s-dim: #5e5878; --s-line: #ffffff12; --s-line2: #ffffff08;
+  }
+  .strm__bar {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    border-bottom: 1px solid var(--s-line); flex: none;
+  }
+  .strm__logo {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--s-accent); flex: none; margin-right: 4px;
+  }
+  .strm__tabs { display: flex; gap: 0; flex: 1; min-width: 0; overflow: hidden; }
+  .strm__tab {
+    flex: 1; padding: 6px 8px; background: transparent; border: 0;
+    border-bottom: 2px solid transparent; cursor: pointer; min-width: 0;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--s-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: background 0.14s, color 0.14s, border-color 0.14s;
+  }
+  .strm__tab:hover { background: #ffffff07; color: #c4beec; }
+  .strm__tab.is-on {
+    color: #e8e4ff; border-bottom-color: var(--s-accent);
+    background: color-mix(in srgb, var(--s-accent) 10%, transparent);
+  }
+  .strm__status { display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; color: var(--s-dim); flex: none; }
+  .strm__dot { width: 6px; height: 6px; border-radius: 50%; background: #5af0a0; flex: none; }
+
+  .strm__panel { display: none; flex-direction: column; flex: 1; min-height: 0; }
+  .strm__panel.is-on { display: flex; }
+
+  .strm__hero {
+    display: flex; gap: 14px; padding: 14px 14px 10px; flex: none;
+    background: linear-gradient(to bottom, hsl(var(--ahue, 260) 40% 8% / 0.8), transparent);
+  }
+  .strm__art {
+    width: 72px; height: 72px; flex: none; position: relative;
+    border-radius: 8px; overflow: hidden;
+    background: linear-gradient(135deg, hsl(var(--ahue, 260) 60% 14%), hsl(var(--ahue, 260) 40% 8%));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .strm__art-letter {
+    font-size: 44px; font-weight: 900; line-height: 1;
+    color: hsl(var(--ahue, 260) 80% 75%); position: relative; z-index: 1;
+    font-variation-settings: 'wght' 900;
+  }
+  .strm__art-ring {
+    position: absolute; border-radius: 50%;
+    border: 1.5px solid hsl(var(--ahue, 260) 70% 55% / 0.35);
+  }
+  .strm__art-ring--1 { width: 56px; height: 56px; }
+  .strm__art-ring--2 { width: 80px; height: 80px; }
+
+  .strm__meta { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .strm__genre { font-size: 9.5px; font-weight: 600; letter-spacing: 0.18em; color: var(--s-dim); text-transform: uppercase; }
+  .strm__title {
+    margin: 3px 0 2px; font-size: 22px; font-weight: 900; line-height: 1.05;
+    letter-spacing: -0.01em; color: #e8e4ff;
+    font-variation-settings: 'wght' 900;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .strm__artist { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: hsl(var(--ahue, 260) 65% 72%); text-transform: uppercase; }
+  .strm__controls { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+  .strm__btn {
+    background: transparent; border: 1px solid var(--s-line); border-radius: 50%;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #c4beec; cursor: pointer;
+    transition: background 0.14s, border-color 0.14s;
+    padding: 0; line-height: 1;
+  }
+  .strm__btn:hover { background: #ffffff10; border-color: var(--s-accent); }
+  .strm__btn--play {
+    width: 34px; height: 34px; font-size: 11px;
+    background: var(--s-accent); border-color: var(--s-accent); color: #fff;
+  }
+  .strm__btn--play:hover { filter: brightness(1.1); }
+
+  .strm__list { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; padding: 0 10px; }
+  .strm__list-h {
+    display: grid; grid-template-columns: 24px 1fr auto auto; align-items: center; gap: 10px;
+    padding: 6px 8px 7px; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--s-dim); border-bottom: 1px solid var(--s-line2); flex: none;
+    font-feature-settings: 'tnum';
+  }
+  .strm__plays-h { text-align: right; }
+  .strm__row {
+    flex: 1 1 0; min-height: 0;
+    display: grid; grid-template-columns: 24px 1fr auto auto; align-items: center; gap: 10px;
+    padding: 9px 8px; background: transparent; border: 0;
+    border-bottom: 1px solid var(--s-line2); cursor: pointer; text-align: left;
+    transition: background 0.13s;
+  }
+  .strm__row:last-child { border-bottom: 0; }
+  .strm__row:hover { background: #ffffff07; }
+  .strm__row.is-playing { background: color-mix(in srgb, var(--s-accent) 10%, transparent); }
+  .strm__tn { font-size: 11px; font-feature-settings: 'tnum'; color: var(--s-dim); font-weight: 500; }
+  .strm__row.is-playing .strm__tn { color: var(--s-accent); font-weight: 700; }
+  .strm__tt { font-size: 13px; font-weight: 600; color: #e8e4ff; letter-spacing: 0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .strm__row.is-playing .strm__tt { color: hsl(var(--ahue, 260) 80% 78%); }
+  .strm__tp { font-size: 11px; font-weight: 500; font-feature-settings: 'tnum'; color: var(--s-dim); text-align: right; }
+  .strm__td { font-size: 11px; font-weight: 500; font-feature-settings: 'tnum'; color: #9c96c4; text-align: right; }
+
+  .strm__now {
+    flex: none; border-top: 1px solid var(--s-line); padding: 8px 14px 10px;
+    background: linear-gradient(to top, #0a0a12, transparent);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .strm__now-artist { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: var(--s-accent); text-transform: uppercase; }
+  .strm__now-title { font-size: 13px; font-weight: 700; color: #e8e4ff; letter-spacing: 0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .strm__progress { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .strm__prog-bar { flex: 1; height: 3px; background: #ffffff14; border-radius: 2px; overflow: hidden; }
+  .strm__prog-fill {
+    display: block; height: 100%; width: 28%;
+    background: linear-gradient(90deg, var(--s-accent), hsl(260 90% 80%));
+    border-radius: 2px; transition: width 0.2s linear;
+  }
+  .strm__prog-t { font-size: 10px; font-feature-settings: 'tnum'; color: var(--s-dim); font-weight: 600; flex: none; }
+  .strm__prog-t--dur { color: #6a6484; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .strm__dot { animation: strm-pulse 1.8s ease-in-out infinite; }
+    @keyframes strm-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .strm__prog-fill { transition: none; }
+  }
+
+  @container (max-width: 460px) {
+    .strm__hero { padding: 10px 10px 8px; }
+    .strm__art { width: 56px; height: 56px; }
+    .strm__art-letter { font-size: 34px; }
+    .strm__title { font-size: 18px; }
+    .strm__tab { font-size: 9.5px; padding: 5px 5px; }
+    .strm__plays-h, .strm__tp { display: none; }
+    .strm__list-h, .strm__row { grid-template-columns: 20px 1fr auto; }
+  }
+
+  /* ============================================================
+     03 · KINETIC EDITORIAL (pointer drives wght axis)
+     ============================================================ */
+  .kn {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 3.5cqi 5cqi; display: flex; flex-direction: column; overflow: hidden;
+    cursor: ew-resize; touch-action: pan-y;
+  }
+  .kn__bg-letter {
+    position: absolute; right: 3cqi; top: 50%; transform: translateY(-50%);
+    font-size: 42cqi; line-height: 1; font-weight: 900;
+    font-variation-settings: 'wght' 900;
+    color: transparent;
+    -webkit-text-stroke: 2px color-mix(in srgb, var(--accent) 28%, transparent);
+    text-stroke: 2px color-mix(in srgb, var(--accent) 28%, transparent);
+    letter-spacing: -0.04em; pointer-events: none; user-select: none;
+    text-transform: uppercase;
+    transition: font-variation-settings 0s;
+  }
+  .kn__hud {
+    display: flex; align-items: center; gap: 2cqi; flex: none;
+    font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--fg-3); font-feature-settings: 'tnum';
+  }
+  .kn__hud-v { color: var(--accent); min-width: 7cqi; font-weight: 700; }
+  .kn__hud-r { margin-left: auto; font-size: 1.7cqi; }
+
+  .kn__stack {
+    flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0;
+    margin: 0.8cqi 0; position: relative; z-index: 1;
+  }
+  .kn__w {
+    font-size: 11cqi; line-height: 1.0; letter-spacing: -0.02em; text-transform: uppercase;
+    font-variation-settings: 'wght' 500; white-space: nowrap; align-self: flex-start;
+    color: var(--fg);
+  }
+  .kn__w--1 { color: var(--accent); margin-left: 4cqi; }
+  .kn__w--2 { color: var(--fg-2); margin-left: 8cqi; }
+
+  .kn__cap {
+    flex: none; font-size: 2.1cqi; line-height: 1.4; color: var(--fg-2);
+    max-width: 64%; margin: 0.6cqi 0 0; font-weight: 400;
+    /* clamp so it never overflows the scene height */
+    overflow: hidden;
+  }
+
+  @container (max-width: 520px) {
+    .kn__w { font-size: 10cqi; }
+    .kn__w--1 { margin-left: 5cqi; }
+    .kn__w--2 { margin-left: 10cqi; }
+    .kn__cap { max-width: 100%; font-size: 3cqi; }
+  }
+
+  /* ============================================================
+     04 · IDENTITY SYSTEM (wordmark + weight ladder)
+     ============================================================ */
+  .wm {
+    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
+    padding: 5cqi; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .wm__bg { position: absolute; inset: 0; pointer-events: none; }
+  .wm__ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    top: 40%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .wm__ring--1 { width: 40cqi; height: 40cqi; }
+  .wm__ring--2 { width: 60cqi; height: 60cqi; border-color: color-mix(in srgb, var(--accent) 16%, transparent); }
+  .wm__ring--3 { width: 82cqi; height: 82cqi; border-color: color-mix(in srgb, var(--accent) 9%, transparent); }
+
+  .wm__top {
+    display: flex; justify-content: space-between; align-items: baseline; flex: none;
+    position: relative;
+    font-size: 2cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .wm__idx { font-weight: 700; color: var(--fg); }
+  .wm__ver { color: var(--fg-3); }
+
+  .wm__center { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0; position: relative; }
+
+  .wm__primary { flex: none; }
+  .wm__kicker {
+    font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1.2cqi;
+  }
+  .wm__mark {
+    margin: 0; font-size: 16cqi; font-weight: 900; line-height: 0.88;
+    letter-spacing: -0.01em; text-transform: uppercase;
+    font-variation-settings: 'wght' 900;
+  }
+  .wm__sub {
+    display: block; margin-top: 1.2cqi;
+    font-size: 2cqi; font-weight: 400; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+
+  .wm__lockup {
+    display: flex; align-items: center; gap: 3cqi; margin-top: 2.4cqi;
+    padding: 2cqi 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .wm__lock-light {
+    font-size: 5.4cqi; font-weight: 200;
+    font-variation-settings: 'wght' 200;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .wm__lock-divider {
+    flex: 1; height: 1px; background: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .wm__lock-heavy {
+    font-size: 5.4cqi; font-weight: 900;
+    font-variation-settings: 'wght' 900;
+    letter-spacing: -0.01em; text-transform: uppercase; color: var(--accent);
+  }
+
+  .wm__scale { margin-top: 2.2cqi; }
+  .wm__scale-h {
+    font-size: 1.7cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3);
+    font-weight: 600; margin-bottom: 1.4cqi;
+  }
+  .wm__steps { display: flex; gap: 1.6cqi; flex-wrap: wrap; align-items: flex-end; }
+  .wm__step { display: flex; flex-direction: column; align-items: center; gap: 0.4cqi; }
+  .wm__step-w {
+    font-size: 5.5cqi; line-height: 0.9; color: var(--fg-2); letter-spacing: -0.01em;
+    transition: color 0.2s;
+  }
+  .wm__step:hover .wm__step-w { color: var(--accent); }
+  .wm__step-n { font-size: 1.5cqi; font-feature-settings: 'tnum'; color: var(--fg-3); font-weight: 600; }
+
+  .wm__foot {
+    display: flex; justify-content: space-between; align-items: center; flex: none;
+    margin-top: auto; padding-top: 2cqi; border-top: 1px solid var(--line);
+    font-size: 1.7cqi; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--fg-3); position: relative;
+  }
+  .wm__pal { display: inline-flex; gap: 1.2cqi; align-items: center; }
+  .wm__swatch { width: 2.2cqi; height: 2.2cqi; border-radius: 50%; background: var(--c); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .wm__mark {
+      animation: wm-breathe 8s cubic-bezier(0.45, 0, 0.2, 1) infinite alternate;
+    }
+    @keyframes wm-breathe {
+      from { font-variation-settings: 'wght' 200; letter-spacing: 0.04em; }
+      to   { font-variation-settings: 'wght' 900; letter-spacing: -0.02em; }
+    }
+    .wm__ring { animation: wm-spin 40s linear infinite; }
+    .wm__ring--2 { animation-duration: 60s; animation-direction: reverse; }
+    .wm__ring--3 { animation-duration: 80s; }
+    @keyframes wm-spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wm__mark { font-variation-settings: 'wght' 900; }
+  }
+
+  @container (max-width: 480px) {
+    .wm__mark { font-size: 18cqi; }
+    .wm__steps { gap: 1.2cqi; }
+    .wm__step-w { font-size: 6.5cqi; }
+    .wm__step-n { font-size: 2cqi; }
+    .wm__foot { font-size: 2cqi; flex-wrap: wrap; gap: 1.2cqi; }
+  }
+</style>

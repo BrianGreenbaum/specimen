@@ -1,0 +1,712 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+---
+<div class="iu" style={`--fam:${fam}`}>
+
+  <!-- 01 — INTERACTIVE READER UI: real-scale long-form editorial with weight slider + feature toggles -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Reader UI — long-form editorial at real scale (interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device lrdr" data-lrdr>
+        <div class="iu__chrome">
+          <div class="iu__dots"><i></i><i></i><i></i></div>
+          <span class="iu__addr">meridian.press/essays/the-warmth-of-a-brushed-letter</span>
+        </div>
+
+        <div class="lrdr__bar">
+          <span class="lrdr__logo">Meridian</span>
+          <nav class="lrdr__feats" aria-label="Reading controls">
+            <label class="lrdr__wlabel">
+              <span>Weight <i data-wout>400</i></span>
+              <input type="range" data-waxis min="400" max="700" step="1" value="400" aria-label="Font weight" />
+            </label>
+            <button class="is-on" data-feat="liga" aria-pressed="true">Ligatures</button>
+            <button data-feat="tnum" aria-pressed="false">Tabular</button>
+            <button data-feat="frac" aria-pressed="false">Fractions</button>
+          </nav>
+          <span class="lrdr__time">7 min</span>
+        </div>
+
+        <div class="lrdr__chip" aria-hidden="true">
+          <span class="lrdr__chiplabel">Live</span>
+          <span class="lrdr__chipspec" data-chip>fi fl office — ¾</span>
+        </div>
+
+        <article class="lrdr__body" data-text>
+          <span class="lrdr__kicker">Essay · On Type</span>
+          <h4 class="lrdr__head">The warmth of a brushed letter</h4>
+          <p class="lrdr__byline">Oluwaseun Adeyemi · <span class="lrdr__fig">14 June 2026</span> · <span class="lrdr__fig">7</span> min</p>
+          <p class="lrdr__lede"><span class="lrdr__drop">T</span>here is a quality in certain typefaces — the ones that were drawn with a brush rather than ruled with a pen — that you feel before you can name it. The fi and fl ligatures close; the office of letters settles into a harmony; and the column acquires the warmth of something written, not composed.</p>
+          <p>Lora carries that quality into every screen it inhabits. Set in a <span class="lrdr__fig">1/2</span>-column measure on a device running at <span class="lrdr__fig">326</span> ppi, it holds an even, inviting colour. The serifs bracket firmly; the stress angles slightly back toward the pen. Drag the weight up and the texture deepens without ever going harsh — the brushed origins keep it supple.</p>
+          <blockquote class="lrdr__quote">A typeface that was drawn for the screen does not merely survive it; it belongs there.</blockquote>
+          <p>The calligraphic root is never decorative. It is structural: those softened terminals are precisely the reason a column of Lora at <span class="lrdr__fig">16</span>px feels like the work of a careful hand, not a typesetting engine.</p>
+        </article>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the weight slider (400–700), toggle ligatures, tabular figures, and fractions — the Live chip and the column change instantly.</p>
+  </figure>
+
+  <!-- 02 — LITERARY MAGAZINE SPREAD: drop cap, italic pull quote, driving serifs at display scale -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Literary spread — drop cap, italic pull quote, brushed display</span></figcaption>
+    <div class="iu__scene scene-lit">
+      <div class="iu__poster lit" data-lit>
+        <!-- verso: full-bleed headline + kicker -->
+        <section class="lit__verso">
+          <span class="lit__kicker">Fiction · Issue <span class="lit__num">23</span></span>
+          <h3 class="lit__title">Every Letter<br/><em class="lit__ital">Written Twice</em></h3>
+          <p class="lit__sub">A story about a correspondence that outlasted the correspondents, and the typeface that held it together.</p>
+        </section>
+        <!-- recto: body text with drop cap + pull quote -->
+        <section class="lit__recto">
+          <p class="lit__body"><span class="lit__drop">T</span>he letters arrived every Tuesday without fail, in envelopes the colour of old cream, the address written in a hand that had never entirely left school. Inside, the sentences were long and considered, full of parenthetical qualifications, the way a person writes when they have all afternoon and nobody to interrupt them.</p>
+          <p class="lit__body">She kept them in a box under her writing desk, tied with a length of green ribbon she had cut from a hat she no longer wore. Each one dated, each one smelling faintly of the cedar drawer where the box had spent its winters.</p>
+          <blockquote class="lit__pull"><em>The letter is the one form that waits for you. It does not refresh itself; it simply sits there, patient, until you are ready to read it again.</em></blockquote>
+          <p class="lit__body">What surprised her, rereading them after he was gone, was how many of them were really about the act of writing itself — the pleasure of choosing a word, the small decisions of spacing and margin that constituted a kind of care.</p>
+          <footer class="lit__foot">
+            <span class="lit__folio">24</span>
+            <span class="lit__mag">Meridian Review</span>
+            <span class="lit__folio">25</span>
+          </footer>
+        </section>
+      </div>
+    </div>
+    <p class="iu__hint label">A two-page literary spread — brushed drop cap, italic pull quote, even body colour at paragraph scale. Hover to reveal the accent rule.</p>
+  </figure>
+
+  <!-- 03 — PUBLISHER BRAND / WORDMARK: italic + weight interplay, tnum in colophon, SVG rule -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — a literary publisher identity &amp; catalogue page</span></figcaption>
+    <div class="iu__scene scene-brand">
+      <div class="iu__poster brand" data-brand>
+        <!-- left: editorial identity card -->
+        <div class="brand__side brand__side--ident">
+          <div class="brand__ident">
+            <span class="brand__press">Meridian Press</span>
+            <h3 class="brand__name">Meridian</h3>
+            <span class="brand__tag"><em>Independent Publishers Since <span class="brand__fig">1987</span></em></span>
+            <svg class="brand__rule" viewBox="0 0 280 8" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+              <line class="brand__line" x1="0" y1="4" x2="280" y2="4" stroke="var(--accent)" stroke-width="1.5"/>
+              <circle cx="140" cy="4" r="3" fill="var(--accent)"/>
+            </svg>
+            <p class="brand__genres">Fiction · Poetry · Essays · Translation</p>
+          </div>
+          <dl class="brand__stats">
+            <div>
+              <dd><span class="brand__fig">38</span></dd>
+              <dt>Years</dt>
+            </div>
+            <div>
+              <dd><span class="brand__fig">1,248</span></dd>
+              <dt>Titles</dt>
+            </div>
+            <div>
+              <dd><span class="brand__fig">34</span></dd>
+              <dt>Languages</dt>
+            </div>
+          </dl>
+          <span class="brand__foot">meridian.press</span>
+        </div>
+        <!-- right: current season catalogue -->
+        <div class="brand__side brand__side--cat">
+          <span class="brand__season">Spring <span class="brand__fig">2026</span> Catalogue</span>
+          <ul class="brand__list">
+            <li class="brand__entry" data-hover>
+              <span class="brand__num brand__fig">01</span>
+              <div class="brand__info">
+                <span class="brand__etitle"><em>The Cartographer's Widow</em></span>
+                <span class="brand__eaut">Priya Nair</span>
+              </div>
+              <span class="brand__eprice brand__fig">£14.99</span>
+            </li>
+            <li class="brand__entry" data-hover>
+              <span class="brand__num brand__fig">02</span>
+              <div class="brand__info">
+                <span class="brand__etitle"><em>Seventeen Letters</em></span>
+                <span class="brand__eaut">Marco Calderón</span>
+              </div>
+              <span class="brand__eprice brand__fig">£12.99</span>
+            </li>
+            <li class="brand__entry" data-hover>
+              <span class="brand__num brand__fig">03</span>
+              <div class="brand__info">
+                <span class="brand__etitle"><em>The Weight of Silence</em></span>
+                <span class="brand__eaut">Yuki Tanaka</span>
+              </div>
+              <span class="brand__eprice brand__fig">£16.50</span>
+            </li>
+            <li class="brand__entry" data-hover>
+              <span class="brand__num brand__fig">04</span>
+              <div class="brand__info">
+                <span class="brand__etitle"><em>Archipelago</em></span>
+                <span class="brand__eaut">Fatima Al-Rashid</span>
+              </div>
+              <span class="brand__eprice brand__fig">£13.99</span>
+            </li>
+            <li class="brand__entry" data-hover>
+              <span class="brand__num brand__fig">05</span>
+              <div class="brand__info">
+                <span class="brand__etitle"><em>All That Remains</em></span>
+                <span class="brand__eaut">David Osei-Bonsu</span>
+              </div>
+              <span class="brand__eprice brand__fig">£11.99</span>
+            </li>
+          </ul>
+          <p class="brand__note">Prices in tabular figures — columns align regardless of digit width.</p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A publisher identity split across a wordmark panel and a spring catalogue — italic titles, tabular price figures that align in columns, and an SVG rule that draws on hover.</p>
+  </figure>
+
+  <!-- 04 — FEATURE OPENER: weight-axis headline that breathes on scroll, italic/roman interplay -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Feature opener — weight-breathing headline, italic/roman interplay</span></figcaption>
+    <div class="iu__scene scene-open">
+      <div class="iu__poster opener" data-opener>
+        <span class="op__issue">Meridian Review · No. <span class="op__num">23</span> · Summer <span class="op__num">2026</span></span>
+        <div class="op__center">
+          <span class="op__over">A special feature on</span>
+          <h3 class="op__title" data-breather>The Calligraphic<br/><em class="op__em">Imagination</em></h3>
+          <span class="op__rule" aria-hidden="true" data-rule></span>
+          <p class="op__stand">How a generation of type designers learned to give the screen a letter shaped not by a ruler, but by a brush held at an angle — and what that warmth does to the act of reading.</p>
+        </div>
+        <div class="op__foot">
+          <span class="op__by">Essay by <em>Isabela Ferreira</em></span>
+          <span class="op__pp">pp. <span class="op__num">12–21</span></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Hover the opener — the headline breathes to bold (700) as the rule draws across, dramatising Lora's full weight range.</p>
+  </figure>
+
+</div>
+
+<script>
+  // ---- 01 READER UI: weight slider + feature toggles ----
+  document.querySelectorAll<HTMLElement>('[data-lrdr]').forEach((rdr) => {
+    const text = rdr.querySelector<HTMLElement>('[data-text]')!;
+    const chip = rdr.querySelector<HTMLElement>('[data-chip]')!;
+    const wout = rdr.querySelector<HTMLElement>('[data-wout]')!;
+    const waxis = rdr.querySelector<HTMLInputElement>('[data-waxis]')!;
+    const state: Record<string, boolean> = { liga: true, tnum: false, frac: false };
+    let wght = 400;
+
+    const chipTexts: Record<string, string> = {
+      default: 'fi fl office — ¾',
+      tnum:    '1 234 — 567 890',
+      frac:    '1/2 and 3/4 done',
+    };
+
+    const apply = () => {
+      const feats = `'liga' ${state.liga ? 1 : 0}, 'tnum' ${state.tnum ? 1 : 0}, 'frac' ${state.frac ? 1 : 0}`;
+      text.style.fontFeatureSettings = feats;
+      text.style.fontVariationSettings = `'wght' ${wght}`;
+      chip.style.fontFeatureSettings = feats;
+      chip.style.fontVariationSettings = `'wght' ${wght}`;
+      chip.textContent = state.frac ? chipTexts.frac : state.tnum ? chipTexts.tnum : chipTexts.default;
+    };
+
+    waxis.addEventListener('input', () => {
+      wght = +waxis.value;
+      wout.textContent = String(wght);
+      apply();
+    });
+
+    rdr.querySelectorAll<HTMLButtonElement>('[data-feat]').forEach((btn) => {
+      const feat = btn.dataset.feat!;
+      btn.addEventListener('click', () => {
+        state[feat] = !state[feat];
+        btn.classList.toggle('is-on', state[feat]);
+        btn.setAttribute('aria-pressed', String(state[feat]));
+        apply();
+      });
+    });
+
+    apply();
+  });
+
+  // ---- 03 BRAND: SVG rule length + catalogue row selection ----
+  document.querySelectorAll<HTMLElement>('[data-brand]').forEach((card) => {
+    const line = card.querySelector<SVGLineElement>('.brand__line');
+    if (line) {
+      const len = Math.ceil((line as any).getTotalLength?.() ?? 280);
+      line.style.setProperty('--rule-len', String(len));
+    }
+    // clicking a catalogue row marks it as "selected"
+    card.querySelectorAll<HTMLElement>('[data-hover]').forEach((row) => {
+      row.addEventListener('click', () => {
+        card.querySelectorAll('[data-hover]').forEach(r => r.classList.remove('is-selected'));
+        row.classList.add('is-selected');
+      });
+    });
+  });
+
+  // ---- 04 OPENER: headline breathes on hover + rule draws on scroll-into-view ----
+  document.querySelectorAll<HTMLElement>('[data-opener]').forEach((op) => {
+    const rule = op.querySelector<HTMLElement>('[data-rule]')!;
+    if (!rule) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      rule.classList.add('is-drawn');
+      return;
+    }
+
+    // Ensure rule starts hidden, then animate when scene is substantially in view
+    rule.classList.remove('is-drawn');
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        // Small rAF delay ensures browser has had a chance to paint the hidden state
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            rule.classList.add('is-drawn');
+            obs.disconnect();
+          });
+        });
+      });
+    }, { threshold: 0.85 });
+    io.observe(op);
+  });
+</script>
+
+<style>
+  .iu__item { margin: 0; }
+  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__scene * { font-family: var(--fam); }
+
+  /* ============================================================
+     01 — READER UI (real px, interactive)
+     ============================================================ */
+  .lrdr {
+    font-size: 14px; line-height: 1.5;
+    display: flex; flex-direction: column;
+    min-height: 640px;
+  }
+
+  .lrdr__bar {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.55rem 1rem; border-bottom: 1px solid var(--line);
+    flex-wrap: wrap; row-gap: 0.4rem;
+  }
+  .lrdr__logo {
+    font-size: 20px; font-weight: 600; color: var(--fg);
+    letter-spacing: 0.01em; font-style: italic;
+    font-variation-settings: 'wght' 600;
+    flex-shrink: 0;
+  }
+  .lrdr__feats {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-left: auto; flex-wrap: wrap;
+  }
+  .lrdr__wlabel {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em;
+    color: var(--fg-3); white-space: nowrap;
+  }
+  .lrdr__wlabel i { font-style: normal; color: var(--accent); min-width: 2.4ch; }
+  .lrdr__wlabel input[type='range'] {
+    -webkit-appearance: none; appearance: none;
+    width: 68px; height: 2px; background: var(--line); border-radius: 2px; cursor: pointer;
+  }
+  .lrdr__wlabel input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .lrdr__wlabel input[type='range']::-moz-range-thumb {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+  }
+  .lrdr__feats button {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em;
+    color: var(--fg-3); padding: 0.3rem 0.55rem; border-radius: 100px;
+    border: 1px solid var(--line); cursor: pointer; transition: all 0.18s var(--ease);
+    white-space: nowrap;
+  }
+  .lrdr__feats button:hover { color: var(--fg); border-color: var(--fg-3); }
+  .lrdr__feats button.is-on {
+    color: var(--accent-contrast); background: var(--accent); border-color: var(--accent);
+  }
+  .lrdr__time {
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    letter-spacing: 0.06em; padding-left: 0.5rem; border-left: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  /* magnified specimen chip */
+  .lrdr__chip {
+    display: flex; align-items: center; gap: 0.65rem;
+    padding: 0.5rem 1rem; border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+  }
+  .lrdr__chiplabel {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-contrast);
+    background: var(--accent); border-radius: 100px; padding: 0.12rem 0.5rem;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .lrdr__chipspec {
+    font-size: clamp(17px, 3.5cqi, 22px); line-height: 1; color: var(--fg); letter-spacing: -0.01em;
+  }
+
+  /* article body */
+  .lrdr__body {
+    padding: clamp(1.2rem, 3cqi, 2.4rem) clamp(1.2rem, 4.5cqi, 3.5rem);
+    max-width: 68ch; margin: 0 auto;
+    overflow-y: auto;
+    flex: 1 1 0;
+    min-height: 0;
+  }
+  .lrdr__kicker {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .lrdr__head {
+    font-size: clamp(24px, 4cqi, 34px); line-height: 1.1; margin: 0.5rem 0 0.55rem;
+    font-weight: 600; letter-spacing: -0.01em; color: var(--fg);
+    font-variation-settings: 'wght' 600;
+  }
+  .lrdr__byline {
+    font-size: 13px; color: var(--fg-3); font-style: italic; margin: 0 0 1.3rem;
+  }
+  .lrdr__fig { font-feature-settings: inherit; }
+  .lrdr__lede, .lrdr__body p {
+    font-size: 16px; line-height: 1.68; color: var(--fg); margin: 0 0 1em;
+  }
+  .lrdr__lede { font-size: 17px; }
+  .lrdr__drop {
+    float: left; font-size: 3.15em; line-height: 0.72; padding: 0.04em 0.13em 0 0;
+    color: var(--accent); font-weight: 700;
+    font-variation-settings: 'wght' 700;
+  }
+  .lrdr__quote {
+    font-size: 19px; line-height: 1.4; font-style: italic; color: var(--fg);
+    border-left: 2.5px solid var(--accent); padding-left: 1.1rem; margin: 1.4rem 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lrdr__feats button { transition: none; }
+  }
+
+  /* ============================================================
+     02 — LITERARY SPREAD (container-query print sizing)
+     ============================================================ */
+  .scene-lit > .iu__poster { position: relative; inset: auto; }
+  .lit {
+    background: var(--bg); color: var(--fg);
+    display: grid; grid-template-columns: 1fr 1fr;
+    font-feature-settings: 'liga' 1, 'kern' 1;
+    container-type: inline-size;
+  }
+  .lit__verso, .lit__recto {
+    padding: 6cqi 5.5cqi 5.5cqi;
+  }
+  .lit__verso {
+    display: flex; flex-direction: column; justify-content: center; gap: 3.5cqi;
+    background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+    border-right: 1px solid var(--line-soft);
+  }
+  .lit__kicker {
+    font-family: var(--font-mono); font-size: 2.1cqi; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .lit__num { font-feature-settings: 'tnum' 1; }
+  .lit__title {
+    font-size: 9.5cqi; line-height: 0.96; font-weight: 600; margin: 0;
+    letter-spacing: -0.02em; color: var(--fg);
+    font-variation-settings: 'wght' 600;
+  }
+  .lit__ital { font-style: italic; display: block; color: var(--accent); }
+  .lit__sub {
+    font-size: 2.7cqi; line-height: 1.5; color: var(--fg-2); font-style: italic;
+    border-top: 1px solid var(--line-soft); padding-top: 3cqi; max-width: 36ch;
+  }
+
+  /* recto body */
+  .lit__recto { display: flex; flex-direction: column; }
+  .lit__body {
+    font-size: 2.5cqi; line-height: 1.65; color: var(--fg);
+    margin: 0 0 0.9em; text-indent: 1.6em; text-align: justify; hyphens: auto;
+  }
+  .lit__body:first-of-type { text-indent: 0; }
+  .lit__drop {
+    float: left; font-size: 10.5cqi; line-height: 0.74; padding: 0.45cqi 1.2cqi 0 0;
+    color: var(--accent); font-weight: 700; font-variation-settings: 'wght' 700;
+  }
+  .lit__pull {
+    border-left: 0; border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+    margin: 3cqi 0; padding: 2.5cqi 0;
+    font-size: 3.1cqi; line-height: 1.45; color: var(--fg-2); font-style: normal;
+    text-align: center; text-indent: 0;
+  }
+  .lit__pull em { font-style: italic; color: var(--fg); }
+  .lit__foot {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--line-soft); padding-top: 2.5cqi; margin-top: auto;
+  }
+  .lit__folio {
+    font-size: 2.1cqi; color: var(--fg-3); letter-spacing: 0.04em;
+    font-feature-settings: 'tnum' 1;
+  }
+  .lit__mag {
+    font-size: 1.9cqi; letter-spacing: 0.14em; color: var(--fg-3);
+    text-transform: uppercase; font-feature-settings: 'liga' 0;
+  }
+
+  /* settle animation on drop cap */
+  @media (prefers-reduced-motion: no-preference) {
+    .lit__drop { animation: lit-settle 1s var(--ease, ease-out) both; }
+    @keyframes lit-settle {
+      from { opacity: 0; transform: translateY(-0.05em); }
+      to   { opacity: 1; transform: none; }
+    }
+  }
+
+  /* ============================================================
+     03 — PUBLISHER BRAND (two-column identity + catalogue)
+     ============================================================ */
+  .scene-brand > .iu__poster { position: relative; inset: auto; }
+  .brand {
+    background: var(--bg); color: var(--fg);
+    display: grid; grid-template-columns: 1fr 1.9fr;
+    container-type: inline-size;
+    font-feature-settings: 'liga' 1;
+    min-height: 60cqi;
+  }
+  .brand__side { padding: 4cqi; }
+  .brand__side--cat { padding-right: 3cqi; }
+  .brand__side--ident {
+    background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+    border-right: 1px solid var(--line-soft);
+    display: flex; flex-direction: column; gap: 0; justify-content: space-between;
+  }
+  .brand__ident {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2cqi;
+  }
+  .brand__press {
+    font-family: var(--font-mono); font-size: 2.1cqi; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .brand__name {
+    font-size: 11cqi; line-height: 0.9; font-weight: 600; margin: 0;
+    letter-spacing: -0.025em; color: var(--fg); font-style: italic;
+    font-variation-settings: 'wght' 600;
+  }
+  .brand__tag {
+    font-size: 2.4cqi; color: var(--fg-2); font-style: italic; letter-spacing: 0.01em;
+  }
+  .brand__tag em { font-style: italic; }
+  .brand__fig { font-feature-settings: 'tnum' 1; font-style: normal; }
+
+  /* SVG rule — draws in on hover, arrives inked if reduced-motion */
+  .brand__rule { width: 100%; height: auto; display: block; }
+  .brand__line {
+    stroke-dasharray: var(--rule-len, 280);
+    stroke-dashoffset: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .brand__line {
+      stroke-dashoffset: var(--rule-len, 280);
+      transition: none;
+    }
+    .brand__side--ident:hover .brand__line,
+    .brand__side--ident:focus-within .brand__line {
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.8s var(--ease, ease-out);
+    }
+  }
+
+  .brand__genres {
+    font-family: var(--font-mono); font-size: 1.85cqi; letter-spacing: 0.1em;
+    color: var(--fg-3); margin: 0;
+  }
+  .brand__stats {
+    display: flex; gap: 3.5cqi; margin: 4cqi 0 0;
+    border-top: 1px solid var(--line-soft); padding-top: 3.5cqi;
+    background: color-mix(in srgb, var(--accent) 4%, var(--bg));
+    border: 1px solid color-mix(in srgb, var(--accent) 15%, var(--line-soft));
+    border-radius: 6px; padding: 3cqi 3.5cqi;
+  }
+  .brand__stats div { display: flex; flex-direction: column; gap: 0.5cqi; }
+  .brand__stats dt {
+    font-family: var(--font-mono); font-size: 1.75cqi; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--fg-3); order: 2;
+  }
+  .brand__stats dd {
+    margin: 0; font-size: 5.5cqi; font-weight: 700; color: var(--fg);
+    letter-spacing: -0.02em; font-feature-settings: 'tnum' 1;
+    font-variation-settings: 'wght' 700; order: 1;
+  }
+  .brand__foot {
+    font-family: var(--font-mono); font-size: 1.85cqi; letter-spacing: 0.12em;
+    color: var(--fg-3); margin-top: 4cqi;
+  }
+
+  /* catalogue panel */
+  .brand__side--cat {
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .brand__season {
+    font-family: var(--font-mono); font-size: 2.1cqi; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 2.5cqi;
+    display: block;
+  }
+  .brand__list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    border-top: 1px solid var(--line-soft);
+  }
+  .brand__entry {
+    display: flex; align-items: baseline;
+    gap: 1.5cqi;
+    padding: 2cqi 0; border-bottom: 1px solid var(--line-soft);
+    transition: background 0.18s var(--ease);
+  }
+  .brand__num {
+    font-family: var(--font-mono); font-size: 1.9cqi; color: var(--fg-3);
+    font-feature-settings: 'tnum' 1; flex-shrink: 0; width: 2ch;
+  }
+  .brand__info {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 0.5cqi;
+  }
+  .brand__etitle {
+    font-size: 2.05cqi; line-height: 1.2; color: var(--fg);
+    font-style: italic; font-weight: 500; white-space: nowrap;
+    font-variation-settings: 'wght' 500;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .brand__etitle em { font-style: italic; }
+  .brand__eaut {
+    font-size: 1.9cqi; color: var(--fg-3); font-style: normal;
+    font-family: var(--font-mono); letter-spacing: 0.04em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .brand__eprice {
+    flex-shrink: 0; margin-left: auto;
+    font-size: 2.2cqi; color: var(--accent); font-weight: 600;
+    font-feature-settings: 'tnum' 1; font-variation-settings: 'wght' 600;
+    font-style: normal; font-family: var(--fam);
+    text-align: right; white-space: nowrap;
+  }
+  .brand__note {
+    font-family: var(--font-mono); font-size: 1.8cqi; color: var(--fg-3);
+    letter-spacing: 0.04em; margin: 2.5cqi 0 0; font-style: italic;
+  }
+
+  .brand__entry { cursor: pointer; }
+  @media (prefers-reduced-motion: no-preference) {
+    .brand__entry { transition: background 0.15s var(--ease), border-color 0.15s var(--ease); }
+    .brand__entry:hover {
+      background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+    }
+    .brand__entry:hover .brand__etitle {
+      color: var(--accent);
+    }
+  }
+  .brand__entry.is-selected {
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+    border-bottom-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .brand__entry.is-selected .brand__etitle { color: var(--accent); }
+  .brand__entry.is-selected .brand__num { color: var(--accent); }
+
+  /* ============================================================
+     04 — FEATURE OPENER (poster, weight-breathing headline)
+     ============================================================ */
+  .scene-open > .iu__poster { position: relative; inset: auto; }
+  .opener {
+    background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 7cqi 6cqi 6cqi; gap: 3cqi;
+    container-type: inline-size;
+    font-feature-settings: 'liga' 1;
+  }
+  .op__issue {
+    font-family: var(--font-mono); font-size: 2.1cqi; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .op__num { font-feature-settings: 'tnum' 1; font-style: normal; }
+  .op__center {
+    display: flex; flex-direction: column; align-items: center; gap: 2.8cqi;
+  }
+  .op__over {
+    font-size: 2.5cqi; font-style: italic; color: var(--fg-2); letter-spacing: 0.03em;
+  }
+  .op__title {
+    font-size: 12cqi; line-height: 0.95; font-weight: 400; margin: 0;
+    letter-spacing: -0.02em; color: var(--fg);
+    font-variation-settings: 'wght' 400;
+    transition: font-variation-settings 0.55s var(--ease, ease-out), color 0.55s var(--ease);
+  }
+  .op__em {
+    display: block; font-style: italic; color: var(--accent);
+    font-size: 1.18em; line-height: 0.88;
+  }
+
+  /* rule draws in on scroll + breathes on hover */
+  .op__rule {
+    display: block; width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.75s var(--ease, ease-out);
+  }
+  .op__rule.is-drawn { width: 48cqi; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .opener:hover .op__title,
+    .opener:focus-within .op__title {
+      font-variation-settings: 'wght' 700;
+      color: var(--fg);
+    }
+    .opener:hover .op__rule,
+    .opener:focus-within .op__rule {
+      background: var(--accent);
+    }
+  }
+
+  .op__stand {
+    font-size: 2.8cqi; line-height: 1.55; color: var(--fg-2);
+    max-width: 54ch; margin: 0; font-style: italic;
+  }
+  .op__foot {
+    display: flex; justify-content: space-between; align-items: baseline;
+    width: 100%; border-top: 1px solid var(--line-soft); padding-top: 2.5cqi;
+    font-size: 2.3cqi;
+  }
+  .op__by { color: var(--fg-2); }
+  .op__by em { font-style: italic; color: var(--fg); }
+  .op__pp { color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; font-size: 2cqi; }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @container (max-width: 600px) {
+    .lit { grid-template-columns: 1fr; }
+    .lit__verso { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+    .brand { grid-template-columns: 1fr; }
+    .brand__side--ident { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+    .brand__stats {
+      background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line-soft));
+      border-radius: 6px;
+      padding: 3.5cqi 4cqi;
+      margin: 3cqi 0 0;
+    }
+  }
+  @container (max-width: 480px) {
+    .lrdr__bar { gap: 0.5rem; padding: 0.45rem 0.75rem; }
+    .lrdr__feats { width: 100%; gap: 0.4rem; }
+    .lrdr__time { display: none; }
+    .lrdr__chipspec { font-size: 17px; }
+    .lrdr__wlabel { font-size: 10px; }
+    .lrdr__wlabel input[type='range'] { width: 56px; }
+    .lrdr__feats button { font-size: 10px; padding: 0.25rem 0.45rem; }
+  }
+</style>
