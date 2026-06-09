@@ -2,7 +2,10 @@
 // Guided journey navigation for the paged History chapters.
 // variant="rail"   → sticky top progress rail (✳ nodes) + "jump to any era" menu
 // variant="footer" → big "Next chapter" call-to-action band
-export interface EraRef { slug: string; name: string; order: number; period: string; accent: string; }
+export interface EraRef {
+  slug: string; name: string; order: number; period: string; accent: string;
+  family?: string; weight?: number;   // era specimen face, for the footer morph
+}
 export interface Props {
   index: number;            // 1-based chapter number (era order)
   total: number;            // total chapters
@@ -10,8 +13,12 @@ export interface Props {
   prev: EraRef;             // previous chapter (cyclic)
   next: EraRef;             // next chapter (cyclic)
   variant?: 'rail' | 'footer';
+  /** Footer handoff: this era's letter, morphing into the next era's face. */
+  morphGlyph?: string;
+  fromFamily?: string;
+  fromWeight?: number;
 }
-const { index, total, all, prev, next, variant = 'rail' } = Astro.props;
+const { index, total, all, prev, next, variant = 'rail', morphGlyph, fromFamily, fromWeight = 400 } = Astro.props;
 const nn = (n: number) => String(n).padStart(2, '0');
 const loopsBack = next.order < index; // chapter 8 → back to the beginning
 ---
@@ -66,6 +73,12 @@ const loopsBack = next.order < index; // chapter 8 → back to the beginning
       style={`--next-accent:${next.accent}`}
     >
       <span class="cfoot__kicker label">{loopsBack ? 'Full circle' : `Next · Chapter ${nn(next.order)}`}</span>
+      {morphGlyph && fromFamily && next.family && (
+        <span class="cfoot__morph" aria-hidden="true">
+          <span class="cfoot__morph-a" style={`font-family:'${fromFamily}'; font-weight:${fromWeight}`}>{morphGlyph}</span>
+          <span class="cfoot__morph-b" style={`font-family:'${next.family}'; font-weight:${next.weight ?? 400}`}>{morphGlyph}</span>
+        </span>
+      )}
       <span class="cfoot__name">{next.name}</span>
       <span class="cfoot__arrow" aria-hidden="true">{loopsBack ? '↺' : '→'}</span>
     </a>
@@ -156,6 +169,17 @@ const loopsBack = next.order < index; // chapter 8 → back to the beginning
     overflow: hidden;
   }
   .cfoot__kicker { position: absolute; top: var(--sp-4); left: 0; color: var(--next-accent); }
+  /* the letter is about to change: this era's form crossfades into the next's */
+  .cfoot__morph { display: grid; line-height: 0.9; }
+  .cfoot__morph > span {
+    grid-area: 1 / 1;
+    font-size: clamp(3.2rem, 9vw, 6.5rem);
+    line-height: 0.9;
+  }
+  .cfoot__morph-a { color: var(--fg-3); animation: cfoot-morph-a 6s ease-in-out infinite alternate; }
+  .cfoot__morph-b { color: var(--next-accent); animation: cfoot-morph-b 6s ease-in-out infinite alternate; }
+  @keyframes cfoot-morph-a { from { opacity: 1; } 40% { opacity: 1; } 60% { opacity: 0; } to { opacity: 0; } }
+  @keyframes cfoot-morph-b { from { opacity: 0; } 40% { opacity: 0; } 60% { opacity: 1; } to { opacity: 1; } }
   .cfoot__name {
     font-family: var(--font-ui); font-weight: 680; letter-spacing: -0.03em; line-height: 0.92;
     font-size: clamp(2.6rem, 9vw, 6.5rem);
@@ -179,5 +203,7 @@ const loopsBack = next.order < index; // chapter 8 → back to the beginning
 
   @media (prefers-reduced-motion: reduce) {
     .cnav__node.is-on { animation: none; }
+    .cfoot__morph-a { animation: none; opacity: 0; }
+    .cfoot__morph-b { animation: none; opacity: 1; }
   }
 </style>

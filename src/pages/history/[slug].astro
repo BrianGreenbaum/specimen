@@ -17,6 +17,7 @@ export async function getStaticPaths() {
   const ref = (e: typeof eras[number]) => ({
     slug: e.data.slug, name: e.data.name, order: e.data.order,
     period: e.data.period, accent: e.data.theme.accent,
+    family: e.data.specimenFont.family, weight: e.data.specimenFont.weight,
   });
   const all = eras.map(ref);
   return eras.map((entry, i) => {
@@ -165,7 +166,17 @@ const hasFaces = eraFonts.length > 0 || timelineFaces.length > 0;
   </main>
 
   <div class="container">
-    <ChapterNav variant="footer" index={e.order} total={total} all={all} prev={prev} next={next} />
+    <ChapterNav
+      variant="footer"
+      index={e.order}
+      total={total}
+      all={all}
+      prev={prev}
+      next={next}
+      morphGlyph={e.spotlightGlyph || 'R'}
+      fromFamily={fam}
+      fromWeight={e.specimenFont.weight}
+    />
   </div>
 
   <SiteFooter />

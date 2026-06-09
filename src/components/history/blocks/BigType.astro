@@ -1,6 +1,8 @@
 ---
 // A giant specimen word, set in any face — lets a chapter show a timeline face
-// at scale inline, with an optional caption.
+// at scale inline, with an optional caption. The word always fits on one line
+// (it shrinks to the container rather than breaking mid-word), and on variable
+// faces it gains weight as it crosses the viewport — a scroll-driven beat.
 //   <BigType family="Marcellus" caption="Marcellus · Roman capitals, revived">
 //     SENATVS
 //   </BigType>
@@ -12,11 +14,28 @@ export interface Props {
 const { family, caption, italic = false } = Astro.props;
 ---
 <figure class="bigtype">
-  <div class="bigtype__word" style={`font-family:'${family}'; font-style:${italic ? 'italic' : 'normal'}`}>
+  <div class="bigtype__word" data-bigtype style={`font-family:'${family}'; font-style:${italic ? 'italic' : 'normal'}`}>
     <slot />
   </div>
   {caption && <figcaption class="bigtype__cap label">{caption}</figcaption>}
 </figure>
+
+<script>
+  // Fit-to-width: a display word must never break mid-word ("Mode/rne") —
+  // shrink the size until the whole word fits its measure.
+  const fit = (el: HTMLElement) => {
+    el.style.fontSize = '';
+    const avail = el.clientWidth;
+    const w = el.scrollWidth;
+    if (w > avail) {
+      const cur = parseFloat(getComputedStyle(el).fontSize);
+      el.style.fontSize = `${Math.floor(cur * (avail / w) * 0.98)}px`;
+    }
+  };
+  const all = () => document.querySelectorAll<HTMLElement>('[data-bigtype]').forEach(fit);
+  document.fonts.ready.then(all);
+  window.addEventListener('resize', all);
+</script>
 
 <style>
   .bigtype {
@@ -25,7 +44,24 @@ const { family, caption, italic = false } = Astro.props;
   }
   .bigtype__word {
     font-size: clamp(3rem, 15vw, 11rem); line-height: 0.92; letter-spacing: -0.01em;
-    color: var(--fg); overflow-wrap: anywhere;
+    color: var(--fg); white-space: nowrap;
   }
   .bigtype__cap { display: block; margin-top: var(--sp-3); color: var(--fg-3); }
+
+  /* Scroll beat: variable faces gain weight as the word crosses the viewport.
+     Static faces ignore the variation setting; engines without scroll-driven
+     animations simply never run it. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .bigtype__word {
+        animation: bigtype-wght linear both;
+        animation-timeline: view();
+        animation-range: entry 5% cover 75%;
+      }
+      @keyframes bigtype-wght {
+        from { font-variation-settings: 'wght' 320; }
+        to { font-variation-settings: 'wght' 780; }
+      }
+    }
+  }
 </style>
