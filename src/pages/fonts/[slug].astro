@@ -8,7 +8,6 @@ import JumpNav from '../../components/specimen/JumpNav.astro';
 import Section from '../../components/specimen/Section.astro';
 import TypeTester from '../../components/specimen/TypeTester.astro';
 import WeightsShowcase from '../../components/specimen/WeightsShowcase.astro';
-import Waterfall from '../../components/specimen/Waterfall.astro';
 import DetailCallouts from '../../components/specimen/DetailCallouts.astro';
 import InUse from '../../components/specimen/InUse.astro';
 import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
@@ -49,14 +48,15 @@ const outlines = await getOutlines({
   callouts: font.callouts,
 });
 
+// Ordered for engagement: seduce (In Use), then play (Tester), then read
+// (Story), then go progressively deeper. Reference material closes the page.
 const sections = [
+  { id: 'in-use', label: 'In Use' },
   { id: 'tester', label: 'Type Tester' },
   { id: 'story', label: 'Story' },
   { id: 'weights', label: 'Weights' },
-  { id: 'sizes', label: 'Sizes' },
   { id: 'anatomy', label: 'Anatomy' },
   ...(outlines ? [{ id: 'drawing', label: 'The Drawing' }] : []),
-  { id: 'in-use', label: 'In Use' },
   { id: 'glyphs', label: 'Glyphs' },
   { id: 'specs', label: 'Specs' },
 ];
@@ -75,30 +75,37 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
   <Hero font={font} />
 
   <main>
+    <Section id="in-use" num={num('in-use')} title="In use" note="Built live with the real webfont.">
+      {BespokeInUse
+        ? <BespokeInUse font={font} />
+        : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
+    </Section>
+
     <Section id="tester" num={num('tester')} title="Type tester" note="Edit the text. Drag the axes.">
       <TypeTester font={font} />
     </Section>
 
     <Section id="story" num={num('story')} title="The story">
-      <div class="story-prose prose" data-glossary style={`--term-fam:'${font.fontFamily}'`}>
-        <Content />
+      <div class="story">
+        <div class="story-prose prose" data-glossary style={`--term-fam:'${font.fontFamily}'`}>
+          <Content />
+        </div>
+        <aside class="story-rail">
+          <p class="story-orn" style={`font-family:'${font.fontFamily}'`} aria-hidden="true">{font.pangram}</p>
+          {era && (
+            <a class="story-era" href={`/history/${era.data.slug}`} style={`--era-accent:${era.data.theme.accent}`}>
+              <span class="label story-era__kicker">In the history of type</span>
+              <span class="story-era__era">{String(era.data.order).padStart(2, '0')} · {era.data.name}</span>
+              <span class="story-era__note">{font.historyNote}</span>
+              <span class="story-era__cta label">Explore the era →</span>
+            </a>
+          )}
+        </aside>
       </div>
-      {era && (
-        <a class="story-era" href={`/history/${era.data.slug}`} style={`--era-accent:${era.data.theme.accent}`}>
-          <span class="label story-era__kicker">In the history of type</span>
-          <span class="story-era__era">{String(era.data.order).padStart(2, '0')} · {era.data.name}</span>
-          <span class="story-era__note">{font.historyNote}</span>
-          <span class="story-era__cta label">Explore the era →</span>
-        </a>
-      )}
     </Section>
 
     <Section id="weights" num={num('weights')} title="Weights & styles" note={`${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}`}>
       <WeightsShowcase font={font} />
-    </Section>
-
-    <Section id="sizes" num={num('sizes')} title="Size waterfall" note="The same words, ramped down.">
-      <Waterfall font={font} />
     </Section>
 
     <Section id="anatomy" num={num('anatomy')} title="Details & anatomy" note="The marks that make it unmistakable.">
@@ -110,12 +117,6 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
         <Outlines font={font} data={outlines} />
       </Section>
     )}
-
-    <Section id="in-use" num={num('in-use')} title="In use" note="Built live with the real webfont.">
-      {BespokeInUse
-        ? <BespokeInUse font={font} />
-        : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
-    </Section>
 
     <Section id="glyphs" num={num('glyphs')} title="Character set" note="Click any glyph to inspect.">
       <GlyphGrid font={font} />
@@ -131,37 +132,27 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
 </Layout>
 
 <style>
-  /* Editorial "where this sits in history" callout, closing the story section. */
-  .story-era {
-    display: flex;
-    align-items: baseline;
-    gap: var(--sp-3) var(--sp-4);
-    flex-wrap: wrap;
-    margin-top: var(--sp-6);
-    padding: var(--sp-4);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--era-accent);
-    border-radius: 3px;
-    background: var(--bg-2);
-    transition: background 0.3s var(--ease);
+  /* --- The story: one readable column + a sticky editorial rail --- */
+  .story {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(15rem, 24vw, 21rem);
+    gap: var(--sp-7);
+    align-items: start;
   }
-  .story-era:hover { background: color-mix(in srgb, var(--era-accent) 10%, var(--bg-2)); }
-  .story-era__kicker { color: var(--era-accent); flex-basis: 100%; }
-  .story-era__era { font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1); letter-spacing: -0.01em; }
-  .story-era__note { color: var(--fg-2); flex: 1; min-width: 12ch; }
-  .story-era__cta { color: var(--era-accent); white-space: nowrap; }
-  @media (max-width: 640px) { .story-era__note { display: none; } }
-
-  /* space between bespoke scenes and the shared generic scenes that follow */
-  .inuse-after { margin-top: var(--sp-6); }
 
   .story-prose {
     font-size: var(--step-1);
-    columns: 2;
-    column-gap: var(--sp-7);
-    max-width: none;
+    max-width: 62ch;
   }
-  .story-prose :global(p) { break-inside: avoid-column; margin-bottom: 1.1em; }
+  .story-prose :global(p) {
+    margin-bottom: 1.2em;
+    line-height: 1.65;
+  }
+  /* opening paragraph reads as a lede */
+  .story-prose :global(p:first-of-type) {
+    font-size: calc(var(--step-1) * 1.16);
+    line-height: 1.52;
+  }
   .story-prose :global(p:first-of-type)::first-letter {
     font-size: 3.2em;
     line-height: 0.8;
@@ -170,7 +161,51 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
     padding: 0.05em 0.12em 0 0;
     color: var(--accent);
   }
-  @media (max-width: 760px) {
-    .story-prose { columns: 1; }
+
+  .story-rail {
+    position: sticky;
+    top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+  }
+
+  /* the face itself, decorating its own story */
+  .story-orn {
+    font-size: var(--step-3);
+    line-height: 1.18;
+    color: var(--fg-2);
+    padding-block: var(--sp-3);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .story-orn::first-letter { color: var(--accent); }
+
+  /* Editorial "where this sits in history" card, stacked in the rail. */
+  .story-era {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: var(--sp-4);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--era-accent);
+    border-radius: 3px;
+    background: var(--bg-2);
+    transition: background 0.3s var(--ease);
+  }
+  .story-era:hover { background: color-mix(in srgb, var(--era-accent) 10%, var(--bg-2)); }
+  .story-era__kicker { color: var(--era-accent); }
+  .story-era__era { font-family: var(--font-ui); font-weight: 640; font-size: var(--step-1); letter-spacing: -0.01em; }
+  .story-era__note { color: var(--fg-2); font-size: var(--step--1); line-height: 1.5; }
+  .story-era__cta { color: var(--era-accent); }
+
+  /* space between bespoke scenes and the shared generic scenes that follow */
+  .inuse-after { margin-top: var(--sp-6); }
+
+  @media (max-width: 900px) {
+    .story { grid-template-columns: 1fr; gap: var(--sp-5); }
+    .story-rail { position: static; }
+    .story-orn { display: none; }
   }
 </style>

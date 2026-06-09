@@ -410,20 +410,26 @@ const rooms = fonts.map((f) => {
   .rail__dot:hover { opacity: 0.8; }
   .rail__dot.is-active { opacity: 1; transform: scale(1.5); }
 
+  /* Below ~1280px the side annotation can collide with the viewport edge on
+     wide glyphs — the feature stays lit on the letter, but the wall text
+     moves back into the plaque. */
+  @media (max-width: 1280px) {
+    .room__anno,
+    .room__lead { display: none; }
+    .room__plaque-mobile { display: block; }
+  }
+
   @media (max-width: 900px) {
     .rail { display: none; }
     .room__wing { display: none; }
     .room__glyph { font-size: min(46vh, 72vw); }
     .room__plaque { width: calc(100% - 2 * var(--gutter, 1.25rem)); }
-    /* no room for wall annotations — the story moves back into the plaque,
-       and the catalog lines give way so the letter stays visible */
-    .room__anno,
-    .room__lead,
+    /* tight rooms: spotlight chrome and catalog lines give way so the
+       letter stays visible */
     .room__ring,
     .room__glyph--lit,
     .room__medium,
     .room__lender { display: none; }
-    .room__plaque-mobile { display: block; }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -703,6 +703,7 @@ const monoSamples = [
      Left panel: inputs + presets. Right panel: live SVG monogram.
      ============================================================ */
   .ps-mono {
+    --u: min(1cqi, 7px);
     width: 100%; height: 100%;
     min-height: 520px;
     background: var(--bg);
@@ -712,33 +713,33 @@ const monoSamples = [
 
   .ps-mono__left {
     display: flex; flex-direction: column;
-    padding: 5cqi 4cqi 4cqi 5cqi; gap: 3.5cqi;
+    padding: calc(5 * var(--u)) calc(4 * var(--u)) calc(4 * var(--u)) calc(5 * var(--u)); gap: calc(3.5 * var(--u));
     border-right: 1px solid var(--line);
   }
   .ps-mono__heading {
-    font-size: 3.5cqi; letter-spacing: 0.26em; text-transform: uppercase;
+    font-size: calc(3.5 * var(--u)); letter-spacing: 0.26em; text-transform: uppercase;
     color: var(--fg); margin: 0; font-weight: 400;
   }
   .ps-mono__sub {
-    font-size: 2cqi; color: var(--fg-3); line-height: 1.5;
+    font-size: calc(2 * var(--u)); color: var(--fg-3); line-height: 1.5;
     font-style: italic; margin: 0;
   }
 
   .ps-mono__inputs {
-    display: flex; align-items: flex-end; gap: 3cqi;
+    display: flex; align-items: flex-end; gap: calc(3 * var(--u));
   }
   .ps-mono__label {
-    display: flex; flex-direction: column; gap: 1cqi;
+    display: flex; flex-direction: column; gap: calc(1 * var(--u));
     flex: 1;
   }
   .ps-mono__label > span {
-    font-size: 1.6cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: calc(1.6 * var(--u)); letter-spacing: 0.18em; text-transform: uppercase;
     color: var(--fg-3);
   }
   .ps-mono__input {
-    font-size: 9cqi; line-height: 1; text-align: center;
+    font-size: calc(9 * var(--u)); line-height: 1; text-align: center;
     background: var(--bg-2); border: 1px solid var(--line);
-    color: var(--fg); width: 100%; padding: 1.5cqi 0;
+    color: var(--fg); width: 100%; padding: calc(1.5 * var(--u)) 0;
     border-radius: 2px;
     font-feature-settings: 'calt' 1, 'liga' 1;
     text-transform: uppercase;
@@ -749,17 +750,17 @@ const monoSamples = [
     background: var(--bg);
   }
   .ps-mono__and {
-    font-size: 5cqi; line-height: 1; color: var(--accent);
-    font-family: var(--fam); padding-bottom: 1.8cqi;
+    font-size: calc(5 * var(--u)); line-height: 1; color: var(--accent);
+    font-family: var(--fam); padding-bottom: calc(1.8 * var(--u));
     font-feature-settings: 'calt' 1;
   }
 
   .ps-mono__nametext {
-    font-size: 1.6cqi; letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: calc(1.6 * var(--u)); letter-spacing: 0.18em; text-transform: uppercase;
     color: var(--fg-3); margin: 0;
   }
   .ps-mono__nameinput {
-    font-size: 2.2cqi; padding: 1.2cqi 1.5cqi;
+    font-size: calc(2.2 * var(--u)); padding: calc(1.2 * var(--u)) calc(1.5 * var(--u));
     background: var(--bg-2); border: 1px solid var(--line);
     color: var(--fg); border-radius: 2px; width: 100%;
     font-style: italic;
@@ -768,12 +769,12 @@ const monoSamples = [
   .ps-mono__nameinput:focus { outline: none; border-color: var(--accent); background: var(--bg); }
 
   .ps-mono__samples {
-    display: flex; flex-direction: column; gap: 1cqi;
+    display: flex; flex-direction: column; gap: calc(1 * var(--u));
     margin-top: auto;
   }
   .ps-mono__sample {
-    display: flex; align-items: center; gap: 2cqi;
-    padding: 1.2cqi 1.6cqi; text-align: left;
+    display: flex; align-items: center; gap: calc(2 * var(--u));
+    padding: calc(1.2 * var(--u)) calc(1.6 * var(--u)); text-align: left;
     border: 1px solid var(--line-soft);
     border-radius: 2px; width: 100%;
     transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
@@ -781,21 +782,21 @@ const monoSamples = [
   .ps-mono__sample:hover { background: var(--bg-2); border-color: var(--line); }
   .ps-mono__sample.is-on { background: var(--bg-2); border-color: var(--accent); }
   .ps-mono__sample-mono {
-    font-size: 4cqi; line-height: 1; color: var(--fg);
+    font-size: calc(4 * var(--u)); line-height: 1; color: var(--fg);
     font-feature-settings: 'calt' 1, 'liga' 1; white-space: nowrap;
-    width: 6cqi;
+    width: calc(6 * var(--u));
   }
   .ps-mono__sample-name {
-    font-size: 1.7cqi; color: var(--fg-2); font-style: italic;
+    font-size: calc(1.7 * var(--u)); color: var(--fg-2); font-style: italic;
   }
 
   /* Right panel: SVG output */
   .ps-mono__right {
     display: flex; align-items: center; justify-content: center;
-    padding: 4cqi;
+    padding: calc(4 * var(--u));
     background: var(--bg);
   }
-  .ps-mono__output { width: 100%; max-width: 36cqi; }
+  .ps-mono__output { width: 100%; max-width: calc(36 * var(--u)); }
   .ps-mono__svg { width: 100%; height: auto; display: block; }
 
   /* SVG element styles */
@@ -877,23 +878,23 @@ const monoSamples = [
     .ps-mono__left {
       border-right: none;
       border-bottom: 1px solid var(--line);
-      padding: 5cqi 5cqi 4cqi;
+      padding: calc(5 * var(--u)) calc(5 * var(--u)) calc(4 * var(--u));
     }
-    .ps-mono__right { padding: 5cqi; }
-    .ps-mono__heading { font-size: 4.5cqi; }
-    .ps-mono__sub    { font-size: 2.8cqi; }
-    .ps-mono__label > span { font-size: 2.2cqi; }
-    .ps-mono__input  { font-size: 12cqi; }
-    .ps-mono__and    { font-size: 7cqi; }
-    .ps-mono__nametext { font-size: 2.2cqi; }
-    .ps-mono__nameinput { font-size: 2.8cqi; }
-    .ps-mono__sample-mono { font-size: 5cqi; }
-    .ps-mono__sample-name { font-size: 2.2cqi; }
-    .ps-mono__output { max-width: 54cqi; }
+    .ps-mono__right { padding: calc(5 * var(--u)); }
+    .ps-mono__heading { font-size: calc(4.5 * var(--u)); }
+    .ps-mono__sub    { font-size: calc(2.8 * var(--u)); }
+    .ps-mono__label > span { font-size: calc(2.2 * var(--u)); }
+    .ps-mono__input  { font-size: calc(12 * var(--u)); }
+    .ps-mono__and    { font-size: calc(7 * var(--u)); }
+    .ps-mono__nametext { font-size: calc(2.2 * var(--u)); }
+    .ps-mono__nameinput { font-size: calc(2.8 * var(--u)); }
+    .ps-mono__sample-mono { font-size: calc(5 * var(--u)); }
+    .ps-mono__sample-name { font-size: calc(2.2 * var(--u)); }
+    .ps-mono__output { max-width: calc(54 * var(--u)); }
   }
 
   @container (max-width: 400px) {
-    .ps-mono__inputs { gap: 2cqi; }
+    .ps-mono__inputs { gap: calc(2 * var(--u)); }
     .ps-mono__samples { flex-direction: row; flex-wrap: wrap; }
     .ps-mono__sample { flex: 1 1 45%; }
   }

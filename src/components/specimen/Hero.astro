@@ -48,6 +48,20 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
   document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
     const name = hero.querySelector('[data-hero-name]') as HTMLElement;
     const ghost = hero.querySelector('[data-hero-ghost]') as HTMLElement;
+
+    // Long names ("Libre Baskerville") can overflow the display size —
+    // shrink to fit the container once the real font has loaded.
+    const fit = () => {
+      name.style.fontSize = '';
+      const avail = name.clientWidth;
+      const w = name.scrollWidth;
+      if (w > avail) {
+        const cur = parseFloat(getComputedStyle(name).fontSize);
+        name.style.fontSize = `${Math.floor(cur * (avail / w) * 0.98)}px`;
+      }
+    };
+    document.fonts.ready.then(fit);
+    window.addEventListener('resize', fit);
     const isVar = hero.dataset.variable === 'true';
     const wmin = +(hero.dataset.wmin || 400);
     const wmax = +(hero.dataset.wmax || 400);

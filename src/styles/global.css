@@ -211,16 +211,70 @@ body::after {
 /* ------------------------------------------------------------
    IN-USE (shared scaffolding for bespoke per-font scenes)
    ------------------------------------------------------------ */
-.iu { display: flex; flex-direction: column; gap: var(--sp-6); }
-.iu__cap { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: var(--sp-2); }
+/* A gallery wall, not a slideshow: scenes hang in an editorial rhythm —
+   a full-width plate, then a pair, repeating — with museum captions
+   below each frame instead of shouting labels above. */
+.iu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(3rem, 7vh, 5rem) var(--sp-5);
+  align-items: start;
+}
+.iu__item { grid-column: 1 / -1; display: flex; flex-direction: column; min-width: 0; }
+@media (min-width: 861px) {
+  .iu__item:nth-child(6n + 2), .iu__item:nth-child(6n + 3),
+  .iu__item:nth-child(6n + 5), .iu__item:nth-child(6n) { grid-column: span 1; }
+  /* a half-width plate with no partner hangs full-width instead */
+  .iu__item:nth-child(6n + 2):last-child,
+  .iu__item:nth-child(6n + 5):last-child { grid-column: 1 / -1; }
+}
+
+/* caption as a quiet plate label, below the frame */
+.iu__cap {
+  order: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  margin-top: var(--sp-2);
+}
+.iu__cap .label,
+.iu__cap span:not(.index-num) {
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg-3);
+}
+.iu__hint { order: 3; }
+.iu__hint.label,
+p.iu__hint {
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+  color: var(--fg-3);
+  margin-top: 0.5rem;
+}
+
 .iu__scene {
   position: relative;
   /* theme-aware mat: the artwork sits inside a light(er) framing surface */
-  border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
+  border: clamp(18px, 2.6vw, 38px) solid var(--bg-2);
   outline: 1px solid var(--line);
+  border-radius: 2px;
   overflow: hidden;
   container-type: inline-size;
   background: var(--bg-2);
+  box-shadow: 0 32px 64px -44px rgba(0, 0, 0, 0.5);
+  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.iu__item:hover .iu__scene {
+  transform: translateY(-3px);
+  box-shadow: 0 42px 76px -46px rgba(0, 0, 0, 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .iu__scene, .iu__item:hover .iu__scene { transform: none; transition: none; }
 }
 /* Poster canvas: type scales with the box via cqi */
 .iu__poster { position: absolute; inset: 0; }
