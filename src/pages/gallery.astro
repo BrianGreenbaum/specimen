@@ -204,6 +204,11 @@ const rooms = fonts.map((f) => {
     display: block;
     font-size: min(58vh, 56vw);
     line-height: 1;
+    /* Ink can paint far past the advance width (italic overhangs, swash
+       tails). Once the breathe animation promotes the glyph to its own
+       compositing layer, anything outside the element box gets clipped —
+       so grow the box symmetrically to keep the ink inside it. */
+    padding: 0.28em 0.45em;
     font-variation-settings: 'wght' var(--gw);
     --gw: var(--w-a);
     opacity: 0;
