@@ -30,6 +30,10 @@ export interface DiagramOptions {
   advanceLabel?: boolean; // draw the "advance NNN" text inside the SVG (default: follows showAdvance)
   showGuideLabels?: boolean; // text labels on the metric guides (inspector)
   fill?: number; // 0–1 fraction of the field height the type should occupy
+  /** What `fill` measures: the full em span (default — stable across glyphs,
+   *  right for the inspector/scrubber) or the glyph's ink box (dramatic,
+   *  right for anatomy plates where a lowercase letter would otherwise drown). */
+  fit?: 'em' | 'ink';
 }
 
 /** Geometry of a rendered diagram, in SVG user units (viewBox 0 0 W H).
@@ -72,18 +76,30 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
     showAdvance = false,
     advanceLabel,
     showGuideLabels = false,
-    fill = 0.6,
+    fill = 0.74,
+    fit = 'em',
   } = opts;
   const drawAdvanceText = advanceLabel ?? showAdvance;
 
   await ensureFont(family, weight);
   const m = measureGlyph(family, glyph, weight);
 
+  // Match the viewBox to the host element's aspect so guides span the full
+  // plate (the old fixed square letterboxed inside wide plates and left the
+  // glyph adrift between dead flanks).
+  const rect = (svg as unknown as HTMLElement).getBoundingClientRect?.();
+  const aspect = rect && rect.width > 4 && rect.height > 4 ? rect.width / rect.height : 1;
+  const VW = Math.round(H * Math.min(2.4, Math.max(0.7, aspect)));
+
   const typeHeight = m.ascender + m.descender || 1;
-  const FS = (fill * H) / typeHeight;
-  const cx = guides.length && showGuideLabels ? (MX + (W - LABEL_W)) / 2 : W / 2;
+  const inkSpan = m.glyphAscent + m.glyphDescent || 1;
+  const FS = fit === 'ink' ? (fill * H) / inkSpan : (fill * H) / typeHeight;
+  const cx = guides.length && showGuideLabels ? (MX + (VW - LABEL_W)) / 2 : VW / 2;
   const emTop = H / 2 - (typeHeight * FS) / 2;
-  const baselineY = emTop + m.ascender * FS;
+  const baselineY =
+    fit === 'ink'
+      ? H / 2 - (inkSpan * FS) / 2 + m.glyphAscent * FS
+      : emTop + m.ascender * FS;
 
   const yOf: Record<GuideKey, number> = {
     ascender: baselineY - m.ascender * FS,
@@ -102,7 +118,7 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
   const inkH = Math.max(1, inkB - inkT);
 
   const uid = `spot-${family.replace(/\W/g, '')}-${glyph.codePointAt(0) ?? 0}`;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('viewBox', `0 0 ${VW} ${H}`);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
 
   const spots = focus.map((f) => ({
@@ -118,14 +134,14 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
   if (spots.length) {
     const defs = node('defs');
     const mask = node('mask', { id: uid });
-    mask.appendChild(node('rect', { x: 0, y: 0, width: W, height: H, fill: 'black' }));
+    mask.appendChild(node('rect', { x: 0, y: 0, width: VW, height: H, fill: 'black' }));
     for (const s of spots) mask.appendChild(node('circle', { cx: s.sx, cy: s.sy, r: s.sr, fill: 'white' }));
     defs.appendChild(mask);
     svg.appendChild(defs);
   }
 
   // guides
-  const lineRight = showGuideLabels ? W - LABEL_W : W - MX;
+  const lineRight = showGuideLabels ? VW - LABEL_W : VW - MX;
   for (const g of guides) {
     const y = yOf[g];
     const line = node('line', {
@@ -179,5 +195,5 @@ export async function renderGlyphDiagram(svg: SVGElement, opts: DiagramOptions):
     }
   }
 
-  return { W, H, cx, baselineY, FS, inkL, inkT, inkR, inkB, inkW, inkH };
+  return { W: VW, H, cx, baselineY, FS, inkL, inkT, inkR, inkB, inkW, inkH };
 }

@@ -312,7 +312,7 @@ p.iu__hint {
    GLYPH DIAGRAM (shared: inspector, anatomy, glossary)
    ------------------------------------------------------------ */
 .dg-glyph { fill: var(--fg); }
-.dg-glyph--muted { fill: var(--fg-3); opacity: 0.5; }
+.dg-glyph--muted { fill: var(--fg); opacity: 0.34; }
 .dg-glyph--accent { fill: var(--accent); }
 .dg-guide { stroke: color-mix(in srgb, var(--accent) 42%, transparent); stroke-width: 1.5; }
 .dg-guide--base { stroke: color-mix(in srgb, var(--accent) 75%, transparent); stroke-width: 2; }

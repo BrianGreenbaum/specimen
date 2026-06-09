@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
+import EvolutionScrubber from '../../components/history/EvolutionScrubber.astro';
 
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
 const fonts = await getCollection('fonts');
@@ -24,6 +25,11 @@ const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
       </p>
     </div>
   </header>
+
+  <!-- The promise the hero makes, kept right below it: the letter itself. -->
+  <section class="container hist-scrub" aria-label="The letter, dragged through time">
+    <EvolutionScrubber eras={eras} />
+  </section>
 
   <section class="container hist-eras">
     <div class="section-head">
@@ -69,6 +75,7 @@ const fontBySlug = new Map(fonts.map((f) => [f.id, f]));
   .hist-hero__title em { font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent); }
   .hist-hero__lede { max-width: 60ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
 
+  .hist-scrub { padding-block: clamp(2rem, 5vh, 3.5rem) 0; }
   .hist-eras { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
 
   .era-list { border-top: 1px solid var(--line); }

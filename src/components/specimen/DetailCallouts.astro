@@ -58,6 +58,8 @@ const { callouts, family, editCollection = 'fonts', editId, editField = 'callout
         weight: +(svg.dataset.weight || 400),
         guides: JSON.parse(svg.dataset.guides || '[]'),
         focus: JSON.parse(svg.dataset.focus || '[]'),
+        fit: 'ink',
+        fill: 0.68,
         fill: 0.62,
       }).then((layout) => {
         (svg as any).__layout = layout;
