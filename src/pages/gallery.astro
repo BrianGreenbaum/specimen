@@ -14,36 +14,36 @@ const eras = await getCollection('eras');
 // Curated piece per face: the glyph that shows its character best, the
 // weight / style it should hang at, and the wall text — why THIS letter.
 const ART: Record<string, { g: string; w?: number; i?: boolean; spot?: { x: number; y: number; r?: number }; note: string }> = {
-  cinzel: { g: 'A', w: 500, spot: { x: 50, y: 18 }, note: 'The splayed apex and knife-edge serifs come straight from the capitals cut into Trajan’s Column — the alphabet at its most imperial.' },
-  marcellus: { g: 'R', spot: { x: 72, y: 80 }, note: 'The leg kicks out straight and proud — the classic inscriptional gesture, poised like a chisel stroke leaving the stone.' },
-  'eb-garamond': { g: 'a', spot: { x: 58, y: 42 }, note: 'A small bowl held high on a humanist frame: the double-storey a that has made books readable for five hundred years.' },
-  'cormorant-garamond': { g: 'g', w: 500, spot: { x: 48, y: 88, r: 12 }, note: 'Garamond’s g re-cut for display: razor serifs, a looping descender, and hairlines that only survive at large sizes.' },
-  lora: { g: 'k', w: 500, spot: { x: 58, y: 60 }, note: 'The junctions spring like a loaded brush — Lora’s curves remember the pen, even on a backlit screen.' },
-  'libre-baskerville': { g: 'Q', spot: { x: 58, y: 88, r: 12 }, note: 'Baskerville’s signature letter: the tail still sweeps below the baseline — the eighteenth century’s flourish, tempered for the screen.' },
-  'playfair-display': { g: '&', w: 500, i: true, spot: { x: 72, y: 30 }, note: 'The italic ampersand — an “Et” written in one flourish — is the most theatrical glyph in the family, all hairlines and ball terminals.' },
-  newsreader: { g: 'y', i: true, spot: { x: 42, y: 90, r: 12 }, note: 'The italic y trails a long, inky descender — drawn on an optical-size axis for headlines, where descenders can afford to stretch.' },
-  spectral: { g: 'a', spot: { x: 74, y: 72 }, note: 'A sturdy double-storey a with an open aperture — a serif engineered to keep its head at paragraph sizes on screen.' },
-  'bodoni-moda': { g: 'R', w: 500, spot: { x: 70, y: 80 }, note: 'A hairline meets a full-weight stem and the leg curls away — Didone contrast, the look that made Bodoni the face of fashion.' },
-  'dm-serif-display': { g: 'g', spot: { x: 78, y: 42 }, note: 'A high-contrast double-storey g with a cocked ear — Didone drama scaled for headlines, never footnotes.' },
-  fraunces: { g: 'g', w: 600, spot: { x: 80, y: 40 }, note: 'Generous upper bowl, looping lower storey, a jaunty ear — the wonky old-style g of Cooper and Souvenir, reborn variable.' },
-  besley: { g: 'R', w: 600, spot: { x: 74, y: 82 }, note: 'The Clarendon R plants its curled leg like a boot heel — bracketed slabs built to shout from Victorian posters.' },
-  'roboto-slab': { g: '2', w: 500, spot: { x: 52, y: 82 }, note: 'Even the figures wear slabs: an unbracketed foot and even strokes — ornament stripped, geometry left standing.' },
-  oswald: { g: 'G', w: 500, spot: { x: 76, y: 62 }, note: 'A condensed gothic G with a bearded spur and a tight aperture — wood-type proportions compressed for the headline column.' },
-  archivo: { g: 'K', w: 800, spot: { x: 52, y: 55 }, note: 'The arms strike the stem in one tense junction — a headline grotesque holding its nerve across weight and width.' },
-  inter: { g: 'R', w: 500, spot: { x: 70, y: 80 }, note: 'A neo-grotesque R with a dead-straight leg, drawn to a pixel grid — the quiet workhorse letter of the modern interface.' },
-  'source-sans-3': { g: 'a', w: 500, spot: { x: 50, y: 68 }, note: 'The two-storey a with an open bowl — Adobe’s first open-source face keeping a trace of the pen at interface sizes.' },
-  jost: { g: 'g', spot: { x: 45, y: 50 }, note: 'A geometric g drawn from circle and stem — Bauhaus reduction doing the work of calligraphy.' },
-  outfit: { g: 'O', w: 500, spot: { x: 69, y: 31 }, note: 'A perfect circle for an O — monoline, unmodulated, the geometric thesis stated in a single glyph.' },
-  fredoka: { g: 'e', w: 500, spot: { x: 50, y: 60 }, note: 'A buoyant e with a level bar and rounded terminals — the whole face reads like a smile, and this is the curve of it.' },
-  'space-grotesk': { g: 'G', w: 500, spot: { x: 74, y: 58 }, note: 'The crossbar sits flat and the curves square off slightly — Space Mono’s eccentric DNA, freed from the fixed-width cell.' },
-  syne: { g: 'S', w: 700, spot: { x: 55, y: 25 }, note: 'Wide, flat-shouldered, nearly architectural — an S from a family drawn for an art centre and pushed toward abstraction.' },
-  'big-shoulders': { g: 'B', w: 800, spot: { x: 58, y: 38 }, note: 'A compressed B with flat sides and slivers of counter — American gothic condensed, named for Sandburg’s Chicago.' },
-  'bricolage-grotesque': { g: 'a', w: 600, spot: { x: 76, y: 80 }, note: 'A grotesque a with ink-trapped joins and a heavy hooked finial — British eccentricity worn over Swiss bones.' },
-  unbounded: { g: 'Ø', w: 800, spot: { x: 50, y: 50, r: 13 }, note: 'A rounded superellipse sliced clean through — drawn to hold its shape from a watch face to a billboard.' },
-  'martian-mono': { g: 'M', w: 700, spot: { x: 50, y: 42, r: 12 }, note: 'A wide M squeezed into the same cell as every other letter — the monospace bargain, struck with engineering humour.' },
-  'ibm-plex-mono': { g: 'a', spot: { x: 52, y: 55 }, note: 'A double-storey a tucked into a fixed-width cell, warmth surviving the grid — IBM’s typewriter voice, modernised.' },
-  'instrument-serif': { g: 'J', spot: { x: 70, y: 22 }, note: 'Needle serifs and sudden contrast on a compact J — a display face that spends its whole budget on style.' },
-  'pinyon-script': { g: 'G', spot: { x: 48, y: 50, r: 13 }, note: 'A copperplate capital G unwinding in a single Spencerian stroke — engraving-plate romance, set in type.' },
+  cinzel: { g: 'A', w: 500, spot: { x: 51, y: 24.6 }, note: 'The splayed apex and knife-edge serifs come straight from the capitals cut into Trajan’s Column — the alphabet at its most imperial.' },
+  marcellus: { g: 'R', spot: { x: 71, y: 73.5 }, note: 'The leg kicks out straight and proud — the classic inscriptional gesture, poised like a chisel stroke leaving the stone.' },
+  'eb-garamond': { g: 'a', spot: { x: 55, y: 48.2 }, note: 'A small bowl held high on a humanist frame: the double-storey a that has made books readable for five hundred years.' },
+  'cormorant-garamond': { g: 'g', w: 500, spot: { x: 47.6, y: 88.5, r: 9 }, note: 'Garamond’s g re-cut for display: razor serifs, a looping descender, and hairlines that only survive at large sizes.' },
+  lora: { g: 'k', w: 500, spot: { x: 56.9, y: 60.5 }, note: 'The junctions spring like a loaded brush — Lora’s curves remember the pen, even on a backlit screen.' },
+  'libre-baskerville': { g: 'Q', spot: { x: 58.1, y: 87, r: 9 }, note: 'Baskerville’s signature letter: the tail still sweeps below the baseline — the eighteenth century’s flourish, tempered for the screen.' },
+  'playfair-display': { g: '&', w: 500, i: true, spot: { x: 71.4, y: 31.6 }, note: 'The italic ampersand — an “Et” written in one flourish — is the most theatrical glyph in the family, all hairlines and ball terminals.' },
+  newsreader: { g: 'y', i: true, spot: { x: 38.4, y: 80.3, r: 9 }, note: 'The italic y trails a long, inky descender — drawn on an optical-size axis for headlines, where descenders can afford to stretch.' },
+  spectral: { g: 'a', spot: { x: 66.9, y: 69.1 }, note: 'A sturdy double-storey a with an open aperture — a serif engineered to keep its head at paragraph sizes on screen.' },
+  'bodoni-moda': { g: 'R', w: 500, spot: { x: 68.4, y: 74.9 }, note: 'A hairline meets a full-weight stem and the leg curls away — Didone contrast, the look that made Bodoni the face of fashion.' },
+  'dm-serif-display': { g: 'g', spot: { x: 68.5, y: 42.6 }, note: 'A high-contrast double-storey g with a cocked ear — Didone drama scaled for headlines, never footnotes.' },
+  fraunces: { g: 'g', w: 600, spot: { x: 68.9, y: 43.9 }, note: 'Generous upper bowl, looping lower storey, a jaunty ear — the wonky old-style g of Cooper and Souvenir, reborn variable.' },
+  besley: { g: 'R', w: 600, spot: { x: 71.7, y: 77.3 }, note: 'The Clarendon R plants its curled leg like a boot heel — bracketed slabs built to shout from Victorian posters.' },
+  'roboto-slab': { g: '2', w: 500, spot: { x: 52.2, y: 76 }, note: 'Even the figures wear slabs: an unbracketed foot and even strokes — ornament stripped, geometry left standing.' },
+  oswald: { g: 'G', w: 500, spot: { x: 66.1, y: 61.8 }, note: 'A condensed gothic G with a bearded spur and a tight aperture — wood-type proportions compressed for the headline column.' },
+  archivo: { g: 'K', w: 800, spot: { x: 52.3, y: 54.8 }, note: 'The arms strike the stem in one tense junction — a headline grotesque holding its nerve across weight and width.' },
+  inter: { g: 'R', w: 500, spot: { x: 69.2, y: 74.3 }, note: 'A neo-grotesque R with a dead-straight leg, drawn to a pixel grid — the quiet workhorse letter of the modern interface.' },
+  'source-sans-3': { g: 'a', w: 500, spot: { x: 49.8, y: 68.7 }, note: 'The two-storey a with an open bowl — Adobe’s first open-source face keeping a trace of the pen at interface sizes.' },
+  jost: { g: 'g', spot: { x: 44.6, y: 48.9 }, note: 'A geometric g drawn from circle and stem — Bauhaus reduction doing the work of calligraphy.' },
+  outfit: { g: 'O', w: 500, spot: { x: 65.2, y: 35.2 }, note: 'A perfect circle for an O — monoline, unmodulated, the geometric thesis stated in a single glyph.' },
+  fredoka: { g: 'e', w: 500, spot: { x: 49.8, y: 60 }, note: 'A buoyant e with a level bar and rounded terminals — the whole face reads like a smile, and this is the curve of it.' },
+  'space-grotesk': { g: 'G', w: 500, spot: { x: 67.8, y: 58.2 }, note: 'The crossbar sits flat and the curves square off slightly — Space Mono’s eccentric DNA, freed from the fixed-width cell.' },
+  syne: { g: 'S', w: 700, spot: { x: 55.1, y: 29.9 }, note: 'Wide, flat-shouldered, nearly architectural — an S from a family drawn for an art centre and pushed toward abstraction.' },
+  'big-shoulders': { g: 'B', w: 800, spot: { x: 58.4, y: 38.2 }, note: 'A compressed B with flat sides and slivers of counter — American gothic condensed, named for Sandburg’s Chicago.' },
+  'bricolage-grotesque': { g: 'a', w: 600, spot: { x: 66.8, y: 71.9 }, note: 'A grotesque a with ink-trapped joins and a heavy hooked finial — British eccentricity worn over Swiss bones.' },
+  unbounded: { g: 'Ø', w: 800, spot: { x: 50.1, y: 50.1, r: 9 }, note: 'A rounded superellipse sliced clean through — drawn to hold its shape from a watch face to a billboard.' },
+  'martian-mono': { g: 'M', w: 700, spot: { x: 48.8, y: 41.9, r: 9 }, note: 'A wide M squeezed into the same cell as every other letter — the monospace bargain, struck with engineering humour.' },
+  'ibm-plex-mono': { g: 'a', spot: { x: 51.9, y: 57.6 }, note: 'A double-storey a tucked into a fixed-width cell, warmth surviving the grid — IBM’s typewriter voice, modernised.' },
+  'instrument-serif': { g: 'J', spot: { x: 59.3, y: 26.7 }, note: 'Needle serifs and sudden contrast on a compact J — a display face that spends its whole budget on style.' },
+  'pinyon-script': { g: 'G', spot: { x: 49.7, y: 48.4, r: 9 }, note: 'A copperplate capital G unwinding in a single Spencerian stroke — engraving-plate romance, set in type.' },
 };
 
 // Museum-catalog identity line for the chosen glyph, e.g. "Lowercase g · U+0067".
@@ -104,7 +104,7 @@ const rooms = fonts.map((f) => {
         {(() => {
           const glyphStyle = `font-family:'${f.data.fontFamily}'; font-weight:${w}; --w-a:${w}; --w-b:${Math.round(breatheTo)}; ${art.i ? 'font-style:italic;' : ''}`;
           const spotVars = art.spot
-            ? `--ax:${art.spot.x}%; --ay:${art.spot.y}%; --ar:${art.spot.r ?? 10}%; --ring:${(art.spot.r ?? 10) * 2.4}%;`
+            ? `--ax:${art.spot.x}%; --ay:${art.spot.y}%; --ar:${art.spot.r ?? 7}%; --ring:${(art.spot.r ?? 7) * 1.7}%;`
             : '';
           return (
             <div class="room__piecewrap" style={spotVars}>
@@ -123,6 +123,7 @@ const rooms = fonts.map((f) => {
                 )}
                 {art.spot && <span class="room__ring" aria-hidden="true"></span>}
               </a>
+              {art.spot && art.note && <span class="room__lead" aria-hidden="true"></span>}
               {art.spot && art.note && (
                 <div class="room__anno">
                   <span class="room__glyphid">{glyphIdentity(art.g)}{art.i ? ' · italic' : ''}</span>
@@ -287,30 +288,33 @@ const rooms = fonts.map((f) => {
   }
   .room.is-live .room__ring { opacity: 1; transform: translate(-50%, -50%); }
 
-  /* The wall text, pinned to the feature with a hairline leader. */
+  /* The wall text sits fully clear of the letter — anchored to the right of
+     the whole glyph box — with a hairline leader running back to the ring. */
   .room__anno {
     position: absolute;
-    left: var(--ax);
+    left: calc(100% + clamp(1.5rem, 2.5vw, 3rem));
     top: var(--ay);
     transform: translateY(-50%);
-    padding-left: clamp(3.2rem, 8vw, 7rem);
     width: max-content;
-    max-width: min(26ch, 24vw);
+    max-width: min(24ch, 19vw);
     opacity: 0;
     translate: -10px 0;
     transition: opacity 0.7s var(--ease) 0.6s, translate 0.7s var(--ease) 0.6s;
     z-index: 2;
   }
   .room.is-live .room__anno { opacity: 1; translate: 0 0; }
-  .room__anno::before {
-    content: '';
+  .room__lead {
     position: absolute;
-    left: 0;
-    top: 50%;
-    width: calc(clamp(3.2rem, 8vw, 7rem) - 1rem);
+    left: var(--ax);
+    top: var(--ay);
+    width: calc(100% - var(--ax) + clamp(1.5rem, 2.5vw, 3rem) - 0.9rem);
     height: 1px;
     background: color-mix(in srgb, var(--accent) 55%, transparent);
+    opacity: 0;
+    transition: opacity 0.7s var(--ease) 0.6s;
+    pointer-events: none;
   }
+  .room.is-live .room__lead { opacity: 1; }
   .room__annonote {
     margin-top: 0.4rem;
     font-size: var(--step--1);
@@ -414,6 +418,7 @@ const rooms = fonts.map((f) => {
     /* no room for wall annotations — the story moves back into the plaque,
        and the catalog lines give way so the letter stays visible */
     .room__anno,
+    .room__lead,
     .room__ring,
     .room__glyph--lit,
     .room__medium,
@@ -425,8 +430,10 @@ const rooms = fonts.map((f) => {
     .room__glyph,
     .room__ring,
     .room__anno,
+    .room__lead,
     .room__plaque { transition: none; opacity: 1; transform: none; translate: none; }
-    .room.is-live .room__ring { transform: translate(-50%, -50%); }
+    .room__ring { transform: translate(-50%, -50%); }
+    .room__anno { transform: translateY(-50%); }
     .room.is-live .room__glyph--breathe { animation: none; }
   }
 </style>
