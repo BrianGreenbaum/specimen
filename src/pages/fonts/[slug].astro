@@ -13,8 +13,10 @@ import DetailCallouts from '../../components/specimen/DetailCallouts.astro';
 import InUse from '../../components/specimen/InUse.astro';
 import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
 import TechSpecs from '../../components/specimen/TechSpecs.astro';
+import Outlines from '../../components/specimen/Outlines.astro';
 import Glossary from '../../components/Glossary.astro';
 import { themeToStyle } from '../../lib/theme';
+import { getOutlines } from '../../lib/outlines';
 
 export async function getStaticPaths() {
   const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
@@ -39,16 +41,27 @@ const themeStyle = themeToStyle(font.theme);
 const inUseComponents = import.meta.glob('../../components/specimen/inuse/*.astro', { eager: true });
 const BespokeInUse = (inUseComponents[`../../components/specimen/inuse/${entry.id}.astro`] as any)?.default;
 
+// Real Bézier outlines, decoded from the font binary at build time.
+const outlines = await getOutlines({
+  id: entry.id,
+  isVariable: font.isVariable,
+  axes: font.axes,
+  callouts: font.callouts,
+});
+
 const sections = [
   { id: 'tester', label: 'Type Tester' },
   { id: 'story', label: 'Story' },
   { id: 'weights', label: 'Weights' },
   { id: 'sizes', label: 'Sizes' },
   { id: 'anatomy', label: 'Anatomy' },
+  ...(outlines ? [{ id: 'drawing', label: 'The Drawing' }] : []),
   { id: 'in-use', label: 'In Use' },
   { id: 'glyphs', label: 'Glyphs' },
   { id: 'specs', label: 'Specs' },
 ];
+// Section numbers follow the (possibly shorter) section list.
+const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).padStart(2, '0');
 ---
 <Layout
   title={`${font.name} — Specimen`}
@@ -62,11 +75,11 @@ const sections = [
   <Hero font={font} />
 
   <main>
-    <Section id="tester" num="01" title="Type tester" note="Edit the text. Drag the axes.">
+    <Section id="tester" num={num('tester')} title="Type tester" note="Edit the text. Drag the axes.">
       <TypeTester font={font} />
     </Section>
 
-    <Section id="story" num="02" title="The story">
+    <Section id="story" num={num('story')} title="The story">
       <div class="story-prose prose" data-glossary style={`--term-fam:'${font.fontFamily}'`}>
         <Content />
       </div>
@@ -80,29 +93,35 @@ const sections = [
       )}
     </Section>
 
-    <Section id="weights" num="03" title="Weights & styles" note={`${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}`}>
+    <Section id="weights" num={num('weights')} title="Weights & styles" note={`${font.weights.length} weights${font.hasItalic ? ' + italics' : ''}`}>
       <WeightsShowcase font={font} />
     </Section>
 
-    <Section id="sizes" num="04" title="Size waterfall" note="The same words, ramped down.">
+    <Section id="sizes" num={num('sizes')} title="Size waterfall" note="The same words, ramped down.">
       <Waterfall font={font} />
     </Section>
 
-    <Section id="anatomy" num="05" title="Details & anatomy" note="The marks that make it unmistakable.">
+    <Section id="anatomy" num={num('anatomy')} title="Details & anatomy" note="The marks that make it unmistakable.">
       <DetailCallouts callouts={font.callouts} family={font.fontFamily} editCollection="fonts" editId={entry.id} editField="callouts" />
     </Section>
 
-    <Section id="in-use" num="06" title="In use" note="Built live with the real webfont.">
+    {outlines && (
+      <Section id="drawing" num={num('drawing')} title="The drawing" note="Real Bézier curves, decoded from the font file.">
+        <Outlines font={font} data={outlines} />
+      </Section>
+    )}
+
+    <Section id="in-use" num={num('in-use')} title="In use" note="Built live with the real webfont.">
       {BespokeInUse
         ? <BespokeInUse font={font} />
         : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
     </Section>
 
-    <Section id="glyphs" num="07" title="Character set" note="Click any glyph to inspect.">
+    <Section id="glyphs" num={num('glyphs')} title="Character set" note="Click any glyph to inspect.">
       <GlyphGrid font={font} />
     </Section>
 
-    <Section id="specs" num="08" title="Technical specifications">
+    <Section id="specs" num={num('specs')} title="Technical specifications">
       <TechSpecs font={font} />
     </Section>
   </main>

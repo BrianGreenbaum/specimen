@@ -1,0 +1,560 @@
+---
+// The Drawing — the glyph as the type designer left it.
+// Renders the real Bézier outlines extracted from the font binary
+// (src/lib/outlines.ts): on-curve points, off-curve control handles, metric
+// guides, side bearings. Variable faces morph live along the wght axis by
+// interpolating the sampled instances (identical point structure throughout).
+import type { FontOutlines } from '../../lib/outlines';
+
+export interface Props {
+  font: any;
+  data: FontOutlines;
+}
+const { font, data } = Astro.props;
+const hasWeights = data.stops.length > 1;
+const modes = [
+  { id: 'ink', label: 'Ink' },
+  { id: 'xray', label: 'X-ray' },
+  { id: 'skeleton', label: 'Skeleton' },
+] as const;
+---
+
+<div class="od" data-outlines data-mode="xray">
+  <script type="application/json" data-od-data set:html={JSON.stringify(data)} />
+
+  <figure class="od__stage">
+    <svg data-od-svg role="img" aria-label={`Bézier outline drawing of a glyph from ${font.name}`} preserveAspectRatio="xMidYMid meet"></svg>
+    <figcaption class="od__readout">
+      <span class="od__readout-pt" data-od-readout>{data.upm} units / em · hover a point</span>
+      <span class="od__readout-legend" aria-hidden="true">
+        <i class="od__key od__key--on"></i> on-curve
+        <i class="od__key od__key--off"></i> off-curve
+      </span>
+    </figcaption>
+  </figure>
+
+  <aside class="od__rail">
+    <div class="od__group">
+      <span class="label od__label">Glyph</span>
+      <div class="od__glyphs" role="group" aria-label="Choose a glyph">
+        {data.glyphs.map((g, i) => (
+          <button
+            type="button"
+            class="od__glyph"
+            data-od-glyph={i}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            style={`font-family:'${font.fontFamily}'`}
+            title={g.name}
+          >{g.char}</button>
+        ))}
+      </div>
+    </div>
+
+    <div class="od__group">
+      <span class="label od__label">View</span>
+      <div class="od__modes" role="group" aria-label="Drawing view">
+        {modes.map((m) => (
+          <button type="button" class="od__mode" data-od-mode={m.id} aria-pressed={m.id === 'xray' ? 'true' : 'false'}>{m.label}</button>
+        ))}
+      </div>
+    </div>
+
+    {hasWeights && (
+      <div class="od__group">
+        <label class="label od__label" for="od-wght">Weight <span class="od__wval" data-od-wval>{data.defaultStop}</span></label>
+        <input
+          id="od-wght"
+          class="od__slider"
+          type="range"
+          min={data.stops[0]}
+          max={data.stops[data.stops.length - 1]}
+          step="1"
+          value={data.defaultStop}
+          data-od-wght
+        />
+      </div>
+    )}
+
+    <dl class="od__stats">
+      <div class="od__stat"><dt class="label">Glyph name</dt><dd data-od-stat="name"></dd></div>
+      <div class="od__stat"><dt class="label">Unicode</dt><dd data-od-stat="unicode"></dd></div>
+      <div class="od__stat"><dt class="label">Contours</dt><dd data-od-stat="contours"></dd></div>
+      <div class="od__stat"><dt class="label">Points</dt><dd data-od-stat="points"></dd></div>
+      <div class="od__stat"><dt class="label">Advance width</dt><dd data-od-stat="advance"></dd></div>
+      <div class="od__stat"><dt class="label">Units per em</dt><dd>{data.upm}</dd></div>
+    </dl>
+
+    <p class="od__note">
+      Decoded from the shipping font file — the same curves a type designer
+      drew, point for point. Drag the weight and watch every coordinate move.
+    </p>
+  </aside>
+</div>
+
+<script>
+  interface Inst { w: number; adv: number; coords: number[] }
+  interface OGlyph { char: string; name: string; cp: number; cmds: string; contours: number; on: number; off: number; instances: Inst[] }
+  interface OData { upm: number; ascent: number; descent: number; capHeight: number; xHeight: number; stops: number[]; defaultStop: number; glyphs: OGlyph[] }
+
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const ARITY: Record<string, number> = { M: 2, L: 2, Q: 4, C: 6, Z: 0 };
+
+  const root = document.querySelector<HTMLElement>('[data-outlines]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const data: OData = JSON.parse(root.querySelector('[data-od-data]')!.textContent!);
+    const svg = root.querySelector<SVGSVGElement>('[data-od-svg]')!;
+    const readout = root.querySelector<HTMLElement>('[data-od-readout]')!;
+    const wghtInput = root.querySelector<HTMLInputElement>('[data-od-wght]');
+    const wval = root.querySelector<HTMLElement>('[data-od-wval]');
+    const stats = {
+      name: root.querySelector('[data-od-stat="name"]')!,
+      unicode: root.querySelector('[data-od-stat="unicode"]')!,
+      contours: root.querySelector('[data-od-stat="contours"]')!,
+      points: root.querySelector('[data-od-stat="points"]')!,
+      advance: root.querySelector('[data-od-stat="advance"]')!,
+    };
+
+    const state = { glyph: 0, w: data.defaultStop };
+    const readoutDefault = `${data.upm} units / em · hover a point`;
+
+    // --- static SVG scaffolding (guides + labels live outside the y-flip) ---
+    const el = <K extends keyof SVGElementTagNameMap>(tag: K, cls?: string) => {
+      const n = document.createElementNS(SVGNS, tag);
+      if (cls) n.setAttribute('class', cls);
+      return n;
+    };
+
+    const gGuides = el('g', 'od-guides');
+    const gLabels = el('g', 'od-guide-labels');
+    const flip = el('g'); // font units are y-up; flip once here
+    flip.setAttribute('transform', 'scale(1,-1)');
+    const sbLeft = el('line', 'od-sb');
+    const sbRight = el('line', 'od-sb');
+    const ink = el('path', 'od-ink');
+    const stroke = el('path', 'od-stroke');
+    stroke.setAttribute('fill', 'none');
+    const gHandles = el('g', 'od-handles');
+    const gPoints = el('g', 'od-points');
+    flip.append(sbLeft, sbRight, ink, stroke, gHandles, gPoints);
+    svg.append(gGuides, gLabels, flip);
+
+    const GUIDES: { y: number; name: string }[] = [
+      { y: data.ascent, name: 'ascender' },
+      { y: data.capHeight, name: 'cap height' },
+      { y: data.xHeight, name: 'x-height' },
+      { y: 0, name: 'baseline' },
+      { y: data.descent, name: 'descender' },
+    ].filter((g, i, arr) => arr.findIndex((o) => o.y === g.y) === i);
+
+    const guideLines = GUIDES.map((g) => {
+      const l = el('line', g.y === 0 ? 'od-guide od-guide--baseline' : 'od-guide');
+      gGuides.appendChild(l);
+      return l;
+    });
+    const guideTexts = GUIDES.map((g) => {
+      const t = el('text', 'od-guide-label');
+      t.textContent = g.name;
+      gLabels.appendChild(t);
+      return t;
+    });
+
+    // --- per-glyph mutable scene (rebuilt on glyph switch) ---
+    let handleLines: SVGLineElement[] = [];
+    let markers: { node: SVGElement; ci: number }[] = []; // ci = coord index of (x,y)
+    let markerKind: ('on' | 'off')[] = [];
+    let cur = new Float64Array(0); // interpolated coords
+    let curAdv = 0;
+
+    function lerpInto(g: OGlyph, w: number) {
+      const insts = g.instances;
+      if (insts.length === 1) {
+        cur = Float64Array.from(insts[0].coords);
+        curAdv = insts[0].adv;
+        return;
+      }
+      const min = insts[0].w;
+      const max = insts[insts.length - 1].w;
+      const t = Math.min(max, Math.max(min, w));
+      let i = 0;
+      while (i < insts.length - 2 && insts[i + 1].w < t) i++;
+      const a = insts[i];
+      const b = insts[i + 1];
+      const f = b.w === a.w ? 0 : (t - a.w) / (b.w - a.w);
+      if (cur.length !== a.coords.length) cur = new Float64Array(a.coords.length);
+      for (let k = 0; k < cur.length; k++) cur[k] = a.coords[k] + (b.coords[k] - a.coords[k]) * f;
+      curAdv = a.adv + (b.adv - a.adv) * f;
+    }
+
+    function pathFrom(g: OGlyph): string {
+      let d = '';
+      let k = 0;
+      for (const c of g.cmds) {
+        const n = ARITY[c];
+        if (c === 'Z') {
+          d += 'Z';
+        } else {
+          d += c;
+          for (let j = 0; j < n; j++) d += (j ? ' ' : '') + cur[k + j].toFixed(1);
+        }
+        k += n;
+      }
+      return d;
+    }
+
+    function buildScene(g: OGlyph) {
+      gHandles.replaceChildren();
+      gPoints.replaceChildren();
+      handleLines = [];
+      markers = [];
+      markerKind = [];
+
+      const pt = data.upm * 0.011; // marker half-size in font units
+      let k = 0;
+      let prev = -1; // coord index of previous on-curve point
+      let start = -1; // contour start (for Z)
+      for (const c of g.cmds) {
+        if (c === 'M') {
+          addMarker(k, 'on', pt);
+          prev = k;
+          start = k;
+        } else if (c === 'L') {
+          addMarker(k, 'on', pt);
+          prev = k;
+        } else if (c === 'Q') {
+          addHandle(k, prev);
+          addHandle(k, k + 2);
+          addMarker(k, 'off', pt);
+          addMarker(k + 2, 'on', pt);
+          prev = k + 2;
+        } else if (c === 'C') {
+          addHandle(k, prev);
+          addHandle(k + 2, k + 4);
+          addMarker(k, 'off', pt);
+          addMarker(k + 2, 'off', pt);
+          addMarker(k + 4, 'on', pt);
+          prev = k + 4;
+        } else if (c === 'Z') {
+          prev = start;
+        }
+        k += ARITY[c];
+      }
+
+      function addHandle(ctrl: number, anchor: number) {
+        if (anchor < 0) return;
+        const l = el('line', 'od-handle') as SVGLineElement;
+        (l as any)._a = ctrl;
+        (l as any)._b = anchor;
+        gHandles.appendChild(l);
+        handleLines.push(l);
+      }
+      function addMarker(ci: number, kind: 'on' | 'off', size: number) {
+        let node: SVGElement;
+        if (kind === 'on') {
+          node = el('rect', 'od-pt od-pt--on');
+          node.setAttribute('width', String(size * 2));
+          node.setAttribute('height', String(size * 2));
+        } else {
+          node = el('circle', 'od-pt od-pt--off');
+          node.setAttribute('r', String(size * 0.92));
+        }
+        const idx = markers.length;
+        node.addEventListener('pointerenter', () => {
+          readout.textContent = `pt ${idx + 1} · ${kind}-curve · ( ${Math.round(cur[ci])}, ${Math.round(cur[ci + 1])} )`;
+        });
+        node.addEventListener('pointerleave', () => {
+          readout.textContent = readoutDefault;
+        });
+        gPoints.appendChild(node);
+        markers.push({ node, ci });
+        markerKind.push(kind);
+      }
+    }
+
+    let vb = { x0: 0, w: 0, h: 0 };
+
+    function fitViewBox(g: OGlyph) {
+      // fixed per glyph across every instance, so weight morphs don't jitter
+      let minX = 0;
+      let maxX = 0;
+      for (const inst of g.instances) {
+        maxX = Math.max(maxX, inst.adv);
+        for (let k = 0; k < inst.coords.length; k += 2) {
+          minX = Math.min(minX, inst.coords[k]);
+          maxX = Math.max(maxX, inst.coords[k]);
+        }
+      }
+      const pad = data.upm * 0.085;
+      const x0 = minX - pad;
+      const w = maxX - minX + pad * 2;
+      const y0 = -data.ascent - pad * 0.6;
+      const h = data.ascent - data.descent + pad * 1.2;
+      vb = { x0, w, h };
+      svg.setAttribute('viewBox', `${x0} ${y0} ${w} ${h}`);
+
+      const sbY1 = String(data.descent);
+      const sbY2 = String(data.ascent);
+      for (const sb of [sbLeft, sbRight]) {
+        sb.setAttribute('y1', sbY1);
+        sb.setAttribute('y2', sbY2);
+      }
+      placeGuides();
+    }
+
+    // Guides bleed across the whole stage (the svg clips at its own edge,
+    // not the viewBox), and the labels hug the stage's visible right edge.
+    function placeGuides() {
+      const rect = svg.getBoundingClientRect();
+      if (!rect.width || !rect.height || !vb.w) return;
+      const visW = Math.max(vb.w, (vb.h * rect.width) / rect.height);
+      const cx = vb.x0 + vb.w / 2;
+      const left = cx - visW / 2;
+      const right = cx + visW / 2;
+      GUIDES.forEach((gd, i) => {
+        const l = guideLines[i];
+        l.setAttribute('x1', String(left));
+        l.setAttribute('x2', String(right));
+        l.setAttribute('y1', String(-gd.y));
+        l.setAttribute('y2', String(-gd.y));
+        const t = guideTexts[i];
+        t.setAttribute('x', String(right - visW * 0.012));
+        t.setAttribute('y', String(-gd.y - data.upm * 0.014));
+        t.setAttribute('font-size', String(data.upm * 0.03));
+        t.setAttribute('text-anchor', 'end');
+      });
+    }
+
+    new ResizeObserver(placeGuides).observe(svg);
+
+    function update() {
+      const g = data.glyphs[state.glyph];
+      lerpInto(g, state.w);
+      const d = pathFrom(g);
+      ink.setAttribute('d', d);
+      stroke.setAttribute('d', d);
+      sbLeft.setAttribute('x1', '0');
+      sbLeft.setAttribute('x2', '0');
+      sbRight.setAttribute('x1', String(curAdv));
+      sbRight.setAttribute('x2', String(curAdv));
+
+      const pt = data.upm * 0.011;
+      for (let i = 0; i < markers.length; i++) {
+        const { node, ci } = markers[i];
+        if (markerKind[i] === 'on') {
+          node.setAttribute('x', String(cur[ci] - pt));
+          node.setAttribute('y', String(cur[ci + 1] - pt));
+        } else {
+          node.setAttribute('cx', String(cur[ci]));
+          node.setAttribute('cy', String(cur[ci + 1]));
+        }
+      }
+      for (const l of handleLines) {
+        const a = (l as any)._a as number;
+        const b = (l as any)._b as number;
+        l.setAttribute('x1', String(cur[a]));
+        l.setAttribute('y1', String(cur[a + 1]));
+        l.setAttribute('x2', String(cur[b]));
+        l.setAttribute('y2', String(cur[b + 1]));
+      }
+      stats.advance.textContent = `${Math.round(curAdv)} units`;
+    }
+
+    function selectGlyph(i: number) {
+      state.glyph = i;
+      const g = data.glyphs[i];
+      root.querySelectorAll<HTMLButtonElement>('[data-od-glyph]').forEach((b, bi) => {
+        b.setAttribute('aria-pressed', String(bi === i));
+      });
+      stats.name.textContent = g.name;
+      stats.unicode.textContent = `U+${g.cp.toString(16).toUpperCase().padStart(4, '0')}`;
+      stats.contours.textContent = String(g.contours);
+      stats.points.textContent = `${g.on} on · ${g.off} off`;
+      buildScene(g);
+      fitViewBox(g);
+      update();
+    }
+
+    // --- wire controls ---
+    root.querySelectorAll<HTMLButtonElement>('[data-od-glyph]').forEach((b) => {
+      b.addEventListener('click', () => selectGlyph(Number(b.dataset.odGlyph)));
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-od-mode]').forEach((b) => {
+      b.addEventListener('click', () => {
+        root.dataset.mode = b.dataset.odMode;
+        root.querySelectorAll<HTMLButtonElement>('[data-od-mode]').forEach((o) => {
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+      });
+    });
+    wghtInput?.addEventListener('input', () => {
+      state.w = Number(wghtInput.value);
+      if (wval) wval.textContent = String(state.w);
+      update();
+    });
+
+    selectGlyph(0);
+  }
+</script>
+
+<style>
+  .od {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(15rem, 22vw, 19rem);
+    gap: var(--sp-5);
+    align-items: start;
+  }
+
+  /* --- stage --- */
+  .od__stage {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .od__stage svg {
+    display: block;
+    width: 100%;
+    height: clamp(20rem, 56vh, 33rem);
+  }
+  .od__readout {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: 0.65rem 0.9rem;
+    border-top: 1px solid var(--line-soft);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--fg-3);
+  }
+  .od__readout-pt { color: var(--fg-2); font-variant-numeric: tabular-nums; }
+  .od__readout-legend { display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap; }
+  .od__key { display: inline-block; width: 8px; height: 8px; }
+  .od__key--on { background: var(--accent); }
+  .od__key--off { border: 1.5px solid var(--fg-3); border-radius: 50%; margin-left: 0.6rem; }
+
+  /* --- svg internals (global: nodes are built by script) --- */
+  .od :global(.od-guide) {
+    stroke: var(--line);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+  }
+  .od :global(.od-guide--baseline) { stroke: var(--fg-3); }
+  .od :global(.od-guide-label) {
+    fill: var(--fg-3);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .od :global(.od-sb) {
+    stroke: var(--line);
+    stroke-width: 1px;
+    stroke-dasharray: 4 5;
+    vector-effect: non-scaling-stroke;
+  }
+  .od :global(.od-ink) {
+    fill: var(--fg);
+    transition: opacity 0.35s var(--ease);
+  }
+  .od :global(.od-stroke) {
+    stroke: var(--accent);
+    stroke-width: 1.75px;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 0.35s var(--ease), stroke 0.35s var(--ease);
+  }
+  .od[data-mode='skeleton'] :global(.od-stroke) { stroke: var(--fg); }
+  .od :global(.od-handle) {
+    stroke: var(--fg-3);
+    stroke-width: 0.8px;
+    opacity: 0.65;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 0.35s var(--ease);
+  }
+  .od :global(.od-pt) { transition: opacity 0.35s var(--ease); }
+  .od :global(.od-pt--on) { fill: var(--accent); }
+  .od :global(.od-pt--off) {
+    fill: var(--bg-2);
+    stroke: var(--fg-2);
+    stroke-width: 1.1px;
+    vector-effect: non-scaling-stroke;
+  }
+  .od :global(.od-pt:hover) { fill: var(--fg); }
+
+  /* view modes */
+  .od[data-mode='ink'] :global(.od-stroke),
+  .od[data-mode='ink'] :global(.od-handle),
+  .od[data-mode='ink'] :global(.od-pt) { opacity: 0; pointer-events: none; }
+  .od[data-mode='ink'] :global(.od-ink) { opacity: 1; }
+  .od[data-mode='xray'] :global(.od-ink) { opacity: 0.09; }
+  .od[data-mode='skeleton'] :global(.od-ink) { opacity: 0; }
+
+  /* --- rail --- */
+  .od__rail { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .od__label { display: block; margin-bottom: 0.55rem; }
+  .od__wval { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  .od__glyphs { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .od__glyph {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding-inline: 0.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    line-height: 1;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--fg-2);
+    cursor: pointer;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .od__glyph:hover { color: var(--fg); border-color: var(--fg-3); }
+  .od__glyph[aria-pressed='true'] {
+    color: var(--accent-contrast);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .od__modes { display: inline-flex; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+  .od__mode {
+    padding: 0.45rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    cursor: pointer;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .od__mode + .od__mode { border-left: 1px solid var(--line); }
+  .od__mode:hover { color: var(--fg); }
+  .od__mode[aria-pressed='true'] { color: var(--accent-contrast); background: var(--accent); }
+
+  .od__slider { width: 100%; accent-color: var(--accent); }
+
+  .od__stats { border-top: 1px solid var(--line); }
+  .od__stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--sp-3);
+    padding-block: 0.55rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .od__stat dd {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .od__note { font-size: var(--step--1); color: var(--fg-3); line-height: 1.55; }
+
+  @media (max-width: 980px) {
+    .od { grid-template-columns: 1fr; }
+    .od__stage svg { height: clamp(16rem, 46vh, 24rem); }
+  }
+</style>
