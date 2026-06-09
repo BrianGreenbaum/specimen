@@ -6,52 +6,58 @@ const fam = font.fontFamily;
 ---
 <div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — INTERACTIVE: live four-axis variable playground -->
+  <!-- 01 — INTERACTIVE: a type-foundry tester, art-directed as a specimen card -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Variable playground — drive all four axes</span></figcaption>
-    <div class="iu__scene play-scene">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Type tester — drive all four axes of the family</span></figcaption>
+    <div class="iu__scene scene-play">
       <div class="play" data-play>
         <div class="play__stage">
-          <span class="play__readout" data-readout>wght 360 · opsz 144 · SOFT 42 · WONK on</span>
-          <h3 class="play__word" data-word>Humming</h3>
+          <div class="play__meta">
+            <span class="play__foundry">Undercase Type</span>
+            <span class="play__instance" data-instance>Regular · Display</span>
+          </div>
+          <h3 class="play__word" data-word>Wonky</h3>
+          <span class="play__sub">a soft, characterful old-style — every axis, live</span>
         </div>
-        <div class="play__controls">
-          <label class="play__ctl">
-            <span class="play__name">Weight <i data-out="wght">360</i></span>
-            <input type="range" data-axis="wght" min="100" max="900" step="1" value="360" />
-          </label>
-          <label class="play__ctl">
-            <span class="play__name">Optical size <i data-out="opsz">144</i></span>
-            <input type="range" data-axis="opsz" min="9" max="144" step="1" value="144" />
-          </label>
-          <label class="play__ctl">
-            <span class="play__name">Softness <i data-out="SOFT">42</i></span>
-            <input type="range" data-axis="SOFT" min="0" max="100" step="1" value="42" />
-          </label>
-          <label class="play__ctl play__ctl--toggle">
-            <span class="play__name">Wonk</span>
+        <aside class="play__panel">
+          <div class="play__ctl">
+            <span class="play__name"><span>Weight</span><b data-out="wght">360</b></span>
+            <input type="range" data-axis="wght" min="100" max="900" step="1" value="360" aria-label="Weight" />
+          </div>
+          <div class="play__ctl">
+            <span class="play__name"><span>Optical size</span><b data-out="opsz">144</b></span>
+            <input type="range" data-axis="opsz" min="9" max="144" step="1" value="144" aria-label="Optical size" />
+          </div>
+          <div class="play__ctl">
+            <span class="play__name"><span>Softness</span><b data-out="SOFT">38</b></span>
+            <input type="range" data-axis="SOFT" min="0" max="100" step="1" value="38" aria-label="Softness" />
+          </div>
+          <div class="play__ctl play__ctl--toggle">
+            <span class="play__name"><span>Wonk</span></span>
             <button type="button" class="play__toggle" data-wonk aria-pressed="true">
-              <span>off</span><span>on</span>
+              <span class="play__knob" aria-hidden="true"></span>
+              <span class="play__toglabel">on</span>
             </button>
-          </label>
-        </div>
+          </div>
+        </aside>
       </div>
     </div>
-    <p class="iu__hint label">Drag the sliders — softness inks the joints, Wonk leans the n, h &amp; m. Every axis of Fraunces, live.</p>
+    <p class="iu__hint label">Drag any axis — Softness inks the joints, Wonk leans the W, n &amp; k. The instance name updates as you go.</p>
   </figure>
 
-  <!-- 02 — Fashion magazine cover: wonky + soft masthead, hover-inking, italic cover-line swap -->
+  <!-- 02 — Fashion magazine cover, full-bleed, hover-inking masthead + giant flourish initial -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Cover — a wonky, soft-inked fashion masthead</span></figcaption>
-    <div class="iu__scene scene-cover iu__scene--portrait">
-      <div class="iu__poster cover" data-cover>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Cover — a soft-inked fashion masthead</span></figcaption>
+    <div class="iu__scene scene-cover">
+      <div class="cover" data-cover>
+        <span class="cover__ghost" aria-hidden="true">P</span>
         <div class="cover__top">
-          <span class="cover__issue">No. <span class="on">14</span></span>
+          <span class="cover__issue">Issue <span class="on">14</span></span>
           <span class="cover__price">£<span class="on">12</span> · Spring <span class="on">2026</span></span>
         </div>
         <div class="cover__mastblock">
           <h3 class="cover__masthead" data-masthead>Plume</h3>
-          <p class="cover__deck">The <em>soft</em> issue — fashion, ink &amp; the art of the <em>wonky</em> line.</p>
+          <p class="cover__deck">The <em>soft</em> issue — fashion, ink, and the art of the <em>wonky</em> line.</p>
         </div>
         <ul class="cover__lines">
           <li><span class="cover__num on">01</span> The hairline returns — couture set <em data-swap>entirely in thin</em></li>
@@ -64,27 +70,35 @@ const fam = font.fontFamily;
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Hover the masthead — the ink floods in (SOFT 0→100) and the cover lines tilt to true italic.</p>
+    <p class="iu__hint label">Hover the masthead — the ink floods in (SOFT 0→100) and the cover lines tilt to a true italic.</p>
   </figure>
 
-  <!-- 03 — INTERACTIVE: optical-size signature, user-driven contrast bloom -->
+  <!-- 03 — INTERACTIVE: the opsz signature staged as a split before/after illustration -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Optical size — drag one outline from 9pt to 144pt</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Optical size — one outline, 9 pt to 144 pt</span></figcaption>
     <div class="iu__scene scene-opsz">
       <div class="opsz" data-opsz>
-        <div class="opsz__head">
-          <span class="opsz__tag">Optical size</span>
-          <span class="opsz__val"><i data-opsz-out>144</i> pt</span>
+        <div class="opsz__display">
+          <span class="opsz__rail">
+            <span class="opsz__tag">Optical size</span>
+            <span class="opsz__val"><i data-opsz-out>144</i><sup>pt</sup></span>
+          </span>
+          <h3 class="opsz__word" data-opsz-word>Gazette</h3>
+          <input class="opsz__range" type="range" data-opsz-axis min="9" max="144" step="1" value="144" aria-label="Optical size, 9 to 144 point" />
         </div>
-        <h3 class="opsz__word" data-opsz-word>Gazette</h3>
-        <input class="opsz__range" type="range" data-opsz-axis min="9" max="144" step="1" value="144" aria-label="Optical size" />
-        <div class="opsz__pair">
-          <p class="opsz__small">Set the same Gazette masthead at nine point and the hairlines fatten, the x-height climbs and the contrast calms — the letters stop performing and settle into a column of news.</p>
-          <span class="opsz__big" data-opsz-mini>Gazette</span>
+        <div class="opsz__story">
+          <div class="opsz__col">
+            <span class="opsz__lbl">9 pt — text cut</span>
+            <p class="opsz__text">At nine point the hairlines fatten, the x-height climbs and the contrast calms. The same outline stops performing and settles into an even column of news — comfortable to read for a thousand words.</p>
+          </div>
+          <div class="opsz__col opsz__col--big">
+            <span class="opsz__lbl">144 pt — display cut</span>
+            <span class="opsz__specimen" data-opsz-mini>Gg</span>
+          </div>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Drag the slider — one outline ramps from a calm 9pt text cut to a flamboyant 144pt display.</p>
+    <p class="iu__hint label">Drag the slider — watch one outline ramp from a calm 9 pt text cut to a flamboyant 144 pt display.</p>
   </figure>
 
   <!-- 04 — REAL UI at device scale, interactive OpenType toggles + live specimen chip -->
@@ -98,10 +112,10 @@ const fam = font.fontFamily;
         </div>
         <div class="reader__bar">
           <span class="reader__logo">Plume</span>
-          <nav class="reader__feat">
+          <nav class="reader__feat" aria-label="Typographic features">
             <button class="is-on" data-feat="liga" aria-pressed="true">Ligatures</button>
-            <button data-feat="onum" aria-pressed="false">Old-style figures</button>
-            <button data-feat="dlig" aria-pressed="false">Disc. ligatures</button>
+            <button data-feat="onum" aria-pressed="false">Old-style</button>
+            <button data-feat="dlig" aria-pressed="false">Disc. lig.</button>
           </nav>
           <span class="reader__time">8 min</span>
         </div>
@@ -119,23 +133,28 @@ const fam = font.fontFamily;
         </article>
       </div>
     </div>
-    <p class="iu__hint label">Toggle the OpenType features — watch the “Live” chip and the figures in the column change in step.</p>
+    <p class="iu__hint label">Toggle the OpenType features — the “Live” chip and the figures in the column change in step.</p>
   </figure>
 
 </div>
 
 <script>
-  // ---- 01 variable playground ----
+  // named instances for the tester readout
+  const NAME_W = (w: number) =>
+    w < 200 ? 'Thin' : w < 350 ? 'Light' : w < 450 ? 'Regular' :
+    w < 550 ? 'Medium' : w < 650 ? 'Semi Bold' : w < 800 ? 'Bold' : 'Black';
+  const NAME_O = (o: number) => (o < 40 ? 'Text' : o < 100 ? 'Subhead' : 'Display');
+
+  // ---- 01 variable tester ----
   document.querySelectorAll<HTMLElement>('[data-play]').forEach((play) => {
     const word = play.querySelector<HTMLElement>('[data-word]')!;
-    const readout = play.querySelector<HTMLElement>('[data-readout]')!;
-    const axes: Record<string, number> = { wght: 360, opsz: 144, SOFT: 42, WONK: 1 };
+    const instance = play.querySelector<HTMLElement>('[data-instance]')!;
+    const axes: Record<string, number> = { wght: 360, opsz: 144, SOFT: 38, WONK: 1 };
 
     const apply = () => {
       word.style.fontVariationSettings =
         `'wght' ${axes.wght}, 'opsz' ${axes.opsz}, 'SOFT' ${axes.SOFT}, 'WONK' ${axes.WONK}`;
-      readout.textContent =
-        `wght ${axes.wght} · opsz ${axes.opsz} · SOFT ${axes.SOFT} · WONK ${axes.WONK ? 'on' : 'off'}`;
+      instance.textContent = `${NAME_W(axes.wght)} · ${NAME_O(axes.opsz)}`;
     };
 
     play.querySelectorAll<HTMLInputElement>('input[data-axis]').forEach((input) => {
@@ -153,10 +172,12 @@ const fam = font.fontFamily;
     wonk?.addEventListener('click', () => {
       axes.WONK = axes.WONK ? 0 : 1;
       wonk.setAttribute('aria-pressed', String(!!axes.WONK));
+      const lbl = wonk.querySelector('.play__toglabel');
+      if (lbl) lbl.textContent = axes.WONK ? 'on' : 'off';
       apply();
     });
 
-    // One-time interactivity telegraph: pulse the SOFT thumb (reduced-motion safe via CSS).
+    // One-time interactivity telegraph (reduced-motion safe via CSS).
     play.setAttribute('data-hint', 'soft');
     apply();
   });
@@ -167,9 +188,10 @@ const fam = font.fontFamily;
     const out = root.querySelector<HTMLElement>('[data-opsz-out]')!;
     const range = root.querySelector<HTMLInputElement>('[data-opsz-axis]')!;
     const apply = (v: number) => {
+      const t = (v - 9) / (144 - 9);
       // weight eases down slightly as the display blooms, letterspacing tightens
-      const wght = Math.round(430 - (v - 9) / (144 - 9) * 90);
-      const ls = (0.01 - (v - 9) / (144 - 9) * 0.04).toFixed(3);
+      const wght = Math.round(440 - t * 90);
+      const ls = (0.012 - t * 0.05).toFixed(3);
       word.style.fontVariationSettings = `'wght' ${wght}, 'opsz' ${v}, 'SOFT' 0, 'WONK' 0`;
       word.style.letterSpacing = `${ls}em`;
       out.textContent = String(v);
@@ -190,8 +212,11 @@ const fam = font.fontFamily;
         .join(', ');
       text.style.fontFeatureSettings = feats;
       chip.style.fontFeatureSettings = feats;
-      // surface a word that shows the active feature in the magnified chip
-      chip.textContent = state.dlig ? 'aspect · 1873' : state.onum ? 'office · 1873' : 'office · 1873';
+      // surface a word/figure that visibly demonstrates whichever feature is active:
+      // dlig exercises the ct/st discretionary ligatures; onum shows the old-style 8.
+      const word = state.dlig ? 'aspect' : 'office';
+      const fig = state.onum ? '1860' : '1873';
+      chip.textContent = `${word} · ${fig}`;
     };
 
     reader.querySelectorAll<HTMLButtonElement>('[data-feat]').forEach((btn) => {
@@ -213,52 +238,59 @@ const fam = font.fontFamily;
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu__scene * { font-family: var(--fam); }
 
-  /* ====== 01 · VARIABLE PLAYGROUND ====== */
-  .play-scene { background: var(--bg); }
+  /* ====== 01 · VARIABLE TYPE TESTER ====== */
+  .scene-play { background: var(--bg); }
   .play {
     position: relative; background: var(--bg); color: var(--fg);
-    display: grid; grid-template-columns: 1fr; min-height: 0;
-    container-type: inline-size;
+    display: grid; grid-template-columns: 1fr minmax(220px, 0.42fr);
+    min-height: 0; container-type: inline-size;
   }
   .play__stage {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 5cqi 4cqi 4cqi; gap: 2.4cqi; overflow: hidden;
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    padding: clamp(1.6rem, 5cqi, 3.4rem); gap: clamp(0.7rem, 2cqi, 1.4rem); overflow: hidden;
+    border-right: 1px solid var(--line);
   }
-  .play__readout {
-    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.12em;
+  .play__meta {
+    display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--fg-3);
   }
+  .play__instance { color: var(--accent); }
   .play__word {
-    font-size: 26cqi; line-height: 0.92; font-weight: 400;
-    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 42, 'WONK' 1;
-    color: var(--fg); letter-spacing: -0.015em;
+    font-size: clamp(64px, 24cqi, 220px); line-height: 0.86; font-weight: 400;
+    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 38, 'WONK' 1;
+    color: var(--fg); letter-spacing: -0.02em;
   }
-  .play__controls {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 3cqi 5cqi; padding: 4cqi 6cqi 6cqi; border-top: 1px solid var(--line);
+  .play__sub {
+    font-size: clamp(13px, 2cqi, 17px); font-style: italic; color: var(--fg-2);
+    font-variation-settings: 'opsz' 40, 'wght' 380; max-width: 30ch;
   }
-  .play__ctl { display: flex; flex-direction: column; gap: 1.4cqi; }
+  .play__panel {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(0.9rem, 2.6cqi, 1.6rem);
+    padding: clamp(1.4rem, 4cqi, 2.4rem) clamp(1.2rem, 3.4cqi, 2rem);
+    background: var(--bg-2);
+  }
+  .play__ctl { display: flex; flex-direction: column; gap: 0.55rem; }
   .play__name {
-    font-family: var(--font-mono); font-size: 2.2cqi; letter-spacing: 0.08em;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--fg-2);
     display: flex; justify-content: space-between; align-items: baseline;
   }
-  .play__name i { font-style: normal; color: var(--accent); font-feature-settings: 'tnum'; }
+  .play__name b { font-weight: 400; color: var(--accent); font-feature-settings: 'tnum'; font-size: 12px; }
   .play__ctl input[type='range'] {
     -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
     background: var(--line); border-radius: 2px; cursor: pointer;
   }
   .play__ctl input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none;
-    width: 3.4cqi; height: 3.4cqi; min-width: 14px; min-height: 14px;
-    border-radius: 50%; background: var(--accent);
-    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+    width: 18px; height: 18px; border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg-2); box-shadow: 0 0 0 1px var(--accent);
   }
   .play__ctl input[type='range']::-moz-range-thumb {
-    width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
-    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+    width: 18px; height: 18px; border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg-2); box-shadow: 0 0 0 1px var(--accent);
   }
-  /* One-time pulse on the SOFT slider thumb to telegraph that this is draggable */
   @media (prefers-reduced-motion: no-preference) {
     .play[data-hint='soft'] [data-axis='SOFT']::-webkit-slider-thumb {
       animation: thumb-pulse 1.6s var(--ease, ease-out) 3;
@@ -269,160 +301,201 @@ const fam = font.fontFamily;
   }
   @keyframes thumb-pulse {
     0%, 100% { box-shadow: 0 0 0 1px var(--accent); }
-    50% { box-shadow: 0 0 0 1px var(--accent), 0 0 0 6px color-mix(in srgb, var(--accent) 30%, transparent); }
+    50% { box-shadow: 0 0 0 1px var(--accent), 0 0 0 7px color-mix(in srgb, var(--accent) 30%, transparent); }
   }
-  .play__ctl--toggle { justify-content: flex-start; }
+  .play__ctl--toggle .play__name { margin-bottom: 0.1rem; }
   .play__toggle {
-    display: inline-grid; grid-auto-flow: column; align-items: center;
-    border: 1px solid var(--line); border-radius: 100px; padding: 1cqi;
-    gap: 0; position: relative; align-self: flex-start; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    border: 1px solid var(--accent); border-radius: 100px; padding: 0.34rem 0.5rem 0.34rem 0.34rem;
+    cursor: pointer; align-self: flex-start; background: transparent;
+    transition: background 0.25s var(--ease);
   }
-  .play__toggle span {
-    font-family: var(--font-mono); font-size: 2.2cqi; letter-spacing: 0.1em;
-    text-transform: uppercase; padding: 0.6cqi 2.4cqi; border-radius: 100px;
-    color: var(--fg-3); position: relative; z-index: 1; transition: color 0.25s var(--ease);
+  .play__knob {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
+    transition: transform 0.25s var(--ease), background 0.25s var(--ease);
   }
-  .play__toggle[aria-pressed='false'] span:first-child { color: var(--accent-contrast); background: var(--accent); }
-  .play__toggle[aria-pressed='true'] span:last-child { color: var(--accent-contrast); background: var(--accent); }
+  .play__toglabel {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .play__toggle[aria-pressed='true'] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .play__toggle[aria-pressed='false'] .play__knob { transform: translateX(0); background: var(--fg-3); }
+  .play__toggle[aria-pressed='false'] .play__toglabel { color: var(--fg-3); }
 
-  @container (min-width: 620px) {
-    .play__word { font-size: 19cqi; }
-    .play__controls { grid-template-columns: repeat(4, 1fr); }
+  @container (max-width: 560px) {
+    .play { grid-template-columns: 1fr; }
+    .play__stage { border-right: 0; border-bottom: 1px solid var(--line); align-items: center; text-align: center; }
+    .play__word { font-size: clamp(72px, 30cqi, 160px); }
+    .play__sub { text-align: center; }
+    .play__panel { gap: 1.3rem; padding: 1.5rem 1.4rem 1.8rem; }
   }
 
-  /* ====== 02 · FASHION COVER ====== */
-  .scene-cover { --card-ar: 3 / 4; }
+  /* ====== 02 · FASHION COVER (full-bleed) ====== */
+  .scene-cover { background: var(--bg-2); }
   .cover {
-    background: var(--bg); color: var(--fg);
-    display: flex; flex-direction: column; padding: 6cqi 6cqi 5cqi;
-    overflow: hidden;
+    position: relative; background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column; padding: 5cqi 5.5cqi 4.5cqi;
+    overflow: hidden; container-type: inline-size; aspect-ratio: 4 / 5;
   }
+  /* oversized ghosted flourish initial — the cover's centrefold visual element,
+     sitting behind the masthead block */
+  .cover__ghost {
+    position: absolute; right: -6cqi; top: 10cqi; z-index: 0; pointer-events: none;
+    font-size: 82cqi; line-height: 0.7; font-weight: 400;
+    font-variation-settings: 'wght' 280, 'opsz' 144, 'SOFT' 85, 'WONK' 1;
+    color: var(--accent); opacity: 0.12; font-style: italic;
+    transition: opacity 0.6s var(--ease, ease-out);
+  }
+  .cover > * { position: relative; z-index: 1; }
   .cover__top {
     display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 2.5cqi; letter-spacing: 0.16em;
+    font-family: var(--font-mono); font-size: 2.3cqi; letter-spacing: 0.18em;
     text-transform: uppercase; color: var(--fg-3);
   }
   .cover__top .on { font-feature-settings: 'onum' 1; color: var(--accent); }
-  .cover__mastblock { margin-top: 5cqi; }
+  .cover__mastblock { margin-top: 4cqi; }
   .cover__masthead {
-    font-size: 46cqi; line-height: 0.8; font-weight: 360; cursor: default;
-    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 50, 'WONK' 1;
-    letter-spacing: -0.03em; margin: 0; color: var(--fg);
+    font-size: 33cqi; line-height: 0.84; font-weight: 360; cursor: default;
+    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 46, 'WONK' 1;
+    letter-spacing: -0.035em; margin: 0; color: var(--fg);
     transition: font-variation-settings 0.6s var(--ease, ease-out), color 0.6s var(--ease);
   }
   .cover__deck {
-    font-size: 4.4cqi; line-height: 1.16; color: var(--fg-2);
-    margin-top: 3.5cqi; max-width: 94%; font-weight: 380;
+    font-size: 3.6cqi; line-height: 1.22; color: var(--fg-2);
+    margin-top: 2.6cqi; max-width: 76%; font-weight: 380;
     font-variation-settings: 'wght' 380, 'opsz' 40;
   }
   .cover__deck em { font-style: italic; color: var(--accent); font-variation-settings: 'opsz' 40; }
   .cover__lines {
     margin-top: auto; list-style: none; padding: 0;
     display: flex; flex-direction: column; gap: 2.4cqi;
-    border-top: 1px solid var(--line); padding-top: 4cqi;
+    border-top: 1px solid var(--line); padding-top: 3.6cqi;
   }
   .cover__lines li {
     font-size: 4.2cqi; line-height: 1.12; color: var(--fg);
-    font-weight: 380; padding-left: 7cqi; position: relative;
-    font-variation-settings: 'wght' 400, 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+    font-weight: 400; padding-left: 7cqi; position: relative;
+    font-variation-settings: 'wght' 420, 'opsz' 56, 'SOFT' 0, 'WONK' 0;
   }
   .cover__num {
-    position: absolute; left: 0; top: 0.1em;
-    font-family: var(--font-mono); font-size: 2.6cqi; letter-spacing: 0.08em;
+    position: absolute; left: 0; top: 0.18em;
+    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.08em;
     color: var(--accent); font-feature-settings: 'onum' 1;
   }
   .cover__lines em {
     font-style: italic; color: var(--fg-2);
-    font-variation-settings: 'opsz' 60, 'wght' 400;
+    font-variation-settings: 'opsz' 72, 'wght' 420;
     transition: color 0.5s var(--ease);
   }
   .cover__foot {
-    margin-top: 4cqi; display: flex; align-items: flex-end; justify-content: space-between;
+    margin-top: 4.5cqi; display: flex; align-items: flex-end; justify-content: space-between;
   }
   .cover__sub {
-    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.18em;
+    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.2em;
     text-transform: uppercase; color: var(--fg-3);
   }
   .cover__barcode {
-    height: 7cqi; width: 24cqi;
-    background: repeating-linear-gradient(90deg, var(--fg-2) 0 0.5cqi, transparent 0.5cqi 1.3cqi);
-    opacity: 0.7;
+    height: 7cqi; width: 26cqi;
+    background: repeating-linear-gradient(90deg,
+      var(--fg-2) 0 0.6cqi, transparent 0.6cqi 1cqi,
+      var(--fg-2) 1cqi 1.3cqi, transparent 1.3cqi 2.4cqi);
+    opacity: 0.55;
   }
-  /* live touch: hover the masthead → ink floods + cover lines tilt to true italic */
   @media (prefers-reduced-motion: no-preference) {
     .cover[data-cover]:hover .cover__masthead,
     .cover[data-cover]:focus-within .cover__masthead {
       font-variation-settings: 'wght' 380, 'opsz' 144, 'SOFT' 100, 'WONK' 1;
       color: var(--accent);
     }
+    .cover[data-cover]:hover .cover__ghost,
+    .cover[data-cover]:focus-within .cover__ghost { opacity: 0.18; }
     .cover[data-cover]:hover .cover__lines em[data-swap],
-    .cover[data-cover]:focus-within .cover__lines em[data-swap] {
-      color: var(--accent);
-    }
+    .cover[data-cover]:focus-within .cover__lines em[data-swap] { color: var(--accent); }
   }
 
-  /* ====== 03 · OPTICAL SIZE (interactive scrubber) ====== */
+  /* ====== 03 · OPTICAL SIZE — staged before/after illustration ====== */
   .scene-opsz { background: var(--bg); }
   .opsz {
     position: relative; background: var(--bg); color: var(--fg);
-    padding: 6cqi 6cqi 6cqi; display: flex; flex-direction: column; gap: 3cqi;
+    display: grid; grid-template-rows: auto auto; container-type: inline-size;
   }
-  .opsz__head {
+  .opsz__display {
+    position: relative; padding: clamp(1.6rem, 5cqi, 3.4rem) clamp(1.6rem, 5cqi, 3.4rem) clamp(1.4rem, 4cqi, 2.6rem);
+    overflow: hidden;
+  }
+  .opsz__rail {
     display: flex; align-items: baseline; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.16em;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--fg-3);
   }
-  .opsz__val { color: var(--accent); }
+  .opsz__val { color: var(--accent); font-size: 13px; }
   .opsz__val i { font-style: normal; font-feature-settings: 'tnum'; }
+  .opsz__val sup { font-size: 0.7em; margin-left: 0.15em; }
   .opsz__word {
-    font-size: 30cqi; line-height: 0.86; font-weight: 360;
-    letter-spacing: -0.02em; color: var(--fg); text-align: left;
-    font-variation-settings: 'wght' 340, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+    font-size: clamp(72px, 30cqi, 300px); line-height: 0.82; font-weight: 360;
+    letter-spacing: -0.02em; color: var(--fg); margin: 0.4rem 0 1.6rem;
+    font-variation-settings: 'wght' 350, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
   }
   .opsz__range {
     -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
     background: linear-gradient(90deg, var(--line), var(--accent));
-    border-radius: 2px; cursor: pointer; margin: 1cqi 0 1cqi;
+    border-radius: 2px; cursor: pointer;
   }
   .opsz__range::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none;
-    width: 3.4cqi; height: 3.4cqi; min-width: 16px; min-height: 16px;
-    border-radius: 50%; background: var(--accent);
-    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+    width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
   }
   .opsz__range::-moz-range-thumb {
-    width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
-    border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+    width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
   }
-  .opsz__pair {
-    display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 5cqi;
-    border-top: 1px solid var(--line); padding-top: 4cqi;
+  .opsz__story {
+    display: grid; grid-template-columns: 1fr auto; align-items: stretch;
+    border-top: 1px solid var(--line);
   }
-  .opsz__small {
-    font-size: 2.9cqi; line-height: 1.5; color: var(--fg-2); max-width: 48ch;
+  .opsz__col {
+    padding: clamp(1.4rem, 4cqi, 2.4rem) clamp(1.6rem, 5cqi, 3.4rem);
+    display: flex; flex-direction: column; gap: 0.9rem;
+  }
+  .opsz__col--big {
+    border-left: 1px solid var(--line); background: var(--bg-2);
+    align-items: center; justify-content: center; gap: 1.1rem;
+    min-width: 30%;
+  }
+  .opsz__lbl {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .opsz__text {
+    font-size: 15px; line-height: 1.6; color: var(--fg-2); max-width: 42ch; margin: 0;
     font-variation-settings: 'wght' 400, 'opsz' 11, 'SOFT' 0, 'WONK' 0;
   }
-  .opsz__big {
-    font-size: 11cqi; line-height: 0.8; color: var(--accent);
-    font-variation-settings: 'wght' 400, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  .opsz__specimen {
+    font-size: clamp(72px, 22cqi, 150px); line-height: 0.8; color: var(--accent);
+    font-variation-settings: 'wght' 360, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
     letter-spacing: 0;
   }
 
+  @container (max-width: 560px) {
+    .opsz__story { grid-template-columns: 1fr; }
+    .opsz__col--big { border-left: 0; border-top: 1px solid var(--line); }
+  }
+
   /* ====== 04 · READER UI (real px) ====== */
-  .reader { font-size: 14px; line-height: 1.5; }
+  .reader { font-size: 14px; line-height: 1.5; container-type: inline-size; }
   .reader__bar {
-    display: flex; align-items: center; gap: 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
     padding: 0.65rem 1rem; border-bottom: 1px solid var(--line);
   }
   .reader__logo {
-    font-size: 19px; font-weight: 400; color: var(--fg);
+    font-size: 19px; font-weight: 400; color: var(--fg); flex: none;
     font-variation-settings: 'wght' 460, 'opsz' 80, 'SOFT' 0, 'WONK' 0;
     letter-spacing: 0.01em;
   }
-  .reader__feat { display: flex; gap: 0.3rem; margin-left: auto; flex-wrap: wrap; }
+  .reader__feat { display: flex; gap: 0.3rem; margin-left: auto; flex-wrap: nowrap; }
   .reader__feat button {
-    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
-    color: var(--fg-3); padding: 0.32rem 0.62rem; border-radius: 100px;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.02em;
+    color: var(--fg-3); padding: 0.32rem 0.58rem; border-radius: 100px;
     border: 1px solid var(--line); cursor: pointer; transition: all 0.18s var(--ease);
     white-space: nowrap;
   }
@@ -431,10 +504,9 @@ const fam = font.fontFamily;
     color: var(--accent-contrast); background: var(--accent); border-color: var(--accent);
   }
   .reader__time {
-    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
-    letter-spacing: 0.06em; padding-left: 0.4rem; border-left: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); flex: none;
+    letter-spacing: 0.06em; padding-left: 0.5rem; border-left: 1px solid var(--line);
   }
-  /* magnified before/after specimen chip — makes the OpenType change unmissable */
   .reader__chip {
     display: flex; align-items: center; gap: 0.7rem;
     padding: 0.5rem 1rem; border-bottom: 1px solid var(--line);
@@ -442,7 +514,7 @@ const fam = font.fontFamily;
   }
   .reader__chiplabel {
     font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--accent-contrast);
+    text-transform: uppercase; color: var(--accent-contrast); flex: none;
     background: var(--accent); border-radius: 100px; padding: 0.15rem 0.55rem;
   }
   .reader__chipspec {
@@ -450,7 +522,7 @@ const fam = font.fontFamily;
     font-variation-settings: 'wght' 420, 'opsz' 60, 'SOFT' 0, 'WONK' 0;
     letter-spacing: -0.01em;
   }
-  .reader__body { padding: clamp(1.4rem, 3.4cqi, 2.6rem) clamp(1.4rem, 5cqi, 4rem); max-width: 70ch; margin: 0 auto; }
+  .reader__body { padding: clamp(1.4rem, 3.4cqi, 2.6rem) clamp(1.4rem, 5cqi, 4rem) clamp(1.6rem, 4cqi, 3rem); max-width: 70ch; margin: 0 auto; }
   .reader__kicker {
     font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--accent);
@@ -478,16 +550,12 @@ const fam = font.fontFamily;
     font-variation-settings: 'wght' 420, 'opsz' 48, 'SOFT' 0, 'WONK' 0;
   }
 
-  /* ---- responsive ---- */
-  @container (max-width: 420px) {
-    .play__controls { grid-template-columns: 1fr; gap: 4cqi; }
-  }
-  @container (max-width: 560px) {
-    .opsz__pair { grid-template-columns: 1fr; align-items: start; gap: 3cqi; }
-    .reader__feat button { font-size: 10px; padding: 0.28rem 0.5rem; }
+  /* ---- reader responsive: keep the toolbar on one line at narrow widths ---- */
+  @container (max-width: 480px) {
+    .reader__bar { gap: 0.45rem; padding: 0.6rem 0.7rem; }
+    .reader__logo { font-size: 17px; }
+    .reader__feat button { font-size: 9.5px; padding: 0.3rem 0.44rem; letter-spacing: 0; }
+    .reader__time { padding-left: 0.4rem; font-size: 10px; }
     .reader__chipspec { font-size: 24px; }
-  }
-  @media (max-width: 600px) {
-    .scene-opsz, .play-scene { aspect-ratio: auto; }
   }
 </style>

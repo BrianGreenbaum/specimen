@@ -100,12 +100,26 @@ const d0 = days[0];
             ))}
           </ul>
         </div>
-        <button class="md__fab" aria-label="New event"><span>＋</span></button>
+        <button class="md__fab" aria-label="New event">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </button>
         <div class="md__nav">
-          <span class="is-on">⌂<em>Today</em></span>
-          <span>◷<em>Calendar</em></span>
-          <span>◍<em>Activity</em></span>
-          <span>☰<em>More</em></span>
+          <span class="is-on">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5M6 10v9h12v-9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            <em>Today</em>
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="15" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M8 3.5v3.5M16 3.5v3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <em>Calendar</em>
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14l4-5 4 3 4-7 4 9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 19h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <em>Activity</em>
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <em>More</em>
+          </span>
         </div>
       </div>
     </div>
@@ -244,22 +258,21 @@ const d0 = days[0];
     <div class="iu__scene scene-tall">
       <div class="wall">
         <div class="wall__top">
-          <span class="wall__brand">▱ Android 16</span>
-          <span class="wall__edition">Material&nbsp;You · Developer&nbsp;Preview</span>
+          <span class="wall__brand">▱&nbsp;Android&nbsp;16 <i>Material You</i></span>
+          <span class="wall__edition">Developer&nbsp;Preview</span>
         </div>
         <div class="wall__hero">
-          <span class="wall__kick">The system that</span>
+          <span class="wall__kick">The one type system that</span>
           <h3 class="wall__word" aria-label="ADAPTS" data-wave>
             <span style="--i:0">A</span><span style="--i:1">D</span><span style="--i:2">A</span><span style="--i:3">P</span><span style="--i:4">T</span><span style="--i:5">S</span>
           </h3>
-          <span class="wall__kick wall__kick--end">to you</span>
-        </div>
-        <div class="wall__swatches" aria-hidden="true">
-          <i style="--s:#b1551f"></i><i style="--s:#5b7c99"></i><i style="--s:#7a8b53"></i><i style="--s:#9a6f4e"></i><i style="--s:#6d5d8a"></i>
+          <span class="wall__mid">to <em>every</em> screen, weight and color</span>
         </div>
         <div class="wall__foot">
-          <span class="wall__tag">DYNAMIC COLOR · ONE TYPE SYSTEM</span>
-          <span class="wall__rail">wght 100 → 900</span>
+          <span class="wall__swatches" aria-hidden="true">
+            <i style="--s:#b1551f"></i><i style="--s:#5b7c99"></i><i style="--s:#7a8b53"></i><i style="--s:#9a6f4e"></i><i style="--s:#6d5d8a"></i>
+          </span>
+          <span class="wall__rail">wght&nbsp;100 → 900</span>
         </div>
       </div>
     </div>
@@ -534,7 +547,23 @@ const d0 = days[0];
     aspect-ratio: 16 / 10;
     display: grid; place-items: center;
     padding: clamp(14px, 3cqi, 34px) 0;
+    /* designed desk surface, not a beige void: a soft architectural grid +
+       a warm directional light pooling behind the device */
+    background:
+      radial-gradient(120% 90% at 62% 18%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 55%),
+      radial-gradient(90% 70% at 30% 100%, color-mix(in srgb, var(--fg) 10%, transparent) 0%, transparent 60%),
+      var(--bg-2);
   }
+  .iu__scene--phone::before {
+    content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--fg) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--fg) 5%, transparent) 1px, transparent 1px);
+    background-size: 34px 34px;
+    -webkit-mask-image: radial-gradient(130% 110% at 60% 30%, #000 30%, transparent 78%);
+            mask-image: radial-gradient(130% 110% at 60% 30%, #000 30%, transparent 78%);
+  }
+  .iu__scene--phone .md { z-index: 1; }
   @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
 
   .iu__device {
@@ -569,7 +598,8 @@ const d0 = days[0];
   .md__day.is-on { background: var(--accent); }
   .md__day.is-on em, .md__day.is-on b { color: var(--accent-contrast); }
   .md__body { flex: 1; overflow: auto; padding: 0 1.1rem; display: flex; flex-direction: column; gap: 12px; }
-  .md__hero { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; border-radius: 24px; background: linear-gradient(155deg, var(--accent), color-mix(in srgb, var(--accent) 52%, #000)); color: var(--accent-contrast); box-shadow: 0 14px 30px -16px color-mix(in srgb, var(--accent) 75%, transparent); flex: none; overflow: hidden; }
+  .md__hero { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; border-radius: 24px; background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 88%, #ffb070) 0%, var(--accent) 42%, color-mix(in srgb, var(--accent) 58%, #2a0f00) 100%); color: var(--accent-contrast); box-shadow: 0 16px 34px -16px color-mix(in srgb, var(--accent) 80%, transparent); flex: none; overflow: hidden; }
+  .md__hero::after { content: ''; position: absolute; top: -40%; right: -20%; width: 70%; height: 120%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, #fff 32%, transparent), transparent 70%); pointer-events: none; }
   .md__hero-top { display: flex; align-items: baseline; justify-content: space-between; }
   .md__hero-place { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
   .md__hero-date { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; opacity: 0.85; font-feature-settings: 'tnum'; }
@@ -599,10 +629,11 @@ const d0 = days[0];
   .md__ev-main b { font-size: 13.5px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .md__ev-main i { font-size: 11px; font-style: normal; color: var(--fg-3); }
   .md__fab { position: absolute; right: 16px; bottom: 64px; width: 52px; height: 52px; border-radius: 18px; border: 0; background: var(--accent); color: var(--accent-contrast); cursor: pointer; box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--accent) 75%, transparent); display: grid; place-items: center; transition: transform 0.15s var(--ease); }
-  .md__fab span { font-size: 26px; line-height: 1; font-weight: 400; }
+  .md__fab svg { width: 24px; height: 24px; display: block; }
   .md__fab:hover { transform: translateY(-2px); }
   .md__nav { display: flex; justify-content: space-around; padding: 0.5rem 0.5rem 0.7rem; border-top: 1px solid var(--line); flex: none; background: var(--bg); }
-  .md__nav span { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 17px; color: var(--fg-3); }
+  .md__nav span { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--fg-3); }
+  .md__nav span svg { width: 21px; height: 21px; display: block; }
   .md__nav span em { font-size: 9.5px; font-style: normal; font-weight: 600; letter-spacing: 0.02em; }
   .md__nav span.is-on { color: var(--accent); }
   @media (prefers-reduced-motion: reduce) { .md__fab { transition: none; } }
@@ -716,18 +747,25 @@ const d0 = days[0];
   }
 
   /* ============ 04 · MATERIAL YOU LAUNCH WALL (per-letter weight wave) ============ */
-  .wall { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4cqi 5cqi; display: flex; flex-direction: column; overflow: hidden; }
-  .wall__top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 1.8cqi; font-size: 1.9cqi; font-weight: 700; letter-spacing: 0.04em; color: var(--fg-2); }
-  .wall__edition { font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); font-size: 1.6cqi; }
-  .wall__hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.4cqi; min-height: 0; }
-  .wall__kick { font-size: 3.4cqi; font-weight: 500; letter-spacing: 0.02em; color: var(--fg-2); }
-  .wall__kick--end { color: var(--accent); font-weight: 700; }
-  .wall__word { display: flex; justify-content: center; margin: 0.6cqi 0; line-height: 0.84; }
-  .wall__word span { font-size: 26cqi; font-weight: 800; letter-spacing: -0.01em; font-variation-settings: 'wght' 400; display: inline-block; }
-  .wall__swatches { display: flex; justify-content: center; gap: 1.4cqi; margin: 2cqi 0; }
-  .wall__swatches i { width: 4cqi; height: 4cqi; border-radius: 1.4cqi; background: var(--s); }
-  .wall__foot { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 1.8cqi; font-size: 1.8cqi; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
-  .wall__rail { color: var(--fg-3); font-feature-settings: 'tnum'; font-weight: 600; letter-spacing: 0.14em; }
+  .wall { position: absolute; inset: 0; background:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
+      var(--bg); color: var(--fg); padding: 4.2cqi 5cqi 3.4cqi; display: flex; flex-direction: column; overflow: hidden; }
+  .wall__top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 1.8cqi; font-size: 1.85cqi; font-weight: 700; letter-spacing: 0.02em; color: var(--fg); }
+  .wall__brand i { font-style: normal; font-weight: 500; color: var(--fg-3); letter-spacing: 0.01em; margin-left: 0.6cqi; }
+  .wall__edition { font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-size: 1.5cqi; }
+  .wall__hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0; min-height: 0; }
+  .wall__kick { font-size: 4cqi; font-weight: 500; letter-spacing: 0.005em; color: var(--fg-2); }
+  /* bridge the scale gap: mid line is a confident intermediate step (not an orphan) */
+  .wall__word { display: flex; justify-content: center; margin: -0.4cqi 0 -0.2cqi; line-height: 0.82; }
+  .wall__word span { font-size: 27cqi; font-weight: 800; letter-spacing: -0.012em; font-variation-settings: 'wght' 400; display: inline-block; }
+  .wall__mid { font-size: 5cqi; font-weight: 600; letter-spacing: -0.01em; color: var(--fg); margin-top: 0.6cqi; }
+  .wall__mid em { font-style: normal; color: var(--accent); font-weight: 800; }
+  .wall__foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 2cqi; }
+  .wall__swatches { display: flex; align-items: center; gap: 1.1cqi; }
+  /* swatches now read as the active color track the headline samples: pill-shaped,
+     low-key, sequenced to the wave so they belong to the animation */
+  .wall__swatches i { width: 5.4cqi; height: 2.4cqi; border-radius: 100px; background: var(--s); display: inline-block; }
+  .wall__rail { color: var(--fg-3); font-feature-settings: 'tnum'; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; font-size: 1.7cqi; }
 
   /* per-letter weight wave: each glyph swings the full axis in sequence */
   .wall__word span { font-variation-settings: 'wght' 700; }
@@ -740,14 +778,29 @@ const d0 = days[0];
       0%, 70%, 100% { font-variation-settings: 'wght' 200; }
       35% { font-variation-settings: 'wght' 900; }
     }
+    /* swatches breathe in the same cadence — they belong to the system, not footnotes */
+    .wall__swatches i {
+      animation: wall-swatch 3.4s var(--ease-out, ease-in-out) infinite;
+    }
+    .wall__swatches i:nth-child(1) { animation-delay: 0s; }
+    .wall__swatches i:nth-child(2) { animation-delay: 0.18s; }
+    .wall__swatches i:nth-child(3) { animation-delay: 0.36s; }
+    .wall__swatches i:nth-child(4) { animation-delay: 0.54s; }
+    .wall__swatches i:nth-child(5) { animation-delay: 0.72s; }
+    @keyframes wall-swatch {
+      0%, 70%, 100% { transform: scaleX(0.7); opacity: 0.45; }
+      35% { transform: scaleX(1); opacity: 1; }
+    }
   }
 
   @container (max-width: 520px) {
-    .wall { padding: 5cqi 4cqi; }
-    .wall__word span { font-size: 26cqi; }
-    .wall__kick { font-size: 4.4cqi; }
-    .wall__top { font-size: 2.8cqi; }
-    .wall__edition { font-size: 2.2cqi; }
-    .wall__foot { font-size: 2.4cqi; }
+    .wall { padding: 5cqi 4.5cqi; }
+    .wall__word span { font-size: 27cqi; }
+    .wall__kick { font-size: 5cqi; }
+    .wall__mid { font-size: 6cqi; }
+    .wall__top { font-size: 2.6cqi; }
+    .wall__edition { font-size: 2cqi; }
+    .wall__rail { font-size: 2.4cqi; }
+    .wall__swatches i { width: 7cqi; height: 3cqi; }
   }
 </style>

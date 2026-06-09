@@ -37,10 +37,10 @@ const pieces = [
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the culture cover</span></figcaption>
     <div class="iu__scene iu__scene--portrait">
-      <div class="iu__poster cover" data-reveal-cover>
+      <div class="iu__poster cover" data-reveal data-reveal-cover>
         <div class="cover__top">
           <span class="cover__no">Issue 19</span>
-          <span class="cover__season">Spring / Été</span>
+          <span class="cover__season">Spring 2026</span>
           <span class="cover__price">$14</span>
         </div>
         <div class="cover__mast">
@@ -49,15 +49,18 @@ const pieces = [
           <h3 class="cover__word cover__word--it" data-cover-word>Manière</h3>
         </div>
         <div class="cover__lines">
-          <p class="cover__feat">The Return of the <em>Hairline</em></p>
-          <p class="cover__sub">Forty pages on couture, contrast &amp; the new restraint</p>
-          <p class="cover__sub">Tilda Swinton, in her own words</p>
+          <p class="cover__feat">The Return of<br />the <em>Hairline</em></p>
+          <ul class="cover__list">
+            <li>Forty pages on couture &amp; the new restraint</li>
+            <li>Tilda Swinton, in her own words</li>
+            <li><span class="cover__plus">Plus</span> a season in Parma</li>
+          </ul>
         </div>
         <div class="cover__foot">
           <span class="cover__bar" aria-hidden="true">
             {Array.from({ length: 26 }).map((_, i) => (<i style={`width:${(i % 3) + 1}px`}></i>))}
           </span>
-          <span class="cover__plus">Plus — <em>a season in Parma</em></span>
+          <span class="cover__byline">Photograph — Paolo Roversi</span>
         </div>
       </div>
     </div>
@@ -68,15 +71,15 @@ const pieces = [
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Identity — restaurant &amp; hospitality mark</span></figcaption>
     <div class="iu__scene scene-16">
-      <div class="iu__poster maison" data-reveal-rule>
+      <div class="iu__poster maison" data-reveal data-reveal-rule>
         <!-- LEFT: a giant initial cropped at the bowl so the thick-stem→hairline-serif
-             transition is the entire image. -->
-        <div class="maison__crop" aria-hidden="true">
-          <span class="maison__glyph">C</span>
-          <span class="maison__note maison__note--stem">thick stem</span>
-          <span class="maison__note maison__note--hair">hairline serif</span>
+             transition is the entire image. Annotation sits in its own caption strip
+             below the crop so it can never clip. -->
+        <div class="maison__crop">
+          <span class="maison__glyph" aria-hidden="true">C</span>
+          <span class="maison__tag">Specimen — the initial, drawn large</span>
         </div>
-        <!-- RIGHT: the actual identity, supporting type set tiny against the giant letter. -->
+        <!-- RIGHT: the actual identity, supporting type set against the giant letter. -->
         <div class="maison__id">
           <div class="maison__est">
             <span>Restaurant</span>
@@ -88,14 +91,14 @@ const pieces = [
             <span class="maison__sub">Hôtel &amp; Table — Place de la Concorde</span>
           </div>
           <div class="maison__foot">
-            <span>Paris VIII<sup>e</sup></span>
+            <span>Déjeuner &amp; dîner</span>
             <span class="maison__sep">·</span>
-            <span>Bracketed serif, cut for the page</span>
+            <span>Paris VIII<sup>e</sup></span>
           </div>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">The mark is built on the face itself — a cropped initial whose thick stem falls to a hairline bracketed serif, with the identity set tiny beside it.</p>
+    <p class="iu__hint label">The mark is the face itself — a cropped initial whose thick stem falls to a hairline bracketed serif, the identity set beside it.</p>
   </figure>
 
   <!-- 03 — EDITORIAL FEATURE OPENER: roman vs the true italic -->
@@ -304,35 +307,44 @@ const pieces = [
     color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 3cqi;
   }
   .cover__no { color: var(--accent); }
-  .cover__season { font-style: italic; font-family: var(--fam); letter-spacing: 0.02em; text-transform: none; }
+  .cover__season { letter-spacing: 0.18em; }
   .cover__mast { display: flex; flex-direction: column; align-items: center; margin: 7cqi 0 4cqi; line-height: 0.82; }
   .cover__word { font-size: 26cqi; line-height: 0.8; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
   .cover__word--it { font-style: italic; letter-spacing: 0; }
   .cover__amp { font-style: italic; font-size: 9cqi; color: var(--accent); line-height: 1; margin: 0.4cqi 0; }
-  .cover__lines { display: flex; flex-direction: column; gap: 2.4cqi; margin-top: auto; }
-  .cover__feat { font-size: 6.4cqi; line-height: 1; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
+  .cover__lines { display: flex; flex-direction: column; gap: 3.6cqi; margin-top: auto; }
+  .cover__feat { font-size: 7.2cqi; line-height: 0.98; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
   .cover__feat em { font-style: italic; color: var(--fg); }
-  .cover__sub { font-size: 3.4cqi; line-height: 1.15; font-style: italic; color: var(--fg-2); margin: 0; }
+  .cover__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.7cqi; max-width: 78%; }
+  .cover__list li {
+    font-family: var(--fam); font-style: italic; font-size: 3.2cqi; line-height: 1.22; color: var(--fg-2);
+    padding-left: 4.4cqi; position: relative;
+  }
+  .cover__list li::before {
+    content: ''; position: absolute; left: 0; top: 0.62em; width: 2.8cqi; height: 1px; background: var(--line);
+  }
+  .cover__plus { font-family: var(--font-mono); font-style: normal; font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-right: 0.4em; }
   .cover__foot {
     display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi;
     margin-top: 5cqi; padding-top: 3cqi; border-top: 1px solid var(--line);
   }
   .cover__bar { display: flex; align-items: flex-end; gap: 2px; height: 7cqi; }
   .cover__bar i { background: var(--fg-3); height: 100%; }
-  .cover__plus { font-family: var(--font-mono); font-size: 2.3cqi; letter-spacing: 0.06em; color: var(--fg-2); text-align: right; }
-  .cover__plus em { font-family: var(--fam); font-style: italic; color: var(--fg-3); letter-spacing: 0; }
+  .cover__byline { font-family: var(--font-mono); font-size: 2.1cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); text-align: right; }
 
   /* kinetic reveal: masthead + lines rise in */
   @media (prefers-reduced-motion: no-preference) {
-    .cover.is-in .cover__word, .cover.is-in .cover__amp, .cover.is-in .cover__lines > * {
+    .cover.is-in .cover__word, .cover.is-in .cover__amp,
+    .cover.is-in .cover__feat, .cover.is-in .cover__list li {
       animation: cover-rise 0.7s var(--ease) both;
     }
     @keyframes cover-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
     .cover.is-in .cover__word--it { animation-delay: 0.08s; }
     .cover.is-in .cover__amp { animation-delay: 0.05s; }
-    .cover.is-in .cover__lines > *:nth-child(1) { animation-delay: 0.18s; }
-    .cover.is-in .cover__lines > *:nth-child(2) { animation-delay: 0.26s; }
-    .cover.is-in .cover__lines > *:nth-child(3) { animation-delay: 0.34s; }
+    .cover.is-in .cover__feat { animation-delay: 0.18s; }
+    .cover.is-in .cover__list li:nth-child(1) { animation-delay: 0.26s; }
+    .cover.is-in .cover__list li:nth-child(2) { animation-delay: 0.32s; }
+    .cover.is-in .cover__list li:nth-child(3) { animation-delay: 0.38s; }
   }
 
   /* ============================================================
@@ -342,64 +354,59 @@ const pieces = [
      identity set tiny beside it. Extreme size jump = unmistakably DM Serif Display.
      ============================================================ */
   .maison {
-    background: var(--bg); display: grid; grid-template-columns: 44% 1fr;
+    background: var(--bg); display: grid; grid-template-columns: 42% 1fr;
     align-items: stretch; gap: 0; overflow: hidden;
   }
 
   /* --- the cropped contrast specimen --- */
   .maison__crop {
     position: relative; overflow: hidden; border-right: 1px solid var(--line);
-    background: color-mix(in srgb, var(--fg) 4%, var(--bg)); display: block;
+    background: color-mix(in srgb, var(--accent) 9%, var(--bg)); display: block;
   }
   .maison__glyph {
-    position: absolute; left: -8cqi; bottom: -22cqi;
-    font-size: 92cqi; line-height: 1; color: var(--fg);
-    /* DM Serif Display has no italic 'C'; the roman shows the bracket best */
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font-size: 78cqi; line-height: 1;
+    /* the thick stem→hairline drama rendered in the accent for a luxe foil */
+    color: color-mix(in srgb, var(--accent) 78%, var(--fg));
     letter-spacing: 0;
   }
-  /* annotation: the two extremes of the stroke, set in the open counter of the C
-     (the dark area inside the bowl) with a short rule pointing at each stroke. */
-  .maison__note {
-    position: absolute; font-family: var(--font-mono); font-size: 1.7cqi;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
-    display: flex; align-items: center; gap: 0.8cqi; white-space: nowrap;
+  /* annotation lives in its own strip pinned to the foot of the crop — never clips */
+  .maison__tag {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 2cqi 4cqi; font-family: var(--font-mono); font-size: 1.7cqi;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+    border-top: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    background: color-mix(in srgb, var(--bg) 64%, transparent);
+    backdrop-filter: blur(2px);
   }
-  .maison__note::before {
-    content: ''; width: 4cqi; height: 1.5px; background: var(--accent); flex: none;
-  }
-  /* thick stem → points left, into the heavy lower-left curve */
-  .maison__note--stem { left: 19cqi; bottom: 20cqi; }
-  /* hairline serif → points left, up at the thin top terminal */
-  .maison__note--hair { left: 21cqi; top: 13cqi; }
 
-  /* --- the identity, set deliberately small against the giant letter --- */
+  /* --- the identity, set against the giant letter --- */
   .maison__id {
     display: flex; flex-direction: column; justify-content: space-between;
-    padding: 5cqi 5cqi 4.5cqi;
+    padding: 6cqi 6cqi 5cqi;
   }
   .maison__est {
     display: flex; align-items: center; gap: 1.6cqi;
     font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3);
   }
   .maison__dot { width: 0.6cqi; height: 0.6cqi; border-radius: 50%; background: var(--accent); }
-  .maison__name { display: flex; flex-direction: column; gap: 1.4cqi; }
-  .maison__word { font-size: 13cqi; line-height: 0.84; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
-  .maison__sub { font-size: 2.6cqi; line-height: 1.2; font-style: italic; color: var(--fg-2); max-width: 34cqi; }
+  .maison__name { display: flex; flex-direction: column; gap: 1.6cqi; margin: auto 0; }
+  .maison__word { font-size: 17cqi; line-height: 0.84; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
+  .maison__sub { font-size: 2.9cqi; line-height: 1.25; font-style: italic; color: var(--fg-2); max-width: 40cqi; }
   .maison__foot {
     display: flex; align-items: baseline; gap: 1.4cqi; flex-wrap: wrap;
-    font-family: var(--font-mono); font-size: 1.7cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3);
+    font-family: var(--font-mono); font-size: 1.7cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3);
   }
   .maison__sep { color: var(--accent); }
   .maison__foot sup { font-size: 0.7em; }
 
-  /* reveal: the giant glyph slides up into the crop; ticks/notes fade after */
+  /* reveal: the giant glyph slides up into the crop; tag fades after */
   @media (prefers-reduced-motion: no-preference) {
-    .maison .maison__glyph { transform: translateY(8cqi); opacity: 0; }
-    .maison .maison__note { opacity: 0; }
-    .maison.is-in .maison__glyph { animation: maison-glyph 0.7s var(--ease) both; }
-    .maison.is-in .maison__note--stem { animation: maison-mark 0.45s var(--ease) 0.18s both; }
-    .maison.is-in .maison__note--hair { animation: maison-mark 0.45s var(--ease) 0.3s both; }
-    @keyframes maison-glyph { from { transform: translateY(8cqi); opacity: 0; } to { transform: none; opacity: 1; } }
+    .maison .maison__glyph { transform: translate(-50%, calc(-50% + 8cqi)); opacity: 0; }
+    .maison .maison__tag { opacity: 0; }
+    .maison.is-in .maison__glyph { animation: maison-glyph 0.8s var(--ease) both; }
+    .maison.is-in .maison__tag { animation: maison-mark 0.5s var(--ease) 0.3s both; }
+    @keyframes maison-glyph { from { transform: translate(-50%, calc(-50% + 8cqi)); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
     @keyframes maison-mark { from { opacity: 0; } to { opacity: 1; } }
   }
 

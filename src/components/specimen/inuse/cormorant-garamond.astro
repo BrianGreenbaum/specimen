@@ -20,111 +20,119 @@ const looks = [
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
     <div class="iu__scene iu__scene--portrait">
-      <div class="iu__poster cg-cover" data-reveal-cover>
+      <div class="iu__poster cg-cover" data-cover>
         <div class="cg-cover__top">
-          <span class="cg-cover__no">Numéro <span class="num">21</span></span>
-          <span class="cg-cover__season">Automne · Hiver</span>
-          <span class="cg-cover__price">£<span class="num">14</span></span>
+          <span class="cg-cover__pub">Lumière</span>
+          <span class="cg-cover__no">Numéro <span class="num">21</span> · Automne—Hiver</span>
         </div>
-        <h3 class="cg-cover__masthead" data-cover-word>Lumière</h3>
+
+        <div class="cg-cover__hero">
+          <span class="cg-cover__over">the architecture of</span>
+          <h3 class="cg-cover__masthead">
+            <span class="cg-cover__line cg-cover__line--1" data-cover-flip>
+              <span class="cg-cover__roman">Light</span><span class="cg-cover__ital">Light</span>
+            </span>
+            <span class="cg-cover__line cg-cover__line--2"><em>ness</em></span>
+          </h3>
+        </div>
+
         <div class="cg-cover__lines">
-          <span class="cg-cover__feat"><em>The Architecture</em> of Lightness</span>
-          <span>Paris couture, cut from a single hairline</span>
-          <span>The vanishing serif &amp; the new restraint</span>
-        </div>
-        <div class="cg-cover__foot">
-          <span class="cg-cover__barcode" aria-hidden="true">
-            {Array.from({length:26}).map((_,i)=>(<i style={`width:${(i%4)+1}px`}></i>))}
-          </span>
-          <span class="cg-cover__plus">+ Saint Laurent <em>revisited</em></span>
+          <span class="cg-cover__feat">Paris couture, cut from a single hairline — and the slow return of restraint</span>
+          <span class="cg-cover__rule" aria-hidden="true"></span>
+          <span class="cg-cover__more">Saint Laurent, revisited · The vanishing serif · A winter in greys</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Hover the masthead — the hairlines thin to their lightest and the cover lines tilt to true italic.</p>
+    <p class="iu__hint label">Hover the cover — the display word turns from its roman to its true italic, the one piece of motion a static face can honestly make.</p>
   </figure>
 
-  <!-- 02 — fine-dining menu (frac fractions, italic dish lines, tabular prices) -->
+  <!-- 02 — fine-dining tasting menu (italic dish lines, frac fractions, hover pairing) -->
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Hospitality — the tasting menu</span></figcaption>
     <div class="iu__scene iu__scene--portrait">
       <div class="iu__poster cg-menu">
         <header class="cg-menu__head">
-          <span class="cg-menu__estd">Established MCMXII</span>
-          <h3 class="cg-menu__name">Maison <em>du Sel</em></h3>
-          <span class="cg-menu__sub">Menu Dégustation · Printemps</span>
+          <span class="cg-menu__estd">Maison du Sel · est. MCMXII</span>
+          <h3 class="cg-menu__name">Menu <em>Dégustation</em></h3>
+          <span class="cg-menu__sub">Quatre services · Printemps</span>
         </header>
 
         <ol class="cg-menu__list">
-          <li class="cg-dish">
-            <span class="cg-dish__no">i</span>
-            <span class="cg-dish__body">
+          <li class="cg-dish" data-dish>
+            <span class="cg-dish__top">
               <span class="cg-dish__name">Oysters &amp; Verjus Granité</span>
-              <span class="cg-dish__desc"><em>Fine de claire, green apple, a 1½-year cider mignonette</em></span>
+              <span class="cg-dish__price num">28</span>
             </span>
-            <span class="cg-dish__lead" aria-hidden="true"></span>
-            <span class="cg-dish__price num">28</span>
+            <span class="cg-dish__desc">Fine de claire, green apple, a <span class="num">1½</span>-year cider mignonette</span>
+            <span class="cg-dish__pair"><em>Muscadet sur Lie</em> · Loire</span>
           </li>
-          <li class="cg-dish">
-            <span class="cg-dish__no">ii</span>
-            <span class="cg-dish__body">
+          <li class="cg-dish" data-dish>
+            <span class="cg-dish__top">
               <span class="cg-dish__name">Hand-Dived Scallop</span>
-              <span class="cg-dish__desc"><em>Cauliflower, brown butter, 3/4 spoon of Oscietra</em></span>
+              <span class="cg-dish__price num">36</span>
             </span>
-            <span class="cg-dish__lead" aria-hidden="true"></span>
-            <span class="cg-dish__price num">36</span>
+            <span class="cg-dish__desc">Cauliflower, brown butter, a <span class="num">3/4</span> spoon of Oscietra</span>
+            <span class="cg-dish__pair"><em>Meursault</em> · Côte de Beaune</span>
           </li>
-          <li class="cg-dish">
-            <span class="cg-dish__no">iii</span>
-            <span class="cg-dish__body">
-              <span class="cg-dish__name">Aged Hereford, Bone Marrow</span>
-              <span class="cg-dish__desc"><em>Salsify, 21-day rib, a 1/2 glass of the house Syrah</em></span>
+          <li class="cg-dish" data-dish>
+            <span class="cg-dish__top">
+              <span class="cg-dish__name">Aged Hereford &amp; Bone Marrow</span>
+              <span class="cg-dish__price num">52</span>
             </span>
-            <span class="cg-dish__lead" aria-hidden="true"></span>
-            <span class="cg-dish__price num">52</span>
+            <span class="cg-dish__desc">Salsify, <span class="num">21</span>-day rib, a <span class="num">1/2</span> glass of house Syrah</span>
+            <span class="cg-dish__pair"><em>Cornas</em> · Northern Rhône</span>
           </li>
-          <li class="cg-dish">
-            <span class="cg-dish__no">iv</span>
-            <span class="cg-dish__body">
+          <li class="cg-dish" data-dish>
+            <span class="cg-dish__top">
               <span class="cg-dish__name">Tarte Fine aux Pommes</span>
-              <span class="cg-dish__desc"><em>Caramel of Calvados, crème double, 1/2 vanilla pod</em></span>
+              <span class="cg-dish__price num">18</span>
             </span>
-            <span class="cg-dish__lead" aria-hidden="true"></span>
-            <span class="cg-dish__price num">18</span>
+            <span class="cg-dish__desc">Caramel of Calvados, crème double, <span class="num">1/2</span> vanilla pod</span>
+            <span class="cg-dish__pair"><em>Coteaux du Layon</em> · Anjou</span>
           </li>
         </ol>
 
         <footer class="cg-menu__foot">
-          <span>Four courses · <span class="num">96</span></span>
-          <span class="cg-menu__pair">with wine pairing · <span class="num">64</span></span>
+          <span class="cg-menu__set">Four courses <span class="num">96</span></span>
+          <span class="cg-menu__pair-note"><em>with the cellar pairing</em> <span class="num">64</span></span>
         </footer>
       </div>
     </div>
-    <p class="iu__hint label">Real <code>frac</code> fractions (1½, 3/4, 1/2) and tabular figures align the prices down a hairline column.</p>
+    <p class="iu__hint label">Hover a course to draw out its cellar pairing in true italic; prices fall down a tabular hairline column with real <code>frac</code> fractions.</p>
   </figure>
 
-  <!-- 03 — perfume / wedding luxury brand identity -->
+  <!-- 03 — perfume flacon: tall portrait packaging that exploits the hairline contrast + tall accents -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — perfumer's identity &amp; flacon</span></figcaption>
-    <div class="iu__scene cg-scene-16">
-      <div class="iu__poster cg-maison" data-maison>
-        <div class="cg-maison__id">
-          <span>Parfumeur</span>
-          <span class="cg-maison__dot" aria-hidden="true"></span>
-          <span>Grasse · Paris</span>
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — the flacon &amp; its label</span></figcaption>
+    <div class="iu__scene iu__scene--portrait">
+      <div class="iu__poster cg-flacon" data-flacon>
+        <div class="cg-flacon__id">
+          <span>Aubépine &amp; Cie</span>
+          <span class="cg-flacon__dot" aria-hidden="true"></span>
+          <span>Grasse</span>
         </div>
-        <div class="cg-maison__center">
-          <span class="cg-maison__rule" aria-hidden="true"></span>
-          <h3 class="cg-maison__word" data-maison-word>Aubépine<span class="cg-maison__amp"> &amp; </span>Cie</h3>
-          <span class="cg-maison__sub">Extrait de Parfum · depuis <span class="num">1911</span></span>
-          <span class="cg-maison__rule" aria-hidden="true"></span>
+
+        <div class="cg-flacon__stage">
+          <div class="cg-flacon__bottle" aria-label="perfume flacon">
+            <span class="cg-flacon__cap" aria-hidden="true"></span>
+            <div class="cg-flacon__label">
+              <span class="cg-flacon__house">Extrait</span>
+              <h3 class="cg-flacon__name" data-flacon-word>Linceul</h3>
+              <span class="cg-flacon__accent" aria-hidden="true">é</span>
+              <span class="cg-flacon__notes"><em>Oud · Iris · Smoked Leather</em></span>
+              <span class="cg-flacon__rule" aria-hidden="true"></span>
+              <span class="cg-flacon__vol">50 ml <span class="num">℮</span></span>
+            </div>
+          </div>
         </div>
-        <div class="cg-maison__flacon" aria-label="flacon label">
-          <span class="cg-maison__mono">A</span>
-          <span class="cg-maison__flacon-r">Linceul<br/><i>Extrait · 50 ml e</i></span>
+
+        <div class="cg-flacon__foot">
+          <span>Extrait de Parfum</span>
+          <span class="cg-flacon__yr">depuis <span class="num">1911</span></span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">The wordmark settles in on a slow draw, its italic ampersand the one accent mark.</p>
+    <p class="iu__hint label">A real label object — the tall, flamboyant accent and razor serifs set against open space, the kind of contrast that only blooms at this size.</p>
   </figure>
 
   <!-- 04 — editorial feature opener -->
@@ -253,7 +261,6 @@ const looks = [
   .iu__item { margin: 0; }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
-  .cg-scene-16 { aspect-ratio: 16 / 9; }
   .cg-scene-43 { aspect-ratio: 4 / 3; }
   /* every glyph in every scene resolves to Cormorant Garamond */
   .iu__scene * { font-family: var(--fam); }
@@ -262,78 +269,120 @@ const looks = [
 
   /* ============================================================
      01 — FASHION COVER
-     Light (300) masthead, razor hairlines at huge size; the one accent
-     is the issue number. Hover lightens the hairlines + tilts cover lines.
+     A confident masthead-led cover. The big word LIGHTNESS breaks across
+     two lines; "Light" carries a real roman→italic flip on hover (a static
+     face's one honest move). Accent is reserved for the publication mark.
      ============================================================ */
-  .cg-cover { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 5.5cqi 6cqi 5cqi; }
-  .cg-cover__top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.6cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 3cqi; }
-  .cg-cover__no { color: var(--accent); }
-  .cg-cover__season { font-style: italic; font-weight: 400; letter-spacing: 0.06em; text-transform: none; font-size: 3cqi; color: var(--fg-3); }
-  .cg-cover__masthead {
-    font-size: 35cqi; line-height: 0.92; text-align: center;
-    font-weight: 300; letter-spacing: 0.005em; margin: 0; color: var(--fg);
-    display: flex; align-items: center; justify-content: center; flex: 1 1 auto; min-height: 0;
-    transition: font-weight 0.6s var(--ease), letter-spacing 0.6s var(--ease);
+  .cg-cover { --card-ar: 3 / 4; background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 5.5cqi 4.5cqi; }
+  .cg-cover__top { display: flex; justify-content: space-between; align-items: baseline; gap: 3cqi; border-bottom: 1px solid var(--line); padding-bottom: 2.6cqi; }
+  .cg-cover__pub { font-size: 4.6cqi; font-style: italic; font-weight: 500; letter-spacing: 0; color: var(--accent); line-height: 1; }
+  .cg-cover__no { font-size: 2.4cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); align-self: center; }
+
+  .cg-cover__hero { align-self: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .cg-cover__over { font-size: 3.1cqi; font-style: italic; font-weight: 400; letter-spacing: 0.04em; color: var(--fg-3); margin-bottom: 1cqi; }
+  .cg-cover__masthead { margin: 0; text-align: center; color: var(--fg); font-weight: 400; line-height: 0.82; }
+  .cg-cover__line { display: block; font-size: 30cqi; }
+  .cg-cover__line--2 { color: var(--fg-2); }
+  .cg-cover__line--2 em { font-style: italic; font-weight: 400; }
+  /* roman / italic flip — both glyphs stacked, swapped by opacity */
+  .cg-cover__line--1 { position: relative; display: inline-grid; }
+  .cg-cover__roman, .cg-cover__ital { grid-area: 1 / 1; transition: opacity 0.5s var(--ease); }
+  .cg-cover__ital { font-style: italic; opacity: 0; color: var(--accent); }
+
+  .cg-cover__lines { display: flex; flex-direction: column; gap: 2.4cqi; }
+  .cg-cover__feat { font-size: 5.4cqi; line-height: 1.06; color: var(--fg); max-width: 22ch; }
+  .cg-cover__rule { height: 1px; background: var(--line); width: 100%; }
+  .cg-cover__more { font-size: 2.5cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cg-cover[data-cover]:hover .cg-cover__roman,
+    .cg-cover[data-cover]:focus-within .cg-cover__roman { opacity: 0; }
+    .cg-cover[data-cover]:hover .cg-cover__ital,
+    .cg-cover[data-cover]:focus-within .cg-cover__ital { opacity: 1; }
   }
-  .cg-cover__lines { display: flex; flex-direction: column; gap: 2.6cqi; margin-top: 0; }
-  .cg-cover__lines span { font-size: 4cqi; line-height: 1.12; color: var(--fg-2); }
-  .cg-cover__feat { color: var(--fg) !important; font-size: 6cqi !important; line-height: 1.04 !important; font-weight: 400; letter-spacing: 0; }
-  .cg-cover__feat em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .cg-cover__lines em { font-style: italic; font-weight: 400; }
-  .cg-cover__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; margin-top: 5cqi; padding-top: 3cqi; border-top: 1px solid var(--line); }
-  .cg-cover__barcode { display: flex; align-items: flex-end; gap: 2px; height: 6cqi; }
-  .cg-cover__barcode i { background: var(--fg-3); height: 100%; }
-  .cg-cover__plus { font-size: 2.8cqi; letter-spacing: 0.06em; color: var(--fg-2); text-align: right; }
-  .cg-cover__plus em { color: var(--fg-3); font-style: italic; font-weight: 400; }
 
   /* ============================================================
      02 — TASTING MENU
-     Italic descriptions, frac fractions, leader-dot price column (tnum).
+     Real hospitality scale: large roman dish names, italic descriptions
+     with frac fractions, prices in a tabular hairline column. Hover a
+     course to reveal its cellar pairing in true italic.
      ============================================================ */
-  .cg-menu { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 6cqi 6.5cqi 5cqi; }
-  .cg-menu__head { text-align: center; display: flex; flex-direction: column; gap: 1.8cqi; }
-  .cg-menu__estd { font-size: 2.3cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-menu__name { font-size: 14cqi; line-height: 0.95; font-weight: 300; }
+  .cg-menu { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 6.5cqi 7cqi 5.5cqi; }
+  .cg-menu__head { text-align: center; display: flex; flex-direction: column; gap: 1.6cqi; }
+  .cg-menu__estd { font-size: 2.2cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-menu__name { font-size: 11cqi; line-height: 0.96; font-weight: 400; color: var(--fg); }
   .cg-menu__name em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .cg-menu__sub { font-size: 2.8cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-2); }
+  .cg-menu__sub { font-size: 2.6cqi; letter-spacing: 0.26em; text-transform: uppercase; color: var(--fg-2); }
 
-  .cg-menu__list { list-style: none; margin: 5cqi 0 0; padding: 5cqi 0; display: flex; flex-direction: column; gap: 4.2cqi; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); flex: 1; justify-content: center; width: 100%; }
-  .cg-dish { display: grid; grid-template-columns: 5cqi 1fr auto auto; align-items: baseline; column-gap: 2cqi; }
-  .cg-dish__no { font-style: italic; font-weight: 400; font-size: 3.4cqi; color: var(--accent); text-transform: lowercase; }
-  .cg-dish__body { display: flex; flex-direction: column; gap: 0.6cqi; min-width: 0; }
-  .cg-dish__name { font-size: 4.6cqi; line-height: 1.02; font-weight: 400; color: var(--fg); }
-  .cg-dish__desc { font-size: 3cqi; line-height: 1.28; color: var(--fg-2); }
-  .cg-dish__desc em { font-style: italic; font-weight: 400; }
-  .cg-dish__desc em { font-feature-settings: 'frac' 1, 'liga' 1; }
-  .cg-dish__lead { align-self: start; min-width: 6cqi; border-bottom: 1px dotted var(--line); transform: translateY(2.6cqi); margin: 0 0.6cqi; }
-  .cg-dish__price { font-size: 4.4cqi; font-weight: 400; color: var(--fg); align-self: start; padding-top: 0.1cqi; }
-
-  .cg-menu__foot { display: flex; align-items: baseline; justify-content: space-between; padding-top: 3.4cqi; font-size: 3cqi; letter-spacing: 0.04em; color: var(--fg); }
-  .cg-menu__foot .num { color: var(--accent); }
-  .cg-menu__pair { font-style: italic; font-weight: 400; color: var(--fg-2); }
-  .cg-menu__pair .num { font-style: normal; }
-
-  /* ============================================================
-     03 — PERFUMER IDENTITY
-     Light wordmark, italic ampersand the single accent. Slow draw-in.
-     ============================================================ */
-  .cg-maison { background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 6cqi; }
-  .cg-maison__id { display: flex; align-items: center; justify-content: center; gap: 2.4cqi; font-size: 2.4cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-maison__dot { width: 0.7cqi; height: 0.7cqi; border-radius: 50%; background: var(--accent); }
-  .cg-maison__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6cqi; }
-  .cg-maison__rule { width: 30cqi; height: 1px; background: var(--line); }
-  .cg-maison__word { font-size: 14cqi; line-height: 0.92; font-weight: 300; letter-spacing: 0.01em; color: var(--fg); text-align: center; }
-  .cg-maison__amp { font-style: italic; font-weight: 400; color: var(--accent); }
-  .cg-maison__sub { font-size: 2.6cqi; letter-spacing: 0.34em; text-transform: uppercase; color: var(--fg-2); }
-  .cg-maison__flacon { display: flex; align-items: center; gap: 3cqi; justify-self: center; border: 1px solid var(--line); padding: 2.6cqi 4cqi; }
-  .cg-maison__mono { font-size: 9cqi; line-height: 1; font-weight: 300; color: var(--fg); }
-  .cg-maison__flacon-r { font-size: 2.9cqi; line-height: 1.3; color: var(--fg-2); letter-spacing: 0.06em; text-transform: uppercase; }
-  .cg-maison__flacon-r i { font-style: italic; font-weight: 400; color: var(--fg-3); text-transform: none; letter-spacing: 0.02em; }
+  .cg-menu__list { list-style: none; margin: 5cqi 0 0; padding: 0; display: flex; flex-direction: column; flex: 1; justify-content: space-evenly; width: 100%; }
+  .cg-dish { display: flex; flex-direction: column; gap: 0.7cqi; padding: 4.4cqi 0; border-top: 1px solid var(--line-soft); }
+  .cg-dish:first-child { border-top: 0; }
+  .cg-dish__top { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi; }
+  .cg-dish__name { font-size: 5.2cqi; line-height: 1.0; font-weight: 400; color: var(--fg); transition: color 0.3s var(--ease); }
+  .cg-dish__price { font-size: 4.4cqi; font-weight: 400; color: var(--fg-2); font-variant-numeric: tabular-nums lining-nums; flex: none; }
+  .cg-dish__desc { font-size: 3.2cqi; line-height: 1.32; color: var(--fg-2); font-style: italic; max-width: 40ch; }
+  .cg-dish__desc .num { font-style: normal; font-feature-settings: 'frac' 1; }
+  .cg-dish__pair {
+    font-size: 2.9cqi; line-height: 1; letter-spacing: 0.02em; color: var(--accent);
+    overflow: hidden; max-height: 0; opacity: 0;
+    transition: max-height 0.4s var(--ease), opacity 0.3s var(--ease), margin-top 0.4s var(--ease);
+    margin-top: 0;
+  }
+  .cg-dish__pair em { font-style: italic; font-weight: 500; }
+  .cg-dish__pair::before { content: '⟡  '; color: var(--fg-3); }
 
   @media (prefers-reduced-motion: no-preference) {
-    .cg-maison__word { animation: cg-draw 1.4s var(--ease) both; }
-    .cg-maison__rule { animation: cg-rule 1.2s var(--ease) both; }
-    @keyframes cg-draw { from { opacity: 0; letter-spacing: 0.16em; } to { opacity: 1; letter-spacing: 0.01em; } }
+    .cg-dish[data-dish]:hover .cg-dish__pair,
+    .cg-dish[data-dish]:focus-within .cg-dish__pair { max-height: 6cqi; opacity: 1; margin-top: 1.2cqi; }
+    .cg-dish[data-dish]:hover .cg-dish__name { color: var(--accent); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cg-dish__pair { max-height: none; opacity: 1; margin-top: 1.2cqi; }
+  }
+
+  .cg-menu__foot { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi; margin-top: 4cqi; padding-top: 3.4cqi; border-top: 1px solid var(--line); font-size: 3.2cqi; color: var(--fg); }
+  .cg-menu__set { letter-spacing: 0.02em; }
+  .cg-menu__foot .num { color: var(--accent); margin-left: 0.5cqi; font-variant-numeric: tabular-nums lining-nums; }
+  .cg-menu__pair-note { color: var(--fg-2); }
+  .cg-menu__pair-note em { font-style: italic; }
+
+  /* ============================================================
+     03 — FLACON & LABEL
+     A tall portrait packaging shot. A real bottle silhouette holds a
+     centred label; the giant tall accent (é) is set as a flourish at
+     dramatic scale against open cream space. Slow draw-in on the name.
+     ============================================================ */
+  .cg-flacon { --card-ar: 3 / 4; background: var(--bg-2); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 6cqi 4.5cqi; }
+  .cg-flacon__id, .cg-flacon__foot { display: flex; align-items: center; justify-content: center; gap: 2.4cqi; font-size: 2.2cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-flacon__foot { justify-content: space-between; }
+  .cg-flacon__dot { width: 0.6cqi; height: 0.6cqi; border-radius: 50%; background: var(--accent); }
+  .cg-flacon__yr .num { color: var(--accent); }
+
+  .cg-flacon__stage { display: grid; justify-items: center; align-items: stretch; min-height: 0; padding: 1.5cqi 0; }
+  .cg-flacon__bottle {
+    position: relative; width: 78cqi; background: var(--bg);
+    border: 1px solid var(--line); box-shadow: 0 3cqi 8cqi -4cqi rgba(0,0,0,0.28);
+    padding: 7cqi; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  /* the stopper */
+  .cg-flacon__cap { position: absolute; top: -4.4cqi; left: 50%; transform: translateX(-50%); width: 22cqi; height: 4.4cqi; background: var(--bg); border: 1px solid var(--line); border-bottom: 0; }
+  .cg-flacon__label { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
+  .cg-flacon__house { order: 1; font-size: 2.6cqi; letter-spacing: 0.4em; text-transform: uppercase; color: var(--fg-3); }
+  /* the é set as a giant flamboyant flourish above the name — the face's tall accent at dramatic scale */
+  .cg-flacon__accent { order: 2; font-size: 17cqi; line-height: 0.62; font-style: italic; color: var(--accent); margin: 3cqi 0 0; }
+  .cg-flacon__name { order: 3; font-size: 21cqi; line-height: 0.86; font-weight: 400; color: var(--fg); margin: 0.4cqi 0 0; letter-spacing: 0.005em; }
+  .cg-flacon__notes { order: 4; font-size: 3cqi; line-height: 1.3; color: var(--fg-2); margin-top: 3cqi; max-width: 24ch; }
+  .cg-flacon__notes em { font-style: italic; font-weight: 400; }
+  .cg-flacon__rule { order: 5; width: 20cqi; height: 1px; background: var(--line); margin: 3.4cqi 0 2.8cqi; }
+  .cg-flacon__vol { order: 6; font-size: 2.5cqi; letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-3); }
+  .cg-flacon__vol .num { letter-spacing: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cg-flacon__name { animation: cg-draw 1.4s var(--ease) both; }
+    .cg-flacon__accent { animation: cg-accent 1.6s var(--ease) 0.3s both; }
+    .cg-flacon__rule { animation: cg-rule 1.1s var(--ease) 0.5s both; transform-origin: center; }
+    @keyframes cg-draw { from { opacity: 0; letter-spacing: 0.14em; } to { opacity: 1; letter-spacing: 0.01em; } }
+    @keyframes cg-accent { from { opacity: 0; transform: translateY(2cqi); } to { opacity: 1; transform: translateY(0); } }
     @keyframes cg-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   }
 
@@ -377,8 +426,8 @@ const looks = [
   .cg-shop__filters button:hover { color: var(--fg); }
   .cg-shop__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-style: normal; }
   .cg-shop__sort { margin-left: auto; display: flex; align-items: baseline; gap: 0.5rem; }
-  .cg-shop__sortlabel { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-shop__sort button { font-size: 13.5px; font-style: italic; color: var(--fg); border-bottom: 1px solid var(--line); padding-bottom: 1px; }
+  .cg-shop__sortlabel { font-size: 13px; font-style: italic; color: var(--fg-3); }
+  .cg-shop__sort button { font-size: 14px; font-style: italic; color: var(--fg); border-bottom: 1px solid var(--line); padding-bottom: 1px; }
   .cg-shop__sort button:hover { border-color: var(--accent); }
 
   .cg-shop__grid {
@@ -388,12 +437,19 @@ const looks = [
   }
   .cg-card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
   .cg-card.is-hidden { display: none; }
-  .cg-card__img { position: relative; flex: 1; min-height: 168px; background: var(--bg-2); display: grid; place-items: center; overflow: hidden; padding: 0.8rem; container-type: inline-size; }
+  .cg-card__img {
+    position: relative; flex: 1; min-height: 168px; display: grid; place-items: center;
+    overflow: hidden; padding: 0.8rem; container-type: inline-size;
+    /* tonal well: a soft vertical wash + faint paper grain so the cards read as objects */
+    background:
+      radial-gradient(120% 90% at 50% 12%, color-mix(in srgb, var(--accent) 6%, var(--bg-2)) 0%, var(--bg-2) 62%),
+      var(--bg-2);
+  }
   .cg-card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
   .cg-card__ghost {
     position: absolute; inset: 0; display: grid; place-items: center;
-    font-size: clamp(64px, 34cqi, 120px); font-weight: 300; color: var(--fg);
-    opacity: 0.045; pointer-events: none; line-height: 1; overflow: hidden;
+    font-size: clamp(64px, 34cqi, 120px); font-weight: 400; font-style: italic; color: var(--fg);
+    opacity: 0.07; pointer-events: none; line-height: 1; overflow: hidden;
   }
   .cg-card__word { position: relative; font-size: clamp(20px, 15cqi, 30px); line-height: 0.98; text-align: center; color: var(--fg); font-style: italic; font-weight: 400; max-width: 100%; transition: opacity .25s var(--ease), transform .25s var(--ease); }
   .cg-card__tag { position: absolute; top: 0.7rem; left: 0.7rem; z-index: 2; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
@@ -428,10 +484,25 @@ const looks = [
     .cg-card--hero { grid-column: 1 / span 2; grid-row: 1; }
     .cg-card--hero .cg-card__img { min-height: 220px; }
   }
-  @container (max-width: 460px) {
-    .cg-shop__head { gap: 0.7rem; }
-    .cg-shop__sort { margin-left: 0; }
-    .cg-shop__filters { flex-wrap: wrap; }
+  /* narrow: a clean two-row header — logo alone, then a single controls row */
+  @container (max-width: 520px) {
+    .cg-shop__head {
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      gap: 0.6rem 0.8rem; padding: 0.9rem 1rem;
+    }
+    .cg-shop__logo { grid-column: 1; grid-row: 1; }
+    .cg-shop__sort { grid-column: 2; grid-row: 1; margin-left: 0; }
+    .cg-shop__filters {
+      grid-column: 1 / -1; grid-row: 2; margin-left: 0; flex-wrap: wrap;
+      gap: 0.25rem; padding-top: 0.6rem; border-top: 1px solid var(--line-soft);
+    }
+  }
+
+  /* narrow: let the flacon fill more of its portrait frame */
+  @container (max-width: 480px) {
+    .cg-flacon__bottle { width: 88cqi; padding: 6cqi 5cqi; }
+    .cg-flacon__name { font-size: 24cqi; }
+    .cg-flacon__accent { font-size: 19cqi; }
   }
 
   /* ── responsive: editorial scenes restack ── */
@@ -444,6 +515,7 @@ const looks = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cg-cover__masthead, .cg-spread__head, .cg-card__word, .cg-card__cta { transition: none; }
+    .cg-cover__roman, .cg-cover__ital, .cg-spread__head,
+    .cg-card__word, .cg-card__cta, .cg-dish__name { transition: none; }
   }
 </style>

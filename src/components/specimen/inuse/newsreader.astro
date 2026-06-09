@@ -54,45 +54,57 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
   <!-- 02 — Newspaper front page: Newsreader for heads AND body -->
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Front page — masthead, decks &amp; columns, all one face</span></figcaption>
-    <div class="iu__scene scene-portrait">
+    <div class="iu__scene scene-broadsheet">
       <div class="paper" data-paper>
         <header class="paper__masthead">
           <div class="paper__rule paper__rule--top">
             <span>Vol. CXLIV · No. 312</span>
-            <span>City &amp; Final</span>
-            <span>Price 25c</span>
+            <span>City &amp; Final Edition</span>
+            <span>Price 25¢</span>
           </div>
-          <h2 class="paper__nameplate" data-nameplate>The Evening Standard-Bearer</h2>
+          <h2 class="paper__nameplate" data-nameplate>The Evening Standard</h2>
           <div class="paper__rule paper__rule--sub">
             <span>Established 1881</span>
-            <span class="paper__weather">Clear, then rain by morning · High 64°</span>
+            <span class="paper__weather">Clear tonight, rain by morning · High 64°</span>
             <span>Wednesday, June 17</span>
           </div>
         </header>
         <div class="paper__grid">
           <article class="paper__lead">
             <span class="paper__kicker">City Hall</span>
-            <h3 class="paper__lead-head">Council Approves Overnight, Ending a Year of Delay on the Riverfront</h3>
-            <p class="paper__deck">After <em>eleven</em> public hearings, a divided chamber votes 6–3 to break ground in the autumn</p>
-            <p class="paper__col"><span class="paper__drop">A</span> measure that had stalled for the better part of a year cleared the council shortly after midnight, clearing the way for the long-debated riverfront works to begin before the first frost. The vote came after a final round of testimony that stretched the session past its usual close.</p>
-            <p class="paper__col">Supporters framed the project as overdue; opponents warned of cost. Both sides agreed on one thing only: that the chamber had not sat this late in living memory, and that the gallery had emptied long before the roll was called.</p>
+            <h3 class="paper__lead-head">Council Approves Riverfront Plan Overnight, Ending a Year of Delay</h3>
+            <p class="paper__deck">After <em>eleven</em> public hearings, a divided chamber votes 6&ndash;3 to break ground in the autumn</p>
+            <p class="paper__col"><span class="paper__drop">A</span> measure that had stalled for the better part of a year cleared the council shortly after midnight, clearing the way for the long-debated riverfront works to begin before the first frost. The vote came after a final round of testimony that stretched the session well past its usual close.</p>
+            <p class="paper__col">Supporters framed the project as overdue; opponents warned of cost. Both sides agreed on one thing only: that the chamber had not sat this late in living memory, and that the public gallery had emptied long before the roll was finally called.</p>
+            <p class="paper__col">The first contracts are expected to be let within the month, with crews on the embankment by September if the weather holds.</p>
           </article>
-          <article class="paper__side">
+          <article class="paper__mid">
+            <span class="paper__kicker">The Reckoning</span>
+            <h4 class="paper__mid-head">A Quiet Vote, and a Riverfront Remade</h4>
+            <p class="paper__col paper__col--sm">For a decade the embankment has been a line on a map and an argument in a hall. By dawn it had become a budget, a timetable, and a promise the city must now keep.</p>
+            <div class="paper__quote">
+              <p>We did not change our minds tonight. We simply ran out of reasons to wait.</p>
+              <span>— Councilmember Hale, after the vote</span>
+            </div>
+            <p class="paper__col paper__col--sm">Whether the works arrive on time, and on budget, is the next year&rsquo;s story. For now the chamber has done the rarest thing in its power: it has decided.</p>
+          </article>
+          <aside class="paper__side">
             <span class="paper__kicker">Markets</span>
             <h4 class="paper__side-head">Mills Steady as Wheat Eases on Late Rain</h4>
-            <p class="paper__col paper__col--sm">Grain futures slipped on forecasts of overnight rain across the plains, easing a week of pressure on the city&rsquo;s flour mills. Closing figures held within a narrow band.</p>
-            <div class="paper__quote">
-              <p>The harvest will decide the winter price, not the weather of a single night.</p>
-              <span>— a broker on the floor</span>
-            </div>
+            <p class="paper__col paper__col--sm">Grain futures slipped on forecasts of overnight rain across the plains, easing a week of pressure on the city&rsquo;s flour mills.</p>
+            <dl class="paper__table">
+              <div><dt>Wheat, bu.</dt><dd>1.42<span class="paper__dn">&minus;3</span></dd></div>
+              <div><dt>Flour, bbl.</dt><dd>6.05<span class="paper__up">+1</span></dd></div>
+              <div><dt>Corn, bu.</dt><dd>0.78<span class="paper__dn">&minus;2</span></dd></div>
+            </dl>
             <span class="paper__kicker paper__kicker--2">Weather</span>
             <h4 class="paper__side-head">Fair, Turning Wet Before the Commute</h4>
-            <p class="paper__col paper__col--sm">A clear evening gives way to showers near dawn, with the heaviest rain expected during the early morning hours.</p>
-          </article>
+            <p class="paper__col paper__col--sm">A clear evening gives way to showers near dawn, the heaviest rain expected in the early hours.</p>
+          </aside>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Hover the nameplate to wake it. One typeface from the 96pt nameplate down to the 9pt market column — optical size doing the heavy lifting at both ends.</p>
+    <p class="iu__hint label">Hover the nameplate to wake it. One typeface from the 84pt nameplate to the 9pt market table — the optical-size axis carries both ends.</p>
   </figure>
 
   <!-- 03 — E-reader long-read: drop cap + pull quote, paged -->
@@ -101,25 +113,29 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
     <div class="iu__scene">
       <div class="iu__device ereader" data-ereader>
         <div class="ereader__topbar">
-          <span class="ereader__crumb">Library · Essays</span>
+          <span class="ereader__crumb">The Even Grey &mdash; an essay on reading type</span>
           <span class="ereader__loc" data-loc>Page 3 of 5 · 61%</span>
         </div>
         <div class="ereader__page" data-page-wrap>
           <div class="ereader__pages" data-pages>
-            <section class="ereader__leaf" data-leaf>
-              <span class="ereader__chap">Chapter Two · The Even Grey</span>
-              <h3 class="ereader__title">On Reading Without Noticing</h3>
-              <p class="ereader__first"><span class="ereader__drop">R</span>eading is the rare art that succeeds only by vanishing. A page set well asks nothing of the eye; it offers no resistance, no flourish to stop and admire, only the steady passage of meaning from one line to the next. The letters do their work and then politely disappear.</p>
-              <p>This is harder than it sounds. A face must be even enough that no single word leaps from the column, yet distinct enough that the eye never stumbles. The thin strokes must hold at small sizes without flickering; the spacing must open just enough to keep the lines from clotting into grey mud.</p>
-              <blockquote class="ereader__pull">The best reading type is the type you finish a chapter without having seen.</blockquote>
-              <p>What the eye wants, in the end, is rhythm — a column whose colour stays constant from the first line to the last, so that an hour passes and the reader looks up surprised to find the room has gone dark around the lit rectangle in their hands.</p>
+            <section class="ereader__leaf ereader__leaf--opener" data-leaf>
+              <div class="ereader__column">
+                <span class="ereader__chap">Chapter Two</span>
+                <h3 class="ereader__title">On&nbsp;Reading<br>Without&nbsp;Noticing</h3>
+                <div class="ereader__byline">An essay · 9 minutes left in this chapter</div>
+              </div>
+              <div class="ereader__column">
+                <p class="ereader__first"><span class="ereader__drop">R</span>eading is the rare art that succeeds only by vanishing. A page set well asks nothing of the eye; it offers no flourish to stop and admire, only the steady passage of meaning from one line to the next.</p>
+                <p>A face must be even enough that no single word leaps from the column, yet distinct enough that the eye never stumbles. The thin strokes must hold at small sizes without flickering; the spacing must open just enough to keep the lines from clotting into grey mud.</p>
+                <p>What the eye wants, in the end, is rhythm.</p>
+              </div>
             </section>
             <section class="ereader__leaf" data-leaf hidden>
-              <span class="ereader__chap">Chapter Two · The Even Grey</span>
-              <p>The history of the reading face is a history of restraint. Each generation of punchcutters trimmed away a little more performance, leaving more room for the words. The Enlightenment straightened the stress; the screen demanded a larger x-height and serifs that would survive a backlit pixel grid.</p>
-              <p>And yet the goal never changed. From the hand press to the handheld, the aim has been the same modest miracle: to carry an argument intact from one mind to another, and to leave no trace of the vehicle that carried it.</p>
-              <blockquote class="ereader__pull">Set the page so well that the reader forgets there is a page at all.</blockquote>
-              <p>That is the whole ambition of a text serif, and it is enough. To be finished and forgotten is not a failure of design. It is the highest form of success a reading face can hope for.</p>
+              <div class="ereader__column ereader__column--wide">
+                <p class="ereader__first"><span class="ereader__drop">T</span>he history of the reading face is a history of restraint. Each generation of punchcutters trimmed away a little more performance, leaving more room for the words. The Enlightenment straightened the stress; the screen demanded a larger x-height and serifs that would survive a backlit grid.</p>
+                <blockquote class="ereader__pull">Set the page so well that the reader forgets there is a page at all.</blockquote>
+                <p>And yet the goal never changed. From the hand press to the handheld, the aim has been the same modest miracle: to carry an argument intact from one mind to another, and to leave no trace of the vehicle that carried it. To be finished and forgotten is not a failure of design — it is the highest success a reading face can hope for.</p>
+              </div>
             </section>
           </div>
         </div>
@@ -130,7 +146,7 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Turn the page with Prev / Next. A 96pt drop cap and a true-italic pull quote against a 12pt reading column.</p>
+    <p class="iu__hint label">Turn the page with Prev / Next. A display-cut title and a 96pt drop cap meet a true 14px reading column — the optical-size axis spanning the whole leaf.</p>
   </figure>
 
   <!-- 04 — Editorial feature opener showing the italic -->
@@ -144,7 +160,7 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
         </div>
         <div class="feature__center">
           <span class="feature__eyebrow">A profile</span>
-          <h2 class="feature__head"><span class="feature__upright">The letters that</span><br><em data-italic>lean in to listen</em></h2>
+          <h2 class="feature__head"><span class="feature__upright">The letters&nbsp;that</span><br><em data-italic>lean in to listen</em></h2>
           <p class="feature__deck">For forty years she has drawn type that <em>asks</em> to be read aloud — a study of the italic as the voice inside the voice.</p>
         </div>
         <div class="feature__foot">
@@ -283,9 +299,8 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
     background: var(--bg-2);
   }
   .iu__scene * { font-family: var(--fam); }
-  .scene-portrait { aspect-ratio: 3 / 4; }
+  .scene-broadsheet { aspect-ratio: 16 / 10; }
   .scene-wide { aspect-ratio: 16 / 10; }
-  @container (min-width: 720px) { .scene-portrait { aspect-ratio: 4 / 5; } }
 
   .iu__device {
     position: absolute; inset: 0; display: flex; flex-direction: column;
@@ -404,92 +419,121 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
     .read__time { display: none; }
   }
 
-  /* ============ 02 · NEWSPAPER FRONT PAGE (cqi) ============ */
+  /* ============ 02 · NEWSPAPER FRONT PAGE (cqi, broadsheet/landscape) ============ */
   .paper {
     position: absolute; inset: 0; background: var(--bg); color: var(--fg);
-    padding: 4cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden;
+    padding: 3cqi 3.4cqi; display: flex; flex-direction: column; overflow: hidden;
     font-feature-settings: 'liga' 1, 'onum' 1;
   }
   .paper__masthead { flex: none; }
   .paper__rule {
     display: flex; justify-content: space-between; align-items: baseline;
-    font-family: var(--ui); font-size: 1.7cqi; letter-spacing: 0.08em;
+    font-family: var(--ui); font-size: 1.2cqi; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--fg-3);
   }
-  .paper__rule--top { border-bottom: 0.4cqi double var(--fg); padding-bottom: 1cqi; }
+  .paper__rule--top { border-bottom: 0.32cqi double var(--fg); padding-bottom: 0.7cqi; }
   .paper__rule--sub {
-    border-top: 1px solid var(--fg); border-bottom: 0.4cqi double var(--fg);
-    padding: 1cqi 0; margin-top: 1cqi; font-size: 1.6cqi;
+    border-top: 1px solid var(--fg); border-bottom: 0.32cqi double var(--fg);
+    padding: 0.7cqi 0; margin-top: 0.7cqi; font-size: 1.15cqi;
   }
   .paper__weather { font-style: italic; text-transform: none; letter-spacing: 0.01em; color: var(--fg-2); }
   .paper__nameplate {
-    font-size: 10.8cqi; line-height: 0.94; text-align: center; margin: 1.6cqi 0; color: var(--fg);
-    font-variation-settings: 'wght' 640, 'opsz' 72; letter-spacing: -0.022em;
-    text-wrap: balance; hyphens: none;
+    font-size: 6.6cqi; line-height: 0.94; text-align: center; margin: 1.2cqi 0 1cqi; color: var(--fg);
+    font-variation-settings: 'wght' 600, 'opsz' 72; letter-spacing: -0.012em;
+    white-space: nowrap; hyphens: none;
     transition: font-variation-settings 0.6s var(--ease, ease-out);
   }
   .paper__grid {
-    flex: 1; display: grid; grid-template-columns: 1.7fr 1fr; gap: 3cqi;
-    margin-top: 2.4cqi; min-height: 0;
+    flex: 1; display: grid; grid-template-columns: 1.55fr 1.15fr 1fr; gap: 2.6cqi;
+    margin-top: 2cqi; min-height: 0;
   }
-  .paper__lead { border-right: 1px solid var(--line); padding-right: 3cqi; }
+  .paper__lead { border-right: 1px solid var(--line); padding-right: 2.6cqi; }
+  .paper__mid { border-right: 1px solid var(--line); padding-right: 2.6cqi; }
   .paper__kicker {
-    display: block; font-family: var(--ui); font-size: 1.7cqi; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+    display: block; font-family: var(--ui); font-size: 1.25cqi; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
   }
-  .paper__kicker--2 { margin-top: 3cqi; }
+  .paper__kicker--2 { margin-top: 2.2cqi; padding-top: 1.4cqi; border-top: 1px solid var(--line); }
   .paper__lead-head {
-    font-size: 6.6cqi; line-height: 1.02; margin: 1cqi 0 1.4cqi; color: var(--fg);
-    font-variation-settings: 'wght' 560, 'opsz' 48; letter-spacing: -0.01em;
+    font-size: 4.4cqi; line-height: 1.0; margin: 0.8cqi 0 1cqi; color: var(--fg);
+    font-variation-settings: 'wght' 580, 'opsz' 48; letter-spacing: -0.012em;
+    text-wrap: balance;
   }
   .paper__deck {
-    font-size: 3cqi; line-height: 1.22; color: var(--fg-2); margin: 0 0 2cqi;
-    font-variation-settings: 'wght' 420, 'opsz' 28;
+    font-size: 2.1cqi; line-height: 1.24; color: var(--fg-2); margin: 0 0 1.4cqi;
+    padding-bottom: 1.4cqi; border-bottom: 1px solid var(--line);
+    font-variation-settings: 'wght' 420, 'opsz' 24; text-wrap: pretty;
   }
   .paper__deck em, .paper__col em { font-style: italic; color: var(--accent); }
   .paper__col {
-    font-size: 2.15cqi; line-height: 1.5; color: var(--fg); margin: 0 0 1.2cqi;
+    font-size: 1.6cqi; line-height: 1.5; color: var(--fg); margin: 0 0 0.9cqi;
     text-align: justify; hyphens: auto;
     font-variation-settings: 'wght' 400, 'opsz' 11;
   }
-  .paper__col--sm { font-size: 1.95cqi; line-height: 1.48; color: var(--fg-2); }
+  .paper__col--sm { font-size: 1.5cqi; line-height: 1.48; color: var(--fg-2); }
   .paper__drop {
-    float: left; font-size: 7cqi; line-height: 0.72; padding: 0.05em 0.1em 0 0; color: var(--fg);
-    font-variation-settings: 'wght' 640, 'opsz' 72;
+    float: left; font-size: 5.4cqi; line-height: 0.7; padding: 0.05em 0.1em 0 0; color: var(--fg);
+    font-variation-settings: 'wght' 600, 'opsz' 72;
   }
-  .paper__side-head {
-    font-size: 3cqi; line-height: 1.08; margin: 0.8cqi 0 1.2cqi; color: var(--fg);
-    font-variation-settings: 'wght' 600, 'opsz' 32; letter-spacing: -0.005em;
+  .paper__mid-head, .paper__side-head {
+    font-size: 2.4cqi; line-height: 1.06; margin: 0.7cqi 0 1cqi; color: var(--fg);
+    font-variation-settings: 'wght' 600, 'opsz' 32; letter-spacing: -0.006em;
+    text-wrap: balance;
   }
   .paper__quote {
     border-top: 1px solid var(--fg); border-bottom: 1px solid var(--line);
-    padding: 1.6cqi 0; margin: 2cqi 0;
+    padding: 1.2cqi 0; margin: 1.4cqi 0;
   }
   .paper__quote p {
-    font-size: 2.7cqi; line-height: 1.22; font-style: italic; color: var(--fg);
-    margin: 0 0 0.8cqi; font-variation-settings: 'wght' 440, 'opsz' 30;
+    font-size: 2.1cqi; line-height: 1.2; font-style: italic; color: var(--fg);
+    margin: 0 0 0.6cqi; font-variation-settings: 'wght' 440, 'opsz' 30;
+    text-wrap: pretty;
   }
   .paper__quote span {
-    font-family: var(--ui); font-size: 1.6cqi; letter-spacing: 0.06em;
+    font-family: var(--ui); font-size: 1.15cqi; letter-spacing: 0.06em;
     text-transform: uppercase; color: var(--fg-3);
   }
+  .paper__table {
+    margin: 1.2cqi 0; padding: 1cqi 0; border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.5cqi;
+  }
+  .paper__table div { display: flex; justify-content: space-between; align-items: baseline; }
+  .paper__table dt {
+    font-size: 1.5cqi; color: var(--fg-2); font-variation-settings: 'wght' 440, 'opsz' 14;
+  }
+  .paper__table dd {
+    margin: 0; font-size: 1.5cqi; color: var(--fg);
+    font-variation-settings: 'wght' 500, 'opsz' 14;
+    font-feature-settings: 'onum' 1, 'tnum' 1;
+  }
+  .paper__up { color: var(--accent); margin-left: 0.6cqi; font-size: 1.2cqi; }
+  .paper__dn { color: var(--fg-3); margin-left: 0.6cqi; font-size: 1.2cqi; }
   @media (prefers-reduced-motion: no-preference) {
     .paper[data-paper]:hover .paper__nameplate,
     .paper[data-paper]:focus-within .paper__nameplate {
-      font-variation-settings: 'wght' 720, 'opsz' 72;
+      font-variation-settings: 'wght' 680, 'opsz' 72;
     }
   }
-  @container (max-width: 480px) {
-    .paper__grid { grid-template-columns: 1fr; gap: 2cqi; }
-    .paper__lead { border-right: 0; padding-right: 0; border-bottom: 1px solid var(--line); padding-bottom: 2cqi; }
-    .paper__nameplate { font-size: 12cqi; }
-    .paper__lead-head { font-size: 7.5cqi; }
-    .paper__deck { font-size: 3.6cqi; }
-    .paper__col { font-size: 3cqi; }
-    .paper__col--sm, .paper__side-head { font-size: 3cqi; }
-    .paper__side-head { font-size: 4cqi; }
-    .paper__quote p { font-size: 3.6cqi; }
-    .paper__drop { font-size: 9cqi; }
+  @container (max-width: 560px) {
+    .paper { padding: 4cqi 4.4cqi; }
+    .paper__rule { font-size: 2cqi; }
+    .paper__rule--sub { font-size: 1.9cqi; }
+    .paper__nameplate { font-size: 11cqi; }
+    .paper__grid { grid-template-columns: 1fr; gap: 3cqi; }
+    .paper__lead, .paper__mid {
+      border-right: 0; padding-right: 0;
+      border-bottom: 1px solid var(--line); padding-bottom: 3cqi;
+    }
+    .paper__kicker, .paper__quote span { font-size: 2.4cqi; }
+    .paper__lead-head { font-size: 6.4cqi; }
+    .paper__deck { font-size: 3.2cqi; }
+    .paper__col { font-size: 2.9cqi; }
+    .paper__col--sm { font-size: 2.8cqi; }
+    .paper__mid-head, .paper__side-head { font-size: 4cqi; }
+    .paper__quote p { font-size: 3.4cqi; }
+    .paper__drop { font-size: 8cqi; }
+    .paper__table dt, .paper__table dd { font-size: 2.8cqi; }
+    .paper__up, .paper__dn { font-size: 2.4cqi; }
   }
 
   /* ============ 03 · E-READER (real px) ============ */
@@ -506,12 +550,22 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
   }
   .ereader__loc { font-feature-settings: 'tnum'; letter-spacing: 0.05em; }
   .ereader__page {
-    flex: 1; min-height: 0; display: flex; padding: 0.4rem clamp(1rem, 7cqi, 4rem) 0.6rem;
+    flex: 1; min-height: 0; display: flex; padding: clamp(1.4rem, 4cqi, 3rem) clamp(1.4rem, 6cqi, 4rem);
     overflow: hidden;
   }
-  .ereader__pages { position: relative; flex: 1; min-height: 0; max-width: 60ch; margin: 0 auto; width: 100%; }
-  .ereader__leaf { position: absolute; inset: 0; overflow: auto; }
+  .ereader__pages { position: relative; flex: 1; min-height: 0; width: 100%; }
+  .ereader__leaf {
+    position: absolute; inset: 0; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.6rem, 5cqi, 3.4rem);
+    align-content: center;
+  }
   .ereader__leaf[hidden] { display: none; }
+  .ereader__column { min-width: 0; }
+  .ereader__leaf--opener .ereader__column:first-child {
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid var(--line); padding-right: clamp(1.2rem, 4cqi, 3rem);
+  }
+  .ereader__column--wide { grid-column: 1 / -1; max-width: 64ch; margin: 0 auto; column-count: 2; column-gap: clamp(1.6rem, 5cqi, 3.4rem); }
   @media (prefers-reduced-motion: no-preference) {
     .ereader__leaf[data-turn='in-next'] { animation: leaf-next 0.4s var(--ease-out, ease-out) both; }
     .ereader__leaf[data-turn='in-prev'] { animation: leaf-prev 0.4s var(--ease-out, ease-out) both; }
@@ -519,28 +573,34 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
   @keyframes leaf-next { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
   @keyframes leaf-prev { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
   .ereader__chap {
-    display: block; font-family: var(--ui); font-size: 10.5px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem;
+    display: block; font-family: var(--ui); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem;
   }
   .ereader__title {
-    font-size: clamp(20px, 3.6cqi, 27px); line-height: 1.06; margin: 0 0 0.7rem; color: var(--fg);
-    font-variation-settings: 'wght' 560, 'opsz' 40; letter-spacing: -0.01em;
+    font-size: clamp(30px, 6cqi, 52px); line-height: 1.0; margin: 0 0 1rem; color: var(--fg);
+    font-variation-settings: 'wght' 460, 'opsz' 72; letter-spacing: -0.02em;
+  }
+  .ereader__byline {
+    font-family: var(--ui); font-size: 11.5px; color: var(--fg-3);
+    padding-top: 0.9rem; border-top: 1px solid var(--line); letter-spacing: 0.02em;
   }
   .ereader__leaf p {
-    font-size: 14px; line-height: 1.58; color: var(--fg); margin: 0 0 0.7em;
+    font-size: 14px; line-height: 1.6; color: var(--fg); margin: 0 0 0.8em;
     font-variation-settings: 'wght' 400, 'opsz' 12;
     font-feature-settings: 'liga' 1, 'onum' 1; text-align: justify; hyphens: auto;
   }
   .ereader__leaf p:last-child { margin-bottom: 0; }
+  .ereader__column--wide p { break-inside: avoid-column; }
+  .ereader__first { text-align: left; }
   .ereader__drop {
-    float: left; font-size: 3.2em; line-height: 0.72; padding: 0.04em 0.1em 0 0; color: var(--accent);
-    font-variation-settings: 'wght' 540, 'opsz' 72;
+    float: left; font-size: 4.2em; line-height: 0.66; padding: 0.02em 0.12em 0 0; color: var(--accent);
+    font-variation-settings: 'wght' 500, 'opsz' 72;
   }
   .ereader__pull {
-    font-size: 16px; line-height: 1.3; font-style: italic; color: var(--fg);
-    text-align: center; margin: 1rem auto; max-width: 28ch;
-    padding: 0.6rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    font-variation-settings: 'wght' 420, 'opsz' 36;
+    font-size: 23px; line-height: 1.24; font-style: italic; color: var(--fg);
+    margin: 1.2rem 0; padding: 0.9rem 0 0.9rem 1.1rem; border-left: 2px solid var(--accent);
+    font-variation-settings: 'wght' 440, 'opsz' 44; letter-spacing: -0.008em;
+    break-inside: avoid-column; text-align: left; hyphens: none;
   }
   .ereader__nav {
     flex: none; display: flex; align-items: center; justify-content: space-between;
@@ -556,6 +616,18 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
   .ereader__dots { display: inline-flex; gap: 6px; }
   .ereader__dots i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 22%, transparent); }
   .ereader__dots i.is-on { background: var(--accent); }
+  @container (max-width: 560px) {
+    .ereader__leaf, .ereader__leaf--opener {
+      grid-template-columns: 1fr; gap: 1.2rem; align-content: start; overflow: auto;
+    }
+    .ereader__leaf--opener .ereader__column:first-child {
+      border-right: 0; padding-right: 0; padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .ereader__column--wide { column-count: 1; max-width: none; }
+    .ereader__title { font-size: clamp(30px, 11cqi, 44px); }
+    .ereader__pull { font-size: 18px; }
+  }
 
   /* ============ 04 · EDITORIAL FEATURE OPENER (cqi) ============ */
   .feature {
@@ -577,18 +649,19 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
     font-variation-settings: 'wght' 420, 'opsz' 28;
   }
   .feature__head {
-    font-size: 11cqi; line-height: 0.98; margin: 0; color: var(--fg);
+    font-size: 11.5cqi; line-height: 0.92; margin: 0; color: var(--fg);
     font-variation-settings: 'wght' 460, 'opsz' 72; letter-spacing: -0.02em;
   }
   /* RESTING contrast pushed: upright runs light & cool, the true italic
-     sits heavier, warmer and visibly slanted — the voice inside the voice. */
+     sits heavier, warmer, larger and visibly slanted — the voice inside the voice. */
   .feature__upright {
-    display: inline-block; color: var(--fg-2);
-    font-variation-settings: 'wght' 360, 'opsz' 72; letter-spacing: -0.018em;
+    display: inline-block; color: var(--fg-3);
+    font-size: 0.74em;
+    font-variation-settings: 'wght' 320, 'opsz' 72; letter-spacing: -0.012em;
   }
   .feature__head em {
     display: inline-block; font-style: italic; color: var(--accent);
-    font-variation-settings: 'wght' 520, 'opsz' 72; letter-spacing: -0.01em;
+    font-variation-settings: 'wght' 540, 'opsz' 72; letter-spacing: -0.008em;
   }
   .feature__deck {
     font-size: 3.2cqi; line-height: 1.34; color: var(--fg-2); max-width: 44ch; margin: 0;
@@ -622,10 +695,13 @@ const mono = "'IBM Plex Mono', ui-monospace, monospace";
     50% { font-variation-settings: 'wght' 580, 'opsz' 72; }
   }
   @container (max-width: 480px) {
-    .feature__head { font-size: 13cqi; }
-    .feature__deck { font-size: 4cqi; }
-    .feature__eyebrow { font-size: 4cqi; }
-    .feature__meta, .feature__foot { font-size: 2.6cqi; }
+    .feature { padding: 6cqi 6cqi; }
+    .feature__head { font-size: 13.5cqi; line-height: 0.96; }
+    .feature__upright { font-size: 0.72em; }
+    .feature__deck { font-size: 4.2cqi; }
+    .feature__eyebrow { font-size: 4.4cqi; }
+    .feature__meta, .feature__foot { font-size: 3cqi; }
+    .feature__center { gap: 5cqi; }
   }
 
   @media (prefers-reduced-motion: reduce) {

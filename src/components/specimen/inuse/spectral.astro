@@ -52,7 +52,7 @@ const lexNav = [
               <input type="range" class="ed__range" data-leading min="130" max="190" step="2" value="166" aria-label="Line height" />
               <span class="ed__val"><i data-leading-out>1.66</i></span>
             </span>
-            <button class="ed__toggle" data-serif aria-pressed="true">Serif</button>
+            <button class="ed__toggle" data-serif aria-pressed="true"><span class="ed__dot" aria-hidden="true"></span>Spectral</button>
           </div>
         </div>
         <div class="ed__body">
@@ -61,6 +61,11 @@ const lexNav = [
             {outline.map((o) => (
               <a class={`ed__oitem ed__oitem--l${o.lvl}`} data-jump={o.id}>{o.label}</a>
             ))}
+            <div class="ed__measure" aria-hidden="true">
+              <span class="ed__mh">Measure</span>
+              <span class="ed__mval"><b data-cpl>66</b><i>chars / line</i></span>
+              <span class="ed__mbar"><span class="ed__mfill" data-mfill></span></span>
+            </div>
           </nav>
           <article class="ed__page" data-page tabindex="0">
             <h1 class="ed__h1" id="o1">A field for slow attention</h1>
@@ -82,32 +87,34 @@ const lexNav = [
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Drag the leading, step the size, jump via the outline — the body recomposes live. Flip <b>Serif → Sans</b> to swap Spectral for Outfit and watch the reading colour break apart: this is what the serif is buying you.</p>
+    <p class="iu__hint label">Drag the leading, step the size, jump via the outline — the body recomposes live and the measure read-out tracks your column. Flip <b>Spectral → sans</b> to watch the even reading colour break apart: that grey is what the serif is buying you.</p>
   </figure>
 
   <!-- 02 — typeset long-read / book page: drop cap, footnotes, pull quote -->
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Book — a typeset long-read with drop cap, footnotes &amp; pull quote</span></figcaption>
     <div class="iu__scene scene-book">
-      <div class="book">
+      <div class="book" data-book>
+        <span class="book__folio" aria-hidden="true">42</span>
         <header class="book__head">
           <span class="book__series">The Reading Page · Chapter Three</span>
           <h3 class="book__title">The Disappearing Letter</h3>
           <p class="book__by">An essay on the craft of the invisible page</p>
         </header>
         <div class="book__cols">
-          <p class="book__open"><span class="book__drop" data-reveal>F</span>or five hundred years the old-style serif has been the natural shape of the reading page — warm, even, descended from the broad-nib pen of the Renaissance scribe. It was never asked to be admired. It was asked to be passed through, like a window, on the way to the meaning behind it.<sup class="book__fn" data-fn="1">1</sup></p>
-          <p>The arrival of the screen was, for a time, a kind of exile. Delicate strokes vanished into the pixel grid; counters meant to hold a thread of white instead flooded with backlight. The faces that had carried the printed page for centuries faltered on glass.<sup class="book__fn" data-fn="2">2</sup> The craft of the century since has been a patient retuning: a taller lowercase to hold its texture small, opener spacing, a contrast judged not by the printing press but by the rendering engine.</p>
+          <p class="book__open"><span class="book__drop" data-reveal>F</span>or five hundred years the old-style serif has been the natural shape of the reading page — warm, even, descended from the broad-nib pen of the Renaissance scribe. It was never asked to be admired. It was asked to be passed through, like a window, on the way to the meaning behind it.<sup class="book__fn" data-fn="1" tabindex="0" role="button" aria-label="Footnote 1">1</sup></p>
+          <p>The arrival of the screen was, for a time, a kind of exile. Delicate strokes vanished into the pixel grid; counters meant to hold a thread of white instead flooded with backlight. The faces that had carried the printed page for centuries faltered on glass.<sup class="book__fn" data-fn="2" tabindex="0" role="button" aria-label="Footnote 2">2</sup> The craft of the century since has been a patient retuning: a taller lowercase to hold its texture small, opener spacing, a contrast judged not by the printing press but by the rendering engine.</p>
           <blockquote class="book__pull" data-reveal>A page, well set, disappears into the act of reading — which is the whole point.</blockquote>
-          <p>And so the book learned to live in the browser, and in the document, where it is now read more often than almost any face alive. The achievement is a paradox the trade has always prized: the better the work, the less of it you notice. The highest compliment a text face can earn is to be forgotten while it is being read.</p>
+          <p>And so the book learned to live in the browser, and in the document, where it is now read more often than almost any face alive. The achievement is a paradox the trade has always prized: the better the work, the less of it you notice.<sup class="book__fn" data-fn="3" tabindex="0" role="button" aria-label="Footnote 3">3</sup> The highest compliment a text face can earn is to be forgotten while it is being read.</p>
         </div>
         <ol class="book__notes">
-          <li data-note="1"><span class="book__nnum">1</span> On the page as window, see Beatrice Warde, <em>The Crystal Goblet</em> (1932) — the founding argument that typography should be invisible.</li>
-          <li data-note="2"><span class="book__nnum">2</span> The hinting and anti-aliasing era, roughly 1995–2010, before high-density displays made hairlines viable again.</li>
+          <li data-note="1"><span class="book__nnum">1</span> On the page as window, see Beatrice Warde, <em>The Crystal Goblet</em> (<span class="book__onum">1932</span>) — the founding argument that typography should be invisible.</li>
+          <li data-note="2"><span class="book__nnum">2</span> The hinting and anti-aliasing era, roughly <span class="book__onum">1995–2010</span>, before high-density displays made hairlines viable again.</li>
+          <li data-note="3"><span class="book__nnum">3</span> A paradox the trade calls <em>the crystal goblet</em>: the vessel that shows the wine, not itself.</li>
         </ol>
       </div>
     </div>
-    <p class="iu__hint label">A real book page: ranged drop cap, true-italic citations, a pull quote that breaks the measure, and footnotes keyed to the column. Hover a reference to light its note.</p>
+    <p class="iu__hint label">A real book page: ranged drop cap, true-italic citations, oldstyle figures in the apparatus, and a pull quote that breaks the measure. Hover or focus a reference numeral — the marker lifts and its note glows up in the column foot.</p>
   </figure>
 
   <!-- 03 — INTERACTIVE dictionary / lexicon entry (real device scale) -->
@@ -125,10 +132,18 @@ const lexNav = [
             {lexNav.map((n) => (
               <a class={`lex__navlink ${n.on ? 'is-on' : ''}`}>{n.w}</a>
             ))}
+            <span class="lex__thumb" aria-hidden="true">L</span>
           </nav>
           <article class="lex__main" data-lexmain>
             <header class="lex__head">
-              <h3 class="lex__word">legible</h3>
+              <div class="lex__headtop">
+                <h3 class="lex__word">legible</h3>
+                <span class="lex__freq" aria-label="Usage frequency: common">
+                  <span class="lex__freqh">freq.</span>
+                  <span class="lex__freqbars"><i style="--h:38%"></i><i style="--h:62%"></i><i style="--h:88%"></i><i style="--h:74%"></i><i style="--h:100%"></i></span>
+                  <span class="lex__freqn">attested <span class="lex__onum">1432</span></span>
+                </span>
+              </div>
               <p class="lex__pron"><span class="lex__pos">adjective</span> · <span class="lex__ipa">/ˈledʒəbl̩/</span> · <button class="lex__say" data-say aria-label="Pronunciation note">le-gi-ble</button></p>
             </header>
             <p class="lex__inflect">Comparative <em>more legible</em> · superlative <em>most legible</em></p>
@@ -177,6 +192,7 @@ const lexNav = [
           <span class="feat__issue">No. <span class="onum">47</span> · Spring <span class="onum">2026</span></span>
         </div>
         <h3 class="feat__title">The Quiet<br /><em data-reveal>Architecture</em><br />of a Page</h3>
+        <span class="feat__rule" data-rule aria-hidden="true"></span>
         <p class="feat__stand">On the invisible craft that carries five centuries of reading onto a backlit screen — and why the best of it is the part you never notice.</p>
         <div class="feat__deck">
           <p class="feat__lede"><span class="feat__drop">W</span>e read with the body before we read with the mind — the eye riding the baseline, the hand turning the leaf. Good typography is the architecture that makes the journey effortless enough to forget.</p>
@@ -252,12 +268,33 @@ const lexNav = [
 
     // serif on/off — a live demonstration of what the face is doing for the page
     const serifBtn = ed.querySelector<HTMLButtonElement>('[data-serif]');
+    const serifLabel = serifBtn?.lastChild;
     serifBtn?.addEventListener('click', () => {
       const off = ed.toggleAttribute('data-serif-off');
       serifBtn.setAttribute('aria-pressed', String(!off));
-      serifBtn.textContent = off ? 'Sans' : 'Serif';
+      if (serifLabel) serifLabel.textContent = off ? 'Outfit' : 'Spectral';
       flashSaved();
+      requestAnimationFrame(measure);
     });
+
+    // live "characters per line" read-out — measures a real line in the column
+    const cpl = ed.querySelector<HTMLElement>('[data-cpl]');
+    const mfill = ed.querySelector<HTMLElement>('[data-mfill]');
+    const probe = page.querySelector<HTMLElement>('.ed__page p');
+    const measure = () => {
+      if (!cpl || !mfill || !probe) return;
+      const cs = getComputedStyle(probe);
+      const fs = parseFloat(cs.fontSize) || 18;
+      // average advance of Spectral ≈ 0.5em; estimate chars from rendered width
+      const colW = probe.clientWidth -
+        (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      const est = Math.round(colW / (fs * 0.5));
+      cpl.textContent = String(est);
+      // 45–75 is the comfortable band; map to a 0–100 fill, centred on 66
+      const pct = Math.max(6, Math.min(100, ((est - 30) / (90 - 30)) * 100));
+      mfill.style.width = pct + '%';
+      mfill.classList.toggle('is-ideal', est >= 50 && est <= 78);
+    };
 
     // outline → smooth-scroll the page column to the heading
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -288,7 +325,13 @@ const lexNav = [
       if (!ticking) { ticking = true; requestAnimationFrame(spy); }
     });
 
-    applySize(); applyLead(); recount(); spy();
+    ed.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) =>
+      btn.addEventListener('click', () => requestAnimationFrame(measure))
+    );
+    leadIn.addEventListener('input', () => requestAnimationFrame(measure));
+    new ResizeObserver(() => measure()).observe(page);
+
+    applySize(); applyLead(); recount(); spy(); measure();
   });
 
   // ---- 02 · book: hover a reference marker → light its footnote ----
@@ -303,6 +346,8 @@ const lexNav = [
     book.querySelectorAll<HTMLElement>('[data-fn]').forEach((fn) => {
       fn.addEventListener('mouseenter', () => link(fn.dataset.fn!, true));
       fn.addEventListener('mouseleave', () => link(fn.dataset.fn!, false));
+      fn.addEventListener('focus', () => link(fn.dataset.fn!, true));
+      fn.addEventListener('blur', () => link(fn.dataset.fn!, false));
     });
   });
 
@@ -426,11 +471,19 @@ const lexNav = [
     border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
   }
   .ed__toggle {
-    font-size: 11.5px; font-weight: 600; color: var(--accent-contrast);
-    background: var(--accent); border: 1px solid var(--accent); cursor: pointer;
-    padding: 0.32rem 0.7rem; border-radius: 8px; transition: all 0.12s var(--ease);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 11.5px; font-weight: 600; color: var(--fg-2);
+    background: transparent; border: 1px solid var(--line); cursor: pointer;
+    padding: 0.3rem 0.6rem 0.3rem 0.55rem; border-radius: 8px; transition: all 0.14s var(--ease);
+    min-width: 6.6em; justify-content: flex-start;
   }
-  .ed__toggle[aria-pressed='false'] { background: transparent; color: var(--fg-2); border-color: var(--line); }
+  .ed__toggle:hover { border-color: color-mix(in srgb, var(--fg) 28%, transparent); }
+  .ed__dot {
+    width: 7px; height: 7px; border-radius: 50%; flex: none;
+    background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    transition: background 0.14s var(--ease), box-shadow 0.14s var(--ease);
+  }
+  .ed[data-serif-off] .ed__dot { background: var(--fg-3); box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 10%, transparent); }
   .ed__body { flex: 1; display: grid; grid-template-columns: 178px 1fr; min-height: 0; overflow: hidden; }
   .ed__outline { display: flex; flex-direction: column; gap: 1px; padding: 1rem 0.7rem; border-right: 1px solid var(--line); overflow: auto; background: color-mix(in srgb, var(--fg) 2%, transparent); }
   .ed__outh { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 0.5rem; }
@@ -438,6 +491,17 @@ const lexNav = [
   .ed__oitem--l2 { padding-left: 1.1rem; font-size: 12px; color: var(--fg-3); }
   .ed__oitem:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); color: var(--fg); }
   .ed__oitem.is-on { color: var(--accent); border-left-color: var(--accent); font-weight: 600; background: color-mix(in srgb, var(--accent) 9%, transparent); }
+  /* measure read-out — a quiet instrument-panel detail tying the type to the column */
+  .ed__measure { margin-top: auto; padding-top: 1.1rem; }
+  .ed__mh { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 0.4rem; }
+  .ed__mval { display: flex; align-items: baseline; gap: 0.35rem; margin-bottom: 0.4rem; }
+  .ed__mval b { font-family: var(--mono) !important; font-size: 16px; font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .ed__mval i { font-size: 10.5px; font-style: italic; color: var(--fg-3); }
+  .ed__mbar { display: block; height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--fg) 9%, transparent); overflow: hidden; position: relative; }
+  /* mark the comfortable 50–78ch band */
+  .ed__mbar::before { content: ''; position: absolute; inset: 0 calc(100% - 80%) 0 33%; background: color-mix(in srgb, var(--accent) 16%, transparent); }
+  .ed__mfill { display: block; height: 100%; width: 60%; background: var(--fg-3); border-radius: 3px; position: relative; z-index: 1; transition: width 0.18s var(--ease), background 0.18s var(--ease); }
+  .ed__mfill.is-ideal { background: var(--accent); }
   .ed__page {
     --ed-fs: 18px; --ed-lh: 1.66;
     overflow: auto; padding: 1.8rem clamp(1.2rem, 6cqi, 3.4rem) 2.4rem;
@@ -477,6 +541,11 @@ const lexNav = [
     position: absolute; inset: 0; background: var(--bg); color: var(--fg);
     padding: 5cqi 6cqi 4cqi; display: flex; flex-direction: column; overflow: hidden;
   }
+  /* a faint running folio in the margin — the apparatus of a real page */
+  .book__folio {
+    position: absolute; top: 4cqi; right: 6cqi; font-feature-settings: 'onum' 1;
+    font-size: 2.2cqi; letter-spacing: 0.1em; color: var(--fg-3); opacity: 0.7;
+  }
   .book__head { text-align: center; border-bottom: 1px solid var(--line); padding-bottom: 3cqi; }
   .book__series { font-size: 1.9cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); }
   .book__title { font-size: 8cqi; font-weight: 600; line-height: 1.02; letter-spacing: -0.01em; margin: 2.4cqi 0 1.4cqi; color: var(--fg); }
@@ -496,10 +565,17 @@ const lexNav = [
   .book__cols em { font-style: italic; }
   .book__fn {
     font-feature-settings: 'sups' 1; color: var(--accent); cursor: pointer;
-    font-size: 1.5cqi; padding: 0 0.1em; transition: color 0.15s var(--ease);
+    font-size: 1.5cqi; padding: 0 0.12em; border-radius: 3px;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+    display: inline-block;
   }
   .book__fn::before { content: ''; }
-  .book__fn.is-lit { color: var(--fg); background: color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 3px; }
+  .book__fn:focus-visible { outline: 1.5px solid var(--accent); outline-offset: 1px; }
+  .book__onum { font-feature-settings: 'onum' 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .book__fn.is-lit { transform: translateY(-0.4cqi); }
+  }
+  .book__fn.is-lit { color: var(--accent-contrast); background: var(--accent); }
   .book__pull {
     column-span: all; font-size: 4.2cqi; font-style: italic; line-height: 1.25;
     color: var(--accent); text-align: center; margin: 2cqi auto; max-width: 80%;
@@ -510,16 +586,21 @@ const lexNav = [
     list-style: none; display: flex; flex-direction: column; gap: 1cqi;
   }
   .book__notes li {
-    font-size: 1.85cqi; line-height: 1.4; color: var(--fg-3); padding-left: 3cqi;
-    position: relative; transition: color 0.15s var(--ease), background 0.15s var(--ease);
-    border-radius: 4px;
+    font-size: 1.85cqi; line-height: 1.4; color: var(--fg-3); padding: 0.4cqi 1cqi 0.4cqi 3cqi;
+    margin-left: -1cqi; position: relative;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    border-radius: 5px; box-shadow: inset 0 0 0 0 var(--accent);
   }
   .book__notes li em { font-style: italic; }
+  .book__onum { font-feature-settings: 'onum' 1; }
   .book__nnum {
-    position: absolute; left: 0; top: 0; color: var(--accent);
-    font-feature-settings: 'sups' 1; font-size: 1.5cqi;
+    position: absolute; left: 1cqi; top: 0.4cqi; color: var(--accent);
+    font-feature-settings: 'sups' 1; font-size: 1.5cqi; transition: color 0.2s var(--ease);
   }
-  .book__notes li.is-lit { color: var(--fg); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .book__notes li.is-lit {
+    color: var(--fg); background: color-mix(in srgb, var(--accent) 9%, transparent);
+    box-shadow: inset 0.4cqi 0 0 0 var(--accent);
+  }
 
   @container (max-width: 540px) {
     .book__cols { columns: 1; font-size: 3.4cqi; }
@@ -534,17 +615,39 @@ const lexNav = [
 
   /* ============ 03 · DICTIONARY / LEXICON ENTRY (real px) ============ */
   .lex { font-size: 14px; }
-  .lex__body { flex: 1; display: grid; grid-template-columns: 168px 1fr; min-height: 0; overflow: hidden; }
-  .lex__nav { display: flex; flex-direction: column; gap: 1px; padding: 1.1rem 0.7rem; border-right: 1px solid var(--line); overflow: auto; background: color-mix(in srgb, var(--fg) 2%, transparent); }
+  .lex__body { flex: 1; display: grid; grid-template-columns: 178px 1fr; min-height: 0; overflow: hidden; }
+  /* sidebar reads as the deckle edge of a reference volume: tinted, with a thumb index */
+  .lex__nav {
+    position: relative; display: flex; flex-direction: column; gap: 1px;
+    padding: 1.1rem 0.8rem; border-right: 1px solid var(--line); overflow: hidden;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, transparent), color-mix(in srgb, var(--accent) 2%, transparent));
+  }
   .lex__navh { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 0.5rem; }
   .lex__navlink { font-size: 14px; font-style: italic; color: var(--fg-2); padding: 0.3rem 0.5rem; border-radius: 6px; cursor: pointer; transition: background 0.12s, color 0.12s; }
   .lex__navlink:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); color: var(--fg); }
-  .lex__navlink.is-on { background: color-mix(in srgb, var(--accent) 13%, transparent); color: var(--accent); font-weight: 600; font-style: normal; }
-  .lex__main { overflow: auto; padding: 1.6rem 2.2rem 2rem; min-width: 0; }
+  .lex__navlink.is-on { background: var(--accent); color: var(--accent-contrast); font-weight: 600; font-style: normal; box-shadow: 0 1px 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+  /* oversized ghost initial — the alphabetic thumb index of a dictionary */
+  .lex__thumb {
+    position: absolute; right: -0.6rem; bottom: -1.4rem; font-size: 120px;
+    font-weight: 600; line-height: 1; color: color-mix(in srgb, var(--accent) 16%, transparent);
+    pointer-events: none; user-select: none; z-index: 0;
+  }
+  .lex__navlink, .lex__navh { position: relative; z-index: 1; }
+  .lex__main { overflow: auto; padding: 1.7rem 2.2rem 2rem; min-width: 0; }
 
-  .lex__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 1rem; border-bottom: 2px solid var(--fg); padding-bottom: 0.5rem; }
-  .lex__word { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; margin: 0; color: var(--fg); }
-  .lex__pron { font-size: 14px; color: var(--fg-2); margin: 0; display: inline-flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap; }
+  .lex__head { border-bottom: 2px solid var(--fg); padding-bottom: 0.55rem; }
+  .lex__headtop { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+  /* a small frequency sparkline + first-attested date: a real lexicographic detail, in accent */
+  .lex__freq { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; padding-bottom: 0.2rem; }
+  .lex__freqh { font-feature-settings: 'smcp' 1; text-transform: lowercase; font-size: 10.5px; letter-spacing: 0.1em; color: var(--fg-3); }
+  .lex__freqbars { display: flex; align-items: flex-end; gap: 2px; height: 20px; }
+  .lex__freqbars i { width: 4px; height: var(--h); background: var(--accent); border-radius: 1px; opacity: 0.85; }
+  .lex__freqbars i:last-child { box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--accent) 30%, transparent); }
+  .lex__freqn { font-size: 11px; font-style: italic; color: var(--fg-3); white-space: nowrap; }
+  .lex__freqn .lex__onum { font-feature-settings: 'onum' 1; color: var(--fg-2); font-style: normal; }
+  .lex__word { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 0.95; margin: 0; color: var(--fg); }
+  .lex__pron { font-size: 14px; color: var(--fg-2); margin: 0.4rem 0 0; display: inline-flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap; }
   .lex__pos { font-style: italic; color: var(--fg-3); }
   .lex__ipa { font-family: var(--mono) !important; font-size: 12.5px; color: var(--fg-2); }
   .lex__say {
@@ -569,7 +672,7 @@ const lexNav = [
     font-feature-settings: 'smcp' 1; text-transform: lowercase;
     font-size: 13.5px; letter-spacing: 0.05em; color: var(--fg-3); margin-right: 0.4rem;
   }
-  .lex__def { font-size: 15.5px; line-height: 1.55; color: var(--fg); margin: 0.15rem 0 0; display: inline; }
+  .lex__def { font-size: 16.5px; line-height: 1.58; color: var(--fg); margin: 0.15rem 0 0; display: inline; }
   .lex__eg { color: var(--fg-2); }
   .lex__eg em, .lex__def em { font-style: italic; color: var(--accent); }
   /* collapsible sub-senses: closed by default, opened on click */
@@ -629,10 +732,22 @@ const lexNav = [
   }
   .feat__title em[data-reveal] { opacity: 0; transform: translateX(-2cqi) rotate(-2deg); }
   .feat__title em.in { opacity: 1; transform: none; }
+  /* a hairline that draws across on load and tracks the title's italic colour */
+  .feat__rule {
+    display: block; height: 2px; width: 30cqi; margin: 3cqi 0 0;
+    background: var(--accent); transform-origin: left center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .feat__rule { transform: scaleX(0); animation: feat-draw 1s var(--ease-out, ease-out) 0.25s forwards; }
+    .feat[data-feat]:hover .feat__rule,
+    .feat[data-feat]:focus-within .feat__rule { animation: feat-redraw 0.8s var(--ease-out, ease-out) forwards; }
+  }
+  @keyframes feat-draw { to { transform: scaleX(1); } }
+  @keyframes feat-redraw { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
   /* standfirst fills the gap between the stacked title and the deck */
   .feat__stand {
     font-size: 2.7cqi; font-style: italic; line-height: 1.4; color: var(--fg-2);
-    max-width: 38ch; margin: 3cqi 0 0; padding-top: 2.4cqi;
+    max-width: 38ch; margin: 2.4cqi 0 0; padding-top: 2.4cqi;
     border-top: 1px solid var(--line);
   }
   .feat__deck { display: grid; grid-template-columns: 1fr; gap: 3cqi; margin-top: auto; }
@@ -676,5 +791,6 @@ const lexNav = [
     /* never hide content when motion is off */
     .book__drop[data-reveal], .book__pull[data-reveal],
     .feat__title em[data-reveal] { opacity: 1; transform: none; }
+    .feat__rule { transform: scaleX(1); animation: none; }
   }
 </style>

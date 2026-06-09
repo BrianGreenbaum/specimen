@@ -36,7 +36,7 @@ const fam = font.fontFamily;
 
         <div class="rdr__scroll" data-scroll>
           <article class="rdr__article" data-article>
-            <p class="rdr__kicker">Essay &middot; On Reading</p>
+            <p class="rdr__kicker"><span class="rdr__kdot" aria-hidden="true"></span> An essay on reading</p>
             <h3 class="rdr__title">The comfort of a screen set well</h3>
             <p class="rdr__byline">by Margaret Ashford &middot; <span class="rdr__fig">11</span> min read &middot; <span class="rdr__fig">June&#8201;2026</span></p>
 
@@ -64,19 +64,25 @@ const fam = font.fontFamily;
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Magazine &mdash; a literary long-read spread</span></figcaption>
     <div class="iu__scene scene-mag">
-      <div class="iu__poster mag">
+      <div class="iu__poster mag" data-mag>
         <header class="mag__head">
           <span class="mag__pub">Harborlight Review</span>
-          <span class="mag__sec">Fiction &middot; Summer Reading</span>
+          <span class="mag__sec">Fiction &middot; <span class="mag__fig">Summer 2026</span></span>
         </header>
-        <h3 class="mag__title">The Lighthouse Keeper&rsquo;s Last Winter</h3>
+        <h3 class="mag__title">The Lighthouse<br/>Keeper&rsquo;s Last Winter</h3>
         <p class="mag__deck">A short story, in which a man who has tended a light for forty&#8202;years learns that the harbour means to switch it off.</p>
         <div class="mag__cols">
           <p class="mag__body"><span class="mag__drop">T</span>he letter came on the first calm day in November, which Aldous took, even then, as a discourtesy. The sea had been throwing itself at the rocks for a fortnight, and the one morning it lay flat enough for the supply boat to land, it brought him this. He read it twice at the foot of the stair, then once more at the lamp, as if the height might change the words.</p>
-          <p class="mag__body">They were retiring the light. Automating it, the letter said, by the spring &mdash; a small electric thing that needed no keeper, no oil, no wick trimmed at two in the morning when the fog came down like a held breath. He was thanked for forty-one years of service. He was wished a comfortable retirement inland, near his sister, in a town he had visited exactly twice.</p>
-          <blockquote class="mag__pull">He had given the light his eyes, his sleep, and the better part of his marriage. It had given him, in return, the one view in the world he could not imagine living without.</blockquote>
-          <p class="mag__body">That night he climbed the stair as he always had, counting the hundred and twelve steps without thinking, and lit the lamp by hand. The beam swung out over the water, found the same black rocks it had found every night since he was a young man, and Aldous stood at the glass and watched it go, and did not feel, yet, anything he could have named.</p>
-          <p class="mag__body">It was only later, with the kettle going and the wind picking up again outside, that the thought arrived plainly and would not leave: that come spring there would be a light here still, faithful and bright and entirely indifferent &mdash; and that nobody at all would be awake to keep it company.</p>
+          <p class="mag__body">They were retiring the light. Automating it, the letter said, by the spring &mdash; a small electric thing that needed no keeper, no oil, no wick trimmed at two in the morning when the fog came down like a held breath. He was thanked for forty-one years of service, and wished a comfortable retirement inland.</p>
+          <p class="mag__body">That night he climbed the stair as he always had, counting the hundred and twelve steps without thinking, and lit the lamp by hand. The beam swung out over the water and found the same black rocks it had found every night since he was a young man.</p>
+        </div>
+        <blockquote class="mag__pull" data-reveal-q>
+          <span class="mag__pullmark" aria-hidden="true">&ldquo;</span>
+          He had given the light his eyes, his sleep, and the better part of his marriage. It gave him, in return, the one view in the world he could not imagine living without.
+        </blockquote>
+        <div class="mag__cols mag__cols--lower">
+          <p class="mag__body">Aldous stood at the glass and watched the beam go, and did not feel, yet, anything he could have named. It was only later, with the kettle going and the wind picking up again outside, that the thought arrived plainly and would not leave.</p>
+          <p class="mag__body">That come spring there would be a light here still &mdash; faithful and bright and entirely indifferent &mdash; and that nobody at all would be awake, in the small hours, to keep it the kind of company a light has always quietly asked for.</p>
         </div>
         <footer class="mag__foot">
           <span class="mag__cont">continued on page <span class="mag__fig">48</span></span>
@@ -84,7 +90,7 @@ const fam = font.fontFamily;
         </footer>
       </div>
     </div>
-    <p class="iu__hint label">A magazine fiction spread &mdash; drop cap, a centred pull quote, true italics for emphasis and an even two-column reading colour.</p>
+    <p class="iu__hint label">A literary spread &mdash; full-measure drop cap, true italics for emphasis, and a pull quote that spans the columns and breathes in as you reach it.</p>
   </figure>
 
   <!-- 03 — EDITORIAL FEATURE OPENER: poster-scale title spread, italic/roman interplay, hover reveal -->
@@ -97,7 +103,7 @@ const fam = font.fontFamily;
           <span class="op__over">a reading on</span>
           <h3 class="op__title">The Quiet<br/><em class="op__em">Letter</em></h3>
           <span class="op__rule" aria-hidden="true"></span>
-          <p class="op__stand">Why the typefaces we never notice are the ones that do the most work &mdash; and how a two&#8209;hundred&#8209;year&#8209;old serif learned to live behind glass.</p>
+          <p class="op__stand"><span class="op__lead">On invisibility.</span> Why the typefaces we never notice are the ones that do the most work &mdash; and how a two&#8209;hundred&#8209;year&#8209;old serif learned to live behind glass.</p>
         </div>
         <div class="op__foot">
           <span class="op__by">Words by <em>Margaret&nbsp;Ashford</em></span>
@@ -105,7 +111,7 @@ const fam = font.fontFamily;
         </div>
       </div>
     </div>
-    <p class="iu__hint label">A feature title page &mdash; oversized roman against a swelling true italic, a hairline rule and oldstyle folios. Hover to let the rule draw across.</p>
+    <p class="iu__hint label">A feature title page &mdash; oversized roman against a quiet true italic, with a hairline rule that draws on load. Hover the title: the italic <em>Letter</em> warms to colour and the rule redraws.</p>
   </figure>
 
   <!-- 04 — EMAIL NEWSLETTER: real device-scale artifact, distinct from the reading column -->
@@ -130,24 +136,27 @@ const fam = font.fontFamily;
             <p class="news__hello">Friends &mdash;</p>
             <p>This week I have been thinking about the difference between a letter that is <em>beautiful</em> and a letter that is <em>kind</em>. The first you admire. The second you forget entirely, which is the highest compliment a reading face can earn.</p>
           </div>
-          <article class="news__story">
+          <article class="news__story" tabindex="0">
             <span class="news__num">01</span>
             <h4 class="news__h">Read this</h4>
             <p>An old essay on the etiquette of footnotes, newly reprinted &mdash; charming, exact, and set in a serif so comfortable I read it twice without meaning to.</p>
           </article>
-          <article class="news__story">
+          <article class="news__story" tabindex="0">
             <span class="news__num">02</span>
             <h4 class="news__h">A line I kept</h4>
-            <blockquote class="news__quote">&ldquo;A book is a machine to think with, but only if the type lets you forget it is there.&rdquo;</blockquote>
+            <blockquote class="news__quote">&ldquo;A book is a machine to think&nbsp;with, but only if the type lets you forget&nbsp;it&nbsp;is&nbsp;there.&rdquo;</blockquote>
           </article>
-          <article class="news__story">
+          <article class="news__story" tabindex="0">
             <span class="news__num">03</span>
             <h4 class="news__h">From the postbag</h4>
             <p>Three of you wrote in about reading on small screens at night. The short answer: larger line height, warmer light, and a face built for the medium. More next week.</p>
           </article>
           <footer class="news__foot">
             <p>Until Friday,<br/><em class="news__sign">Margaret</em></p>
-            <p class="news__unsub">You are reading issue <span class="news__fig">112</span>. Reply any time &middot; <span class="news__link">unsubscribe</span></p>
+            <div class="news__actions">
+              <button class="news__reply" type="button">Reply to Margaret</button>
+            </div>
+            <p class="news__unsub">You are reading issue <span class="news__fig">112</span> &middot; <span class="news__link">unsubscribe</span></p>
           </footer>
         </div>
       </div>
@@ -217,6 +226,16 @@ const fam = font.fontFamily;
     applyMode('day');
     updateProgress();
   });
+
+  // ---- 02 magazine: pull quote breathes in on scroll-into-view ----
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('[data-reveal-q]').forEach((el) => io.observe(el));
+  } else {
+    document.querySelectorAll('[data-reveal-q]').forEach((el) => el.classList.add('is-in'));
+  }
 </script>
 
 <style>
@@ -284,8 +303,13 @@ const fam = font.fontFamily;
     transition: color 0.3s var(--ease);
   }
   .rdr__kicker {
-    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--ra); margin: 0;
+    display: flex; align-items: center; gap: 0.5em;
+    font-size: 13px; font-style: italic; letter-spacing: 0.01em;
+    color: var(--rm); margin: 0;
+  }
+  .rdr__kdot {
+    display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--ra); flex: none;
   }
   .rdr__title {
     font-size: 1.85em; line-height: 1.12; font-weight: 700; color: var(--rf);
@@ -296,8 +320,8 @@ const fam = font.fontFamily;
   .rdr__article p { margin: 0 0 1em; }
   .rdr__article em { font-style: italic; }
   .rdr__drop {
-    float: left; font-size: 3.1em; line-height: 0.7; font-weight: 700;
-    padding: 0.05em 0.12em 0 0; color: var(--ra);
+    float: left; font-size: 3.1em; line-height: 0.66; font-weight: 700;
+    padding: 0.06em 0.14em 0 0; color: var(--rf);
   }
   .rdr__quote {
     font-size: 1.18em; line-height: 1.42; font-style: italic; color: var(--rf);
@@ -311,44 +335,57 @@ const fam = font.fontFamily;
   .scene-mag > .iu__poster { position: relative; inset: auto; }
   .mag {
     background: var(--bg); color: var(--fg);
-    padding: 6cqi 6cqi 5cqi; font-feature-settings: 'liga' 1, 'kern' 1;
+    padding: 5cqi 5.5cqi 4.5cqi; font-feature-settings: 'liga' 1, 'kern' 1;
   }
   .mag__head {
     display: flex; justify-content: space-between; align-items: baseline;
-    border-bottom: 1px solid var(--line); padding-bottom: 2.4cqi;
-    font-size: 2cqi; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3);
+    border-bottom: 1px solid var(--fg); padding-bottom: 1.6cqi;
+    font-size: 1.8cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2);
   }
-  .mag__pub { color: var(--accent); font-weight: 700; letter-spacing: 0.06em; }
+  .mag__pub { color: var(--fg); font-weight: 700; letter-spacing: 0.2em; }
+  .mag__sec { color: var(--fg-3); }
   .mag__title {
-    font-size: 8cqi; line-height: 1.04; font-weight: 700; color: var(--fg);
-    margin: 4cqi 0 0; letter-spacing: -0.01em; max-width: 16ch;
+    font-size: 8.4cqi; line-height: 0.98; font-weight: 700; color: var(--fg);
+    margin: 4cqi 0 0; letter-spacing: -0.012em; text-align: center;
   }
   .mag__deck {
-    font-size: 3cqi; line-height: 1.4; font-style: italic; color: var(--fg-2);
-    margin: 2.4cqi 0 4cqi; max-width: 52ch;
+    font-size: 2.9cqi; line-height: 1.42; font-style: italic; color: var(--fg-2);
+    margin: 2.2cqi auto 4.4cqi; max-width: 46ch; text-align: center;
   }
   .mag__cols {
-    columns: 2; column-gap: 5cqi; column-rule: 1px solid var(--line-soft);
-    font-size: 2.3cqi; line-height: 1.62; color: var(--fg); text-align: justify; hyphens: auto;
+    columns: 2; column-gap: 4.4cqi; column-fill: balance;
+    font-size: 2.85cqi; line-height: 1.66; color: var(--fg); text-align: justify; hyphens: auto;
   }
-  .mag__body { margin: 0 0 0.9em; }
+  .mag__cols--lower { columns: 2; column-fill: balance; margin-top: 0; }
+  .mag__body { margin: 0 0 0.85em; }
   .mag__body em { font-style: italic; }
   .mag__drop {
-    float: left; font-size: 8.6cqi; line-height: 0.66; font-weight: 700;
-    padding: 0.05em 0.14em 0 0; color: var(--accent);
+    float: left; font-size: 6.6cqi; line-height: 0.72; font-weight: 700;
+    padding: 0.04em 0.12em 0 0; color: var(--fg);
   }
+  /* full-width pull quote — commands both columns */
   .mag__pull {
-    break-inside: avoid; margin: 0.4em 0; padding: 1.4cqi 0;
-    font-size: 3.1cqi; line-height: 1.32; font-style: italic; font-weight: 400;
-    color: var(--accent); text-align: left; hyphens: none;
-    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    position: relative; margin: 4cqi 0; padding: 3.6cqi 8cqi 0;
+    font-size: 4.4cqi; line-height: 1.28; font-style: italic; font-weight: 400;
+    color: var(--fg); text-align: center; hyphens: none;
+    border-top: 1px solid var(--line);
+  }
+  .mag__pullmark {
+    position: absolute; top: 0.4cqi; left: 50%; transform: translateX(-50%);
+    font-size: 9cqi; line-height: 1; color: var(--accent); font-weight: 700;
   }
   .mag__foot {
     display: flex; justify-content: space-between; align-items: baseline;
-    margin-top: 4cqi; padding-top: 2.4cqi; border-top: 1px solid var(--line-soft);
-    font-size: 1.9cqi; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3);
+    margin-top: 4cqi; padding-top: 2cqi; border-top: 1px solid var(--line-soft);
+    font-size: 1.7cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3);
   }
-  .mag__orn { color: var(--accent); font-size: 3.4cqi; text-transform: none; }
+  .mag__orn { color: var(--accent); font-size: 3cqi; text-transform: none; }
+
+  /* pull quote breathes in on scroll-into-view (reduced-motion safe) */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal-q] { opacity: 0; transform: translateY(10px); transition: opacity 0.7s var(--ease, ease-out), transform 0.7s var(--ease, ease-out); }
+    [data-reveal-q].is-in { opacity: 1; transform: none; }
+  }
 
   /* ============================================================
      03 — EDITORIAL FEATURE OPENER (poster-scale, cqi)
@@ -376,16 +413,19 @@ const fam = font.fontFamily;
     margin: 0; letter-spacing: -0.02em;
   }
   .op__em {
-    font-style: italic; font-weight: 400; color: var(--accent);
-    letter-spacing: -0.01em;
+    font-style: italic; font-weight: 400; color: var(--fg-2);
+    letter-spacing: -0.005em; transition: color 0.5s var(--ease, ease-out);
   }
   .op__rule {
     display: block; height: 1px; width: 0; max-width: 38cqi; background: var(--accent);
     margin: 4cqi auto; transition: width 0.9s var(--ease, ease-out);
   }
   .op__stand {
-    font-size: 2.9cqi; line-height: 1.46; color: var(--fg-2); max-width: 46ch;
+    font-size: 2.7cqi; line-height: 1.5; color: var(--fg-3); max-width: 44ch;
     margin: 0; font-style: italic;
+  }
+  .op__lead {
+    font-style: normal; font-weight: 700; color: var(--fg); letter-spacing: 0;
   }
   .op__foot {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -395,8 +435,9 @@ const fam = font.fontFamily;
   .op__foot em { font-style: italic; color: var(--fg-2); }
   .op__pp { font-family: var(--font-mono); letter-spacing: 0.06em; }
 
-  /* the hairline rule draws across on view; hover redraws it */
+  /* the hairline rule draws across on view; on hover the italic "Letter" warms to accent and the rule redraws */
   .op__rule { width: 38cqi; }
+  .opener[data-opener]:hover .op__em { color: var(--accent); }
   @media (prefers-reduced-motion: no-preference) {
     .op__rule { width: 0; animation: op-draw 1.1s var(--ease, ease-out) 0.2s forwards; }
     .opener[data-opener]:hover .op__rule { animation: op-redraw 0.9s var(--ease, ease-out) forwards; }
@@ -429,16 +470,23 @@ const fam = font.fontFamily;
   .news__hello { font-style: italic; color: var(--fg-2); }
   .news__lead em, .news__story em { font-style: italic; }
   .news__story {
-    position: relative; padding: 1.4rem 0 1.2rem 2.6rem;
+    position: relative; padding: 1.4rem 0.8rem 1.2rem 2.6rem;
     border-top: 1px solid var(--line-soft);
+    border-radius: 6px; transition: background 0.2s var(--ease); cursor: default;
+  }
+  .news__story:hover { background: var(--bg-2); }
+  .news__story:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px; background: var(--bg-2);
   }
   .news__num {
-    position: absolute; left: 0; top: 1.5rem;
-    font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: 0.04em;
+    position: absolute; left: 0.55rem; top: 1.5rem;
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: 0.04em;
+    transition: color 0.2s var(--ease);
   }
+  .news__story:hover .news__num, .news__story:focus-visible .news__num { color: var(--accent); }
   .news__h {
-    font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--fg-2); margin: 0 0 0.45rem;
+    font-size: 15px; font-weight: 700; font-style: italic; letter-spacing: 0;
+    color: var(--fg); margin: 0 0 0.4rem;
   }
   .news__story p { font-size: 15px; line-height: 1.58; color: var(--fg); margin: 0; }
   .news__quote {
@@ -450,19 +498,43 @@ const fam = font.fontFamily;
   }
   .news__foot > p:first-child { font-size: 16px; line-height: 1.5; color: var(--fg); margin: 0 0 1rem; }
   .news__sign { font-size: 22px; font-style: italic; color: var(--accent); }
+  .news__actions { margin: 0 0 1.2rem; }
+  .news__reply {
+    font-family: var(--fam); font-size: 14px; font-style: italic; color: var(--accent);
+    background: transparent; border: 1px solid var(--accent); border-radius: 100px;
+    padding: 0.5rem 1.2rem; cursor: pointer; letter-spacing: 0.01em;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .news__reply:hover { background: var(--accent); color: var(--accent-contrast); }
+  .news__reply:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .news__unsub { font-size: 11px; color: var(--fg-3); margin: 0; letter-spacing: 0.02em; }
-  .news__link { text-decoration: underline; text-underline-offset: 2px; }
+  .news__link { text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 
   /* ============================================================
      RESPONSIVE
      ============================================================ */
   @container (max-width: 560px) {
-    .rdr__bar { gap: 0.7rem; }
-    .rdr__tools { width: 100%; margin-left: 0; justify-content: space-between; }
+    .rdr__bar { gap: 0.55rem 0.7rem; padding: 0.7rem 0.9rem; }
+    .rdr__brand { font-size: 17px; }
+    .rdr__tools { width: 100%; margin-left: 0; justify-content: space-between; gap: 0.7rem; }
+    .rdr__size { padding-right: 0.7rem; }
+    .rdr__sizeval { min-width: 3.4em; }
+    .rdr__modes button { padding: 0.3rem 0.5rem; }
     .rdr__scroll { height: 420px; }
-    .mag__cols { columns: 1; column-rule: none; }
+    .mag { padding: 6cqi 6cqi 5cqi; }
+    .mag__cols, .mag__cols--lower { columns: 1; }
     .mag__title { font-size: 11cqi; }
+    .mag__deck { font-size: 3.6cqi; }
+    .mag__cols { font-size: 4cqi; line-height: 1.62; }
+    .mag__drop { font-size: 9cqi; }
+    .mag__pull { font-size: 5.6cqi; padding: 5cqi 2cqi 0; }
+    .mag__pullmark { font-size: 12cqi; }
+    .mag__head { font-size: 2.8cqi; }
+    .mag__foot { font-size: 2.6cqi; }
     .op__title { font-size: 22cqi; }
+    .op__over { font-size: 3.6cqi; }
+    .op__stand { font-size: 4cqi; max-width: 30ch; }
+    .op__issue, .op__foot { font-size: 3cqi; }
   }
 
   @media (prefers-reduced-motion: reduce) {

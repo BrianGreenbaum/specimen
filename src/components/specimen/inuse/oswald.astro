@@ -158,48 +158,69 @@ const departures = [
     <p class="iu__hint label">Tap a fixture — the scoreline, two-tone stat bars and feed reload; tabular figures hold their columns.</p>
   </figure>
 
-  <!-- 02 — front-page newspaper -->
+  <!-- 02 — front-page broadside -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the front page, display gothic over a serif text face</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the broadside, display gothic over a serif text face</span></figcaption>
     <div class="iu__scene scene-tall">
-      <div class="paper" data-paper>
-        <div class="paper__nameplate">
-          <span class="paper__edge">No. 24,118</span>
-          <h3 class="paper__title">THE CLARION</h3>
-          <span class="paper__edge paper__edge--r">Late Edition · 15¢</span>
+      <div class="paper" data-paper data-wght="700">
+        <div class="paper__masthead">
+          <div class="paper__rule paper__rule--top"></div>
+          <div class="paper__nameplate">
+            <span class="paper__flank">
+              <b>VOL. CXXXVIII</b>
+              <i>No. 24,118</i>
+            </span>
+            <h3 class="paper__title">The Clarion</h3>
+            <span class="paper__flank paper__flank--r">
+              <b>LATE CITY EDITION</b>
+              <i>Friday, June 6 · 15¢</i>
+            </span>
+          </div>
+          <div class="paper__rule paper__rule--bottom"></div>
+          <div class="paper__motto">&ldquo;The tall, narrow voice of the broadside&rdquo; · Printed in this city since 1887</div>
         </div>
-        <div class="paper__ear">CITY &amp; STATE · FRIDAY, JUNE 6, 2026 · EST. 1887</div>
+
         <div class="paper__grid">
-          <div class="paper__lead">
-            <span class="paper__kicker">Special Report</span>
-            <h4 class="paper__head">CITY VOTES TO RECLAIM THE WATERFRONT</h4>
+          <article class="paper__lead">
+            <span class="paper__kicker">The Front Page · Special Report</span>
+            <h4 class="paper__head" data-head>City Votes to Reclaim the Waterfront</h4>
             <p class="paper__deck">After a decade of stalled plans, the council approves a sweeping mile-long park — and the largest public works budget in a generation.</p>
-            <div class="paper__byline">By MARGARET ELLISON · City Hall Bureau</div>
+            <div class="paper__byline"><b>By Margaret Ellison</b><span>City Hall Bureau</span></div>
             <div class="paper__cols">
-              <p><span class="paper__drop">T</span>he vote came just before midnight, 9 to 4, ending one of the longest debates the chamber has seen this year. Crowds that had waited in the corridors since dusk spilled onto the marble steps to cheer the result.</p>
-              <p>Construction is expected to begin in the autumn, with the first stretch of promenade opening to the public by the following summer. Officials called it &ldquo;the spine of the next century,&rdquo; and promised the riverfront walk would stay free to enter for good.</p>
+              <p><span class="paper__drop">T</span>he vote came just before midnight, nine to four, ending one of the longest debates the chamber has seen this year. Crowds that had waited in the corridors since dusk spilled out onto the marble steps to cheer the result as it was read aloud.</p>
+              <p>Construction is expected to begin in the autumn, with the first stretch of promenade opening to the public by the following summer. Officials called the plan &ldquo;the spine of the next century,&rdquo; and promised the riverfront walk would remain free to enter for good.</p>
+              <p>Opponents warned of cost overruns, but supporters pointed to a generation of residents cut off from the river by rail yards and fences now slated to come down.</p>
             </div>
-          </div>
-          <div class="paper__rail">
-            <div class="paper__brief">
-              <span class="paper__rail-h">ALSO INSIDE</span>
-              <p><b>MARKETS</b> Index closes at a record high on rate-cut hopes.</p>
-              <p><b>WEATHER</b> Clear and warm through the weekend; highs near 28°.</p>
-              <p><b>SPORT</b> United clinch the title with a stoppage-time winner.</p>
+          </article>
+
+          <aside class="paper__rail">
+            <span class="paper__rail-h">Inside Today</span>
+            <ul class="paper__brief">
+              <li><b>Markets</b><span>The index closes at a record high as traders price in a summer rate cut.</span></li>
+              <li><b>Weather</b><span>Clear and warm through the weekend, with afternoon highs near 28°.</span></li>
+              <li><b>Sport</b><span>United clinch the title with a stoppage-time winner at the Hall.</span></li>
+            </ul>
+            <div class="paper__index">
+              <span class="paper__index-h">Closing Bell</span>
+              <div class="paper__quote"><span>FTSE 100</span><b>8,214</b><i class="is-up">+0.9%</i></div>
+              <div class="paper__quote"><span>S&amp;P 500</span><b>5,477</b><i class="is-up">+0.4%</i></div>
+              <div class="paper__quote"><span>Brent Crude</span><b>$81.30</b><i class="is-down">−1.2%</i></div>
             </div>
-            <div class="paper__stand">THE TALL, NARROW VOICE OF THE BROADSIDE.</div>
-          </div>
+          </aside>
         </div>
-        <div class="paper__control">
-          <span class="paper__control-h">TEXT SIZE</span>
-          <div class="paper__seg" role="group" aria-label="Body text size">
-            <button class="paper__segbtn is-on" data-size="comfortable">Comfortable</button>
-            <button class="paper__segbtn" data-size="compact">Compact</button>
+
+        <div class="paper__control" role="group" aria-label="Headline weight">
+          <span class="paper__control-h">Headline weight</span>
+          <div class="paper__seg">
+            <button class="paper__segbtn" data-wght="300">Light</button>
+            <button class="paper__segbtn" data-wght="500">Medium</button>
+            <button class="paper__segbtn is-on" data-wght="700">Bold</button>
           </div>
+          <span class="paper__control-note" data-wghtnote>700 · the broadside shout</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Oswald carries the nameplate and headline; the deck and columns are set in Spectral. Toggle the reader's text size — the serif columns reflow live.</p>
+    <p class="iu__hint label">Oswald sets the nameplate, headline and chapter cap; the deck and columns are Spectral. Drive the headline across Oswald's weight axis — the masthead reweights live, the serif columns hold.</p>
   </figure>
 
   <!-- 03 — transit departure board (own dark surface) -->
@@ -346,13 +367,21 @@ const departures = [
     );
   });
 
-  // --- 02 · front-page text-size toggle (user-driven, reduced-motion safe) ---
+  // --- 02 · broadside headline-weight toggle (drives Oswald's wght axis) ---
   document.querySelectorAll<HTMLElement>('[data-paper]').forEach((paper) => {
-    paper.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) =>
+    const note = paper.querySelector('[data-wghtnote]') as HTMLElement | null;
+    const labels: Record<string, string> = {
+      '300': '300 · the quiet read',
+      '500': '500 · the working weight',
+      '700': '700 · the broadside shout',
+    };
+    paper.querySelectorAll<HTMLButtonElement>('.paper__segbtn[data-wght]').forEach((btn) =>
       btn.addEventListener('click', () => {
-        paper.querySelectorAll('[data-size]').forEach((b) => b.classList.remove('is-on'));
+        const w = btn.dataset.wght!;
+        paper.querySelectorAll('.paper__segbtn[data-wght]').forEach((b) => b.classList.remove('is-on'));
         btn.classList.add('is-on');
-        paper.setAttribute('data-textsize', btn.dataset.size!);
+        paper.setAttribute('data-wght', w);
+        if (note) note.textContent = labels[w] || '';
       })
     );
   });
