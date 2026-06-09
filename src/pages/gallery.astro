@@ -11,43 +11,54 @@ import { themeToStyle } from '../lib/theme';
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = await getCollection('eras');
 
-// Curated piece per face: the glyph that shows its character best,
-// plus the weight / style it should hang at.
-const ART: Record<string, { g: string; w?: number; i?: boolean }> = {
-  cinzel: { g: 'A', w: 500 },
-  marcellus: { g: 'R' },
-  'eb-garamond': { g: 'a' },
-  'cormorant-garamond': { g: 'g', w: 500 },
-  lora: { g: 'k', w: 500 },
-  'libre-baskerville': { g: 'Q' },
-  'playfair-display': { g: '&', w: 500, i: true },
-  newsreader: { g: 'y', i: true },
-  spectral: { g: 'a' },
-  'bodoni-moda': { g: 'R', w: 500 },
-  'dm-serif-display': { g: 'g' },
-  fraunces: { g: 'g', w: 600 },
-  besley: { g: 'R', w: 600 },
-  'roboto-slab': { g: '2', w: 500 },
-  oswald: { g: 'G', w: 500 },
-  archivo: { g: 'K', w: 800 },
-  inter: { g: 'R', w: 500 },
-  'source-sans-3': { g: 'a', w: 500 },
-  jost: { g: 'g' },
-  outfit: { g: 'O', w: 500 },
-  fredoka: { g: 'e', w: 500 },
-  'space-grotesk': { g: 'G', w: 500 },
-  syne: { g: 'S', w: 700 },
-  'big-shoulders': { g: 'B', w: 800 },
-  'bricolage-grotesque': { g: 'a', w: 600 },
-  unbounded: { g: 'Ø', w: 800 },
-  'martian-mono': { g: 'M', w: 700 },
-  'ibm-plex-mono': { g: 'a' },
-  'instrument-serif': { g: 'J' },
-  'pinyon-script': { g: 'G' },
+// Curated piece per face: the glyph that shows its character best, the
+// weight / style it should hang at, and the wall text — why THIS letter.
+const ART: Record<string, { g: string; w?: number; i?: boolean; note: string }> = {
+  cinzel: { g: 'A', w: 500, note: 'The splayed apex and knife-edge serifs come straight from the capitals cut into Trajan’s Column — the alphabet at its most imperial.' },
+  marcellus: { g: 'R', note: 'The leg kicks out straight and proud — the classic inscriptional gesture, poised like a chisel stroke leaving the stone.' },
+  'eb-garamond': { g: 'a', note: 'A small bowl held high on a humanist frame: the double-storey a that has made books readable for five hundred years.' },
+  'cormorant-garamond': { g: 'g', w: 500, note: 'Garamond’s g re-cut for display: razor serifs, a looping descender, and hairlines that only survive at large sizes.' },
+  lora: { g: 'k', w: 500, note: 'The junctions spring like a loaded brush — Lora’s curves remember the pen, even on a backlit screen.' },
+  'libre-baskerville': { g: 'Q', note: 'Baskerville’s signature letter: the tail still sweeps below the baseline — the eighteenth century’s flourish, tempered for the screen.' },
+  'playfair-display': { g: '&', w: 500, i: true, note: 'The italic ampersand — an “Et” written in one flourish — is the most theatrical glyph in the family, all hairlines and ball terminals.' },
+  newsreader: { g: 'y', i: true, note: 'The italic y trails a long, inky descender — drawn on an optical-size axis for headlines, where descenders can afford to stretch.' },
+  spectral: { g: 'a', note: 'A sturdy double-storey a with an open aperture — a serif engineered to keep its head at paragraph sizes on screen.' },
+  'bodoni-moda': { g: 'R', w: 500, note: 'A hairline meets a full-weight stem and the leg curls away — Didone contrast, the look that made Bodoni the face of fashion.' },
+  'dm-serif-display': { g: 'g', note: 'A high-contrast double-storey g with a cocked ear — Didone drama scaled for headlines, never footnotes.' },
+  fraunces: { g: 'g', w: 600, note: 'Generous upper bowl, looping lower storey, a jaunty ear — the wonky old-style g of Cooper and Souvenir, reborn variable.' },
+  besley: { g: 'R', w: 600, note: 'The Clarendon R plants its curled leg like a boot heel — bracketed slabs built to shout from Victorian posters.' },
+  'roboto-slab': { g: '2', w: 500, note: 'Even the figures wear slabs: an unbracketed foot and even strokes — ornament stripped, geometry left standing.' },
+  oswald: { g: 'G', w: 500, note: 'A condensed gothic G with a bearded spur and a tight aperture — wood-type proportions compressed for the headline column.' },
+  archivo: { g: 'K', w: 800, note: 'The arms strike the stem in one tense junction — a headline grotesque holding its nerve across weight and width.' },
+  inter: { g: 'R', w: 500, note: 'A neo-grotesque R with a dead-straight leg, drawn to a pixel grid — the quiet workhorse letter of the modern interface.' },
+  'source-sans-3': { g: 'a', w: 500, note: 'The two-storey a with an open bowl — Adobe’s first open-source face keeping a trace of the pen at interface sizes.' },
+  jost: { g: 'g', note: 'A geometric g drawn from circle and stem — Bauhaus reduction doing the work of calligraphy.' },
+  outfit: { g: 'O', w: 500, note: 'A perfect circle for an O — monoline, unmodulated, the geometric thesis stated in a single glyph.' },
+  fredoka: { g: 'e', w: 500, note: 'A buoyant e with a level bar and rounded terminals — the whole face reads like a smile, and this is the curve of it.' },
+  'space-grotesk': { g: 'G', w: 500, note: 'The crossbar sits flat and the curves square off slightly — Space Mono’s eccentric DNA, freed from the fixed-width cell.' },
+  syne: { g: 'S', w: 700, note: 'Wide, flat-shouldered, nearly architectural — an S from a family drawn for an art centre and pushed toward abstraction.' },
+  'big-shoulders': { g: 'B', w: 800, note: 'A compressed B with flat sides and slivers of counter — American gothic condensed, named for Sandburg’s Chicago.' },
+  'bricolage-grotesque': { g: 'a', w: 600, note: 'A grotesque a with ink-trapped joins and a heavy hooked finial — British eccentricity worn over Swiss bones.' },
+  unbounded: { g: 'Ø', w: 800, note: 'A rounded superellipse sliced clean through — drawn to hold its shape from a watch face to a billboard.' },
+  'martian-mono': { g: 'M', w: 700, note: 'A wide M squeezed into the same cell as every other letter — the monospace bargain, struck with engineering humour.' },
+  'ibm-plex-mono': { g: 'a', note: 'A double-storey a tucked into a fixed-width cell, warmth surviving the grid — IBM’s typewriter voice, modernised.' },
+  'instrument-serif': { g: 'J', note: 'Needle serifs and sudden contrast on a compact J — a display face that spends its whole budget on style.' },
+  'pinyon-script': { g: 'G', note: 'A copperplate capital G unwinding in a single Spencerian stroke — engraving-plate romance, set in type.' },
 };
 
+// Museum-catalog identity line for the chosen glyph, e.g. "Lowercase g · U+0067".
+function glyphIdentity(g: string): string {
+  const cp = `U+${g.codePointAt(0)!.toString(16).toUpperCase().padStart(4, '0')}`;
+  let kind = 'Glyph';
+  if (/\p{Lu}/u.test(g)) kind = `Capital ${g}`;
+  else if (/\p{Ll}/u.test(g)) kind = `Lowercase ${g}`;
+  else if (/\d/.test(g)) kind = `Figure ${g}`;
+  else if (g === '&') kind = 'Ampersand';
+  return `${kind} · ${cp}`;
+}
+
 const rooms = fonts.map((f) => {
-  const art = ART[f.id] ?? { g: f.data.callouts[0]?.glyph ?? 'A' };
+  const art = ART[f.id] ?? { g: f.data.callouts[0]?.glyph ?? 'A', note: '' };
   const era = eras.find((e) => e.data.slug === f.data.era);
   const wght = f.data.axes.find((a) => a.tag === 'wght');
   const w = art.w ?? wght?.default ?? 400;
@@ -104,6 +115,8 @@ const rooms = fonts.map((f) => {
             <a href={`/fonts/${f.id}`} class="room__title" style={`font-family:'${f.data.fontFamily}'`}>{f.data.name}</a>
             <span class="room__year">, {f.data.year}</span>
           </p>
+          <p class="room__glyphid">{glyphIdentity(art.g)}{art.i ? ' · italic' : ''}</p>
+          {art.note && <p class="room__note">{art.note}</p>}
           <p class="room__medium">{medium}</p>
           <p class="room__lender">{f.data.foundry ?? 'Open source'} · {f.data.license}</p>
           <a class="room__cta label" href={`/fonts/${f.id}`}>View specimen →</a>
@@ -268,7 +281,21 @@ const rooms = fonts.map((f) => {
   }
   .room__title:hover { color: var(--accent); }
   .room__year { color: var(--fg-3); font-size: var(--step-0); }
-  .room__medium { margin-top: 0.55rem; font-size: var(--step--1); color: var(--fg-2); }
+  .room__glyphid {
+    margin-top: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .room__note {
+    margin-top: 0.45rem;
+    font-size: var(--step--1);
+    line-height: 1.55;
+    color: var(--fg-2);
+  }
+  .room__medium { margin-top: 0.65rem; font-size: var(--step--1); color: var(--fg-3); }
   .room__lender { margin-top: 0.15rem; font-size: var(--step--1); color: var(--fg-3); }
   .room__cta { display: inline-block; margin-top: 0.8rem; color: var(--accent); }
   .room__cta:hover { text-decoration: underline; text-underline-offset: 3px; }

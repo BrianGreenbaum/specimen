@@ -1,9 +1,10 @@
 ---
 // The Drawing — the glyph as the type designer left it.
-// Renders the real Bézier outlines extracted from the font binary
-// (src/lib/outlines.ts): on-curve points, off-curve control handles, metric
-// guides, side bearings. Variable faces morph live along the wght axis by
-// interpolating the sampled instances (identical point structure throughout).
+// Renders the real outlines extracted from the font binary
+// (src/lib/outlines.ts) over true metric guides and side bearings.
+// Variable faces morph live along the wght axis; the Layers view ghosts the
+// lightest and heaviest cuts behind the live outline so the whole design
+// space reads at a glance.
 import type { FontOutlines } from '../../lib/outlines';
 
 export interface Props {
@@ -12,24 +13,29 @@ export interface Props {
 }
 const { font, data } = Astro.props;
 const hasWeights = data.stops.length > 1;
+const wMin = data.stops[0];
+const wMax = data.stops[data.stops.length - 1];
 const modes = [
+  { id: 'outline', label: 'Outline' },
   { id: 'ink', label: 'Ink' },
-  { id: 'xray', label: 'X-ray' },
-  { id: 'skeleton', label: 'Skeleton' },
-] as const;
+  ...(hasWeights ? [{ id: 'layers', label: 'Layers' }] : []),
+];
 ---
 
-<div class="od" data-outlines data-mode="xray">
+<div class="od" data-outlines data-mode="outline">
   <script type="application/json" data-od-data set:html={JSON.stringify(data)} />
 
   <figure class="od__stage">
-    <svg data-od-svg role="img" aria-label={`Bézier outline drawing of a glyph from ${font.name}`} preserveAspectRatio="xMidYMid meet"></svg>
+    <svg data-od-svg role="img" aria-label={`Outline drawing of a glyph from ${font.name}`} preserveAspectRatio="xMidYMid meet"></svg>
     <figcaption class="od__readout">
-      <span class="od__readout-pt" data-od-readout>{data.upm} units / em · hover a point</span>
-      <span class="od__readout-legend" aria-hidden="true">
-        <i class="od__key od__key--on"></i> on-curve
-        <i class="od__key od__key--off"></i> off-curve
-      </span>
+      <span class="od__readout-pt" data-od-readout>{data.upm} units / em</span>
+      {hasWeights && (
+        <span class="od__readout-legend od__legend-layers" aria-hidden="true">
+          <i class="od__key od__key--light"></i> {wMin}
+          <i class="od__key od__key--live"></i> <span data-od-legend-w>{data.defaultStop}</span>
+          <i class="od__key od__key--heavy"></i> {wMax}
+        </span>
+      )}
     </figcaption>
   </figure>
 
@@ -54,7 +60,7 @@ const modes = [
       <span class="label od__label">View</span>
       <div class="od__modes" role="group" aria-label="Drawing view">
         {modes.map((m) => (
-          <button type="button" class="od__mode" data-od-mode={m.id} aria-pressed={m.id === 'xray' ? 'true' : 'false'}>{m.label}</button>
+          <button type="button" class="od__mode" data-od-mode={m.id} aria-pressed={m.id === 'outline' ? 'true' : 'false'}>{m.label}</button>
         ))}
       </div>
     </div>
@@ -66,8 +72,8 @@ const modes = [
           id="od-wght"
           class="od__slider"
           type="range"
-          min={data.stops[0]}
-          max={data.stops[data.stops.length - 1]}
+          min={wMin}
+          max={wMax}
           step="1"
           value={data.defaultStop}
           data-od-wght
@@ -85,8 +91,10 @@ const modes = [
     </dl>
 
     <p class="od__note">
-      Decoded from the shipping font file — the same curves a type designer
-      drew, point for point. Drag the weight and watch every coordinate move.
+      Decoded from the font file itself — the same curves the designer drew.
+      {hasWeights
+        ? 'Drag the weight, or open Layers to see the lightest and heaviest cuts at once.'
+        : 'A single cut, shown against its true metrics.'}
     </p>
   </aside>
 </div>
@@ -105,9 +113,9 @@ const modes = [
   function init(root: HTMLElement) {
     const data: OData = JSON.parse(root.querySelector('[data-od-data]')!.textContent!);
     const svg = root.querySelector<SVGSVGElement>('[data-od-svg]')!;
-    const readout = root.querySelector<HTMLElement>('[data-od-readout]')!;
     const wghtInput = root.querySelector<HTMLInputElement>('[data-od-wght]');
     const wval = root.querySelector<HTMLElement>('[data-od-wval]');
+    const legendW = root.querySelector<HTMLElement>('[data-od-legend-w]');
     const stats = {
       name: root.querySelector('[data-od-stat="name"]')!,
       unicode: root.querySelector('[data-od-stat="unicode"]')!,
@@ -117,9 +125,8 @@ const modes = [
     };
 
     const state = { glyph: 0, w: data.defaultStop };
-    const readoutDefault = `${data.upm} units / em · hover a point`;
 
-    // --- static SVG scaffolding (guides + labels live outside the y-flip) ---
+    // --- static SVG scaffolding ---
     const el = <K extends keyof SVGElementTagNameMap>(tag: K, cls?: string) => {
       const n = document.createElementNS(SVGNS, tag);
       if (cls) n.setAttribute('class', cls);
@@ -132,12 +139,14 @@ const modes = [
     flip.setAttribute('transform', 'scale(1,-1)');
     const sbLeft = el('line', 'od-sb');
     const sbRight = el('line', 'od-sb');
+    // the heaviest and lightest cuts, ghosted behind the live outline (Layers)
+    const ghostHeavy = el('path', 'od-ghost od-ghost--heavy');
+    const ghostLight = el('path', 'od-ghost od-ghost--light');
+    ghostLight.setAttribute('fill', 'none');
     const ink = el('path', 'od-ink');
     const stroke = el('path', 'od-stroke');
     stroke.setAttribute('fill', 'none');
-    const gHandles = el('g', 'od-handles');
-    const gPoints = el('g', 'od-points');
-    flip.append(sbLeft, sbRight, ink, stroke, gHandles, gPoints);
+    flip.append(sbLeft, sbRight, ghostHeavy, ink, ghostLight, stroke);
     svg.append(gGuides, gLabels, flip);
 
     const GUIDES: { y: number; name: string }[] = [
@@ -160,11 +169,8 @@ const modes = [
       return t;
     });
 
-    // --- per-glyph mutable scene (rebuilt on glyph switch) ---
-    let handleLines: SVGLineElement[] = [];
-    let markers: { node: SVGElement; ci: number }[] = []; // ci = coord index of (x,y)
-    let markerKind: ('on' | 'off')[] = [];
-    let cur = new Float64Array(0); // interpolated coords
+    // --- interpolation ---
+    let cur = new Float64Array(0);
     let curAdv = 0;
 
     function lerpInto(g: OGlyph, w: number) {
@@ -187,7 +193,7 @@ const modes = [
       curAdv = a.adv + (b.adv - a.adv) * f;
     }
 
-    function pathFrom(g: OGlyph): string {
+    function pathFrom(g: OGlyph, coords: ArrayLike<number>): string {
       let d = '';
       let k = 0;
       for (const c of g.cmds) {
@@ -196,82 +202,14 @@ const modes = [
           d += 'Z';
         } else {
           d += c;
-          for (let j = 0; j < n; j++) d += (j ? ' ' : '') + cur[k + j].toFixed(1);
+          for (let j = 0; j < n; j++) d += (j ? ' ' : '') + Number(coords[k + j]).toFixed(1);
         }
         k += n;
       }
       return d;
     }
 
-    function buildScene(g: OGlyph) {
-      gHandles.replaceChildren();
-      gPoints.replaceChildren();
-      handleLines = [];
-      markers = [];
-      markerKind = [];
-
-      const pt = data.upm * 0.011; // marker half-size in font units
-      let k = 0;
-      let prev = -1; // coord index of previous on-curve point
-      let start = -1; // contour start (for Z)
-      for (const c of g.cmds) {
-        if (c === 'M') {
-          addMarker(k, 'on', pt);
-          prev = k;
-          start = k;
-        } else if (c === 'L') {
-          addMarker(k, 'on', pt);
-          prev = k;
-        } else if (c === 'Q') {
-          addHandle(k, prev);
-          addHandle(k, k + 2);
-          addMarker(k, 'off', pt);
-          addMarker(k + 2, 'on', pt);
-          prev = k + 2;
-        } else if (c === 'C') {
-          addHandle(k, prev);
-          addHandle(k + 2, k + 4);
-          addMarker(k, 'off', pt);
-          addMarker(k + 2, 'off', pt);
-          addMarker(k + 4, 'on', pt);
-          prev = k + 4;
-        } else if (c === 'Z') {
-          prev = start;
-        }
-        k += ARITY[c];
-      }
-
-      function addHandle(ctrl: number, anchor: number) {
-        if (anchor < 0) return;
-        const l = el('line', 'od-handle') as SVGLineElement;
-        (l as any)._a = ctrl;
-        (l as any)._b = anchor;
-        gHandles.appendChild(l);
-        handleLines.push(l);
-      }
-      function addMarker(ci: number, kind: 'on' | 'off', size: number) {
-        let node: SVGElement;
-        if (kind === 'on') {
-          node = el('rect', 'od-pt od-pt--on');
-          node.setAttribute('width', String(size * 2));
-          node.setAttribute('height', String(size * 2));
-        } else {
-          node = el('circle', 'od-pt od-pt--off');
-          node.setAttribute('r', String(size * 0.92));
-        }
-        const idx = markers.length;
-        node.addEventListener('pointerenter', () => {
-          readout.textContent = `pt ${idx + 1} · ${kind}-curve · ( ${Math.round(cur[ci])}, ${Math.round(cur[ci + 1])} )`;
-        });
-        node.addEventListener('pointerleave', () => {
-          readout.textContent = readoutDefault;
-        });
-        gPoints.appendChild(node);
-        markers.push({ node, ci });
-        markerKind.push(kind);
-      }
-    }
-
+    // --- viewBox + full-bleed guides ---
     let vb = { x0: 0, w: 0, h: 0 };
 
     function fitViewBox(g: OGlyph) {
@@ -330,34 +268,15 @@ const modes = [
     function update() {
       const g = data.glyphs[state.glyph];
       lerpInto(g, state.w);
-      const d = pathFrom(g);
+      const d = pathFrom(g, cur);
       ink.setAttribute('d', d);
       stroke.setAttribute('d', d);
       sbLeft.setAttribute('x1', '0');
       sbLeft.setAttribute('x2', '0');
       sbRight.setAttribute('x1', String(curAdv));
       sbRight.setAttribute('x2', String(curAdv));
-
-      const pt = data.upm * 0.011;
-      for (let i = 0; i < markers.length; i++) {
-        const { node, ci } = markers[i];
-        if (markerKind[i] === 'on') {
-          node.setAttribute('x', String(cur[ci] - pt));
-          node.setAttribute('y', String(cur[ci + 1] - pt));
-        } else {
-          node.setAttribute('cx', String(cur[ci]));
-          node.setAttribute('cy', String(cur[ci + 1]));
-        }
-      }
-      for (const l of handleLines) {
-        const a = (l as any)._a as number;
-        const b = (l as any)._b as number;
-        l.setAttribute('x1', String(cur[a]));
-        l.setAttribute('y1', String(cur[a + 1]));
-        l.setAttribute('x2', String(cur[b]));
-        l.setAttribute('y2', String(cur[b + 1]));
-      }
       stats.advance.textContent = `${Math.round(curAdv)} units`;
+      if (legendW) legendW.textContent = String(Math.round(state.w));
     }
 
     function selectGlyph(i: number) {
@@ -370,7 +289,18 @@ const modes = [
       stats.unicode.textContent = `U+${g.cp.toString(16).toUpperCase().padStart(4, '0')}`;
       stats.contours.textContent = String(g.contours);
       stats.points.textContent = `${g.on} on · ${g.off} off`;
-      buildScene(g);
+
+      // ghost layers: the extreme cuts, fixed per glyph
+      const first = g.instances[0];
+      const last = g.instances[g.instances.length - 1];
+      if (g.instances.length > 1) {
+        ghostLight.setAttribute('d', pathFrom(g, first.coords));
+        ghostHeavy.setAttribute('d', pathFrom(g, last.coords));
+      } else {
+        ghostLight.removeAttribute('d');
+        ghostHeavy.removeAttribute('d');
+      }
+
       fitViewBox(g);
       update();
     }
@@ -430,10 +360,20 @@ const modes = [
     color: var(--fg-3);
   }
   .od__readout-pt { color: var(--fg-2); font-variant-numeric: tabular-nums; }
-  .od__readout-legend { display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap; }
-  .od__key { display: inline-block; width: 8px; height: 8px; }
-  .od__key--on { background: var(--accent); }
-  .od__key--off { border: 1.5px solid var(--fg-3); border-radius: 50%; margin-left: 0.6rem; }
+  .od__readout-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+  }
+  .od[data-mode='layers'] .od__readout-legend { opacity: 1; }
+  .od__key { display: inline-block; width: 14px; height: 0; border-top: 1px dashed var(--fg-3); }
+  .od__key--live { border-top: 2px solid var(--fg); }
+  .od__key--heavy { height: 8px; width: 8px; border: 0; background: color-mix(in srgb, var(--accent) 30%, var(--bg-2)); outline: 1px solid var(--accent); }
+  .od__key--live, .od__key--heavy { margin-left: 0.6rem; }
 
   /* --- svg internals (global: nodes are built by script) --- */
   .od :global(.od-guide) {
@@ -459,36 +399,34 @@ const modes = [
     transition: opacity 0.35s var(--ease);
   }
   .od :global(.od-stroke) {
-    stroke: var(--accent);
+    stroke: var(--fg);
     stroke-width: 1.75px;
-    vector-effect: non-scaling-stroke;
-    transition: opacity 0.35s var(--ease), stroke 0.35s var(--ease);
-  }
-  .od[data-mode='skeleton'] :global(.od-stroke) { stroke: var(--fg); }
-  .od :global(.od-handle) {
-    stroke: var(--fg-3);
-    stroke-width: 0.8px;
-    opacity: 0.65;
     vector-effect: non-scaling-stroke;
     transition: opacity 0.35s var(--ease);
   }
-  .od :global(.od-pt) { transition: opacity 0.35s var(--ease); }
-  .od :global(.od-pt--on) { fill: var(--accent); }
-  .od :global(.od-pt--off) {
-    fill: var(--bg-2);
-    stroke: var(--fg-2);
-    stroke-width: 1.1px;
+  .od :global(.od-ghost) {
+    transition: opacity 0.35s var(--ease);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .od :global(.od-ghost--heavy) {
+    fill: color-mix(in srgb, var(--accent) 11%, transparent);
+    stroke: var(--accent);
+    stroke-width: 1px;
     vector-effect: non-scaling-stroke;
   }
-  .od :global(.od-pt:hover) { fill: var(--fg); }
+  .od :global(.od-ghost--light) {
+    stroke: var(--fg-3);
+    stroke-width: 1px;
+    stroke-dasharray: 5 4;
+    vector-effect: non-scaling-stroke;
+  }
 
   /* view modes */
-  .od[data-mode='ink'] :global(.od-stroke),
-  .od[data-mode='ink'] :global(.od-handle),
-  .od[data-mode='ink'] :global(.od-pt) { opacity: 0; pointer-events: none; }
-  .od[data-mode='ink'] :global(.od-ink) { opacity: 1; }
-  .od[data-mode='xray'] :global(.od-ink) { opacity: 0.09; }
-  .od[data-mode='skeleton'] :global(.od-ink) { opacity: 0; }
+  .od[data-mode='outline'] :global(.od-ink) { opacity: 0; }
+  .od[data-mode='ink'] :global(.od-stroke) { opacity: 0; }
+  .od[data-mode='layers'] :global(.od-ink) { opacity: 0; }
+  .od[data-mode='layers'] :global(.od-ghost) { opacity: 1; }
 
   /* --- rail --- */
   .od__rail { display: flex; flex-direction: column; gap: var(--sp-4); }
