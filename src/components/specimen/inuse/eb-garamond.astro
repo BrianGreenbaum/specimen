@@ -3,512 +3,1134 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
----
-<div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — BOOK SPREAD: drop cap, running heads, old-style figures, fi/fl/ffi ligatures -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Book — a typeset novel spread</span></figcaption>
-    <div class="iu__scene scene-book">
-      <div class="iu__poster book" data-book>
-        <!-- verso -->
-        <section class="book__page book__page--verso">
-          <header class="book__run"><span class="book__folio">42</span><span class="book__title">middlemarch</span></header>
-          <div class="book__col">
-            <h3 class="book__chap"><span class="book__chnum">Chapter the Fifth</span>Findings &amp; Keepsakes</h3>
-            <p class="book__lede"><span class="book__drop">M</span>iss Brooke had that kind of beauty which seems to be thrown into relief by poor dress. Her hand and wrist were so finely formed that she could wear sleeves not less bare of style than those in which the Blessed Virgin appeared to Italian painters.</p>
-            <p>It was hardly a fortnight after — the office clock striking five on a fine afternoon in 1829 — that the affair was first whispered of in the village. The figures of that year, set as old-style, dip below the line the way a compositor of the period would have cut them.</p>
-            <p>She was open, ardent, and not in the least self-admiring; indeed, it was pretty to see how her imagination adorned her sister Celia with attractions altogether superior to her own.</p>
+// ── The sequence ─────────────────────────────────────────────────────────────
+// FIVE CENTURIES OF THE READING LETTER, ONE THREAD OF PRINTER'S RED.
+// EB Garamond is cut from the Egenolff-Berner broadsheet of 1592, so the
+// stack is that letter's whole life told forward: the source sheet under a
+// reading glass (01) → the book it set for a century, the Pléiade (02) →
+// the white cover of French publishing it dressed (03) → the screen it
+// reads on now (04) → home to Antwerp, where the actual punches sleep (05).
+// Surfaces: parchment light → leather dark → ivory/black flip → device →
+// near-black finale. The rubricator's red runs through every act.
+
+// Honesty notes, verified against the fontsource woff2s (fontTools, round 2):
+// · wght 400–800 in BOTH roman and italic files — the only axis performed.
+// · GSUB (latin roman): liga, frac, pnum, tnum, locl ONLY. There is no
+//   smcp / dlig / onum / swsh in this build — never claimed anywhere below.
+// · DEFAULT FIGURES ARE TABULAR LINING (digit tops 626–643 vs cap 650;
+//   bottoms −3..−38 are overshoot, not descenders; every advance 480).
+//   `pnum` maps to the .lf PROPORTIONAL-LINING alternates (same vertical
+//   bounds, advances 382–506) and `tnum` maps them back. So the only
+//   honest figures story is Tabular ↔ Proportional — told in act 04 where
+//   spacing shows. No old-style-figure claim anywhere in this file.
+// · The ITALIC additionally carries init (v→v.init, w→w.init) and
+//   fina (e→e.fina) — but CSS font-feature-settings forces positional
+//   features onto every glyph, so they are NOT performed or claimed.
+// · `liga` carries f_i f_l f_f f_f_i f_f_l. `frac` works (1/2 in act 04).
+// · Greek (incl. polytonic) and Cyrillic subsets are loaded site-wide;
+//   EB Garamond's Greek follows the Grecs du Roi model.
+
+// ── Act 01 — the 1592 sheet, size by size ────────────────────────────────────
+const rows = [
+  { name: 'Gros Canon',     pt: '≈44 pt', by: 'romain de Garamont',   cqi: 4.1,  px: 29, fit: true, text: 'Quousque tandem abutere, Catilina,' },
+  { name: 'Petit Canon',    pt: '≈28 pt', by: 'romain de Garamont',   cqi: 3.5,  px: 25,   text: 'patientia nostra? quam diu etiam furor iste tuus' },
+  { name: 'Gros Parangon',  pt: '≈22 pt', by: 'italique de Granjon',  cqi: 2.9,  px: 21,  it: true, text: 'iste tuus nos eludet? quem ad finem sese effrenata' },
+  { name: 'Gros Romain',    pt: '≈18 pt', by: 'romain de Garamont',   cqi: 2.35, px: 18,   text: 'effrenata iactabit audacia? Nihilne te nocturnum praesidium' },
+  { name: 'Saint Augustin', pt: '≈14 pt', by: 'italique de Granjon',  cqi: 2.0,  px: 16,  it: true, park: true, text: 'praesidium Palatii, nihil urbis vigiliae, nihil timor populi, nihil consensus' },
+  { name: 'Cicéro',         pt: '≈12 pt', by: 'romain de Garamont',   cqi: 1.7,  px: 14.5, text: 'nihil consensus bonorum omnium, nihil hic munitissimus habendi senatus' },
+  { name: 'Grec',           pt: '≈12 pt', by: 'd’après les Grecs du Roi', cqi: 1.7, px: 14.5, gr: true, text: 'Ἐν ἀρχῇ ἦν ὁ λόγος, καὶ ὁ λόγος ἦν πρὸς τὸν θεόν, καὶ θεὸς ἦν ὁ λόγος.' },
+  { name: 'Petit Texte',    pt: '≈7½ pt', by: 'romain de Garamont',   cqi: 1.38, px: 12.5, text: 'locus, nihil horum ora voltusque moverunt? patere tua consilia non sentis? constrictam iam horum' },
+  { name: 'Nonpareille',    pt: '≈6 pt',  by: 'romain de Garamont',   cqi: 1.12, px: 10.5, text: 'omnium scientia teneri coniurationem tuam non vides? quid proxima, quid superiore nocte egeris, ubi fueris, quos convocaveris, quid consilii ceperis, quem nostrum ignorare arbitraris?' },
+];
+
+// ── Act 03 — one press, two collections ──────────────────────────────────────
+const blanche = [
+  { author: 'HÉLÈNE VASSEUR',   title: 'LA LISIÈRE',          genre: 'roman',     no: '412' },
+  { author: 'PAUL MARAVAL',     title: 'UN HIVER À TRIESTE',  genre: 'récit',     no: '413' },
+  { author: 'MARGUERITE ANDRAL', title: 'LES HEURES BLEUES',  genre: 'nouvelles', no: '414' },
+];
+const noire = [
+  { author: 'JEAN SERVAT',     title: 'LA NUIT TOMBE DEUX FOIS', genre: 'roman noir', no: '87' },
+  { author: 'ODILE FRESNAY',   title: 'LE QUAI DES ARDOISES',    genre: 'roman noir', no: '88' },
+  { author: 'VICTOR LAMBALLE', title: 'TROIS BALLES POUR RIEN',  genre: 'roman noir', no: '89' },
+];
+const rulesB = [
+  'The author in black — capitals, letterspaced half a quad.',
+  'The title in the printer’s red, at double body.',
+  'The genre in italic lower case, never capitalised.',
+  'Two fillets round the page: black outside, red within.',
+  'The oval device at the foot, never wider than the title line.',
+];
+const rulesN = [
+  'The field printed full black, to the trim.',
+  'The author in ivory; the title in sulphur yellow.',
+  'The title at weight 800 — the bold Octavio Pardo cut for the revival in 2011; the 1592 sheet had no such thing.',
+  'One fillet only, ivory, hairline.',
+  'The same oval, turned to face the night.',
+];
+---
+
+<div class="iu eb" style={`--fam:${fam}`}>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       01 · INTERACTIVE & EXPERIMENTAL — the Egenolff-Berner sheet, 1592.
+       Reference: the Egenolff-Berner specimen broadsheet (Conrad Berner,
+       Frankfurt, 1592) — the literal source document of this revival, the
+       most celebrated specimen sheet of the hand-press era. Rebuilt as
+       live type, Gros Canon down to Nonpareille, with a scholar's reading
+       glass that rests on the Granjon italic and follows the hand.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Experimental — the Egenolff-Berner sheet of 1592, under the reading glass</span></figcaption>
+    <div class="iu__scene eb-sh-scene">
+      <div class="eb-sh" data-sheet>
+        <div class="eb-sh__inner" data-sheet-art>
+          <header class="eb-sh__head">
+            <p class="eb-sh__over">Specimen</p>
+            <h3 class="eb-sh__title">CHARACTERVM SEV TYPORVM PROBATISSIMORVM</h3>
+            <p class="eb-sh__sub" lang="la"><em>incondite quidem, sed secundum suas tamen differentias propositum</em> — ex officina <em>Conradi Berneri</em>, Francofvrti ad Moenvm, anno <b>M&middot;D&middot;XCII</b></p>
+          </header>
+          <div class="eb-sh__rows">
+            {rows.map((r) => (
+              <div class={`eb-sh__row${r.it ? ' eb-sh__row--it' : ''}${r.gr ? ' eb-sh__row--gr' : ''}${r.fit ? ' eb-sh__row--fit' : ''}`}>
+                <span class="eb-sh__name">{r.name}<b>{r.pt}</b><i>{r.by}</i></span>
+                <span class="eb-sh__line" lang={r.gr ? 'grc' : undefined} data-park={r.park ? '' : undefined} style={`font-size:clamp(${r.px}px, ${r.cqi}cqi, ${Math.round(r.cqi * 14.4)}px)`}>{r.text}</span>
+              </div>
+            ))}
           </div>
-        </section>
-        <!-- recto -->
-        <section class="book__page book__page--recto">
-          <header class="book__run"><span class="book__title">george eliot</span><span class="book__folio">43</span></header>
-          <div class="book__col">
-            <p>And how should Dorothea not marry? — a girl so handsome and with such prospects? Nothing could hinder it but her love of extremes, and her insistence on regulating life according to notions which might cause a wary man to hesitate before he made her an offer.</p>
-            <p>The morning of the fifth brought a sufficiency of difficulty: a flourish of letters, a file of accounts, and the inflexible Sir James waiting in the flag-stoned hall, his affliction entirely in earnest.</p>
-            <p class="book__close">Yet she went down to him with the air of one who had already, in the quiet of her own resolve, decided everything — and would say so in the fewest possible words.</p>
-            <p class="book__orn" aria-hidden="true">❦</p>
-          </div>
-        </section>
+          <footer class="eb-sh__foot">
+            <span>Romains de Claude Garamont</span><i aria-hidden="true">❧</i><span>Italiques de Robert Granjon</span><i aria-hidden="true">❧</i><span>Grec d&rsquo;après les Grecs du Roi</span>
+          </footer>
+        </div>
+        <div class="eb-lens" data-lens aria-hidden="true"></div>
       </div>
     </div>
-    <p class="iu__hint label">A real book opening — drop cap, running heads, 1829 in old-style figures, and live fi / fl / ffi / ffl ligatures in the recto.</p>
+    <p class="iu__hint label">The broadsheet this revival is cut from: Conrad Berner&rsquo;s 1592 sheet, the romans of Garamont and the italics of Granjon shown body by body, Gros Canon down to Nonpareille — with the Greek that Duffner drew after the Grecs du Roi Garamont cut for Fran&ccedil;ois&nbsp;I<sup>er</sup>. A reading glass rests on the Granjon line; move your hand across the paper and it follows, holding the letter at punch scale.</p>
   </figure>
 
-  <!-- 02 — ETYMOLOGICAL DICTIONARY: a single luminous entry; margin headword is the hero -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Reference — an etymological dictionary entry</span></figcaption>
-    <div class="iu__scene scene-lex">
-      <div class="iu__poster lex" data-lex>
-        <header class="lex__run">
-          <span class="lex__guide">garamond</span>
-          <span class="lex__pub"><span class="sc">A Dictionary of the Printed Letter</span></span>
-          <span class="lex__guide lex__guide--r">gloss</span>
-        </header>
-        <div class="lex__body">
-          <!-- outer-margin hero: the headword, oversized, with the live entry beside it -->
-          <div class="lex__margin" aria-hidden="true">
-            <span class="lex__big">g</span>
-            <span class="lex__fol">vol. <span class="lex__fig">II</span> · p. <span class="lex__fig">486</span></span>
-          </div>
-          <div class="lex__entry">
-            <h3 class="lex__head"><span class="lex__word">Garamond</span><span class="lex__pron">| ˈɡarəˌmänd |</span></h3>
-            <p class="lex__gram"><em>n.</em> &amp; <em>adj.</em> &nbsp;<span class="sc">Typography</span>. &nbsp;Also <span class="lex__var">Garamont</span>, <span class="lex__var">Garemond</span>. <span class="lex__etym">[a. the punchcutter <em>Claude Garamont</em>, Paris, <span class="lex__fig">c.1510–1561</span>; the spelling with <em>-d</em> a later French regularisation.]</span></p>
-
-            <ol class="lex__senses">
-              <li class="lex__sense" data-sense>
-                <span class="lex__num">1.</span>
-                <div class="lex__def">
-                  A roman type of the old-style, derived from the letters Garamont cut in the mid-sixteenth century; characterised by a slanted stress, small x-height, and bracketed serifs.
-                  <span class="lex__cite" data-cite><span class="lex__year">1592</span>&nbsp;<span class="sc">Egenolff-Berner</span> <em>Specimen</em>: the <span class="lex__roman">Canon Romain</span> of Garamont, shown beside the italics of Granjon.</span>
-                </div>
-              </li>
-              <li class="lex__sense" data-sense>
-                <span class="lex__num">2.</span>
-                <div class="lex__def">
-                  Loosely, any of the modern revivals worked from that evidence — among them the faithful free <span class="lex__roman">EB&nbsp;Garamond</span>, in which this very entry is set.
-                  <span class="lex__cite" data-cite><span class="lex__year">2011</span>&nbsp;G.&nbsp;<span class="sc">Duffner</span> &amp; O.&nbsp;<span class="sc">Pardo</span>: a Garamond cut from the <span class="lex__year">1592</span> sheet and the surviving punches.</span>
-                </div>
-              </li>
-            </ol>
-
-            <p class="lex__phrase"><span class="lex__phrW">— the Garamond gauge</span>, <em>fig.</em> the baseline of legibility against which a page is judged: <span class="lex__quote">“read by candlelight, it asks nothing of the eye.”</span></p>
-          </div>
+  <!-- ════════════════════════════════════════════════════════════════════
+       02 · EDITORIAL — la Bibliothèque de la Pléiade.
+       Reference: Jacques Schiffrin's Bibliothèque de la Pléiade (1931,
+       Gallimard from 1933) — French literature's canonical edition, set
+       in Garamond on bible paper with gilt edges and a sewn-in ribbon.
+       Two openings of the same volume, eleven hundred pages apart,
+       brought face to face: the text and its critical apparatus.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-note='n3']">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — la Biblioth&egrave;que de la Pl&eacute;iade, text against apparatus</span></figcaption>
+    <div class="iu__scene eb-ple">
+      <div class="eb-ple__stage">
+        <div class="eb-ple__book" lang="fr" data-ple>
+          <i class="eb-ple__gilt" aria-hidden="true"></i>
+          <i class="eb-ple__ribbon" aria-hidden="true"></i>
+          <section class="eb-ple__page eb-ple__page--text">
+            <header class="eb-ple__rh"><span class="eb-ple__folio">4</span><span class="eb-ple__rht">DU C&Ocirc;T&Eacute; DE CHEZ SWANN</span></header>
+            <div class="eb-ple__open">
+              <span class="eb-ple__part">PREMI&Egrave;RE PARTIE</span>
+              <span class="eb-ple__chap">COMBRAY</span>
+              <span class="eb-ple__no"><em>I</em></span>
+            </div>
+            <div class="eb-ple__body">
+              <p><span data-pass="n1">Longtemps, je me suis couch&eacute; de bonne heure.</span><sup class="eb-ple__cue" data-cue="n1">1</sup> Parfois, &agrave; peine ma bougie &eacute;teinte, mes yeux se fermaient si vite que je n&rsquo;avais pas le temps de me dire&nbsp;: &laquo;&nbsp;Je m&rsquo;endors.&nbsp;&raquo; Et, une demi-heure apr&egrave;s, la pens&eacute;e qu&rsquo;il &eacute;tait temps de chercher le sommeil m&rsquo;&eacute;veillait&nbsp;; je voulais poser <span data-pass="n2">le volume que je croyais avoir encore dans les mains</span><sup class="eb-ple__cue" data-cue="n2">2</sup> et souffler ma lumi&egrave;re&nbsp;; je n&rsquo;avais pas cess&eacute; en dormant de faire des r&eacute;flexions sur ce que je venais de lire, mais ces r&eacute;flexions avaient pris un tour un peu particulier&nbsp;; il me semblait que j&rsquo;&eacute;tais moi-m&ecirc;me ce dont parlait l&rsquo;ouvrage&nbsp;: une &eacute;glise, un quatuor, <span data-pass="n3">la rivalit&eacute; de Fran&ccedil;ois&nbsp;I<sup>er</sup> et de Charles&#8209;Quint</span>.<sup class="eb-ple__cue" data-cue="n3">3</sup></p>
+              <p>Cette croyance survivait pendant quelques secondes &agrave; mon r&eacute;veil&nbsp;; elle ne choquait pas ma raison mais pesait comme des &eacute;cailles sur mes yeux et les emp&ecirc;chait de se rendre compte que le bougeoir n&rsquo;&eacute;tait plus allum&eacute;.</p>
+              <p>Je me demandais quelle heure il pouvait &ecirc;tre&nbsp;; <span data-pass="n4">j&rsquo;entendais le sifflement des trains</span><sup class="eb-ple__cue" data-cue="n4">4</sup> qui, plus ou moins &eacute;loign&eacute;, comme le chant d&rsquo;un oiseau dans une for&ecirc;t, relevant les distances, me d&eacute;crivait l&rsquo;&eacute;tendue de la campagne d&eacute;serte o&ugrave; le voyageur se h&acirc;te vers la station prochaine.</p>
+            </div>
+          </section>
+          <section class="eb-ple__page eb-ple__page--notes">
+            <header class="eb-ple__rh"><span class="eb-ple__rht">NOTES ET VARIANTES</span><span class="eb-ple__folio">1126</span></header>
+            <div class="eb-ple__napp">
+              <p class="eb-ple__nintro">On donne ici les principaux &eacute;tats du texte&nbsp;; les chiffres renvoient &agrave; la page et &agrave; l&rsquo;appel de note.</p>
+              <p class="eb-ple__note" data-note="n1" tabindex="0"><b>Page 4, 1.</b>&nbsp;<i>Longtemps, je me suis couch&eacute; de bonne heure</i>&nbsp;: l&rsquo;attaque du livre est arr&ecirc;t&eacute;e d&egrave;s le Cahier 8, en 1909, apr&egrave;s trois &eacute;tats successifs&nbsp;; Proust ne la retouchera plus.</p>
+              <p class="eb-ple__note" data-note="n2" tabindex="0"><b>4, 2.</b>&nbsp;<i>le volume que je croyais avoir encore dans les mains</i>&nbsp;: la dactylographie de 1911 porte d&rsquo;abord &laquo;&nbsp;le livre&nbsp;&raquo;&nbsp;; la correction restitue le mot du manuscrit.</p>
+              <p class="eb-ple__note" data-note="n3" tabindex="0"><b>4, 3.</b>&nbsp;<i>la rivalit&eacute; de Fran&ccedil;ois&nbsp;I<sup>er</sup> et de Charles&#8209;Quint</i>&nbsp;: l&rsquo;exemple revient dans les esquisses de <i>Contre Sainte-Beuve</i>&nbsp;; Proust y tenait comme &agrave; une mesure du temps historique entr&eacute; dans le demi-sommeil.</p>
+              <p class="eb-ple__note" data-note="n4" tabindex="0"><b>4, 4.</b>&nbsp;<i>j&rsquo;entendais le sifflement des trains</i>&nbsp;: souvenir des nuits d&rsquo;Illiers&nbsp;; d&egrave;s ce premier feuillet, l&rsquo;espace est mesur&eacute; par le son, comme le temps le sera par le go&ucirc;t.</p>
+            </div>
+          </section>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">A scholarly lexicon entry — small caps for grammar and cited names, true Granjon italics for etymology and quotation, old-style figures throughout. Hover a sense to draw its dated citation in.</p>
+    <p class="iu__hint label">Jacques Schiffrin&rsquo;s Biblioth&egrave;que de la Pl&eacute;iade (1931) has set French literature in Garamond on bible paper for nearly a century. Two openings of the same volume, eleven hundred pages apart, face to face: the first variant is already lit when the page finds you — touch any other and it lights the line it argues with. The compositor&rsquo;s French is kept whole — espaces fines inside the guillemets, the lemma quoted in Granjon&rsquo;s italic, the rubricator&rsquo;s red on every cue and on the sewn-in signet.</p>
   </figure>
 
-  <!-- 03 — INTERACTIVE OPENTYPE PLAYGROUND / READER UI (real px, device scale) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Reader UI — live OpenType playground (real scale, interactive)</span></figcaption>
+  <!-- ════════════════════════════════════════════════════════════════════
+       03 · BRANDING & IDENTITY — one press, two collections.
+       Reference: Gallimard's Collection Blanche (the nrf white cover,
+       1911) — the most durable identity in publishing — and its shadow,
+       Marcel Duhamel's Série Noire (1945). A fictional press, Éditions du
+       Cadran, run on the same two grids: flip the house from ivory to
+       night and the system survives its own negative.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-coll='noire']">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Branding — &Eacute;ditions du Cadran, one grid, two collections</span></figcaption>
     <div class="iu__scene">
-      <div class="iu__device reader" data-reader>
+      <div class="eb-id" data-id data-coll="blanche">
+        <aside class="eb-id__rail">
+          <span class="eb-id__press">&Eacute;DITIONS DU CADRAN</span>
+          <span class="eb-id__since">Paris &middot; fond&eacute;es en 1923</span>
+          <div class="eb-id__tog" role="group" aria-label="Choose the collection">
+            <button type="button" class="is-on" data-coll="blanche" aria-pressed="true"><i class="eb-id__chip eb-id__chip--b" aria-hidden="true"></i>COLLECTION IVOIRE</button>
+            <button type="button" data-coll="noire" aria-pressed="false"><i class="eb-id__chip eb-id__chip--n" aria-hidden="true"></i>S&Eacute;RIE NOCTURNE</button>
+          </div>
+          <div class="eb-id__rules">
+            <span class="eb-id__rhead">From the maquette — the five rules</span>
+            <ol class="eb-id__rlist eb-id__rlist--b">{rulesB.map((r) => <li>{r}</li>)}</ol>
+            <ol class="eb-id__rlist eb-id__rlist--n">{rulesN.map((r) => <li>{r}</li>)}</ol>
+          </div>
+          <span class="eb-id__railfoot">Une seule lettre &middot; deux encres &middot; tout le fonds</span>
+        </aside>
+        <div class="eb-id__main">
+          <div class="eb-id__covs">
+            {blanche.map((c) => (
+              <div class="eb-id__cov eb-id__cov--b">
+                <div class="eb-id__face" lang="fr">
+                  <span class="eb-id__author">{c.author}</span>
+                  <span class="eb-id__cti">{c.title}</span>
+                  <span class="eb-id__genre">{c.genre}</span>
+                  <svg class="eb-id__oval" viewBox="0 0 84 46" aria-hidden="true"><ellipse cx="42" cy="23" rx="40" ry="21" fill="none" stroke="currentColor" stroke-width="1.1"/><text x="42" y="30" text-anchor="middle">&eacute;dc</text></svg>
+                  <span class="eb-id__pfoot">&Eacute;DITIONS DU CADRAN</span>
+                </div>
+              </div>
+            ))}
+            {noire.map((c) => (
+              <div class="eb-id__cov eb-id__cov--n">
+                <div class="eb-id__face" lang="fr">
+                  <span class="eb-id__author">{c.author}</span>
+                  <span class="eb-id__cti">{c.title}</span>
+                  <span class="eb-id__genre">{c.genre}</span>
+                  <svg class="eb-id__oval" viewBox="0 0 84 46" aria-hidden="true"><ellipse cx="42" cy="23" rx="40" ry="21" fill="none" stroke="currentColor" stroke-width="1.1"/><text x="42" y="30" text-anchor="middle">&eacute;dc</text></svg>
+                  <span class="eb-id__pfoot">S&Eacute;RIE NOCTURNE</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="eb-id__spines" aria-hidden="true">
+            <span class="eb-id__spine eb-id__spine--b"><b>412</b><i>LA LISI&Egrave;RE</i><span>H&Eacute;L&Egrave;NE VASSEUR</span><em>&eacute;dc</em></span>
+            <span class="eb-id__spine eb-id__spine--n"><b>87</b><i>LA NUIT TOMBE DEUX FOIS</i><span>JEAN SERVAT</span><em>&eacute;dc</em></span>
+          </div>
+          <!-- the fourth artifact: the press's own catalogue ad, same grid,
+               same five rules — proof the identity is the rules -->
+          <div class="eb-id__ad eb-id__ad--b" lang="fr">
+            <span class="eb-id__adover">VIENT DE PARA&Icirc;TRE</span>
+            <span class="eb-id__adauthor">H&Eacute;L&Egrave;NE VASSEUR</span>
+            <span class="eb-id__adtitle">LA LISI&Egrave;RE</span>
+            <span class="eb-id__adgenre">roman &middot; n&ordm;&nbsp;412 de la collection</span>
+            <span class="eb-id__adfoot">Le volume&nbsp;: 18&nbsp;fr. &mdash; en vente chez tous les libraires &mdash; 9,&nbsp;quai du Cadran, Paris&nbsp;VI<sup>e</sup></span>
+          </div>
+          <div class="eb-id__ad eb-id__ad--n" lang="fr">
+            <span class="eb-id__adover">PARU CE JOUR</span>
+            <span class="eb-id__adauthor">JEAN SERVAT</span>
+            <span class="eb-id__adtitle">LA NUIT TOMBE DEUX FOIS</span>
+            <span class="eb-id__adgenre">roman noir &middot; n&ordm;&nbsp;87 de la s&eacute;rie</span>
+            <span class="eb-id__adfoot">Le volume&nbsp;: 350&nbsp;fr. &mdash; en vente chez tous les libraires &mdash; 9,&nbsp;quai du Cadran, Paris&nbsp;VI<sup>e</sup></span>
+          </div>
+          <p class="eb-id__colo" lang="fr">Achev&eacute; d&rsquo;imprimer en juin 2026 sur les presses du Cadran — couverture ivoire 240&nbsp;g, deux encres, caract&egrave;res de Garamont &amp; de Granjon.</p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">After the white cover of the nrf — Gallimard&rsquo;s Collection Blanche (1911), two fillets and two inks around one Garalde — and its shadow, the S&eacute;rie Noire of 1945. The same five rules dress every artifact the house prints: three covers, a spine, and the morning&rsquo;s catalogue ad. Flip to the crime list and watch the press re-ink them in order — the grid turns black and the titles take weight 800, the bold Octavio Pardo drew for this revival in 2011. The identity is the rules, not the logo; the letter survives its own negative.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       04 · WEB & APP UI — Octavo, a reading room. Real px, user-driven.
+       Reference: the Standard Ebooks current (the volunteer press that
+       holds public-domain ebooks to fine-typography standards) and the
+       reader-mode lineage of Instapaper / iA. Every control is live on
+       the text and every claim is in the file: liga, the tabular ↔
+       proportional figure toggle (default tabular; pnum → .lf), frac in
+       the proof, wght 400–800 graded for night — and the ink slider
+       grades the headline live, its value set large in the page margin.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item" data-shoot-click="[data-th='night']">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Product UI — Octavo, a reading room (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device eb-rd" data-rd data-theme="day">
         <div class="iu__chrome">
           <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">read.egenolff.press/garamont-the-book-letter</span>
+          <span class="iu__addr">octavo.press/essays/montaigne/foreword</span>
         </div>
-        <div class="reader__bar">
-          <span class="reader__logo">Egenolff</span>
-          <nav class="reader__feat" aria-label="OpenType features">
-            <button class="is-on" data-feat="liga" aria-pressed="true"><span class="reader__ftag">liga</span>Ligatures</button>
-            <button data-feat="dlig" aria-pressed="false"><span class="reader__ftag">dlig</span>Disc.&nbsp;ligatures</button>
-            <button class="is-on" data-feat="onum" aria-pressed="true"><span class="reader__ftag">onum</span>Old-style&nbsp;figures</button>
-            <button data-feat="smcp" aria-pressed="false"><span class="reader__ftag">smcp</span>Small&nbsp;caps</button>
-            <button data-feat="frac" aria-pressed="false"><span class="reader__ftag">frac</span>Fractions</button>
-          </nav>
+        <div class="eb-rd__split">
+          <aside class="eb-rd__rail">
+            <span class="eb-rd__logo">Octavo</span>
+            <span class="eb-rd__sub">A reading room for the public domain</span>
+            <div class="eb-rd__group">
+              <span class="eb-rd__lab">Body</span>
+              <div class="eb-rd__seg" role="group" aria-label="Body size">
+                <button type="button" data-size="15.5">S</button><button type="button" class="is-on" data-size="17">M</button><button type="button" data-size="19">L</button>
+              </div>
+            </div>
+            <div class="eb-rd__group">
+              <label class="eb-rd__lab" for="eb-rd-ink">Ink &middot; weight <b data-wout>430</b></label>
+              <input id="eb-rd-ink" type="range" min="400" max="600" step="10" value="430" data-wght />
+            </div>
+            <div class="eb-rd__group eb-rd__group--fig">
+              <span class="eb-rd__lab">Figures</span>
+              <div class="eb-rd__seg eb-rd__seg--fig" role="group" aria-label="Figure spacing">
+                <button type="button" class="is-on" data-fig="tab">Tabular&nbsp;<i>1841</i></button><button type="button" data-fig="prop">Proportional&nbsp;<i class="eb-rd__lf">1841</i></button>
+              </div>
+              <span class="eb-rd__figno">proportional closes up the 1s — watch the page count below</span>
+            </div>
+            <div class="eb-rd__group">
+              <span class="eb-rd__lab">Ligatures</span>
+              <div class="eb-rd__seg" role="group" aria-label="Ligatures">
+                <button type="button" class="is-on" data-liga="1">On&nbsp;<i>ﬁ&nbsp;ﬄ</i></button><button type="button" data-liga="0">Off&nbsp;<i>f&#8288;i&nbsp;f&#8288;f&#8288;l</i></button>
+              </div>
+            </div>
+            <div class="eb-rd__group">
+              <span class="eb-rd__lab">Page</span>
+              <div class="eb-rd__seg" role="group" aria-label="Page colour">
+                <button type="button" class="is-on" data-th="day">Day</button><button type="button" data-th="sepia">Sepia</button><button type="button" data-th="night">Night</button>
+              </div>
+              <span class="eb-rd__grade" data-grade hidden>night grades the weight axis +60 — ink that glows, not bites</span>
+            </div>
+            <div class="eb-rd__proof">
+              <span class="eb-rd__proofline" data-fx>first afflicted &middot; 1580 &middot; <span class="eb-rd__frac">1/2</span></span>
+              <i>the compositor&rsquo;s proof &middot; live</i>
+            </div>
+            <div class="eb-rd__prog"><i data-bar style="width:25%"></i><span data-fx>p. 211 of 841 &middot; 31 min left</span></div>
+          </aside>
+          <article class="eb-rd__page" data-fx>
+            <span class="eb-rd__inkmark" aria-hidden="true"><i data-inkmark>430</i><em>graisse</em></span>
+            <span class="eb-rd__kick">OCTAVO PRESS &middot; FOREWORDS</span>
+            <h4 class="eb-rd__head">Montaigne retires to write</h4>
+            <p class="eb-rd__by">From the editor&rsquo;s foreword to the <em>Essays</em> &middot; 12 min</p>
+            <p>Michel Eyquem de Montaigne gave up his seat in the Bordeaux parlement in 1571 and withdrew, at thirty-eight, to the round library on the third floor of his tower, its rafters painted with fifty-seven Greek and Latin sentences. There, in the difficult first years of his retirement, the essay was invented — not the school exercise, but the form itself: a mind offered to the reader in its own handwriting.</p>
+            <p>The first edition of the <em>Essais</em> was printed at Bordeaux by Simon Millanges in 1580, in two books; the fifth edition of 1588, much enlarged, added a third. Between them Montaigne reckoned his afflictions, his office, his library of a thousand volumes and the kidney stone with the same unhurried fairness, and effaced none of it.</p>
+            <blockquote class="eb-rd__quote"><em>Que sais-je&nbsp;?</em> — what do I know? He had the question struck as a medal in 1576, a pair of scales above it, tipping level.</blockquote>
+          </article>
         </div>
-        <article class="reader__body" data-text>
-          <span class="reader__kicker">Essay · The Book Letter</span>
-          <h4 class="reader__head">A letter cut to be read by candlelight</h4>
-          <p class="reader__byline">Helena Vasari · <span class="reader__fig">12 June 2026</span> · <span class="reader__fig">9</span> min read</p>
-          <p class="reader__lede"><span class="reader__drop">G</span>aramont sought no flourish for its own sake. He wanted a letter that would carry an argument cleanly across the page — and so the fi, fl and ffi ligatures close the gaps where a dotted i would otherwise crash into the hood of an f.</p>
-          <p>Set the figures as old-style and the <span class="reader__fig">3</span>, <span class="reader__fig">4</span>, <span class="reader__fig">7</span> and <span class="reader__fig">9</span> drop their tails below the baseline, the way a compositor in <span class="reader__fig">1592</span> would have set the date on a title page. He priced a quire at <span class="reader__frac">1/2</span> a sou and a ream at <span class="reader__frac">3/4</span> a livre — flip on fractions and the figures knit into true cut ratios.</p>
-          <p>Turn on the discretionary ligatures and the archaic <span class="dlig-demo">ct</span> and <span class="dlig-demo">st</span> bridges close — a deliberately old-fashioned touch reserved for a title page rather than running text. Set the cited names as small caps and <span class="smcp-demo">Egenolff-Berner</span> sits quietly inside the line without shouting.</p>
-          <blockquote class="reader__quote">The most beautiful book types were cut not for beauty but for use.<cite class="reader__cite">— Beatrice Warde, after Garamont</cite></blockquote>
-        </article>
       </div>
     </div>
-    <p class="iu__hint label">Toggle each OpenType feature — ligatures, discretionary ligatures, old-style figures, small caps and swash italic all change live on the real column, and on the magnified “Live” chip.</p>
+    <p class="iu__hint label">A reading room in the school of Standard Ebooks: Montaigne at a true 17&nbsp;px, every control live on the column. The figures switch is the spacing truth this file carries — tabular by default, so columns of numbers align; <em>proportional</em> closes up the 1s, visible in the page count. Drag the ink slider and the headline grades with it, the weight value set large in the margin like a compositor&rsquo;s note; the proof line keeps a true <em>frac</em> half, and Night grades the axis up sixty units — ink that glows instead of bites.</p>
   </figure>
 
-  <!-- 04 — LITERARY TITLE PAGE / INVITATION: swash italics, dlig, small caps -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Identity — a literary invitation &amp; title page</span></figcaption>
-    <div class="iu__scene scene-invite iu__scene--portrait">
-      <div class="iu__poster invite" data-invite>
-        <p class="inv__pre"><span class="sc">the bodleian library</span> &amp; <span class="sc">the egenolff press</span><br/>request the pleasure of your company at</p>
-        <p class="inv__orn" aria-hidden="true">❧</p>
-        <h3 class="inv__title">An Evening with<br/><em class="inv__swash">the Renaissance Letter</em></h3>
-        <!-- swash flourish drawn in on scroll-into-view; final state = fully inked -->
-        <svg class="inv__flourish" data-reveal viewBox="0 0 360 30" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-          <path class="inv__flpath" d="M16 17 C70 5, 120 5, 180 15 S290 25, 344 13" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round"/>
-          <path class="inv__flpath inv__flpath--tail" d="M180 15 C176 19, 170 23, 162 21 M180 15 C184 19, 190 23, 198 21" stroke="var(--accent)" stroke-width="1" stroke-linecap="round"/>
-          <circle class="inv__fldot" cx="180" cy="15" r="1.6" fill="var(--accent)"/>
-        </svg>
-        <p class="inv__sub"><span class="sc">a lecture &amp; private viewing of the</span><br/><em>Egenolff-Berner</em> <span class="sc">specimen of</span> <span class="jr-num">1592</span></p>
-        <dl class="inv__details">
-          <div><dt>Date</dt><dd>Friday, the <span class="inv__fig">12</span><sup>th</sup> of June</dd></div>
-          <div><dt>Hour</dt><dd>Half past <span class="inv__fig">7</span> in the evening</dd></div>
-          <div><dt>Place</dt><dd>The Divinity School, Oxford</dd></div>
-        </dl>
-        <div class="inv__foot">
-          <p class="inv__rsvp"><span class="sc">r.s.v.p.</span> · by the <span class="inv__fig">1</span><sup>st</sup> of June · the press at <span class="inv__fig">11</span> Catte Street</p>
-          <p class="inv__colophon"><span class="sc">printed in the letter of</span> <em>Claude Garamont</em> &amp; <em>Robert Granjon</em><br/><span class="inv__edition"><span class="sc">an edition of</span> <span class="inv__fig">240</span> <span class="sc">numbered copies</span> · № <span class="inv__fig">038</span></span></p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       05 · ILLUSTRATION & COMMERCIAL — exhibition poster, Plantin-Moretus.
+       Reference: Museum Plantin-Moretus, Antwerp — the house that bought
+       Garamont's punches after his death in 1561 and still keeps them —
+       staged as a contemporary Flemish museum poster: the Renaissance
+       letter hung on a modernist grid, a knowing collision of eras. The
+       only picture is the conjunction: the italic ampersand, the
+       et-ligature, breathing across the revival's weight axis.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Poster — Garamont &amp; Granjon at the Plantin-Moretus</span></figcaption>
+    <div class="iu__scene eb-po">
+      <div class="eb-po__in">
+        <header class="eb-po__top">
+          <span>Museum Plantin-Moretus</span>
+          <span class="eb-po__topm">Tentoonstelling &middot; Exhibition</span>
+          <span>Antwerpen</span>
+        </header>
+        <div class="eb-po__art">
+          <div class="eb-po__row eb-po__row--1">
+            <h3 class="eb-po__name">GARAMONT</h3>
+            <span class="eb-po__role">le romain &middot; Paris, 1530&ndash;1561</span>
+          </div>
+          <span class="eb-po__amp" aria-hidden="true" data-amp>&amp;</span>
+          <div class="eb-po__row eb-po__row--2">
+            <span class="eb-po__role">l&rsquo;italique &middot; 1543&ndash;1589</span>
+            <h3 class="eb-po__name eb-po__name--it"><em>GRANJON</em></h3>
+          </div>
         </div>
+        <footer class="eb-po__foot">
+          <p class="eb-po__lede">De stempels van twee handen, samen in &eacute;&eacute;n Antwerpse lade.<br/><em>The punches of two hands, together in one Antwerp drawer.</em></p>
+          <div class="eb-po__meta">
+            <b>12 juni &mdash; 4 oktober 2026</b>
+            <span>Vrijdagmarkt 22 &middot; Antwerpen</span>
+            <span>di&ndash;zo 10&ndash;17&nbsp;u &middot; plantin-moretus.be</span>
+            <span class="eb-po__axis">&eacute;&eacute;n variabele letter &middot; <b data-axis>wght 400&ndash;800</b></span>
+          </div>
+        </footer>
       </div>
     </div>
-    <p class="iu__hint label">A printed invitation — swash Granjon italic for the title with an SVG flourish that draws in on scroll, discretionary ct / st ligatures, small caps throughout, and old-style figures in the date and colophon.</p>
+    <p class="iu__hint label">Home, finally, to Antwerp: the Plantin-Moretus is the house that bought Garamont&rsquo;s punches after 1561 and never let them go. The poster&rsquo;s only picture is the conjunction — the italic ampersand, the <em>et</em>-ligature Granjon&rsquo;s hand wears openly — breathing slowly across the 400&ndash;800 weight axis, the one dimension the sixteenth century never cut. The footer keeps the score: <em>wght</em> read live off the glyph, steady in this file&rsquo;s tabular figures. The rubricator&rsquo;s red gets the last word.</p>
   </figure>
+
 </div>
 
 <script>
-  // ---- 03 reader: live OpenType feature toggles on the real reading column ----
-  // every toggle maps to a feature EB Garamond actually ships (liga/dlig/onum/smcp/frac).
-  document.querySelectorAll<HTMLElement>('[data-reader]').forEach((reader) => {
-    const text = reader.querySelector<HTMLElement>('[data-text]')!;
-    const state: Record<string, boolean> = { liga: true, dlig: false, onum: true, smcp: false, frac: false };
-
-    const apply = () => {
-      const feats = `'liga' ${state.liga ? 1 : 0}, 'dlig' ${state.dlig ? 1 : 0}, ` +
-        `'onum' ${state.onum ? 1 : 0}, 'lnum' ${state.onum ? 0 : 1}, ` +
-        `'smcp' ${state.smcp ? 1 : 0}, 'frac' ${state.frac ? 1 : 0}`;
-      text.style.fontFeatureSettings = feats;
+  // ── 01 · the reading glass ───────────────────────────────────────────────
+  // The lens clones the rendered sheet (cloneNode keeps Astro's scoped-style
+  // attribute — never innerHTML) and magnifies it 2.3×. It rests parked on
+  // the Granjon italic line; the pointer picks it up, leaving sets it back.
+  document.querySelectorAll<HTMLElement>('[data-sheet]').forEach((wrap) => {
+    const art = wrap.querySelector<HTMLElement>('[data-sheet-art]')!;
+    const lens = wrap.querySelector<HTMLElement>('[data-lens]')!;
+    const clone = art.cloneNode(true) as HTMLElement;
+    clone.setAttribute('aria-hidden', 'true');
+    clone.classList.add('eb-lens__art');
+    lens.appendChild(clone);
+    const Z = 2.3;
+    let R = 0, ax = 0, ay = 0;   // ax/ay: the art's offset inside the wrap
+    let parked = true;
+    const park = wrap.querySelector<HTMLElement>('[data-park]');
+    const place = (x: number, y: number) => {
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      x = Math.max(R * 0.5, Math.min(w - R * 0.5, x));
+      y = Math.max(R * 0.5, Math.min(h - R * 0.5, y));
+      lens.style.transform = `translate(${(x - R).toFixed(1)}px, ${(y - R).toFixed(1)}px)`;
+      clone.style.transform = `translate(${(R - (x - ax) * Z).toFixed(1)}px, ${(R - (y - ay) * Z).toFixed(1)}px) scale(${Z})`;
     };
-
-    reader.querySelectorAll<HTMLButtonElement>('[data-feat]').forEach((btn) => {
-      const feat = btn.dataset.feat!;
-      btn.addEventListener('click', () => {
-        state[feat] = !state[feat];
-        btn.classList.toggle('is-on', state[feat]);
-        btn.setAttribute('aria-pressed', String(state[feat]));
-        apply();
-      });
+    const toPark = () => {
+      if (!park) return;
+      const pr = park.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+      place(pr.left - wr.left + Math.min(pr.width * 0.3, wrap.clientWidth * 0.3), pr.top - wr.top + pr.height / 2);
+    };
+    const measure = () => {
+      R = lens.offsetWidth / 2;
+      const ar = art.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+      ax = ar.left - wr.left;
+      ay = ar.top - wr.top;
+      clone.style.width = `${art.clientWidth}px`;
+      clone.style.maxWidth = 'none';
+      if (parked) toPark();
+    };
+    new ResizeObserver(measure).observe(wrap);
+    document.fonts?.ready.then(measure);
+    measure();
+    wrap.addEventListener('pointermove', (e) => {
+      parked = false;
+      lens.classList.add('is-live');
+      const r = wrap.getBoundingClientRect();
+      place(e.clientX - r.left, e.clientY - r.top);
     });
+    wrap.addEventListener('pointerleave', () => {
+      parked = true;
+      lens.classList.remove('is-live');
+      toPark();
+    });
+  });
 
+  // ── 02 · apparatus ↔ text crosslight ─────────────────────────────────────
+  // Note 1 is pre-lit when the spread scrolls into view (static under
+  // reduced motion — the transition is simply off), so the crosslight is
+  // discoverable at rest; the first touch hands the light to the reader.
+  document.querySelectorAll<HTMLElement>('[data-ple]').forEach((book) => {
+    let touched = false;
+    const light = (id: string | undefined, on: boolean) => {
+      if (!id) return;
+      book.querySelectorAll<HTMLElement>(`[data-note='${id}'], [data-pass='${id}'], [data-cue='${id}']`)
+        .forEach((el) => el.classList.toggle('is-lit', on));
+    };
+    const clear = () => book.querySelectorAll('.is-lit').forEach((el) => el.classList.remove('is-lit'));
+    book.querySelectorAll<HTMLElement>('[data-note], [data-cue]').forEach((el) => {
+      const id = el.dataset.note || el.dataset.cue;
+      el.addEventListener('pointerenter', () => { touched = true; clear(); light(id, true); });
+      el.addEventListener('pointerleave', () => light(id, false));
+      el.addEventListener('focus', () => { touched = true; clear(); light(id, true); });
+      el.addEventListener('blur', () => light(id, false));
+      // tap/click pins the pair (touch has no hover; also the shoot evidence)
+      el.addEventListener('click', () => { touched = true; clear(); light(id, true); });
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting && !touched) { light('n1', true); io.disconnect(); }
+      });
+    }, { threshold: 0.45 });
+    io.observe(book);
+  });
+
+  // ── 03 · the house flips collection — and visibly re-inks ────────────────
+  // Covers, ad, spine and rules re-enter staggered ~80ms apart (the press
+  // re-inking the formes); the animation lives behind a no-preference media
+  // query, so under reduced motion the flip simply snaps.
+  document.querySelectorAll<HTMLElement>('[data-id]').forEach((id) => {
+    const btns = Array.from(id.querySelectorAll<HTMLButtonElement>('button[data-coll]'));
+    btns.forEach((b) => b.addEventListener('click', () => {
+      if (id.dataset.coll === b.dataset.coll) return;
+      id.dataset.coll = b.dataset.coll;
+      btns.forEach((x) => {
+        x.classList.toggle('is-on', x === b);
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      id.classList.remove('is-reink');
+      void id.offsetWidth; // restart the stagger
+      id.classList.add('is-reink');
+    }));
+  });
+
+  // ── 04 · Octavo: every control live on the column ────────────────────────
+  // Honest features only: liga (real), pnum → the .lf PROPORTIONAL-lining
+  // alternates (default figures are tabular lining in this build — so the
+  // toggle is Tabular ↔ Proportional, shown where spacing shows), and
+  // wght 400–800 (real axis). Night adds +60 grade. The ink slider also
+  // grades the headline (+120) and writes its value large in the margin.
+  document.querySelectorAll<HTMLElement>('[data-rd]').forEach((rd) => {
+    const fx = Array.from(rd.querySelectorAll<HTMLElement>('[data-fx]'));
+    const wout = rd.querySelector<HTMLElement>('[data-wout]')!;
+    const grade = rd.querySelector<HTMLElement>('[data-grade]')!;
+    const inkmark = rd.querySelector<HTMLElement>('[data-inkmark]')!;
+    const head = rd.querySelector<HTMLElement>('.eb-rd__head')!;
+    const state = { size: 17, wght: 430, prop: false, liga: true, theme: 'day' };
+    const page = rd.querySelector<HTMLElement>('.eb-rd__page')!;
+    const apply = () => {
+      const w = state.wght + (state.theme === 'night' ? 60 : 0);
+      fx.forEach((el) => {
+        el.style.fontFeatureSettings = `'liga' ${state.liga ? 1 : 0}, 'pnum' ${state.prop ? 1 : 0}`;
+        el.style.fontWeight = String(w);
+      });
+      page.style.fontSize = `${state.size}px`;
+      head.style.fontWeight = String(Math.min(800, w + 120));
+      inkmark.textContent = String(w);
+      inkmark.style.fontWeight = String(w);
+      rd.dataset.theme = state.theme;
+      wout.textContent = String(w);
+      grade.hidden = state.theme !== 'night';
+    };
+    const seg = (sel: string, fn: (b: HTMLButtonElement) => void) => {
+      const btns = Array.from(rd.querySelectorAll<HTMLButtonElement>(sel));
+      btns.forEach((b) => b.addEventListener('click', () => {
+        btns.forEach((x) => x.classList.toggle('is-on', x === b));
+        fn(b);
+        apply();
+      }));
+    };
+    seg('[data-size]', (b) => { state.size = parseFloat(b.dataset.size!); });
+    seg('[data-fig]', (b) => { state.prop = b.dataset.fig === 'prop'; });
+    seg('[data-liga]', (b) => { state.liga = b.dataset.liga === '1'; });
+    seg('[data-th]', (b) => { state.theme = b.dataset.th!; });
+    rd.querySelector<HTMLInputElement>('[data-wght]')!.addEventListener('input', (e) => {
+      state.wght = parseInt((e.target as HTMLInputElement).value, 10);
+      apply();
+    });
     apply();
   });
 
-  // ---- 04 invitation: SVG swash flourish draws in on scroll-into-view ----
-  document.querySelectorAll<SVGSVGElement>('.inv__flourish').forEach((svg) => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // set each path's dash length to its own measured length so the wipe is exact
-    svg.querySelectorAll<SVGPathElement>('.inv__flpath').forEach((p) => {
-      p.style.setProperty('--len', String(Math.ceil(p.getTotalLength())));
-    });
-    if (reduce) {
-      // arrive fully inked, no motion
-      svg.removeAttribute('data-reveal');
-      svg.classList.add('is-drawn');
-      return;
-    }
-    const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        svg.removeAttribute('data-reveal');
-        svg.classList.add('is-drawn');
-        obs.disconnect();
+  // ── 05 · the ampersand breathes; the footer keeps the score ──────────────
+  // JS drives the weight axis so the meta line can read it back live
+  // ('wght 412 …') — the poster's argument made explicit. Runs only while
+  // the act is in view; under reduced motion the amp holds 640 and the
+  // readout states the range as static text.
+  document.querySelectorAll<HTMLElement>('.eb-po').forEach((po) => {
+    const amp = po.querySelector<HTMLElement>('[data-amp]');
+    const axis = po.querySelector<HTMLElement>('[data-axis]');
+    if (!amp || !axis) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf = 0;
+    const PERIOD = 17000; // 8.5s up, 8.5s down
+    const tick = (t: number) => {
+      const w = Math.round(600 - 200 * Math.cos((2 * Math.PI * t) / PERIOD));
+      amp.style.fontVariationSettings = `'wght' ${w}`;
+      axis.textContent = `wght ${w}`;
+      raf = requestAnimationFrame(tick);
+    };
+    new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting && !raf) raf = requestAnimationFrame(tick);
+        else if (!en.isIntersecting && raf) { cancelAnimationFrame(raf); raf = 0; }
       });
-    }, { threshold: 0.4 });
-    io.observe(svg);
+    }, { threshold: 0.1 }).observe(po);
   });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ── the stack: a tighter, paced scroll; printer's red is the thread ──── */
+  .eb { gap: clamp(3.25rem, 8vh, 5.5rem); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .iu__scene * { font-family: var(--fam); }
+  .iu__hint em { font-style: italic; }
+  .iu__hint sup { font-size: 0.7em; }
+  .iu__scene { font-family: var(--fam); }
+  .iu__scene :is(button, input) { font-family: inherit; }
 
-  /* shared: small caps + old-style figure helpers used across scenes */
-  .sc { font-feature-settings: 'smcp' 1; letter-spacing: 0.02em; }
-  .jr__fig, .reader__fig, .inv__fig, .jr-num { font-feature-settings: 'onum' 1; }
+  /* ════════════════════════════════════════════════════════════════════
+     01 · THE 1592 SHEET — its own parchment, declared for both modes
+     ════════════════════════════════════════════════════════════════════ */
+  .eb-sh-scene { background: #d9cdae; }
+  .eb-sh {
+    position: relative;
+    background:
+      radial-gradient(120% 90% at 50% 8%, #efe6cd 0%, #e7dbbc 58%, #d9cba6 100%);
+    color: #2a2117;
+    padding: clamp(2.2rem, 5cqi, 4.5rem) clamp(1.1rem, 6cqi, 7rem) clamp(2rem, 4cqi, 3.6rem);
+    cursor: crosshair;
+  }
+  .eb-sh__inner { max-width: 1120px; margin-inline: auto; }
+  .eb-sh__head { text-align: center; margin-bottom: clamp(1.6rem, 3.4cqi, 3.2rem); }
+  .eb-sh__over {
+    margin: 0; font-size: max(34px, 5.4cqi); line-height: 1; letter-spacing: 0.3em;
+    text-indent: 0.3em; text-transform: uppercase; font-weight: 400;
+  }
+  /* one letterspace register for the spaced caps (0.3em, same as SPECIMEN);
+     the Latin subhead is italic lower case, untracked — two voices, not three */
+  .eb-sh__title {
+    margin: 0.55em 0 0; font-size: max(13px, 1.5cqi); font-weight: 500;
+    letter-spacing: 0.3em; text-indent: 0.3em;
+  }
+  .eb-sh__sub { margin: 0.9em 0 0; font-size: max(11.5px, 1.18cqi); color: #5d4f39; }
+  .eb-sh__sub em { font-style: italic; }
+  .eb-sh__sub b { font-weight: 500; color: #93341e; }
 
-  /* ============================================================
-     01 — BOOK SPREAD (container-query print sizing)
-     ============================================================ */
-  /* these print scenes grow with their content, so the poster flows in-place
-     instead of being absolutely positioned inside a fixed-ratio mat */
-  .scene-book > .iu__poster,
-  .scene-journal > .iu__poster { position: relative; inset: auto; }
-  .book {
-    background: var(--bg); color: var(--fg);
+  .eb-sh__rows { border-top: 1px solid #2a211733; }
+  .eb-sh__row {
+    display: grid; grid-template-columns: minmax(118px, 15cqi) 1fr;
+    gap: 0.4rem 1.6rem; align-items: baseline;
+    padding: clamp(0.5rem, 1.05cqi, 0.95rem) 0;
+    border-bottom: 1px solid #2a211726;
+  }
+  .eb-sh__name {
+    display: flex; flex-direction: column; gap: 0.1em;
+    font-size: max(10.5px, 1.02cqi); letter-spacing: 0.14em; text-transform: uppercase;
+    color: #93341e;
+  }
+  /* the historical body, in points — the scholarship line */
+  .eb-sh__name b {
+    font-weight: 400; letter-spacing: 0.06em; text-transform: none;
+    font-size: max(10px, 0.95cqi); color: #8a7a5c;
+  }
+  .eb-sh__name i {
+    font-style: italic; text-transform: none; letter-spacing: 0.02em;
+    font-size: max(10px, 0.98cqi); color: #6e5e44;
+  }
+  /* lines run the full measure, as on the sheet, and fade at the margin;
+     the Gros Canon line is composed to END inside its measure (a complete
+     word and its comma) so the margin never beheads a word at display size */
+  .eb-sh__line {
+    line-height: 1.22; white-space: nowrap; overflow: hidden;
+    mask-image: linear-gradient(90deg, #000 88%, transparent 99%);
+  }
+  /* the fit row ends inside its measure at sheet width; the gentler mask
+     only acts when a narrow viewport forces the line past its margin */
+  .eb-sh__row--fit .eb-sh__line { mask-image: linear-gradient(90deg, #000 94%, transparent 99.5%); }
+  .eb-sh__row--it .eb-sh__line { font-style: italic; }
+  .eb-sh__foot {
+    display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap;
+    gap: 0.4rem 1rem; margin-top: clamp(1.2rem, 2.6cqi, 2.4rem);
+    font-size: max(10.5px, 1.05cqi); font-style: italic; color: #5d4f39;
+  }
+  .eb-sh__foot i { font-style: normal; color: #93341e; }
+
+  /* the glass: parked by default, picked up by the pointer */
+  .eb-lens {
+    position: absolute; top: 0; left: 0;
+    width: clamp(150px, 21cqi, 270px); aspect-ratio: 1;
+    border-radius: 50%; overflow: hidden;
+    background: #efe6cd;
+    border: 3px solid #7a6437;
+    box-shadow:
+      0 0 0 1px #4f3f20,
+      inset 0 0 0 1px #fff8e6cc,
+      0 14px 30px -10px rgba(42, 30, 12, 0.55),
+      inset 0 0 26px rgba(42, 30, 12, 0.18);
+    pointer-events: none;
+    transition: transform 0.6s var(--ease);
+  }
+  .eb-lens:empty { display: none; }
+  .eb-lens.is-live { transition: none; }
+  /* the optical truth: focus falls off toward the rim (the paper tint creeps
+     back in) and one specular catch sits on the glass at 10 o'clock */
+  .eb-lens::after {
+    content: ''; position: absolute; inset: 0; border-radius: 50%; z-index: 2;
+    background:
+      radial-gradient(circle at 32% 26%, rgba(255, 250, 230, 0.45) 0%, rgba(255, 250, 230, 0) 19%),
+      radial-gradient(circle at 50% 50%, transparent 54%, rgba(233, 221, 190, 0.34) 82%, rgba(214, 199, 160, 0.72) 97%);
+    pointer-events: none;
+  }
+  .eb-lens .eb-lens__art {
+    position: absolute; top: 0; left: 0; margin: 0;
+    transform-origin: 0 0;
+    transition: transform 0.6s var(--ease);
+  }
+  .eb-lens.is-live .eb-lens__art { transition: none; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     02 · LA PLÉIADE — leather table, bible paper, gilt and ribbon
+     ════════════════════════════════════════════════════════════════════ */
+  .eb-ple { background: #241b11; }
+  .eb-ple__stage {
+    background: radial-gradient(110% 120% at 50% -10%, #322516 0%, #241b11 55%, #1b140c 100%);
+    padding: clamp(2.4rem, 6cqi, 5.5rem) clamp(0.9rem, 5cqi, 5rem) clamp(2.8rem, 6.5cqi, 6rem);
+  }
+  .eb-ple__book {
+    position: relative; max-width: 1040px; margin-inline: auto;
+    container-type: inline-size;
     display: grid; grid-template-columns: 1fr 1fr;
-    /* every textual glyph in the book gets ligatures + old-style figures on */
-    font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
+    background: linear-gradient(100deg, #f4eedd 0%, #efe7d2 48%, #f2ebd8 52%, #ece2c9 100%);
+    color: #241c10;
+    box-shadow: 0 26px 50px -22px rgba(0, 0, 0, 0.75), 0 4px 14px rgba(0, 0, 0, 0.35);
+    font-feature-settings: 'liga' 1;
   }
-  .book__page { padding: 6cqi 5.5cqi 5cqi; position: relative; }
-  .book__page--verso { border-right: 1px solid var(--line-soft); }
-  .book__run {
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-size: 2cqi; letter-spacing: 0.18em; color: var(--fg-3);
-    font-feature-settings: 'smcp' 1; padding-bottom: 4cqi;
+  /* la tranche dorée */
+  .eb-ple__gilt {
+    position: absolute; left: 1px; right: 1px; top: -6px; height: 6px;
+    background: linear-gradient(90deg, #8e6f33, #d9b86a 18%, #a9852f 38%, #e3c87e 62%, #97742d 84%, #cfae5e);
+    box-shadow: 0 -1px 0 #f4e3ad inset;
   }
-  .book__folio { font-feature-settings: 'onum' 1; letter-spacing: 0.04em; }
-  .book__col { font-size: 2.45cqi; line-height: 1.62; color: var(--fg); text-align: justify; hyphens: auto; }
-  .book__col p { margin: 0 0 0.85em; text-indent: 1.4em; }
-  .book__col p:first-of-type { text-indent: 0; }
-  .book__chap { text-align: center; margin: 0 0 3.5cqi; font-weight: 400; }
-  .book__chnum {
-    display: block; font-size: 1.9cqi; letter-spacing: 0.22em; color: var(--accent);
-    font-feature-settings: 'smcp' 1; margin-bottom: 1.6cqi;
+  /* le signet */
+  .eb-ple__ribbon {
+    position: absolute; z-index: 3; top: -4px; left: 3.1%;
+    width: clamp(9px, 1.5cqi, 15px); height: 40%;
+    background: linear-gradient(180deg, #8d2a1c, #a03022 30%, #7c2417);
+    box-shadow: 1px 3px 6px rgba(30, 16, 6, 0.4);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 92.5%, 0 100%);
+    transform: rotate(0.6deg); transform-origin: top center;
   }
-  .book__chap { font-size: 4.6cqi; line-height: 1.05; font-style: italic; color: var(--fg); }
-  .book__lede { text-indent: 0 !important; }
-  .book__drop {
-    float: left; font-size: 11cqi; line-height: 0.72; padding: 0.5cqi 1.2cqi 0 0;
-    color: var(--accent); font-weight: 500;
+  .eb-ple__page {
+    padding: clamp(1.5rem, 6.4cqi, 4.4rem) clamp(1.2rem, 6cqi, 4.2rem) clamp(1.7rem, 6.4cqi, 4.4rem);
+    min-width: 0;
   }
-  .book__close { }
-  .book__orn { text-align: center; color: var(--accent); font-size: 4cqi; margin-top: 2cqi !important; text-indent: 0 !important; }
+  .eb-ple__page--text { box-shadow: inset -22px 0 28px -24px rgba(56, 40, 16, 0.55); }
+  .eb-ple__page--notes { box-shadow: inset 22px 0 28px -24px rgba(56, 40, 16, 0.45); }
 
-  /* a quiet living touch: the drop cap settles in on scroll-into-view */
+  .eb-ple__rh {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: max(9.5px, 1.25cqi); letter-spacing: 0.2em; color: #6d5e43;
+    margin-bottom: clamp(1.1rem, 3.8cqi, 2.6rem);
+  }
+  .eb-ple__page--notes .eb-ple__rh { flex-direction: row; }
+  .eb-ple__folio { letter-spacing: 0.05em; color: #41372a; }
+  .eb-ple__rht { text-align: center; flex: 1; }
+
+  .eb-ple__open { text-align: center; margin-bottom: clamp(1rem, 3.2cqi, 2.2rem); }
+  .eb-ple__part {
+    display: block; font-size: max(9px, 1.12cqi); letter-spacing: 0.34em; text-indent: 0.34em;
+    color: #6d5e43;
+  }
+  .eb-ple__chap {
+    display: block; margin-top: 1.1em; font-size: max(13px, 1.95cqi);
+    letter-spacing: 0.3em; text-indent: 0.3em; font-weight: 500;
+  }
+  .eb-ple__no { display: block; margin-top: 1.2em; font-size: max(11px, 1.5cqi); }
+  .eb-ple__no em { font-style: italic; }
+
+  .eb-ple__body { font-size: max(11.5px, 1.58cqi); line-height: 1.6; }
+  .eb-ple__body p { margin: 0 0 0.85em; text-align: justify; hyphens: auto; hyphenate-limit-chars: 6 3 3; }
+  .eb-ple__body p + p { text-indent: 1.5em; }
+  .eb-ple__body sup.eb-ple__cue {
+    font-size: 0.62em; color: #a03022; cursor: default;
+    padding-inline: 0.12em; line-height: 0;
+  }
+  .eb-ple__body [data-pass] { transition: background-color 0.3s var(--ease); border-radius: 1px; }
+  .eb-ple__body [data-pass].is-lit { background: #a0302226; }
+  .eb-ple__body sup.is-lit { color: #fff; background: #a03022; border-radius: 2px; }
+
+  .eb-ple__napp { font-size: max(10.5px, 1.42cqi); line-height: 1.58; }
+  .eb-ple__nintro {
+    margin: 0 0 1.3em; font-style: italic; color: #6d5e43;
+    padding-bottom: 0.9em; border-bottom: 1px solid #241c1026;
+  }
+  .eb-ple__note {
+    margin: 0 0 1em; padding-left: 0.85em; border-left: 2px solid transparent;
+    transition: border-color 0.3s var(--ease), color 0.3s var(--ease);
+    cursor: default; color: #3c321f;
+  }
+  .eb-ple__note b { font-weight: 500; color: #a03022; letter-spacing: 0.03em; }
+  /* NOTE: the italic woff2 does carry init/fina, but CSS font-feature-settings
+     forces positional features onto EVERY glyph (every e takes the finishing
+     tail) — so they are not performable honestly from CSS and are not claimed */
+  .eb-ple__note i { font-style: italic; }
+  .eb-ple__note.is-lit { border-left-color: #a03022; color: #241c10; }
+  .eb-ple__note:focus-visible { outline: 1px dotted #a03022; outline-offset: 3px; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     03 · ÉDITIONS DU CADRAN — the identity that survives its negative
+     ════════════════════════════════════════════════════════════════════ */
+  .eb-id {
+    --id-field: #e6dec9; --id-ink: #211a10; --id-soft: #71644e; --id-acc: #ad3a22;
+    display: grid; grid-template-columns: minmax(228px, 300px) 1fr;
+    gap: clamp(1.6rem, 3.4cqi, 3.4rem);
+    background: var(--id-field); color: var(--id-ink);
+    padding: clamp(1.7rem, 4cqi, 3.6rem) clamp(1.1rem, 4.5cqi, 4.5rem);
+    transition: background 0.55s var(--ease), color 0.55s var(--ease);
+  }
+  .eb-id[data-coll='noire'] {
+    --id-field: #15120d; --id-ink: #eae1ca; --id-soft: #8f8468; --id-acc: #d9aa32;
+  }
+  .eb-id__rail { display: flex; flex-direction: column; min-width: 0; }
+  .eb-id__press { font-size: 17px; letter-spacing: 0.26em; font-weight: 500; }
+  .eb-id__since { font-size: 13px; font-style: italic; color: var(--id-soft); margin-top: 0.45em; }
+  /* the collection tabs belong to the maquette: the press's own letterspaced
+     caps over a fillet, an ink chip for each forme — no 2020s pill buttons */
+  .eb-id__tog {
+    display: flex; gap: 1.7rem; margin-top: 1.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--id-ink) 26%, transparent);
+  }
+  .eb-id__tog button {
+    display: inline-flex; align-items: center; gap: 0.55em;
+    font-size: 11.5px; letter-spacing: 0.22em; font-weight: 500;
+    padding: 0.1rem 0 0.55rem; cursor: pointer;
+    background: transparent; color: var(--id-soft);
+    border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .eb-id__tog button:hover { color: var(--id-ink); }
+  .eb-id__tog button.is-on { color: var(--id-ink); border-bottom-color: var(--id-acc); }
+  .eb-id__chip { width: 10px; height: 10px; border: 1px solid color-mix(in srgb, var(--id-ink) 55%, transparent); }
+  .eb-id__chip--b { background: #f6f0e1; }
+  .eb-id__chip--n { background: #0d0c0a; }
+  .eb-id__rules { margin-top: 1.7rem; border-top: 1px solid color-mix(in srgb, var(--id-ink) 22%, transparent); padding-top: 1.2rem; }
+  .eb-id__rhead { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--id-acc); }
+  .eb-id__rlist { margin: 0.8rem 0 0; padding: 0; list-style: none; counter-reset: rule; }
+  .eb-id__rlist li {
+    counter-increment: rule; position: relative;
+    font-size: 13.5px; line-height: 1.5; font-style: italic; color: var(--id-ink);
+    padding: 0.34rem 0 0.34rem 1.7rem;
+  }
+  .eb-id__rlist li::before {
+    content: counter(rule); position: absolute; left: 0; top: 0.34rem;
+    font-style: normal; color: var(--id-acc); font-weight: 500;
+  }
+  .eb-id__rlist--n { display: none; }
+  .eb-id[data-coll='noire'] .eb-id__rlist--b { display: none; }
+  .eb-id[data-coll='noire'] .eb-id__rlist--n { display: block; }
+  .eb-id__railfoot { margin-top: auto; padding-top: 1.4rem; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--id-soft); }
+
+  .eb-id__main { display: flex; flex-direction: column; gap: clamp(1rem, 2.2cqi, 1.8rem); min-width: 0; }
+  .eb-id__covs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 2.2cqi, 2rem); }
+  /* the cover is the container; the face inside it sizes in the cover's
+     own cqi (padding on the cover itself would resolve against the scene) */
+  .eb-id__cov {
+    aspect-ratio: 14 / 20.5; container-type: inline-size;
+    position: relative; min-width: 0;
+  }
+  .eb-id__face {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 14cqi 10cqi 9cqi;
+  }
+  /* the white collection: two fillets, black then red */
+  .eb-id__cov--b {
+    background: #f6f0e1; color: #211a10;
+    box-shadow: 0 14px 26px -16px rgba(28, 20, 8, 0.5);
+  }
+  .eb-id__cov--b .eb-id__face::before {
+    content: ''; position: absolute; inset: 4.2cqi; border: 1.5px solid #211a10; pointer-events: none;
+  }
+  .eb-id__cov--b .eb-id__face::after {
+    content: ''; position: absolute; inset: calc(4.2cqi + 5px); border: 1px solid #ad3a22; pointer-events: none;
+  }
+  /* the night series: one ivory hairline */
+  .eb-id__cov--n {
+    background: #0d0c0a; color: #eae1ca;
+    box-shadow: 0 14px 26px -16px rgba(0, 0, 0, 0.8);
+    display: none;
+  }
+  .eb-id__cov--n .eb-id__face::before {
+    content: ''; position: absolute; inset: 4.2cqi; border: 1px solid #eae1ca66; pointer-events: none;
+  }
+  .eb-id[data-coll='noire'] .eb-id__cov--b { display: none; }
+  .eb-id[data-coll='noire'] .eb-id__cov--n { display: block; }
+
+  .eb-id__author { font-size: 5.6cqi; letter-spacing: 0.2em; text-indent: 0.2em; line-height: 1.45; }
+  .eb-id__cti {
+    margin-top: 7cqi; font-size: 8.6cqi; line-height: 1.22; letter-spacing: 0.05em;
+    color: #ad3a22; font-weight: 430; text-wrap: balance;
+  }
+  .eb-id__cov--n .eb-id__cti { color: #d9aa32; font-weight: 800; letter-spacing: 0.03em; }
+  .eb-id__genre { margin-top: 5.5cqi; font-size: 5.4cqi; font-style: italic; color: #6f6450; }
+  .eb-id__cov--n .eb-id__genre { color: #9c9176; }
+  .eb-id__oval { width: 17cqi; margin-top: auto; color: #211a10; }
+  .eb-id__oval text { font-size: 22px; font-style: italic; fill: currentColor; }
+  .eb-id__cov--n .eb-id__oval { color: #eae1ca; }
+  .eb-id__pfoot { margin-top: 5cqi; font-size: 3.9cqi; letter-spacing: 0.3em; text-indent: 0.3em; color: #4d4232; }
+  .eb-id__cov--n .eb-id__pfoot { color: #d9aa32; }
+
+  /* a spine laid flat under the row */
+  .eb-id__spines { display: block; }
+  .eb-id__spine {
+    display: none; align-items: center; gap: 1.4rem;
+    height: clamp(34px, 4cqi, 48px); padding-inline: 1.2rem;
+    font-size: clamp(11px, 1.25cqi, 14px); letter-spacing: 0.2em;
+  }
+  .eb-id__spine b { font-weight: 500; letter-spacing: 0.06em; }
+  .eb-id__spine i { font-style: normal; font-weight: 500; }
+  .eb-id__spine span { color: inherit; opacity: 0.72; }
+  .eb-id__spine em { margin-left: auto; font-style: italic; letter-spacing: 0; font-size: 1.15em; }
+  .eb-id__spine--b { background: #f6f0e1; color: #211a10; box-shadow: inset 0 0 0 1px #211a1022, 0 10px 18px -12px rgba(28, 20, 8, 0.5); }
+  .eb-id__spine--b b, .eb-id__spine--b em { color: #ad3a22; }
+  .eb-id__spine--n { background: #0d0c0a; color: #eae1ca; box-shadow: inset 0 0 0 1px #eae1ca33, 0 10px 18px -12px rgba(0, 0, 0, 0.8); }
+  .eb-id__spine--n b, .eb-id__spine--n em { color: #d9aa32; }
+  .eb-id[data-coll='blanche'] .eb-id__spine--b { display: flex; }
+  .eb-id[data-coll='noire'] .eb-id__spine--n { display: flex; }
+
+  /* the catalogue ad — the same five rules at landscape, press-announcement size */
+  .eb-id__ad {
+    position: relative; display: none; flex-direction: column; align-items: center;
+    text-align: center; gap: 0.32em;
+    padding: clamp(1.1rem, 2.6cqi, 1.9rem) clamp(1rem, 4cqi, 3rem) clamp(1rem, 2.4cqi, 1.7rem);
+  }
+  .eb-id__ad--b {
+    background: #f6f0e1; color: #211a10;
+    box-shadow: 0 14px 26px -16px rgba(28, 20, 8, 0.5);
+  }
+  .eb-id__ad--b::before { content: ''; position: absolute; inset: 9px; border: 1.5px solid #211a10; pointer-events: none; }
+  .eb-id__ad--b::after { content: ''; position: absolute; inset: 14px; border: 1px solid #ad3a22; pointer-events: none; }
+  .eb-id__ad--n {
+    background: #0d0c0a; color: #eae1ca;
+    box-shadow: 0 14px 26px -16px rgba(0, 0, 0, 0.8);
+  }
+  .eb-id__ad--n::before { content: ''; position: absolute; inset: 9px; border: 1px solid #eae1ca66; pointer-events: none; }
+  .eb-id[data-coll='blanche'] .eb-id__ad--b { display: flex; }
+  .eb-id[data-coll='noire'] .eb-id__ad--n { display: flex; }
+  .eb-id__adover { font-size: clamp(11px, 1.15cqi, 13px); letter-spacing: 0.34em; text-indent: 0.34em; color: #ad3a22; }
+  .eb-id__ad--n .eb-id__adover { color: #eae1ca; }
+  .eb-id__adauthor { margin-top: 0.5em; font-size: clamp(13px, 1.5cqi, 17px); letter-spacing: 0.2em; text-indent: 0.2em; }
+  .eb-id__adtitle { font-size: clamp(22px, 3.1cqi, 34px); line-height: 1.15; letter-spacing: 0.05em; color: #ad3a22; font-weight: 430; }
+  .eb-id__ad--n .eb-id__adtitle { color: #d9aa32; font-weight: 800; letter-spacing: 0.03em; }
+  .eb-id__adgenre { font-size: clamp(12px, 1.3cqi, 14.5px); font-style: italic; color: #6f6450; }
+  .eb-id__ad--n .eb-id__adgenre { color: #9c9176; }
+  .eb-id__adfoot { margin-top: 0.7em; font-size: clamp(10.5px, 1.1cqi, 12.5px); letter-spacing: 0.08em; color: #4d4232; }
+  .eb-id__ad--n .eb-id__adfoot { color: #9c9176; }
+  .eb-id__adfoot sup { font-size: 0.72em; }
+
+  .eb-id__colo { margin: 0; font-size: 13px; font-style: italic; color: var(--id-soft); }
+
+  /* the re-inking: on flip, covers → ad → spine → rules re-enter ~80ms apart;
+     under reduced motion none of this runs and the flip snaps */
   @media (prefers-reduced-motion: no-preference) {
-    .book__drop { animation: bk-settle 1.1s var(--ease, ease-out) both; }
-    @keyframes bk-settle {
-      from { opacity: 0; transform: translateY(-0.06em); }
+    .eb-id.is-reink .eb-id__cov { animation: eb-reink 0.42s var(--ease-out) backwards; }
+    .eb-id.is-reink .eb-id__covs .eb-id__cov:nth-of-type(2),
+    .eb-id.is-reink .eb-id__covs .eb-id__cov:nth-of-type(5) { animation-delay: 0.08s; }
+    .eb-id.is-reink .eb-id__covs .eb-id__cov:nth-of-type(3),
+    .eb-id.is-reink .eb-id__covs .eb-id__cov:nth-of-type(6) { animation-delay: 0.16s; }
+    .eb-id.is-reink .eb-id__ad { animation: eb-reink 0.42s var(--ease-out) 0.24s backwards; }
+    .eb-id.is-reink .eb-id__spine { animation: eb-reink 0.42s var(--ease-out) 0.32s backwards; }
+    .eb-id.is-reink .eb-id__rlist { animation: eb-reink 0.42s var(--ease-out) 0.4s backwards; }
+    @keyframes eb-reink {
+      from { opacity: 0; transform: translateY(7px); }
       to { opacity: 1; transform: none; }
     }
   }
 
-  /* ============================================================
-     02 — ETYMOLOGICAL DICTIONARY ENTRY (container-query print sizing)
-     the oversized margin headword is the hero; the entry breathes beside it
-     ============================================================ */
-  .scene-lex { --card-ar: auto; }
-  .scene-lex > .iu__poster { position: relative; inset: auto; }
-  .lex {
-    background: var(--bg); color: var(--fg);
-    padding: 5cqi 6cqi 6cqi;
-    font-feature-settings: 'liga' 1, 'onum' 1, 'kern' 1;
-    display: flex; flex-direction: column;
+  /* ════════════════════════════════════════════════════════════════════
+     04 · OCTAVO — real px, every control live (tokens for the chrome,
+     the page declares its own paper per theme)
+     ════════════════════════════════════════════════════════════════════ */
+  .eb-rd { max-width: 980px; margin-inline: auto; width: 100%; border: 1px solid var(--line); }
+  .eb-rd__split { display: grid; grid-template-columns: 248px 1fr; background: var(--bg); }
+  .eb-rd__rail {
+    display: flex; flex-direction: column; gap: 1.05rem;
+    padding: 1.2rem 1.15rem 1.1rem;
+    border-right: 1px solid var(--line);
+    background: color-mix(in srgb, var(--fg) 3%, var(--bg));
   }
-  .lex__run {
-    display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline;
-    border-bottom: 1px solid var(--line); padding-bottom: 2.2cqi; margin-bottom: 5.5cqi;
-    font-size: 2cqi;
+  .eb-rd__logo { font-size: 23px; font-weight: 600; color: var(--fg); line-height: 1; }
+  .eb-rd__sub { font-size: 12.5px; font-style: italic; color: var(--fg-3); margin-top: -0.75rem; }
+  .eb-rd__group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .eb-rd__lab { font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .eb-rd__lab b { font-weight: 500; color: var(--accent); letter-spacing: 0.04em; }
+  .eb-rd__seg { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .eb-rd__seg button {
+    font-size: 12.5px; line-height: 1; color: var(--fg-2);
+    padding: 0.4rem 0.6rem; cursor: pointer;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+    transition: color 0.18s var(--ease), border-color 0.18s var(--ease), background 0.18s var(--ease);
   }
-  .lex__guide { font-style: italic; color: var(--accent); letter-spacing: 0.01em; }
-  .lex__guide--r { text-align: right; }
-  .lex__pub { text-align: center; letter-spacing: 0.16em; color: var(--fg-3); font-size: 1.85cqi; }
-  .lex__pub .sc { font-feature-settings: 'smcp' 1; }
+  .eb-rd__seg button i { font-style: normal; color: var(--fg-3); }
+  .eb-rd__seg button:hover { color: var(--fg); border-color: var(--fg-3); }
+  .eb-rd__seg button.is-on { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+  .eb-rd__seg button.is-on i { color: var(--accent-contrast); opacity: 0.85; }
+  .eb-rd__lf { font-feature-settings: 'pnum' 1; }
+  .eb-rd__figno { font-size: 11px; font-style: italic; color: var(--fg-3); line-height: 1.4; }
+  .eb-rd input[type='range'] { width: 100%; accent-color: var(--accent); }
+  .eb-rd__grade { font-size: 11.5px; font-style: italic; color: var(--accent); line-height: 1.45; }
+  .eb-rd__proof {
+    margin-top: 0.2rem; padding: 0.7rem 0.75rem 0.6rem;
+    border: 1px dashed var(--line); border-radius: 6px;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .eb-rd__proofline { font-size: 20px; line-height: 1.2; color: var(--fg); }
+  .eb-rd__frac { font-feature-settings: 'frac' 1; color: var(--accent); }
+  .eb-rd__proof i { font-size: 11px; font-style: italic; color: var(--fg-3); }
+  .eb-rd__prog { margin-top: auto; position: relative; padding-top: 0.75rem; }
+  .eb-rd__prog i {
+    position: absolute; top: 0; left: 0; height: 2px; background: var(--accent); display: block;
+  }
+  .eb-rd__prog::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--line); z-index: -1; }
+  .eb-rd__prog span { font-size: 12.5px; color: var(--fg-3); }
 
-  .lex__body { display: grid; grid-template-columns: 30cqi 1fr; gap: 0 5cqi; align-items: start; }
-  .lex__margin {
-    display: flex; flex-direction: column; align-items: flex-start;
-    border-right: 1px solid var(--line-soft); padding-right: 4cqi;
+  /* the page declares its own paper, per theme */
+  .eb-rd__page {
+    --pp: #faf5e8; --pi: #282113;
     position: relative;
+    padding: clamp(1.6rem, 4.5cqi, 3rem) clamp(1.4rem, 6cqi, 4rem) clamp(2rem, 5cqi, 3.4rem);
+    background: var(--pp); color: var(--pi);
+    transition: background 0.4s var(--ease), color 0.4s var(--ease);
+    min-width: 0;
   }
-  .lex__big {
-    font-size: 30cqi; line-height: 0.78; color: var(--accent); font-weight: 500;
-    letter-spacing: -0.02em; margin-left: -0.04em;
+  /* the compositor's margin note: the live weight value, set large */
+  .eb-rd__inkmark {
+    position: absolute; top: 1rem; right: 1.2rem;
+    display: flex; flex-direction: column; align-items: flex-end;
+    pointer-events: none; text-align: right;
+    color: var(--accent); opacity: 0.42;
   }
-  .lex__fol {
-    font-size: 1.85cqi; letter-spacing: 0.12em; color: var(--fg-3);
-    font-feature-settings: 'smcp' 1; margin-top: 2.4cqi;
+  .eb-rd__inkmark i { font-style: normal; font-size: 84px; line-height: 0.82; letter-spacing: -0.01em; }
+  .eb-rd__inkmark em { font-style: italic; font-size: 13px; margin-top: 0.3em; }
+  .eb-rd[data-theme='night'] .eb-rd__inkmark { color: #c98a4e; opacity: 0.6; }
+  .eb-rd[data-theme='day'] .eb-rd__page { --pp: #faf5e8; --pi: #28211f; }
+  .eb-rd[data-theme='sepia'] .eb-rd__page { --pp: #efe2c4; --pi: #33270f; }
+  .eb-rd[data-theme='night'] .eb-rd__page { --pp: #16120b; --pi: #e7dcc2; }
+  .eb-rd__kick { font-size: 12px; letter-spacing: 0.2em; color: var(--accent); }
+  .eb-rd[data-theme='night'] .eb-rd__kick { color: #c98a4e; }
+  .eb-rd__head { margin: 0.55rem 0 0.4rem; font-size: 31px; line-height: 1.12; font-weight: 500; }
+  .eb-rd__by { margin: 0 0 1.4rem; font-size: 14px; font-style: italic; opacity: 0.62; }
+  .eb-rd__page p { margin: 0 0 1em; line-height: 1.66; max-width: 62ch; }
+  .eb-rd__quote {
+    margin: 1.5rem 0 0.4rem; padding-left: 1.1rem; border-left: 2px solid var(--accent);
+    font-size: 1.18em; line-height: 1.5;
   }
-  .lex__fig, .lex__year { font-feature-settings: 'onum' 1; }
+  .eb-rd[data-theme='night'] .eb-rd__quote { border-left-color: #c98a4e; }
+  .eb-rd__quote em { font-style: italic; }
 
-  .lex__entry { font-size: 2.5cqi; line-height: 1.56; color: var(--fg); }
-  .lex__head { margin: 0 0 1.4cqi; font-weight: 400; line-height: 1.1; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 1.4cqi; }
-  .lex__word { font-size: 5.4cqi; letter-spacing: -0.01em; }
-  .lex__pron { font-size: 2.4cqi; color: var(--fg-3); font-style: italic; letter-spacing: 0.01em; }
-  .lex__gram { margin: 0 0 2.6cqi; color: var(--fg-2); }
-  .lex__gram em { color: var(--fg); }
-  .lex__gram .sc { font-feature-settings: 'smcp' 1; letter-spacing: 0.04em; color: var(--accent); font-style: normal; }
-  .lex__var { font-style: italic; color: var(--fg-2); }
-  .lex__etym { display: inline; color: var(--fg-3); }
-  .lex__etym em { font-style: italic; color: var(--fg-2); }
-
-  .lex__senses { list-style: none; margin: 0 0 2.6cqi; padding: 0; }
-  .lex__sense { display: grid; grid-template-columns: 4cqi 1fr; gap: 1.4cqi; margin-bottom: 2.2cqi; }
-  .lex__num { color: var(--accent); font-weight: 500; font-feature-settings: 'lnum' 0, 'onum' 1; }
-  .lex__def { color: var(--fg); }
-  .lex__roman { font-style: italic; color: var(--accent); }
-  /* the citation is the hover-reveal payload: hairline-ruled, drops in beneath the sense */
-  .lex__cite {
-    display: block; margin-top: 1cqi; padding-top: 1cqi;
-    border-top: 1px solid var(--line-soft);
-    font-size: 2.1cqi; line-height: 1.5; color: var(--fg-3);
+  /* ════════════════════════════════════════════════════════════════════
+     05 · PLANTIN-MORETUS — the conjunction, breathing on the axis
+     ════════════════════════════════════════════════════════════════════ */
+  .eb-po { background: #14110b; color: #e9ddc1; }
+  .eb-po__in {
+    max-width: 1240px; margin-inline: auto; min-height: clamp(560px, 88vh, 880px);
+    display: flex; flex-direction: column;
+    padding: clamp(1.6rem, 3.6cqi, 3.4rem) clamp(1.2rem, 4.5cqi, 4.5rem) clamp(1.8rem, 4cqi, 3.6rem);
   }
-  .lex__cite .sc { font-feature-settings: 'smcp' 1; letter-spacing: 0.03em; color: var(--fg-2); }
-  .lex__cite em { font-style: italic; }
-  .lex__year { color: var(--accent); }
-
-  .lex__phrase {
-    margin: 0; padding-top: 2.6cqi; border-top: 1px solid var(--line);
-    font-size: 2.4cqi; color: var(--fg-2);
+  .eb-po__top {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    font-size: clamp(11px, 1.15cqi, 15px); letter-spacing: 0.22em; text-transform: uppercase;
+    color: #a3946f; padding-bottom: clamp(0.8rem, 1.6cqi, 1.4rem);
+    border-bottom: 1px solid #e9ddc12b;
   }
-  .lex__phrW { font-style: italic; color: var(--fg); }
-  .lex__phrase em { font-style: italic; color: var(--accent); }
-  .lex__quote { font-style: italic; color: var(--fg); }
+  .eb-po__topm { color: #c23a20; }
+  .eb-po__art {
+    position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center;
+    padding-block: clamp(1rem, 2.5cqi, 2rem);
+  }
+  .eb-po__row { display: flex; align-items: baseline; gap: clamp(0.8rem, 2.4cqi, 2.4rem); flex-wrap: wrap; }
+  .eb-po__row--1 { justify-content: flex-start; }
+  .eb-po__row--2 { justify-content: flex-end; }
+  .eb-po__name {
+    margin: 0; font-size: clamp(38px, 8.6cqi, 118px); line-height: 1;
+    font-weight: 430; letter-spacing: 0.045em; color: #e9ddc1;
+  }
+  .eb-po__name--it em { font-style: italic; letter-spacing: 0.02em; }
+  .eb-po__role { font-size: clamp(11px, 1.2cqi, 16px); font-style: italic; color: #a3946f; }
+  .eb-po__amp {
+    align-self: center; font-style: italic; line-height: 0.62;
+    font-size: clamp(170px, 30cqi, 420px);
+    color: #c23a20;
+    margin-block: clamp(-1.4rem, -2cqi, -0.6rem);
+    font-variation-settings: 'wght' 640;
+  }
+  /* breathing is JS-driven (so the footer can read the value back);
+     reduced motion never starts the loop and the amp holds 640 */
+  .eb-po__foot {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 1.4rem;
+    padding-top: clamp(0.9rem, 1.8cqi, 1.6rem); border-top: 1px solid #e9ddc12b;
+  }
+  .eb-po__lede { margin: 0; font-size: clamp(13px, 1.5cqi, 19px); line-height: 1.5; max-width: 44ch; }
+  .eb-po__lede em { font-style: italic; color: #a3946f; }
+  .eb-po__meta {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.3em; text-align: right;
+    font-size: clamp(12px, 1.3cqi, 17px);
+  }
+  .eb-po__meta b { font-weight: 600; color: #c23a20; font-size: 1.2em; }
+  .eb-po__meta span { color: #a3946f; }
+  /* the score line: the live axis value — the default tabular-lining digits
+     keep it from jittering as it counts */
+  .eb-po__axis { margin-top: 0.45em; font-style: italic; }
+  .eb-po__axis b { font-style: normal; font-weight: 500; font-size: 1em; letter-spacing: 0.04em; }
 
-  /* living touch: citations rest dim + collapsed, ink in when their sense is hovered
-     (always fully visible under reduced-motion / no-hover) */
-  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
-    .lex__cite {
-      opacity: 0; max-height: 0; margin-top: 0; padding-top: 0; border-top-color: transparent;
-      overflow: hidden;
-      transition: opacity 0.45s var(--ease), max-height 0.5s var(--ease),
-                  margin-top 0.5s var(--ease), padding-top 0.5s var(--ease);
+  /* ════════════════════════════════════════════════════════════════════
+     RESPONSIVE — three compositions, not one squished
+     ════════════════════════════════════════════════════════════════════ */
+  /* 01 · the sheet stacks its labels above the lines */
+  @container (max-width: 700px) {
+    .eb-sh__row { grid-template-columns: 1fr; gap: 0.25rem; padding-block: 0.7rem; }
+    .eb-sh__name { flex-direction: row; align-items: baseline; gap: 0.7em; }
+    .eb-lens { width: clamp(120px, 36cqi, 170px); border-width: 2px; }
+    /* narrow sheet: the Gros Canon line overflows again, so it takes the
+       same long margin fade as the running lines — ink, not a clip */
+    .eb-sh__row--fit .eb-sh__line { mask-image: linear-gradient(90deg, #000 84%, transparent 98%); }
+  }
+  /* 02 · the spread becomes successive openings */
+  @container (max-width: 660px) {
+    .eb-ple__book { grid-template-columns: 1fr; }
+    .eb-ple__page--text { box-shadow: none; border-bottom: 1px solid #241c1026; }
+    .eb-ple__page--notes { box-shadow: none; }
+    .eb-ple__ribbon { display: none; }
+    .eb-ple__body, .eb-ple__napp { font-size: 14px; }
+    .eb-ple__rh { font-size: 10.5px; }
+  }
+  /* 03 · rail on top; covers become a snap shelf */
+  @container (max-width: 860px) {
+    .eb-id { grid-template-columns: 1fr; }
+    .eb-id__rail { gap: 0.2rem; }
+    .eb-id__railfoot { display: none; }
+  }
+  @container (max-width: 560px) {
+    .eb-id__covs {
+      display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+      gap: 0.8rem; margin-inline: -0.2rem; padding: 0.2rem 0.2rem 0.9rem;
     }
-    .lex__sense:hover .lex__cite,
-    .lex__sense:focus-within .lex__cite {
-      opacity: 1; max-height: 24cqi; margin-top: 1cqi; padding-top: 1cqi;
-      border-top-color: var(--line-soft);
+    .eb-id__cov { flex: 0 0 72cqi; scroll-snap-align: center; }
+    .eb-id__spine { letter-spacing: 0.1em; gap: 0.8rem; }
+    .eb-id__spine span { display: none; }
+  }
+  /* 04 · the rail becomes a top deck */
+  @container (max-width: 760px) {
+    .eb-rd__split { grid-template-columns: 1fr; }
+    .eb-rd__rail {
+      border-right: 0; border-bottom: 1px solid var(--line);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 1.2rem;
+      padding: 1rem 1.05rem;
     }
-    .lex__sense { cursor: default; transition: opacity 0.3s var(--ease); }
-    [data-lex]:hover .lex__sense:not(:hover) { opacity: 0.55; }
+    .eb-rd__logo { grid-column: 1 / -1; font-size: 20px; }
+    .eb-rd__sub { display: none; }
+    .eb-rd__proof { display: none; }
+    .eb-rd__prog { grid-column: 1 / -1; margin-top: 0.1rem; }
+    .eb-rd__inkmark i { font-size: 64px; }
   }
-
-  /* ============================================================
-     03 — READER UI / OPENTYPE PLAYGROUND (real px)
-     ============================================================ */
-  .reader { font-size: 14px; line-height: 1.5; }
-  .reader__bar {
-    display: flex; align-items: center; gap: 0.85rem 1.1rem;
-    padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line); flex-wrap: wrap;
-    background: color-mix(in srgb, var(--fg) 2%, var(--bg));
+  /* at phone width the figures pair takes the full rail row — one row, no orphan */
+  @container (max-width: 480px) {
+    .eb-rd__group--fig { grid-column: 1 / -1; }
+    .eb-rd__seg--fig { flex-wrap: nowrap; }
+    .eb-rd__seg--fig button { white-space: nowrap; }
+    .eb-rd__inkmark { top: 0.7rem; right: 0.8rem; }
+    .eb-rd__inkmark i { font-size: 48px; }
   }
-  .reader__logo {
-    font-size: 19px; font-weight: 600; color: var(--fg); letter-spacing: 0.005em;
-    font-feature-settings: 'dlig' 1; flex: none;
-  }
-  .reader__feat { display: flex; gap: 0.35rem; margin-left: auto; flex-wrap: wrap; }
-  /* buttons are set in EB Garamond itself — the UI demonstrates the face at true scale */
-  .reader__feat button {
-    display: inline-flex; align-items: center; gap: 0.42rem;
-    font-family: var(--fam); font-size: 12.5px; line-height: 1; color: var(--fg-2);
-    padding: 0.34rem 0.62rem 0.34rem 0.5rem; border-radius: 7px;
-    border: 1px solid var(--line); cursor: pointer; transition: all 0.18s var(--ease);
-    white-space: nowrap; background: var(--bg);
-    font-feature-settings: 'liga' 1, 'onum' 1;
-  }
-  /* the leading tag is the literal feature code — quiet, lowercase, never shouting */
-  .reader__ftag {
-    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.04em;
-    color: var(--fg-3); padding: 0.12rem 0.3rem; border-radius: 4px;
-    background: color-mix(in srgb, var(--fg) 6%, transparent); line-height: 1;
-  }
-  .reader__feat button:hover { color: var(--fg); border-color: var(--fg-3); }
-  .reader__feat button.is-on {
-    color: var(--accent-contrast); background: var(--accent); border-color: var(--accent);
-  }
-  .reader__feat button.is-on .reader__ftag {
-    color: var(--accent-contrast); background: color-mix(in srgb, var(--accent-contrast) 22%, transparent);
-  }
-  .reader__body { padding: clamp(1.6rem, 4cqi, 3rem) clamp(1.5rem, 5.5cqi, 4.5rem) clamp(1.8rem, 4cqi, 3rem); max-width: 64ch; margin: 0 auto; }
-  .reader__kicker {
-    font-size: 12px; letter-spacing: 0.18em; color: var(--accent);
-    font-feature-settings: 'smcp' 1, 'onum' 1;
-  }
-  .reader__head {
-    font-size: clamp(27px, 4.6cqi, 38px); line-height: 1.1; margin: 0.5rem 0 0.55rem;
-    font-weight: 500; letter-spacing: -0.005em; color: var(--fg);
-  }
-  .reader__byline { font-size: 13.5px; color: var(--fg-3); font-style: italic; margin: 0 0 1.5rem; }
-  .reader__lede, .reader__body p {
-    font-size: 16px; line-height: 1.66; color: var(--fg); margin: 0 0 1em;
-  }
-  .reader__lede { font-size: 17.5px; }
-  .reader__drop {
-    float: left; font-size: 3.1em; line-height: 0.7; padding: 0.04em 0.12em 0 0;
-    color: var(--accent); font-weight: 500;
-  }
-  .dlig-demo { font-feature-settings: 'dlig' 1; color: var(--accent); }
-  .smcp-demo { font-feature-settings: 'smcp' 1; letter-spacing: 0.02em; }
-  .reader__frac { font-feature-settings: 'frac' 1; color: var(--accent); }
-  .reader__quote {
-    font-size: 21px; line-height: 1.38; font-style: italic; color: var(--fg);
-    border-left: 2px solid var(--accent); padding-left: 1.1rem; margin: 1.6rem 0 0;
-  }
-  .reader__cite {
-    display: block; margin-top: 0.6rem; font-size: 13px; font-style: normal;
-    letter-spacing: 0.02em; color: var(--fg-3); font-feature-settings: 'smcp' 1;
-  }
-
-  /* ============================================================
-     04 — LITERARY INVITATION / TITLE PAGE
-     ============================================================ */
-  .scene-invite { --card-ar: 3 / 4; }
-  .invite {
-    background: var(--bg); color: var(--fg);
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 6.5cqi 6cqi 5cqi; gap: 2.4cqi;
-    font-feature-settings: 'liga' 1, 'onum' 1;
-    /* a hairline plate border + inner keyline read as a printed card */
-    border: 1px solid var(--line);
-    box-shadow: inset 0 0 0 0.6cqi var(--bg), inset 0 0 0 calc(0.6cqi + 1px) var(--line-soft);
-  }
-  .inv__pre { font-size: 2.55cqi; line-height: 1.6; color: var(--fg-2); font-style: italic; letter-spacing: 0.01em; }
-  .inv__pre .sc { font-style: normal; letter-spacing: 0.08em; color: var(--fg-2); }
-  .inv__orn { color: var(--accent); font-size: 4.4cqi; margin: -0.6cqi 0; }
-  .inv__title { font-size: 5.8cqi; line-height: 1.14; font-weight: 400; margin: 0; color: var(--fg); }
-  .inv__swash {
-    display: inline-block; font-size: 10.5cqi; line-height: 1.06; font-style: italic;
-    color: var(--accent); font-feature-settings: 'dlig' 1, 'liga' 1; letter-spacing: -0.005em;
-  }
-  .inv__flourish { width: 46cqi; height: auto; margin: -0.4cqi 0 0.6cqi; display: block; }
-  .inv__fldot { opacity: 0.85; }
-  .inv__sub { font-size: 2.75cqi; line-height: 1.55; color: var(--fg-2); margin: 0; }
-  .inv__sub em { font-style: italic; color: var(--fg); font-feature-settings: 'dlig' 1; }
-  .inv__details {
-    display: flex; flex-direction: column; gap: 1.5cqi; margin: 1.6cqi 0 0;
-    padding: 3cqi 0; font-size: 2.85cqi; line-height: 1.3;
-    border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft);
-    width: 64cqi; max-width: 100%;
-  }
-  .inv__details div { display: flex; align-items: baseline; justify-content: center; gap: 1.4cqi; }
-  .inv__details dt {
-    font-feature-settings: 'smcp' 1; letter-spacing: 0.14em; color: var(--fg-3);
-    min-width: 14cqi; text-align: right;
-  }
-  .inv__details dd { margin: 0; color: var(--fg); font-style: italic; text-align: left; min-width: 26cqi; }
-  .inv__details dd sup { font-size: 0.62em; font-feature-settings: 'onum' 0, 'lnum' 1; }
-  .inv__foot {
-    margin-top: auto; padding-top: 3cqi; display: flex; flex-direction: column; gap: 1.6cqi;
-  }
-  .inv__rsvp { margin: 0; font-size: 2.35cqi; color: var(--fg-2); letter-spacing: 0.02em; font-style: italic; }
-  .inv__rsvp .sc { font-style: normal; letter-spacing: 0.08em; }
-  .inv__colophon { margin: 0; font-size: 2.1cqi; line-height: 1.6; color: var(--fg-3); }
-  .inv__colophon em { font-style: italic; color: var(--fg-2); font-feature-settings: 'dlig' 1; }
-  .inv__colophon .sc { letter-spacing: 0.06em; }
-  .inv__edition { display: inline-block; margin-top: 0.8cqi; color: var(--accent); }
-  .inv__edition .sc { color: var(--fg-3); }
-
-  /* swash flourish draws in on scroll-into-view; reduced-motion = arrives inked */
-  .inv__flpath { stroke-dasharray: var(--len, 480); stroke-dashoffset: 0; }
-  .inv__fldot { transform-box: fill-box; transform-origin: center; }
-  @media (prefers-reduced-motion: no-preference) {
-    .inv__flourish[data-reveal] .inv__flpath { stroke-dashoffset: var(--len, 480); }
-    .inv__flourish[data-reveal] .inv__fldot { opacity: 0; transform: scale(0); }
-    .inv__flourish.is-drawn .inv__flpath {
-      stroke-dashoffset: 0; transition: stroke-dashoffset 1.1s var(--ease, ease-out);
+  /* 05 · the tablet poster: names anchored left on one axis, roles under
+     their names, the ampersand laid behind GRANJON's ascenders — the
+     overlap is chosen, the captions stay clear */
+  @container (min-width: 641px) and (max-width: 980px) {
+    .eb-po__in { min-height: 0; }
+    .eb-po__art {
+      display: flex; flex-direction: column; align-items: stretch;
+      padding-block: 3.5cqi 2cqi;
     }
-    .inv__flourish.is-drawn .inv__fldot {
-      opacity: 0.85; transform: scale(1);
-      transition: opacity 0.4s 0.95s var(--ease), transform 0.4s 0.95s var(--ease);
+    .eb-po__row {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 1cqi;
+      position: relative; z-index: 1;
     }
-    .inv__flourish.is-drawn .inv__flpath--tail { transition-delay: 0.55s; }
+    .eb-po__row--2 { justify-content: flex-start; }
+    .eb-po__row--2 .eb-po__name { order: 1; }
+    .eb-po__row--2 .eb-po__role { order: 2; }
+    .eb-po__name { font-size: 11.5cqi; }
+    .eb-po__role { font-size: 1.9cqi; }
+    /* the amp sits between the names in flow, pulled down behind GRANJON —
+       the swash crosses the italic's ascenders; both role lines stay clear */
+    .eb-po__amp {
+      align-self: flex-end; z-index: 0;
+      font-size: 38cqi; margin: -5cqi 9cqi -15cqi 0;
+    }
+  }
+  /* 05 · the poster stacks left */
+  @container (max-width: 640px) {
+    .eb-po__in { min-height: 0; }
+    .eb-po__art { align-items: flex-start; gap: 0.4rem; }
+    .eb-po__row { position: relative; z-index: 1; }
+    .eb-po__row--2 { justify-content: flex-start; }
+    /* the amp clears the role caption and lands on GRANJON's ascenders */
+    .eb-po__amp { align-self: flex-start; z-index: 0; margin-left: 42cqi; font-size: clamp(120px, 38cqi, 220px); }
+    .eb-po__foot { flex-direction: column; align-items: flex-start; }
+    .eb-po__meta { align-items: flex-start; text-align: left; }
+    .eb-po__top { flex-wrap: wrap; }
+    .eb-po__topm { order: 3; width: 100%; }
   }
 
-  /* ============================================================
-     RESPONSIVE
-     ============================================================ */
-  @container (max-width: 620px) {
-    .book { grid-template-columns: 1fr; }
-    .book__page--verso { border-right: 0; border-bottom: 1px solid var(--line-soft); }
-    /* lexicon stacks: the giant headword becomes a banner above the entry */
-    .lex { padding: 5cqi 6cqi 6cqi; }
-    .lex__body { grid-template-columns: 1fr; gap: 3cqi; }
-    .lex__margin {
-      flex-direction: row; align-items: baseline; gap: 4cqi;
-      border-right: 0; border-bottom: 1px solid var(--line-soft);
-      padding-right: 0; padding-bottom: 1cqi;
-    }
-    .lex__big { font-size: 24cqi; line-height: 0.8; }
-    .lex__fol { margin-top: 0; }
-    .lex__entry { font-size: 3.4cqi; line-height: 1.55; }
-    .lex__word { font-size: 7.4cqi; }
-    .lex__pron { font-size: 3.2cqi; }
-    .lex__sense { grid-template-columns: 5cqi 1fr; }
-    .lex__cite, .lex__phrase, .lex__gram { font-size: 3cqi; }
-    .lex__run { font-size: 2.8cqi; }
-    .lex__pub { font-size: 2.4cqi; }
-  }
-  @container (max-width: 540px) {
-    /* the toggle bar becomes its own band under the masthead, fully connected */
-    .reader__bar { gap: 0.7rem 0.5rem; padding: 0.6rem 0.85rem; }
-    .reader__logo { width: 100%; }
-    .reader__feat { width: 100%; margin-left: 0; gap: 0.3rem; }
-    .reader__feat button { flex: 1 1 auto; justify-content: center; font-size: 11.5px; padding: 0.34rem 0.4rem; }
-    .reader__body { padding: 1.5rem 1.4rem 1.6rem; }
-    .reader__head { font-size: clamp(22px, 8cqi, 30px); }
-    .inv__details dt { min-width: 20cqi; }
-  }
-
+  /* reduced motion: states snap, the glass still obeys the hand, the
+     ampersand holds its middle weight — every act is complete while still */
   @media (prefers-reduced-motion: reduce) {
-    .reader__feat button { transition: none; }
+    .eb-lens, .eb-lens .eb-lens__art,
+    .eb-ple__body [data-pass], .eb-ple__note,
+    .eb-id, .eb-id__tog button,
+    .eb-rd__page, .eb-rd__seg button { transition: none !important; }
   }
 </style>
