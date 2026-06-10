@@ -3,559 +3,739 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+
+// ── The sequence ─────────────────────────────────────────────────────────────
+// FRAUNCES MISBEHAVES ON PURPOSE — and the misbehaviour is on sliders.
+// Five acts trace the wonk from instrument to ancestry to shelf to page to
+// checkout: the dark inkwell where you play the axes by hand (01) → the 1896
+// Arts & Crafts broadside the genre descends from (02) → the Bahian chocolate
+// shelf where Fraunces actually lives today (03) → the food quarterly that is
+// its contemporary editorial habitat (04) → the bakery storefront where the
+// 9 pt text cut earns its keep at 13 px (05). Surfaces: theme dark → aged
+// cream → vermilion/green/cocoa (the poster's vermilion ink handed off to the
+// first wrapper) → white-cream paper → back to the site surface, a quiet beat.
+//
+// Honesty notes — verified against the loaded fontsource latin-full woff2s
+// (fontTools, normal + italic):
+// · VARIABLE: wght 100–900 · opsz 9–144 · SOFT 0–100 · WONK 0–1. All four are
+//   performed below; every font-variation-settings line sets all four.
+// · GSUB is ONLY liga (fi fl ff) + rvrn; GPOS kern. The frontmatter's claims
+//   of dlig / onum / frac / sups are NOT in this subset — never set here.
+//   Figures are lining-only; every act is composed accordingly.
+// · WONK alternates (via rvrn): h m n s & (+ñ). Wonk is only ever staged on
+//   words that actually contain those glyphs — "humming", the broadside "&",
+//   "Leite & Mel".
+// · True italic is loaded (full-italic.css) and used at deck/pull-quote sizes.
+
+// Act 01 — the inkwell's word. Every wonk-bearing letter Fraunces owns is in
+// "humming": h m m n lean when WONK = 1. Initial state is a left→right ink
+// ramp so the composition is complete before (or without) any pointer.
+const INK_WORD = 'humming';
+const inkLetters = INK_WORD.split('').map((ch, i, arr) => {
+  const t = i / (arr.length - 1);
+  return { ch, soft: Math.round(t * 100), wght: 340 + Math.round(t * 380) };
+});
+
+// Act 03 — the FAVA identity rule: the darker the bar, the heavier and the
+// inkier the type. Crisp 70 → soft 55 → molten 85.
+const bars = [
+  { pct: '70', flavor: 'Bahia Intenso',  origin: 'Fazenda Riachuelo',  field: 'verm',  wght: 400, soft: 0   },
+  { pct: '55', flavor: 'Leite & Mel',    origin: 'Leite da serra',     field: 'green', wght: 560, soft: 55  },
+  { pct: '85', flavor: 'Torrado Escuro', origin: 'Colheita tardia',    field: 'cocoa', wght: 800, soft: 100 },
+];
 ---
-<div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — INTERACTIVE: a type-foundry tester, art-directed as a specimen card -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Type tester — drive all four axes of the family</span></figcaption>
-    <div class="iu__scene scene-play">
-      <div class="play" data-play>
-        <div class="play__stage">
-          <div class="play__meta">
-            <span class="play__foundry">Undercase Type</span>
-            <span class="play__instance" data-instance>Regular · Display</span>
-          </div>
-          <h3 class="play__word" data-word>Wonky</h3>
-          <span class="play__sub">a soft, characterful old-style — every axis, live</span>
-        </div>
-        <aside class="play__panel">
-          <div class="play__ctl">
-            <span class="play__name"><span>Weight</span><b data-out="wght">360</b></span>
-            <input type="range" data-axis="wght" min="100" max="900" step="1" value="360" aria-label="Weight" />
-          </div>
-          <div class="play__ctl">
-            <span class="play__name"><span>Optical size</span><b data-out="opsz">144</b></span>
-            <input type="range" data-axis="opsz" min="9" max="144" step="1" value="144" aria-label="Optical size" />
-          </div>
-          <div class="play__ctl">
-            <span class="play__name"><span>Softness</span><b data-out="SOFT">38</b></span>
-            <input type="range" data-axis="SOFT" min="0" max="100" step="1" value="38" aria-label="Softness" />
-          </div>
-          <div class="play__ctl play__ctl--toggle">
-            <span class="play__name"><span>Wonk</span></span>
-            <button type="button" class="play__toggle" data-wonk aria-pressed="true">
-              <span class="play__knob" aria-hidden="true"></span>
-              <span class="play__toglabel">on</span>
-            </button>
-          </div>
-        </aside>
+<div class="iu fr" style={`--fam:${fam}`}>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       01 · INTERACTIVE & EXPERIMENTAL — "humming", a four-axis inkwell.
+       Reference: DIA Studio's pointer-reactive kinetic identities — type as
+       an instrument the visitor plays. The pointer is a wet brush: proximity
+       floods each letter's SOFT and wght; one switch throws WONK and the
+       h m m n lean over. Without a pointer (or with reduced motion) the word
+       holds a composed left→right ink ramp.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Interactive — the inkwell: four variable axes under your pointer</span></figcaption>
+    <div class="iu__scene ink" data-ink>
+      <div class="ink__hud">
+        <span class="ink__tag">Fraunces · wght 100–900 · SOFT 0–100</span>
+        <span class="ink__read" data-ink-read>SOFT 100 · WGHT 720</span>
+      </div>
+      <h3 class="ink__word" aria-label={INK_WORD}>
+        {inkLetters.map((l) => (
+          <span
+            class="ink__l"
+            aria-hidden="true"
+            data-soft={l.soft}
+            data-wght={l.wght}
+            style={`font-variation-settings:'wght' ${l.wght}, 'opsz' 144, 'SOFT' ${l.soft}, 'WONK' 1`}
+          >{l.ch}</span>
+        ))}
+      </h3>
+      <div class="ink__foot">
+        <button type="button" class="ink__wonk" data-wonk aria-pressed="true">
+          <span class="ink__knob" aria-hidden="true"></span>
+          <span>WONK · on — the h, m &amp; n lean</span>
+        </button>
+        <span class="ink__note">an old-style that misbehaves on purpose</span>
       </div>
     </div>
-    <p class="iu__hint label">Drag any axis — Softness inks the joints, Wonk leans the W, n &amp; k. The instance name updates as you go.</p>
+    <p class="iu__hint label">Move across the word — the ink follows your pointer. Throw the switch to straighten the letters back up.</p>
   </figure>
 
-  <!-- 02 — Fashion magazine cover, full-bleed, hover-inking masthead + giant flourish initial -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Cover — a soft-inked fashion masthead</span></figcaption>
-    <div class="iu__scene scene-cover">
-      <div class="cover" data-cover>
-        <span class="cover__ghost" aria-hidden="true">P</span>
-        <div class="cover__top">
-          <span class="cover__issue">Issue <span class="on">14</span></span>
-          <span class="cover__price">£<span class="on">12</span> · Spring <span class="on">2026</span></span>
-        </div>
-        <div class="cover__mastblock">
-          <h3 class="cover__masthead" data-masthead>Plume</h3>
-          <p class="cover__deck">The <em>soft</em> issue — fashion, ink, and the art of the <em>wonky</em> line.</p>
-        </div>
-        <ul class="cover__lines">
-          <li><span class="cover__num on">01</span> The hairline returns — couture set <em data-swap>entirely in thin</em></li>
-          <li><span class="cover__num on">02</span> Flavia Zimbardi on the joy of giving letters away</li>
-          <li><span class="cover__num on">03</span> A field guide to the <em data-swap>off-kilter serif</em></li>
-        </ul>
-        <div class="cover__foot">
-          <span class="cover__barcode" aria-hidden="true"></span>
-          <span class="cover__sub">plume.press</span>
-        </div>
+  <!-- ════════════════════════════════════════════════════════════════════
+       02 · ILLUSTRATION & COMMERCIAL — the ancestry: an Arts & Crafts
+       Exhibition Society broadside, London, 1896. Reference: the Society's
+       fifth exhibition at the New Gallery, Regent Street (the Kelmscott
+       year — Morris died that October); jobbing composition printed by the
+       Chiswick Press. Fraunces descends from exactly this romanticised
+       Old Style. One motion idea: as the sheet scrolls into view the press
+       comes up to pressure — SOFT floods the ampersand and the title line,
+       the over-inked hand-press impression arriving live.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Commercial — an 1896 exhibition broadside, the genre Fraunces descends from</span></figcaption>
+    <div class="iu__scene pst" data-pst>
+      <div class="pst__sheet">
+        <p class="pst__row pst__venue">The New Gallery &middot; 121 Regent Street &middot; London W.</p>
+        <p class="pst__row pst__pre">the fifth exhibition of the society of</p>
+        <h3 class="pst__row pst__main" data-pst-main>ARTS<span class="pst__amp" data-pst-amp>&amp;</span>CRAFTS</h3>
+        <p class="pst__row pst__sub">hand-wrought metal &middot; printed books &middot; tapestry &amp; honest furniture</p>
+        <p class="pst__row pst__it">comprising work from the Kelmscott Press, shown in memoriam William Morris</p>
+        <div class="pst__rule" aria-hidden="true"><i></i><b>*&#8201;*&#8201;*</b><i></i></div>
+        <p class="pst__row pst__terms">Open daily from October 1896 &middot; ten of the clock till dusk</p>
+        <p class="pst__row pst__terms pst__terms--b">Admission one shilling &middot; season ticket five shillings &middot; catalogue sixpence</p>
+        <p class="pst__row pst__imprint">Printed for the Society by the Chiswick Press, Took&rsquo;s Court, Chancery Lane, E.C.</p>
       </div>
     </div>
-    <p class="iu__hint label">Hover the masthead — the ink floods in (SOFT 0→100) and the cover lines tilt to a true italic.</p>
+    <p class="iu__hint label">Watch the sheet arrive — the ampersand takes the most ink, the way a hand-press always over-inks the biggest sort.</p>
   </figure>
 
-  <!-- 03 — INTERACTIVE: the opsz signature staged as a split before/after illustration -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Optical size — one outline, 9 pt to 144 pt</span></figcaption>
-    <div class="iu__scene scene-opsz">
-      <div class="opsz" data-opsz>
-        <div class="opsz__display">
-          <span class="opsz__rail">
-            <span class="opsz__tag">Optical size</span>
-            <span class="opsz__val"><i data-opsz-out>144</i><sup>pt</sup></span>
-          </span>
-          <h3 class="opsz__word" data-opsz-word>Gazette</h3>
-          <input class="opsz__range" type="range" data-opsz-axis min="9" max="144" step="1" value="144" aria-label="Optical size, 9 to 144 point" />
-        </div>
-        <div class="opsz__story">
-          <div class="opsz__col">
-            <span class="opsz__lbl">9 pt — text cut</span>
-            <p class="opsz__text">At nine point the hairlines fatten, the x-height climbs and the contrast calms. The same outline stops performing and settles into an even column of news — comfortable to read for a thousand words.</p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       03 · BRANDING & IDENTITY — FAVA, bean-to-bar chocolate, Salvador da
+       Bahia. Reference: the post-2019 wonky-serif CPG wave that Fraunces
+       itself ignited — and its documented Brazilian adoption (Zimbardi has
+       watched it cover packaging and national campaigns back home). The
+       identity is a SYSTEM, not a logo: the darker the chocolate, the
+       heavier the weight and the wetter the SOFT axis. Crisp 70 → soft 55 →
+       molten 85. Hovering a bar melts its numeral. The first wrapper takes
+       the broadside's vermilion ink as its field — the handoff.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed fr-snug">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Branding — FAVA bean-to-bar: weight and SOFT graded to cacao percentage</span></figcaption>
+    <div class="iu__scene shelfscene">
+      <div class="shelf">
+        {bars.map((b) => (
+          <div class={`bar bar--${b.field}`} tabindex="0" style={`--bw:${b.wght}; --bs:${b.soft}; --bw2:${Math.min(b.wght + 80, 900)}`}>
+            <p class="bar__brand">FAVA<span>cacau de origem</span></p>
+            <p class="bar__pct"><span class="bar__num">{b.pct}</span><span class="bar__sym">%</span></p>
+            <p class="bar__flavor">{b.flavor}</p>
+            <p class="bar__origin">{b.origin}</p>
+            <p class="bar__foot"><span>60 g</span><span>colheita 2025</span><span>Salvador, BA</span></p>
           </div>
-          <div class="opsz__col opsz__col--big">
-            <span class="opsz__lbl">144 pt — display cut</span>
-            <span class="opsz__specimen" data-opsz-mini>Gg</span>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
-    <p class="iu__hint label">Drag the slider — watch one outline ramp from a calm 9 pt text cut to a flamboyant 144 pt display.</p>
+    <p class="iu__hint label">One rule makes the identity: 70% sets crisp and regular, 85% sets black and molten. Hover a bar and it melts a little further.</p>
   </figure>
 
-  <!-- 04 — REAL UI at device scale, interactive OpenType toggles + live specimen chip -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Reader UI — long-form CMS at real scale</span></figcaption>
-    <div class="iu__scene">
-      <div class="iu__device reader" data-reader>
-        <div class="iu__chrome">
-          <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">read.plume.press/the-wonky-line</span>
+  <!-- ════════════════════════════════════════════════════════════════════
+       04 · EDITORIAL — The Skillet, a food quarterly. Reference: The
+       Gourmand's appetite-led feature openers — vast light serif headline,
+       italic deck, patient text columns. This is the opsz story told as
+       editorial fact: the headline at the 144 display cut blooms open as the
+       spread enters view; the columns sit in the 9 pt text cut and just
+       read. True italics carry the deck and the pull quote.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — a food quarterly opener in the Gourmand manner; one outline, 9 pt to 144 pt</span></figcaption>
+    <div class="iu__scene mag" data-mag>
+      <div class="mag__spread">
+        <header class="mag__folio">
+          <span>The Skillet &mdash; a quarterly of appetites</span>
+          <span>No. 12 &middot; Autumn 2026</span>
+        </header>
+        <div class="mag__head">
+          <p class="mag__kicker">Kitchen Doctrine</p>
+          <h3 class="mag__hl" data-mag-hl>In Praise of<br />Burnt Butter</h3>
+          <p class="mag__deck">On beurre noisette, the bravest of the easy luxuries &mdash; and why the best cooks let it go one shade past comfortable.</p>
+          <p class="mag__byline">By Marina Duarte &middot; photographs set entirely in type</p>
         </div>
-        <div class="reader__bar">
-          <span class="reader__logo">Plume</span>
-          <nav class="reader__feat" aria-label="Typographic features">
-            <button class="is-on" data-feat="liga" aria-pressed="true">Ligatures</button>
-            <button data-feat="onum" aria-pressed="false">Old-style</button>
-            <button data-feat="dlig" aria-pressed="false">Disc. lig.</button>
+        <div class="mag__body">
+          <div class="mag__col">
+            <p><span class="mag__drop">T</span>he butter is not burnt, of course. It is taken to the breath before burning &mdash; the milk solids toasted to the colour of a hazelnut shell, the foam gone quiet, the smell suddenly enormous. French kitchens call it beurre noisette and treat it as a sauce; the rest of us should treat it as a doctrine.</p>
+            <p>Doctrine, because it asks for the one thing home cooks are talked out of: nerve. Pull the pan at golden and you have warm butter. Wait &mdash; four seconds, maybe five &mdash; and you have something with a past.</p>
+          </div>
+          <div class="mag__col mag__col--b">
+            <blockquote class="mag__pull">&ldquo;Let it go one shade past comfortable. That is where the flavour lives.&rdquo;</blockquote>
+            <p>Spoon it over white fish, fold it through madeleine batter, or do the truly luxurious thing and eat it on toast with salt. The whole technique costs ninety seconds and a moment of courage.</p>
+          </div>
+        </div>
+        <footer class="mag__folio mag__folio--ft">
+          <span>64</span>
+          <span class="mag__ft-it">beurre noisette, continued</span>
+          <span>65</span>
+        </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">The headline blooms from the text cut to the 144 pt display cut as the spread arrives &mdash; the same outline, contrast turned up.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       05 · WEB & APP UI — Hearth, a neighbourhood-bakery storefront at real
+       device pixels. Reference: the type-led DTC storefronts of the
+       post-2019 wonky-serif wave — the commercial genre Fraunces created.
+       The point made at 13 px: the opsz 9 text cut calms the contrast and
+       raises the x-height, so the same family that swaggers upstairs sets
+       working UI labels here. Size, schedule, and quantity all drive a live
+       total; the basket actually counts.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Web UI — a bakery storefront at true device scale; the 9 pt text cut on duty at 13 px</span></figcaption>
+    <div class="iu__scene shopwrap">
+      <div class="shop" data-shop>
+        <header class="shop__bar">
+          <span class="shop__logo">Hearth</span>
+          <nav class="shop__nav" aria-label="Shop sections">
+            <a class="is-here" href="#0">Breads</a><a href="#0">Pastry</a><a href="#0">Pantry</a>
           </nav>
-          <span class="reader__time">8 min</span>
+          <span class="shop__cart">Basket &middot; <b data-cart>0</b></span>
+        </header>
+        <div class="shop__main">
+          <div class="shop__hero">
+            <p class="shop__kicker">Daily loaf &middot; No. 04</p>
+            <h4 class="shop__name">Burnt&#8209;Honey Sourdough</h4>
+            <p class="shop__desc">Dark, blistered crust; an open crumb sweetened with honey taken one shade past caution. Levain, stoneground T85, thirty&#8209;six&#8209;hour cold proof.</p>
+            <p class="shop__meta">Baked Wednesday to Sunday in Greenpoint &middot; sold out most days by noon</p>
+          </div>
+          <div class="shop__panel">
+            <div class="shop__group" role="group" aria-label="Loaf size">
+              <span class="shop__lbl">Size</span>
+              <div class="shop__opts">
+                <button type="button" class="shop__opt is-on" data-size="9" aria-pressed="true">800 g <b>$9</b></button>
+                <button type="button" class="shop__opt" data-size="14" aria-pressed="false">1.4 kg <b>$14</b></button>
+              </div>
+            </div>
+            <div class="shop__group" role="group" aria-label="Schedule">
+              <span class="shop__lbl">Schedule</span>
+              <div class="shop__opts">
+                <button type="button" class="shop__opt is-on" data-plan="1" aria-pressed="true">One&#8209;off</button>
+                <button type="button" class="shop__opt" data-plan="0.9" aria-pressed="false">Weekly <b>&minus;10%</b></button>
+                <button type="button" class="shop__opt" data-plan="0.95" aria-pressed="false">Fortnightly <b>&minus;5%</b></button>
+              </div>
+            </div>
+            <div class="shop__group" role="group" aria-label="Quantity">
+              <span class="shop__lbl">Quantity</span>
+              <div class="shop__qty">
+                <button type="button" data-qty="-1" aria-label="One loaf fewer">&minus;</button>
+                <b data-qty-out>1</b>
+                <button type="button" data-qty="1" aria-label="One loaf more">+</button>
+              </div>
+            </div>
+            <div class="shop__row">
+              <span class="shop__total" data-total>$9.00</span>
+              <button type="button" class="shop__add" data-add>Add to basket</button>
+            </div>
+            <p class="shop__fine">Subscriptions pause anytime. First delivery Saturday; loaves travel in paper, never plastic.</p>
+          </div>
         </div>
-        <div class="reader__chip" data-chip aria-hidden="true">
-          <span class="reader__chiplabel">Live</span>
-          <span class="reader__chipspec" data-chip-spec>office · 1873</span>
-        </div>
-        <article class="reader__body" data-text>
-          <span class="reader__kicker">Type · Essay</span>
-          <h4 class="reader__head">An office of fifteen affable, soft-spoken letters</h4>
-          <p class="reader__byline">by Flavia Zimbardi · published <span class="reader__fig">12 June 2026</span></p>
-          <p class="reader__lede"><span class="reader__drop">I</span>n the summer of 2018, the brief was almost a dare: design a warm, slightly goofy serif and give it away. The fi, fl and ffi ligatures fell into place first — the office of letters where stems and dots would otherwise collide.</p>
-          <p>Across <span class="reader__fig">1,073</span> drafts the family grew to <span class="reader__fig">4</span> axes and more than <span class="reader__fig">100</span> named instances. The figures here sit on the baseline as lining by default; flip them to old-style and the <span class="reader__fig">3</span>, <span class="reader__fig">4</span>, <span class="reader__fig">7</span> and <span class="reader__fig">9</span> drop their tails below it, the way an <span class="reader__fig">1873</span> compositor would have set them.</p>
-          <blockquote class="reader__quote">A beautiful, characterful serif made by a Brazilian and given away for nothing.</blockquote>
-        </article>
       </div>
     </div>
-    <p class="iu__hint label">Toggle the OpenType features — the “Live” chip and the figures in the column change in step.</p>
+    <p class="iu__hint label">Pick a size and a schedule, count up the loaves &mdash; the total keeps pace and the basket actually fills.</p>
   </figure>
 
 </div>
 
 <script>
-  // named instances for the tester readout
-  const NAME_W = (w: number) =>
-    w < 200 ? 'Thin' : w < 350 ? 'Light' : w < 450 ? 'Regular' :
-    w < 550 ? 'Medium' : w < 650 ? 'Semi Bold' : w < 800 ? 'Bold' : 'Black';
-  const NAME_O = (o: number) => (o < 40 ? 'Text' : o < 100 ? 'Subhead' : 'Display');
+  const fvs = (w: number, o: number, s: number, k: number) =>
+    `'wght' ${w}, 'opsz' ${o}, 'SOFT' ${s}, 'WONK' ${k}`;
+  const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
 
-  // ---- 01 variable tester ----
-  document.querySelectorAll<HTMLElement>('[data-play]').forEach((play) => {
-    const word = play.querySelector<HTMLElement>('[data-word]')!;
-    const instance = play.querySelector<HTMLElement>('[data-instance]')!;
-    const axes: Record<string, number> = { wght: 360, opsz: 144, SOFT: 38, WONK: 1 };
+  // ── 01 · the inkwell ──────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-ink]').forEach((scene) => {
+    const letters = [...scene.querySelectorAll<HTMLElement>('.ink__l')];
+    const read = scene.querySelector<HTMLElement>('[data-ink-read]')!;
+    const wonkBtn = scene.querySelector<HTMLButtonElement>('[data-wonk]')!;
+    let wonk = 1;
 
-    const apply = () => {
-      word.style.fontVariationSettings =
-        `'wght' ${axes.wght}, 'opsz' ${axes.opsz}, 'SOFT' ${axes.SOFT}, 'WONK' ${axes.WONK}`;
-      instance.textContent = `${NAME_W(axes.wght)} · ${NAME_O(axes.opsz)}`;
+    const base = () => {
+      letters.forEach((l) => {
+        l.style.fontVariationSettings = fvs(+l.dataset.wght!, 144, +l.dataset.soft!, wonk);
+      });
+      read.textContent = 'SOFT 100 · WGHT 720';
     };
 
-    play.querySelectorAll<HTMLInputElement>('input[data-axis]').forEach((input) => {
-      const axis = input.dataset.axis!;
-      const out = play.querySelector<HTMLElement>(`[data-out="${axis}"]`);
-      input.addEventListener('input', () => {
-        axes[axis] = +input.value;
-        if (out) out.textContent = input.value;
-        play.removeAttribute('data-hint');
-        apply();
+    if (motionOK) {
+      let raf = 0;
+      const paint = (x: number, y: number) => {
+        const rect = scene.getBoundingClientRect();
+        const reach = Math.max(rect.width, rect.height) * 0.22;
+        let best = 0, bs = 0, bw = 0;
+        letters.forEach((l) => {
+          const r = l.getBoundingClientRect();
+          const dx = x - (r.left + r.width / 2);
+          const dy = y - (r.top + r.height / 2);
+          const g = Math.exp(-((dx * dx + dy * dy) / (reach * reach)));
+          const s = Math.round(g * 100);
+          const w = Math.round(340 + g * 420);
+          l.style.fontVariationSettings = fvs(w, 144, s, wonk);
+          if (g > best) { best = g; bs = s; bw = w; }
+        });
+        read.textContent = `SOFT ${bs} · WGHT ${bw}`;
+      };
+      scene.addEventListener('pointermove', (e) => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => paint(e.clientX, e.clientY));
       });
+      scene.addEventListener('pointerleave', () => { cancelAnimationFrame(raf); base(); });
+    }
+
+    wonkBtn.addEventListener('click', () => {
+      wonk = wonk ? 0 : 1;
+      wonkBtn.setAttribute('aria-pressed', String(!!wonk));
+      const label = wonkBtn.querySelector('span:last-child');
+      if (label) label.textContent = wonk ? 'WONK · on — the h, m & n lean' : 'WONK · off — standing up straight';
+      base();
     });
 
-    const wonk = play.querySelector<HTMLButtonElement>('[data-wonk]');
-    wonk?.addEventListener('click', () => {
-      axes.WONK = axes.WONK ? 0 : 1;
-      wonk.setAttribute('aria-pressed', String(!!axes.WONK));
-      const lbl = wonk.querySelector('.play__toglabel');
-      if (lbl) lbl.textContent = axes.WONK ? 'on' : 'off';
-      apply();
-    });
-
-    // One-time interactivity telegraph (reduced-motion safe via CSS).
-    play.setAttribute('data-hint', 'soft');
-    apply();
+    base();
   });
 
-  // ---- 03 optical-size scrubber ----
-  document.querySelectorAll<HTMLElement>('[data-opsz]').forEach((root) => {
-    const word = root.querySelector<HTMLElement>('[data-opsz-word]')!;
-    const out = root.querySelector<HTMLElement>('[data-opsz-out]')!;
-    const range = root.querySelector<HTMLInputElement>('[data-opsz-axis]')!;
-    const apply = (v: number) => {
-      const t = (v - 9) / (144 - 9);
-      // weight eases down slightly as the display blooms, letterspacing tightens
-      const wght = Math.round(440 - t * 90);
-      const ls = (0.012 - t * 0.05).toFixed(3);
-      word.style.fontVariationSettings = `'wght' ${wght}, 'opsz' ${v}, 'SOFT' 0, 'WONK' 0`;
-      word.style.letterSpacing = `${ls}em`;
-      out.textContent = String(v);
-    };
-    range.addEventListener('input', () => apply(+range.value));
-    apply(+range.value);
-  });
-
-  // ---- 04 reader OpenType toggles + specimen chip ----
-  document.querySelectorAll<HTMLElement>('[data-reader]').forEach((reader) => {
-    const text = reader.querySelector<HTMLElement>('[data-text]')!;
-    const chip = reader.querySelector<HTMLElement>('[data-chip-spec]')!;
-    const state: Record<string, boolean> = { liga: true, onum: false, dlig: false };
-
-    const apply = () => {
-      const feats = Object.entries(state)
-        .map(([k, v]) => `'${k}' ${v ? 1 : 0}`)
-        .join(', ');
-      text.style.fontFeatureSettings = feats;
-      chip.style.fontFeatureSettings = feats;
-      // surface a word/figure that visibly demonstrates whichever feature is active:
-      // dlig exercises the ct/st discretionary ligatures; onum shows the old-style 8.
-      const word = state.dlig ? 'aspect' : 'office';
-      const fig = state.onum ? '1860' : '1873';
-      chip.textContent = `${word} · ${fig}`;
-    };
-
-    reader.querySelectorAll<HTMLButtonElement>('[data-feat]').forEach((btn) => {
-      const feat = btn.dataset.feat!;
-      btn.addEventListener('click', () => {
-        state[feat] = !state[feat];
-        btn.classList.toggle('is-on', state[feat]);
-        btn.setAttribute('aria-pressed', String(state[feat]));
-        apply();
+  // ── 02 + 04 · arrive-in-view states (press pressure / opsz bloom) ─────────
+  // Default CSS is the FINAL state, so the acts are complete without JS or
+  // with reduced motion. Under no-preference we arm the pre-state, then let
+  // an IntersectionObserver release it once.
+  if (motionOK) {
+    const watch: Array<[string, string]> = [['[data-pst]', 'pst--pre'], ['[data-mag]', 'mag--pre']];
+    watch.forEach(([sel, cls]) => {
+      document.querySelectorAll<HTMLElement>(sel).forEach((el) => {
+        el.classList.add(cls);
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) { el.classList.remove(cls); io.disconnect(); }
+          });
+        }, { threshold: 0.45 });
+        io.observe(el);
       });
     });
+  }
 
-    apply();
+  // ── 05 · the storefront ───────────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((shop) => {
+    const total = shop.querySelector<HTMLElement>('[data-total]')!;
+    const qtyOut = shop.querySelector<HTMLElement>('[data-qty-out]')!;
+    const cart = shop.querySelector<HTMLElement>('[data-cart]')!;
+    const add = shop.querySelector<HTMLButtonElement>('[data-add]')!;
+    let price = 9, plan = 1, qty = 1, basket = 0;
+
+    const sum = () => { total.textContent = `$${(price * plan * qty).toFixed(2)}`; };
+    const pick = (btns: NodeListOf<HTMLButtonElement>, on: HTMLButtonElement) => {
+      btns.forEach((b) => { b.classList.toggle('is-on', b === on); b.setAttribute('aria-pressed', String(b === on)); });
+    };
+
+    const sizes = shop.querySelectorAll<HTMLButtonElement>('[data-size]');
+    sizes.forEach((b) => b.addEventListener('click', () => { price = +b.dataset.size!; pick(sizes, b); sum(); }));
+
+    const plans = shop.querySelectorAll<HTMLButtonElement>('[data-plan]');
+    plans.forEach((b) => b.addEventListener('click', () => { plan = +b.dataset.plan!; pick(plans, b); sum(); }));
+
+    shop.querySelectorAll<HTMLButtonElement>('[data-qty]').forEach((b) =>
+      b.addEventListener('click', () => { qty = Math.min(6, Math.max(1, qty + +b.dataset.qty!)); qtyOut.textContent = String(qty); sum(); }));
+
+    let flash = 0;
+    add.addEventListener('click', () => {
+      basket += qty;
+      cart.textContent = String(basket);
+      add.textContent = 'Added ✓';
+      add.classList.add('did');
+      clearTimeout(flash);
+      flash = window.setTimeout(() => { add.textContent = 'Add to basket'; add.classList.remove('did'); }, 1200);
+    });
+
+    sum();
   });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ── stack rhythm: the handoffs ─────────────────────────────────────────
+     Tighter overall beat than the default; the broadside hands its vermilion
+     ink straight to the first FAVA wrapper, so that junction is snugger. */
+  .iu { gap: clamp(3.25rem, 8vh, 5.5rem); }
+  .fr-snug { margin-top: calc(-1 * clamp(0.75rem, 3vh, 2.25rem)); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu__scene * { font-family: var(--fam); }
 
-  /* ====== 01 · VARIABLE TYPE TESTER ====== */
-  .scene-play { background: var(--bg); }
-  .play {
-    position: relative; background: var(--bg); color: var(--fg);
-    display: grid; grid-template-columns: 1fr minmax(220px, 0.42fr);
-    min-height: 0; container-type: inline-size;
+  /* ════ 01 · THE INKWELL ════════════════════════════════════════════════ */
+  .ink {
+    background: var(--bg);
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: clamp(420px, 72vh, 680px);
+    padding: clamp(1.25rem, 3.2cqi, 2.6rem) clamp(1.1rem, 4cqi, 4rem);
+    cursor: crosshair;
   }
-  .play__stage {
-    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
-    padding: clamp(1.6rem, 5cqi, 3.4rem); gap: clamp(0.7rem, 2cqi, 1.4rem); overflow: hidden;
-    border-right: 1px solid var(--line);
-  }
-  .play__meta {
-    display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+  .ink__hud {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
     font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--fg-3);
   }
-  .play__instance { color: var(--accent); }
-  .play__word {
-    font-size: clamp(64px, 24cqi, 220px); line-height: 0.86; font-weight: 400;
-    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 38, 'WONK' 1;
-    color: var(--fg); letter-spacing: -0.02em;
+  .ink__read { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .ink__word {
+    margin: auto 0; display: flex; justify-content: center; align-items: baseline;
+    font-size: clamp(64px, 18.5cqi, 280px); line-height: 0.9; color: var(--fg);
+    letter-spacing: -0.035em; font-weight: 400; user-select: none;
   }
-  .play__sub {
-    font-size: clamp(13px, 2cqi, 17px); font-style: italic; color: var(--fg-2);
-    font-variation-settings: 'opsz' 40, 'wght' 380; max-width: 30ch;
-  }
-  .play__panel {
-    display: flex; flex-direction: column; justify-content: center;
-    gap: clamp(0.9rem, 2.6cqi, 1.6rem);
-    padding: clamp(1.4rem, 4cqi, 2.4rem) clamp(1.2rem, 3.4cqi, 2rem);
-    background: var(--bg-2);
-  }
-  .play__ctl { display: flex; flex-direction: column; gap: 0.55rem; }
-  .play__name {
-    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--fg-2);
-    display: flex; justify-content: space-between; align-items: baseline;
-  }
-  .play__name b { font-weight: 400; color: var(--accent); font-feature-settings: 'tnum'; font-size: 12px; }
-  .play__ctl input[type='range'] {
-    -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
-    background: var(--line); border-radius: 2px; cursor: pointer;
-  }
-  .play__ctl input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 18px; height: 18px; border-radius: 50%; background: var(--accent);
-    border: 3px solid var(--bg-2); box-shadow: 0 0 0 1px var(--accent);
-  }
-  .play__ctl input[type='range']::-moz-range-thumb {
-    width: 18px; height: 18px; border-radius: 50%; background: var(--accent);
-    border: 3px solid var(--bg-2); box-shadow: 0 0 0 1px var(--accent);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .play[data-hint='soft'] [data-axis='SOFT']::-webkit-slider-thumb {
-      animation: thumb-pulse 1.6s var(--ease, ease-out) 3;
-    }
-    .play[data-hint='soft'] [data-axis='SOFT']::-moz-range-thumb {
-      animation: thumb-pulse 1.6s var(--ease, ease-out) 3;
-    }
-  }
-  @keyframes thumb-pulse {
-    0%, 100% { box-shadow: 0 0 0 1px var(--accent); }
-    50% { box-shadow: 0 0 0 1px var(--accent), 0 0 0 7px color-mix(in srgb, var(--accent) 30%, transparent); }
-  }
-  .play__ctl--toggle .play__name { margin-bottom: 0.1rem; }
-  .play__toggle {
-    display: inline-flex; align-items: center; gap: 0.55rem;
-    border: 1px solid var(--accent); border-radius: 100px; padding: 0.34rem 0.5rem 0.34rem 0.34rem;
-    cursor: pointer; align-self: flex-start; background: transparent;
-    transition: background 0.25s var(--ease);
-  }
-  .play__knob {
-    width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
-    transition: transform 0.25s var(--ease), background 0.25s var(--ease);
-  }
-  .play__toglabel {
-    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em;
+  .ink__l { display: inline-block; }
+  .ink__foot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .ink__wonk {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    border: 1px solid var(--accent); border-radius: 100px;
+    padding: 0.4rem 0.85rem 0.4rem 0.4rem; cursor: pointer; background: transparent;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--accent);
   }
-  .play__toggle[aria-pressed='true'] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
-  .play__toggle[aria-pressed='false'] .play__knob { transform: translateX(0); background: var(--fg-3); }
-  .play__toggle[aria-pressed='false'] .play__toglabel { color: var(--fg-3); }
-
-  @container (max-width: 560px) {
-    .play { grid-template-columns: 1fr; }
-    .play__stage { border-right: 0; border-bottom: 1px solid var(--line); align-items: center; text-align: center; }
-    .play__word { font-size: clamp(72px, 30cqi, 160px); }
-    .play__sub { text-align: center; }
-    .play__panel { gap: 1.3rem; padding: 1.5rem 1.4rem 1.8rem; }
-  }
-
-  /* ====== 02 · FASHION COVER (full-bleed) ====== */
-  .scene-cover { background: var(--bg-2); }
-  .cover {
-    position: relative; background: var(--bg); color: var(--fg);
-    display: flex; flex-direction: column; padding: 5cqi 5.5cqi 4.5cqi;
-    overflow: hidden; container-type: inline-size; aspect-ratio: 4 / 5;
-  }
-  /* oversized ghosted flourish initial — the cover's centrefold visual element,
-     sitting behind the masthead block */
-  .cover__ghost {
-    position: absolute; right: -6cqi; top: 10cqi; z-index: 0; pointer-events: none;
-    font-size: 82cqi; line-height: 0.7; font-weight: 400;
-    font-variation-settings: 'wght' 280, 'opsz' 144, 'SOFT' 85, 'WONK' 1;
-    color: var(--accent); opacity: 0.12; font-style: italic;
-    transition: opacity 0.6s var(--ease, ease-out);
-  }
-  .cover > * { position: relative; z-index: 1; }
-  .cover__top {
-    display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 2.3cqi; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--fg-3);
-  }
-  .cover__top .on { font-feature-settings: 'onum' 1; color: var(--accent); }
-  .cover__mastblock { margin-top: 4cqi; }
-  .cover__masthead {
-    font-size: 33cqi; line-height: 0.84; font-weight: 360; cursor: default;
-    font-variation-settings: 'wght' 360, 'opsz' 144, 'SOFT' 46, 'WONK' 1;
-    letter-spacing: -0.035em; margin: 0; color: var(--fg);
-    transition: font-variation-settings 0.6s var(--ease, ease-out), color 0.6s var(--ease);
-  }
-  .cover__deck {
-    font-size: 3.6cqi; line-height: 1.22; color: var(--fg-2);
-    margin-top: 2.6cqi; max-width: 76%; font-weight: 380;
-    font-variation-settings: 'wght' 380, 'opsz' 40;
-  }
-  .cover__deck em { font-style: italic; color: var(--accent); font-variation-settings: 'opsz' 40; }
-  .cover__lines {
-    margin-top: auto; list-style: none; padding: 0;
-    display: flex; flex-direction: column; gap: 2.4cqi;
-    border-top: 1px solid var(--line); padding-top: 3.6cqi;
-  }
-  .cover__lines li {
-    font-size: 4.2cqi; line-height: 1.12; color: var(--fg);
-    font-weight: 400; padding-left: 7cqi; position: relative;
-    font-variation-settings: 'wght' 420, 'opsz' 56, 'SOFT' 0, 'WONK' 0;
-  }
-  .cover__num {
-    position: absolute; left: 0; top: 0.18em;
-    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.08em;
-    color: var(--accent); font-feature-settings: 'onum' 1;
-  }
-  .cover__lines em {
-    font-style: italic; color: var(--fg-2);
-    font-variation-settings: 'opsz' 72, 'wght' 420;
-    transition: color 0.5s var(--ease);
-  }
-  .cover__foot {
-    margin-top: 4.5cqi; display: flex; align-items: flex-end; justify-content: space-between;
-  }
-  .cover__sub {
-    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.2em;
-    text-transform: uppercase; color: var(--fg-3);
-  }
-  .cover__barcode {
-    height: 7cqi; width: 26cqi;
-    background: repeating-linear-gradient(90deg,
-      var(--fg-2) 0 0.6cqi, transparent 0.6cqi 1cqi,
-      var(--fg-2) 1cqi 1.3cqi, transparent 1.3cqi 2.4cqi);
-    opacity: 0.55;
+  .ink__knob { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); flex: none; }
+  .ink__wonk[aria-pressed='false'] { border-color: var(--line); color: var(--fg-3); }
+  .ink__wonk[aria-pressed='false'] .ink__knob { background: var(--fg-3); }
+  .ink__note {
+    font-style: italic; color: var(--fg-2); font-size: clamp(13px, 1.2cqi, 16px);
+    font-variation-settings: 'wght' 400, 'opsz' 30, 'SOFT' 0, 'WONK' 0;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .cover[data-cover]:hover .cover__masthead,
-    .cover[data-cover]:focus-within .cover__masthead {
-      font-variation-settings: 'wght' 380, 'opsz' 144, 'SOFT' 100, 'WONK' 1;
-      color: var(--accent);
-    }
-    .cover[data-cover]:hover .cover__ghost,
-    .cover[data-cover]:focus-within .cover__ghost { opacity: 0.18; }
-    .cover[data-cover]:hover .cover__lines em[data-swap],
-    .cover[data-cover]:focus-within .cover__lines em[data-swap] { color: var(--accent); }
+    .ink__l { transition: font-variation-settings 0.32s var(--ease-out, ease-out); }
+    .ink__wonk { transition: border-color 0.25s var(--ease), color 0.25s var(--ease); }
   }
-
-  /* ====== 03 · OPTICAL SIZE — staged before/after illustration ====== */
-  .scene-opsz { background: var(--bg); }
-  .opsz {
-    position: relative; background: var(--bg); color: var(--fg);
-    display: grid; grid-template-rows: auto auto; container-type: inline-size;
-  }
-  .opsz__display {
-    position: relative; padding: clamp(1.6rem, 5cqi, 3.4rem) clamp(1.6rem, 5cqi, 3.4rem) clamp(1.4rem, 4cqi, 2.6rem);
-    overflow: hidden;
-  }
-  .opsz__rail {
-    display: flex; align-items: baseline; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--fg-3);
-  }
-  .opsz__val { color: var(--accent); font-size: 13px; }
-  .opsz__val i { font-style: normal; font-feature-settings: 'tnum'; }
-  .opsz__val sup { font-size: 0.7em; margin-left: 0.15em; }
-  .opsz__word {
-    font-size: clamp(72px, 30cqi, 300px); line-height: 0.82; font-weight: 360;
-    letter-spacing: -0.02em; color: var(--fg); margin: 0.4rem 0 1.6rem;
-    font-variation-settings: 'wght' 350, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
-  }
-  .opsz__range {
-    -webkit-appearance: none; appearance: none; width: 100%; height: 2px;
-    background: linear-gradient(90deg, var(--line), var(--accent));
-    border-radius: 2px; cursor: pointer;
-  }
-  .opsz__range::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
-    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
-  }
-  .opsz__range::-moz-range-thumb {
-    width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
-    border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
-  }
-  .opsz__story {
-    display: grid; grid-template-columns: 1fr auto; align-items: stretch;
-    border-top: 1px solid var(--line);
-  }
-  .opsz__col {
-    padding: clamp(1.4rem, 4cqi, 2.4rem) clamp(1.6rem, 5cqi, 3.4rem);
-    display: flex; flex-direction: column; gap: 0.9rem;
-  }
-  .opsz__col--big {
-    border-left: 1px solid var(--line); background: var(--bg-2);
-    align-items: center; justify-content: center; gap: 1.1rem;
-    min-width: 30%;
-  }
-  .opsz__lbl {
-    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--fg-3);
-  }
-  .opsz__text {
-    font-size: 15px; line-height: 1.6; color: var(--fg-2); max-width: 42ch; margin: 0;
-    font-variation-settings: 'wght' 400, 'opsz' 11, 'SOFT' 0, 'WONK' 0;
-  }
-  .opsz__specimen {
-    font-size: clamp(72px, 22cqi, 150px); line-height: 0.8; color: var(--accent);
-    font-variation-settings: 'wght' 360, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
-    letter-spacing: 0;
-  }
-
+  /* NOTE: .ink is itself the queried container — only descendants recompose. */
   @container (max-width: 560px) {
-    .opsz__story { grid-template-columns: 1fr; }
-    .opsz__col--big { border-left: 0; border-top: 1px solid var(--line); }
+    .ink__word {
+      flex-direction: column; align-items: center; margin: 1.75rem 0 2rem;
+      font-size: 23cqi; line-height: 0.82; letter-spacing: 0;
+    }
+    .ink__foot { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
   }
 
-  /* ====== 04 · READER UI (real px) ====== */
-  .reader { font-size: 14px; line-height: 1.5; container-type: inline-size; }
-  .reader__bar {
-    display: flex; align-items: center; gap: 0.6rem;
-    padding: 0.65rem 1rem; border-bottom: 1px solid var(--line);
+  /* ════ 02 · THE BROADSIDE (cream paper, vermilion + black ink) ═════════ */
+  .pst {
+    --paper: #ece0c4; --inkc: #221610; --verm: #b8401e;
+    background: var(--paper); color: var(--inkc);
+    display: grid; place-items: center;
+    padding: clamp(2.5rem, 7cqi, 6.5rem) clamp(1.1rem, 5cqi, 4rem);
   }
-  .reader__logo {
-    font-size: 19px; font-weight: 400; color: var(--fg); flex: none;
-    font-variation-settings: 'wght' 460, 'opsz' 80, 'SOFT' 0, 'WONK' 0;
-    letter-spacing: 0.01em;
+  .pst__sheet {
+    width: 100%; max-width: 920px; text-align: center;
+    display: flex; flex-direction: column; gap: clamp(0.8rem, 2cqi, 1.6rem);
   }
-  .reader__feat { display: flex; gap: 0.3rem; margin-left: auto; flex-wrap: nowrap; }
-  .reader__feat button {
-    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.02em;
-    color: var(--fg-3); padding: 0.32rem 0.58rem; border-radius: 100px;
-    border: 1px solid var(--line); cursor: pointer; transition: all 0.18s var(--ease);
-    white-space: nowrap;
+  .pst__row { margin: 0; }
+  .pst__venue {
+    font-size: clamp(11px, 1.35cqi, 17px); letter-spacing: 0.34em; text-transform: uppercase;
+    font-variation-settings: 'wght' 540, 'opsz' 40, 'SOFT' 0, 'WONK' 0;
+    border-block: 2px solid var(--inkc); padding: 0.55em 0;
   }
-  .reader__feat button:hover { color: var(--fg); border-color: var(--fg-3); }
-  .reader__feat button.is-on {
-    color: var(--accent-contrast); background: var(--accent); border-color: var(--accent);
+  .pst__pre {
+    font-size: clamp(12px, 1.7cqi, 22px); letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--verm); margin-top: clamp(0.4rem, 1.4cqi, 1.2rem);
+    font-variation-settings: 'wght' 480, 'opsz' 60, 'SOFT' 0, 'WONK' 0;
   }
-  .reader__time {
-    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); flex: none;
-    letter-spacing: 0.06em; padding-left: 0.5rem; border-left: 1px solid var(--line);
+  .pst__main {
+    font-size: clamp(44px, 9.6cqi, 144px); line-height: 0.92; letter-spacing: 0.01em;
+    font-variation-settings: 'wght' 590, 'opsz' 144, 'SOFT' 30, 'WONK' 1;
+    display: flex; align-items: baseline; justify-content: center; gap: 0.12em;
   }
-  .reader__chip {
-    display: flex; align-items: center; gap: 0.7rem;
-    padding: 0.5rem 1rem; border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+  .pst__amp {
+    font-size: 1.32em; line-height: 0.8; color: var(--verm); transform: translateY(0.06em);
+    font-variation-settings: 'wght' 470, 'opsz' 144, 'SOFT' 100, 'WONK' 1;
   }
-  .reader__chiplabel {
-    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--accent-contrast); flex: none;
-    background: var(--accent); border-radius: 100px; padding: 0.15rem 0.55rem;
+  .pst__sub {
+    font-size: clamp(12px, 1.8cqi, 23px); letter-spacing: 0.1em;
+    font-variation-settings: 'wght' 470, 'opsz' 50, 'SOFT' 20, 'WONK' 1;
   }
-  .reader__chipspec {
-    font-size: 30px; line-height: 1; color: var(--fg);
+  .pst__it {
+    font-style: italic; font-size: clamp(13px, 2.1cqi, 27px); color: var(--inkc);
     font-variation-settings: 'wght' 420, 'opsz' 60, 'SOFT' 0, 'WONK' 0;
-    letter-spacing: -0.01em;
+    max-width: 36em; margin-inline: auto;
   }
-  .reader__body { padding: clamp(1.4rem, 3.4cqi, 2.6rem) clamp(1.4rem, 5cqi, 4rem) clamp(1.6rem, 4cqi, 3rem); max-width: 70ch; margin: 0 auto; }
-  .reader__kicker {
-    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--accent);
+  .pst__rule { display: flex; align-items: center; gap: 1.1em; color: var(--verm); width: min(60%, 420px); margin-inline: auto; }
+  .pst__rule i { flex: 1; height: 2px; background: var(--inkc); }
+  .pst__rule b {
+    font-size: clamp(15px, 2cqi, 26px); line-height: 0.6; font-weight: 400;
+    font-variation-settings: 'wght' 600, 'opsz' 144, 'SOFT' 60, 'WONK' 0;
   }
-  .reader__head {
-    font-size: clamp(26px, 4.4cqi, 38px); line-height: 1.08; margin: 0.5rem 0 0.7rem;
-    font-variation-settings: 'wght' 500, 'opsz' 96, 'SOFT' 0, 'WONK' 0;
-    letter-spacing: -0.01em; color: var(--fg);
+  .pst__terms {
+    font-size: clamp(11.5px, 1.5cqi, 19px); letter-spacing: 0.2em; text-transform: uppercase;
+    font-variation-settings: 'wght' 520, 'opsz' 30, 'SOFT' 0, 'WONK' 0;
   }
-  .reader__byline { font-size: 14px; color: var(--fg-3); font-style: italic; margin: 0 0 1.4rem; }
-  .reader__fig { font-feature-settings: inherit; }
-  .reader__lede, .reader__body p {
-    font-size: 16px; line-height: 1.62; color: var(--fg); margin: 0 0 1em;
-    font-variation-settings: 'wght' 380, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  .pst__terms--b {
+    font-size: clamp(10px, 1.15cqi, 14.5px); letter-spacing: 0.24em; margin-top: -0.5em;
+    color: color-mix(in srgb, var(--inkc) 78%, var(--paper));
   }
-  .reader__lede { font-size: 17px; }
-  .reader__drop {
-    float: left; font-size: 3.2em; line-height: 0.72; padding: 0.06em 0.14em 0 0;
-    color: var(--accent);
-    font-variation-settings: 'wght' 460, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  .pst__imprint {
+    font-size: clamp(10px, 1.1cqi, 14px); letter-spacing: 0.06em; font-style: italic;
+    color: color-mix(in srgb, var(--inkc) 62%, var(--paper));
+    border-top: 1px solid color-mix(in srgb, var(--inkc) 30%, var(--paper));
+    padding-top: 1em; margin-top: clamp(0.4rem, 1.5cqi, 1.4rem);
+    font-variation-settings: 'wght' 430, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
   }
-  .reader__quote {
-    font-size: 20px; line-height: 1.34; font-style: italic; color: var(--fg);
-    border-left: 2px solid var(--accent); padding-left: 1rem; margin: 1.4rem 0 0;
-    font-variation-settings: 'wght' 420, 'opsz' 48, 'SOFT' 0, 'WONK' 0;
+  /* the press coming up to pressure (pre-state armed by JS, released in view) */
+  @media (prefers-reduced-motion: no-preference) {
+    .pst__main, .pst__amp { transition: font-variation-settings 1.5s var(--ease-out, ease-out); }
+    .pst--pre .pst__main { font-variation-settings: 'wght' 590, 'opsz' 144, 'SOFT' 0, 'WONK' 1; }
+    .pst--pre .pst__amp { font-variation-settings: 'wght' 470, 'opsz' 144, 'SOFT' 0, 'WONK' 1; }
+  }
+  @container (max-width: 560px) {
+    .pst__main { flex-direction: column; align-items: center; gap: 0; font-size: 21cqi; }
+    .pst__amp { transform: none; }
+    .pst__venue { letter-spacing: 0.2em; }
+    .pst__terms { letter-spacing: 0.12em; }
   }
 
-  /* ---- reader responsive: keep the toolbar on one line at narrow widths ---- */
+  /* ════ 03 · FAVA WRAPPERS (vermilion handed off from the broadside) ════ */
+  .shelfscene { background: #1c120b; }
+  .shelf { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .bar {
+    --cream: #f1e6cd;
+    color: var(--cream); padding: clamp(1.2rem, 2.6cqi, 2.4rem);
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    min-height: clamp(380px, 58vh, 540px); cursor: default; outline-offset: -4px;
+  }
+  .bar--verm  { background: #b8401e; }
+  .bar--green { background: #2e4632; }
+  .bar--cocoa { background: #3a2114; }
+  .bar p { margin: 0; }
+  .bar__brand {
+    font-size: clamp(15px, 1.6cqi, 23px); letter-spacing: 0.42em; text-transform: uppercase;
+    font-variation-settings: 'wght' 600, 'opsz' 60, 'SOFT' 0, 'WONK' 0;
+    display: flex; flex-direction: column; gap: 0.5em;
+    border-bottom: 1px solid color-mix(in srgb, var(--cream) 40%, transparent);
+    padding-bottom: 1.1em; width: 100%;
+  }
+  .bar__brand span {
+    font-size: clamp(9px, 0.8cqi, 12px); letter-spacing: 0.3em; font-style: italic;
+    text-transform: lowercase; opacity: 0.75;
+    font-variation-settings: 'wght' 420, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  }
+  .bar__pct { margin: auto 0 0; display: flex; align-items: flex-start; justify-content: center; }
+  .bar__num {
+    font-size: clamp(88px, 13cqi, 190px); line-height: 0.85;
+    font-variation-settings: 'wght' var(--bw), 'opsz' 144, 'SOFT' var(--bs), 'WONK' 0;
+  }
+  .bar__sym {
+    font-size: clamp(26px, 3.6cqi, 52px); line-height: 1; margin-top: 0.3em;
+    font-variation-settings: 'wght' var(--bw), 'opsz' 144, 'SOFT' var(--bs), 'WONK' 0;
+  }
+  .bar__flavor {
+    font-size: clamp(19px, 2.2cqi, 32px); margin-top: 0.45em !important;
+    font-variation-settings: 'wght' var(--bw), 'opsz' 100, 'SOFT' var(--bs), 'WONK' 1;
+  }
+  .bar__origin {
+    font-style: italic; font-size: clamp(11px, 1.1cqi, 15px); opacity: 0.8;
+    margin: 0.5em 0 auto !important;
+    font-variation-settings: 'wght' 430, 'opsz' 20, 'SOFT' 0, 'WONK' 0;
+  }
+  .bar__foot {
+    display: flex; justify-content: space-between; width: 100%;
+    font-size: clamp(9px, 0.85cqi, 12px); letter-spacing: 0.18em; text-transform: uppercase;
+    opacity: 0.8; border-top: 1px solid color-mix(in srgb, var(--cream) 40%, transparent);
+    padding-top: 1em; margin-top: 1.4em !important;
+    font-variation-settings: 'wght' 480, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bar__num, .bar__sym, .bar__flavor { transition: font-variation-settings 0.6s var(--ease-out, ease-out); }
+    .bar:hover .bar__num, .bar:focus-visible .bar__num,
+    .bar:hover .bar__sym, .bar:focus-visible .bar__sym {
+      font-variation-settings: 'wght' var(--bw2), 'opsz' 144, 'SOFT' 100, 'WONK' 0;
+    }
+    .bar:hover .bar__flavor, .bar:focus-visible .bar__flavor {
+      font-variation-settings: 'wght' var(--bw2), 'opsz' 100, 'SOFT' 100, 'WONK' 1;
+    }
+  }
+  @container (max-width: 700px) {
+    .shelf { grid-template-columns: 1fr; }
+    .bar {
+      min-height: 0; display: grid; text-align: left; align-items: center;
+      grid-template-columns: 1fr auto; grid-template-areas: 'brand pct' 'flavor pct' 'origin pct' 'foot foot';
+      gap: 0.3rem 1.25rem; padding: 1.4rem 1.5rem 1.2rem;
+    }
+    .bar__brand { grid-area: brand; border: 0; padding: 0; flex-direction: row; align-items: baseline; gap: 0.9em; font-size: 14px; }
+    .bar__pct { grid-area: pct; margin: 0; }
+    .bar__num { font-size: 21cqi; }
+    .bar__sym { font-size: 6cqi; }
+    .bar__flavor { grid-area: flavor; margin: 0 !important; font-size: 7.2cqi; }
+    .bar__origin { grid-area: origin; margin: 0 !important; }
+    .bar__foot { grid-area: foot; margin-top: 0.9em !important; padding-top: 0.8em; }
+  }
+
+  /* ════ 04 · THE SKILLET (white-cream paper spread) ═════════════════════ */
+  .mag {
+    --paper: #f6f0e3; --inkc: #1c1410; --burnt: #a14a12;
+    background:
+      linear-gradient(90deg, transparent 49.2%, rgba(28, 20, 16, 0.08) 50%, transparent 50.8%),
+      var(--paper);
+    color: var(--inkc);
+    padding: clamp(1.5rem, 4cqi, 3.75rem) clamp(1.1rem, 6cqi, 5.5rem);
+  }
+  .mag ::selection { background: var(--burnt); color: var(--paper); }
+  .mag__spread { max-width: 1180px; margin-inline: auto; display: flex; flex-direction: column; gap: clamp(1.25rem, 3cqi, 2.75rem); }
+  .mag__folio {
+    display: flex; justify-content: space-between; gap: 1rem;
+    font-size: clamp(10px, 1cqi, 13px); letter-spacing: 0.24em; text-transform: uppercase;
+    border-bottom: 1px solid color-mix(in srgb, var(--inkc) 35%, var(--paper));
+    padding-bottom: 0.8em;
+    font-variation-settings: 'wght' 500, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__folio--ft { border-bottom: 0; border-top: 1px solid color-mix(in srgb, var(--inkc) 35%, var(--paper)); padding: 0.8em 0 0; }
+  .mag__ft-it { font-style: italic; text-transform: none; letter-spacing: 0.04em; }
+  .mag__head { text-align: center; display: flex; flex-direction: column; gap: clamp(0.7rem, 1.6cqi, 1.4rem); }
+  .mag__kicker {
+    margin: 0; color: var(--burnt); font-size: clamp(11px, 1.2cqi, 15px);
+    letter-spacing: 0.32em; text-transform: uppercase;
+    font-variation-settings: 'wght' 540, 'opsz' 40, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__hl {
+    margin: 0; font-size: clamp(46px, 8.6cqi, 128px); line-height: 0.94; letter-spacing: -0.025em;
+    font-variation-settings: 'wght' 380, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__deck {
+    margin: 0 auto; max-width: 34em; font-style: italic;
+    font-size: clamp(15px, 1.9cqi, 24px); line-height: 1.35; color: color-mix(in srgb, var(--inkc) 84%, var(--paper));
+    font-variation-settings: 'wght' 410, 'opsz' 50, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__byline {
+    margin: 0; font-size: clamp(10.5px, 1cqi, 13.5px); letter-spacing: 0.2em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--inkc) 60%, var(--paper));
+    font-variation-settings: 'wght' 480, 'opsz' 14, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__body { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 6cqi, 5rem); }
+  .mag__col p {
+    margin: 0 0 1em; font-size: clamp(13.5px, 1.2cqi, 17px); line-height: 1.62;
+    font-variation-settings: 'wght' 420, 'opsz' 11, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__col p:last-child { margin-bottom: 0; }
+  .mag__drop {
+    float: left; font-size: 3.4em; line-height: 0.78; padding: 0.04em 0.12em 0 0;
+    color: var(--burnt);
+    font-variation-settings: 'wght' 480, 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  }
+  .mag__pull {
+    margin: 0 0 1.2em; font-style: italic; color: var(--burnt);
+    font-size: clamp(21px, 2.5cqi, 34px); line-height: 1.18; letter-spacing: -0.01em;
+    border-block: 2px solid var(--burnt); padding: 0.7em 0;
+    font-variation-settings: 'wght' 420, 'opsz' 100, 'SOFT' 0, 'WONK' 0;
+  }
+  /* the opsz bloom: 9 pt contrast opening into the 144 pt display cut */
+  @media (prefers-reduced-motion: no-preference) {
+    .mag__hl { transition: font-variation-settings 1.4s var(--ease-out, ease-out), letter-spacing 1.4s var(--ease-out, ease-out); }
+    .mag--pre .mag__hl { font-variation-settings: 'wght' 520, 'opsz' 14, 'SOFT' 0, 'WONK' 0; letter-spacing: 0; }
+  }
+  @container (max-width: 820px) {
+    .mag { background: var(--paper); } /* a single page — no fold */
+    .mag__body { grid-template-columns: 1fr; gap: 0; }
+    .mag__pull { margin-top: 0.4em; }
+    .mag__folio--ft span:last-child { display: none; }
+  }
   @container (max-width: 480px) {
-    .reader__bar { gap: 0.45rem; padding: 0.6rem 0.7rem; }
-    .reader__logo { font-size: 17px; }
-    .reader__feat button { font-size: 9.5px; padding: 0.3rem 0.44rem; letter-spacing: 0; }
-    .reader__time { padding-left: 0.4rem; font-size: 10px; }
-    .reader__chipspec { font-size: 24px; }
+    .mag__folio { letter-spacing: 0.14em; }
+    .mag__hl { font-size: 13.4cqi; }
+  }
+
+  /* ════ 05 · HEARTH STOREFRONT (real px; theme tokens, light+dark safe) ═ */
+  .shopwrap { background: transparent; }
+  .shop {
+    max-width: 860px; margin-inline: auto; background: var(--bg-2);
+    border: 1px solid var(--line); border-radius: 10px; overflow: clip;
+    font-size: 13.5px; line-height: 1.5; color: var(--fg);
+  }
+  .shop__bar {
+    display: flex; align-items: center; gap: 1.1rem;
+    padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line);
+  }
+  .shop__logo {
+    font-size: 21px; line-height: 1;
+    font-variation-settings: 'wght' 520, 'opsz' 144, 'SOFT' 35, 'WONK' 1;
+  }
+  .shop__nav { display: flex; gap: 0.9rem; }
+  .shop__nav a {
+    font-size: 13px; color: var(--fg-3); text-decoration: none;
+    font-variation-settings: 'wght' 440, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__nav a.is-here { color: var(--fg); border-bottom: 1.5px solid var(--accent); padding-bottom: 2px; }
+  .shop__cart {
+    margin-left: auto; font-size: 12.5px; color: var(--fg-2);
+    font-variation-settings: 'wght' 460, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__cart b { color: var(--accent); font-weight: 400; }
+  .shop__main { display: grid; grid-template-columns: 1.15fr 1fr; }
+  .shop__hero {
+    padding: 1.6rem 1.5rem 1.5rem; border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 0.7rem;
+  }
+  .shop__kicker {
+    margin: 0; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+    font-variation-settings: 'wght' 520, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__name {
+    margin: 0; font-size: 38px; line-height: 1.02; letter-spacing: -0.015em;
+    font-variation-settings: 'wght' 440, 'opsz' 144, 'SOFT' 20, 'WONK' 0;
+  }
+  .shop__desc {
+    margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--fg-2);
+    font-variation-settings: 'wght' 420, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__meta {
+    margin: auto 0 0; padding-top: 0.9rem; font-size: 11.5px; font-style: italic; color: var(--fg-3);
+    border-top: 1px solid var(--line-soft);
+    font-variation-settings: 'wght' 420, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__panel { padding: 1.5rem 1.5rem 1.4rem; display: flex; flex-direction: column; gap: 1.05rem; }
+  .shop__group { display: flex; flex-direction: column; gap: 0.45rem; }
+  .shop__lbl {
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3);
+    font-variation-settings: 'wght' 520, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__opts { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .shop__opt {
+    font-family: var(--fam); font-size: 13px; color: var(--fg-2);
+    background: transparent; border: 1px solid var(--line); border-radius: 100px;
+    padding: 0.38rem 0.8rem; cursor: pointer;
+    font-variation-settings: 'wght' 440, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__opt b { font-weight: 400; color: var(--fg-3); margin-left: 0.25em; }
+  .shop__opt:hover { border-color: var(--fg-3); color: var(--fg); }
+  .shop__opt.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .shop__opt.is-on b { color: var(--accent-contrast); opacity: 0.75; }
+  .shop__qty { display: inline-flex; align-items: center; gap: 0; border: 1px solid var(--line); border-radius: 100px; width: max-content; }
+  .shop__qty button {
+    font-family: var(--fam); font-size: 15px; color: var(--fg); background: transparent;
+    border: 0; width: 34px; height: 30px; cursor: pointer;
+  }
+  .shop__qty button:hover { color: var(--accent); }
+  .shop__qty b {
+    font-weight: 400; font-size: 14px; min-width: 2ch; text-align: center;
+    font-variation-settings: 'wght' 500, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__row { display: flex; align-items: center; justify-content: space-between; gap: 0.9rem; margin-top: 0.2rem; }
+  .shop__total {
+    font-size: 24px; line-height: 1;
+    font-variation-settings: 'wght' 560, 'opsz' 60, 'SOFT' 0, 'WONK' 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .shop__add {
+    font-family: var(--fam); font-size: 13.5px; cursor: pointer;
+    background: var(--accent); color: var(--accent-contrast);
+    border: 1px solid var(--accent); border-radius: 100px; padding: 0.55rem 1.15rem;
+    font-variation-settings: 'wght' 520, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  .shop__add.did { background: transparent; color: var(--accent); }
+  .shop__fine {
+    margin: 0; font-size: 11px; line-height: 1.5; color: var(--fg-3);
+    font-variation-settings: 'wght' 420, 'opsz' 9, 'SOFT' 0, 'WONK' 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .shop__opt, .shop__add { transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease); }
+  }
+  @container (max-width: 640px) {
+    .shop__main { grid-template-columns: 1fr; }
+    .shop__hero { border-right: 0; border-bottom: 1px solid var(--line); }
+    .shop__name { font-size: 31px; }
+    .shop__nav { display: none; }
   }
 </style>
