@@ -4,518 +4,1189 @@ export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
 
-// ── Scene 05 (interactive boutique lookbook) data ───────────────────────────
-const looks = [
-  { id: 'AW-01', name: 'Verveine',   cat: 'eau',    price: '210', vol: '100 ml', note: 'Bergamot · Neroli · White Cedar', tag: 'New' },
-  { id: 'AW-02', name: 'Foudre',     cat: 'eau',    price: '245', vol: '100 ml', note: 'Black Fig · Vetiver · Ambrette',  tag: '' },
-  { id: 'AW-03', name: 'Linceul',    cat: 'extrait',price: '380', vol: '50 ml',  note: 'Oud · Iris · Smoked Leather',     tag: 'Rare' },
-  { id: 'AW-04', name: 'Aubépine',   cat: 'eau',    price: '195', vol: '100 ml', note: 'Hawthorn · Mimosa · Soft Musk',   tag: '' },
-  { id: 'AW-05', name: 'Sève',       cat: 'extrait',price: '340', vol: '50 ml',  note: 'Galbanum · Tuberose · Sandalwood',tag: '' },
-  { id: 'AW-06', name: 'Crépuscule', cat: 'home',   price: '120', vol: '320 g',  note: 'Beeswax · Tonka · Cade Wood',     tag: '' },
+// ── The sequence ─────────────────────────────────────────────────────────────
+// A DISPLAY GARAMOND ONLY LIVES ABOVE A CERTAIN SIZE — five acts about that law.
+// Night-green commerce (01) → the cream wedding table it actually rules (02) →
+// the slow-living magazine that tells the astronomer's story (03) → back to the
+// night for the instrument that PROVES the law (04) → and the wedding gone
+// digital, the face's real modern habitat (05). Cream ↔ deep green alternate;
+// the proof-marker's red appears only as warning ink (02's proof, 04's
+// forbidden zone).
+//
+// Honesty notes — verified against the fontsource latin woff2s (fontTools):
+// · STATIC family. No fvar, no axes. Weights 300–700 roman; ITALIC IS LOADED
+//   ONLY AT 400 & 600 (Layout.astro) — no other italic weight is ever set.
+// · GSUB: calt ccmp dnom frac liga lnum locl numr tnum (+pnum italic only).
+//   NO dlig / onum / sups / smcp / swsh in this build — never claimed below,
+//   even though the frontmatter lists some. The mdx is wrong; the file rules.
+// · DEFAULT FIGURES ARE PROPORTIONAL OLD-STYLE — 3 5 7 9 truly hang (yMin
+//   −276 vs −13 overshoot elsewhere). `lnum` maps to .lf lining alternates,
+//   `tnum` makes them tabular. That pair is the only figures story told.
+// · `liga` (on by default) carries T_T, T_h, g_g and the full f-set
+//   (ff fi fl ffi ffl fft fb fh fk ft …) — Th, TT, ffl are performed large.
+// · `frac` is real (1/2 → ½ in act 02's menu).
+// · mark/mkmk + the flamboyantly tall accents: é è used at display size.
+
+// ── Act 04 — Fournier's bodies (Manuel Typographique, 1764) ─────────────────
+// Names + conventional point equivalents. THE FULL TABLE: Fournier's Table des
+// Proportions does not stop at Gros Canon — it continues through Double Canon
+// (56) to Grosse Nonpareille (96), the true end of the table (Manuel, ch. XVII,
+// cf. jacques-andre.fr's digitization), and bodies that large were truly cast.
+// The instrument's law therefore hangs on 96, not 44: the letter outruns the
+// WHOLE 1764 scale. Positions on the rail are computed live in JS because the
+// rail's ceiling adapts to the viewport (the instrument never lies).
+const bodies = [
+  { pt: 6,  name: 'Nonpareille',        label: true,  cls: '' },
+  { pt: 12, name: 'Cicéro',             label: true,  cls: '' },
+  { pt: 14, name: 'Saint-Augustin',     label: false, cls: '' },
+  { pt: 18, name: 'Gros Romain',        label: false, cls: '' },
+  { pt: 22, name: 'Gros Parangon',      label: false, cls: '' },
+  { pt: 28, name: 'Petit Canon',        label: true,  cls: '' },
+  { pt: 44, name: 'Gros Canon',         label: false, cls: '' },
+  { pt: 56, name: 'Double Canon',       label: true,  cls: 'cgi__tick--tight' },
+  { pt: 96, name: 'Grosse Nonpareille', label: true,  cls: 'cgi__tick--wrap' },
+];
+
+// ── Act 05 — supper choices ──────────────────────────────────────────────────
+const suppers = [
+  { id: 'mer',    dish: 'Loup de mer en croûte de sel',  note: 'fenouil confit, beurre blanc',  card: 'le loup de mer' },
+  { id: 'boeuf',  dish: 'Filet de bœuf, jus au thym',    note: 'pommes de terre écrasées',      card: 'le filet de bœuf' },
+  { id: 'potager',dish: 'Légumes du potager',            note: 'artichauts en barigoule',       card: 'les légumes du potager' },
 ];
 ---
-<div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — fashion / luxury magazine cover -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
-    <div class="iu__scene iu__scene--portrait">
-      <div class="iu__poster cg-cover" data-cover>
-        <div class="cg-cover__top">
-          <span class="cg-cover__pub">Lumière</span>
-          <span class="cg-cover__no">Numéro <span class="num">21</span> · Automne—Hiver</span>
-        </div>
+<div class="iu cg" style={`--fam:${fam}`}>
 
-        <div class="cg-cover__hero">
-          <span class="cg-cover__over">the architecture of</span>
-          <h3 class="cg-cover__masthead">
-            <span class="cg-cover__line cg-cover__line--1" data-cover-flip>
-              <span class="cg-cover__roman">Light</span><span class="cg-cover__ital">Light</span>
-            </span>
-            <span class="cg-cover__line cg-cover__line--2"><em>ness</em></span>
-          </h3>
-        </div>
-
-        <div class="cg-cover__lines">
-          <span class="cg-cover__feat">Paris couture, cut from a single hairline — and the slow return of restraint</span>
-          <span class="cg-cover__rule" aria-hidden="true"></span>
-          <span class="cg-cover__more">Saint Laurent, revisited · The vanishing serif · A winter in greys</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">Hover the cover — the display word turns from its roman to its true italic, the one piece of motion a static face can honestly make.</p>
-  </figure>
-
-  <!-- 02 — fine-dining tasting menu (italic dish lines, frac fractions, hover pairing) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Hospitality — the tasting menu</span></figcaption>
-    <div class="iu__scene iu__scene--portrait">
-      <div class="iu__poster cg-menu">
-        <header class="cg-menu__head">
-          <span class="cg-menu__estd">Maison du Sel · est. MCMXII</span>
-          <h3 class="cg-menu__name">Menu <em>Dégustation</em></h3>
-          <span class="cg-menu__sub">Quatre services · Printemps</span>
+  <!-- ════════════════════════════════════════════════════════════════════
+       01 · ILLUSTRATION & COMMERCIAL — the perfume launch page.
+       Reference: the Draeger Frères lineage — the Paris luxury printers
+       who pressed the catalogues and announcement pages of Hermès and
+       Lanvin — type-as-the-picture, no photograph, one ligature doing the
+       work of an image. The ffl of L'Effleurement is a single glyph
+       reaching across three letters; the scent's italic ghost lifts off
+       the word like vapour.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Commercial — a perfume launch page, in the Draeger Frères lineage</span></figcaption>
+    <div class="iu__scene cgp">
+      <div class="cgp__in" lang="fr">
+        <header class="cgp__top">
+          <span class="cgp__house">AUBIER &amp; CIE</span>
+          <span class="cgp__trade">parfumeurs · Paris &amp; Grasse</span>
+          <span class="cgp__since"><em>depuis</em> 1893</span>
         </header>
-
-        <ol class="cg-menu__list">
-          <li class="cg-dish" data-dish>
-            <span class="cg-dish__top">
-              <span class="cg-dish__name">Oysters &amp; Verjus Granité</span>
-              <span class="cg-dish__price num">28</span>
-            </span>
-            <span class="cg-dish__desc">Fine de claire, green apple, a <span class="num">1½</span>-year cider mignonette</span>
-            <span class="cg-dish__pair"><em>Muscadet sur Lie</em> · Loire</span>
-          </li>
-          <li class="cg-dish" data-dish>
-            <span class="cg-dish__top">
-              <span class="cg-dish__name">Hand-Dived Scallop</span>
-              <span class="cg-dish__price num">36</span>
-            </span>
-            <span class="cg-dish__desc">Cauliflower, brown butter, a <span class="num">3/4</span> spoon of Oscietra</span>
-            <span class="cg-dish__pair"><em>Meursault</em> · Côte de Beaune</span>
-          </li>
-          <li class="cg-dish" data-dish>
-            <span class="cg-dish__top">
-              <span class="cg-dish__name">Aged Hereford &amp; Bone Marrow</span>
-              <span class="cg-dish__price num">52</span>
-            </span>
-            <span class="cg-dish__desc">Salsify, <span class="num">21</span>-day rib, a <span class="num">1/2</span> glass of house Syrah</span>
-            <span class="cg-dish__pair"><em>Cornas</em> · Northern Rhône</span>
-          </li>
-          <li class="cg-dish" data-dish>
-            <span class="cg-dish__top">
-              <span class="cg-dish__name">Tarte Fine aux Pommes</span>
-              <span class="cg-dish__price num">18</span>
-            </span>
-            <span class="cg-dish__desc">Caramel of Calvados, crème double, <span class="num">1/2</span> vanilla pod</span>
-            <span class="cg-dish__pair"><em>Coteaux du Layon</em> · Anjou</span>
-          </li>
-        </ol>
-
-        <footer class="cg-menu__foot">
-          <span class="cg-menu__set">Four courses <span class="num">96</span></span>
-          <span class="cg-menu__pair-note"><em>with the cellar pairing</em> <span class="num">64</span></span>
+        <div class="cgp__hero">
+          <span class="cgp__over">le nouveau parfum</span>
+          <h3 class="cgp__word">
+            <span class="cgp__ghost" aria-hidden="true">L&rsquo;Effleurement</span>
+            <span class="cgp__ink">L&rsquo;E<span class="cgp__ffl">ffl<i class="cgp__fflnote" aria-hidden="true">un seul caract&egrave;re &mdash; one sort, three letters</i></span>eurement</span>
+          </h3>
+          <span class="cgp__under">EXTRAIT DE PARFUM</span>
+        </div>
+        <div class="cgp__pyr" aria-label="La pyramide olfactive">
+          <p class="cgp__pnote cgp__pnote--1"><span>notes de t&ecirc;te</span>bergamote, feuille de figuier</p>
+          <p class="cgp__pnote cgp__pnote--2"><span>notes de c&oelig;ur</span>iris pallida, h&eacute;liotrope</p>
+          <p class="cgp__pnote cgp__pnote--3"><span>notes de fond</span>santal, encens, musc blanc</p>
+        </div>
+        <p class="cgp__claim">Trois gouttes au creux du poignet, &agrave; la nuit tomb&eacute;e&nbsp;— il ne parle qu&rsquo;une fois, et jamais &agrave; voix haute.</p>
+        <footer class="cgp__foot">
+          <span>30&nbsp;ml &middot; flacon n&ordm;&nbsp;3, verre souffl&eacute; &agrave; Biot</span>
+          <span class="cgp__flacon" aria-hidden="true">
+            <i class="cgp__fl-stopper"></i>
+            <i class="cgp__fl-neck"></i>
+            <b class="cgp__fl-body">n&ordm;&thinsp;3</b>
+          </span>
+          <span>imprim&eacute; &agrave; Paris par Draeger&nbsp;Fr&egrave;res</span>
         </footer>
       </div>
     </div>
-    <p class="iu__hint label">Hover a course to draw out its cellar pairing in true italic; prices fall down a tabular hairline column with real <code>frac</code> fractions.</p>
+    <p class="iu__hint label">No photograph — in the manner of the great Paris luxury printers, the type is the picture. The <em>ffl</em> of <em>L&rsquo;Effleurement</em> is one ligature reaching across three letters — traced beneath the word, one cell per letter, so the single sort is seen rather than asserted. The pyramid steps the italic through three sizes, t&ecirc;te to fond, as the Draeger catalogues did; its ghost rises off the word like vapour, opening its letter-fit as it lifts (and holds still under reduced motion). The flacon in the imprint is drawn from hairline rules — the maison&rsquo;s own mark.</p>
   </figure>
 
-  <!-- 03 — perfume flacon: tall portrait packaging that exploits the hairline contrast + tall accents -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — the flacon &amp; its label</span></figcaption>
-    <div class="iu__scene iu__scene--portrait">
-      <div class="iu__poster cg-flacon" data-flacon>
-        <div class="cg-flacon__id">
-          <span>Aubépine &amp; Cie</span>
-          <span class="cg-flacon__dot" aria-hidden="true"></span>
-          <span>Grasse</span>
+  <!-- ════════════════════════════════════════════════════════════════════
+       02 · BRANDING & IDENTITY — the engraved wedding suite.
+       Reference: the engraver's social-stationery etiquette codified by
+       Crane & Co. — dates spelled out to the last letter, the reply card's
+       "M ___" line — because the wedding world is where Cormorant actually
+       lives (the mdx says so). The couple's cipher is the face's own T_T
+       ligature; toggle the proof and the engraver circles the evidence
+       in red.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-proof-btn]">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Branding — the wedding suite, set to the engraver&rsquo;s etiquette</span></figcaption>
+    <div class="iu__scene cgs-scene">
+      <div class="cgs" data-suite data-proof="off">
+        <div class="cgs__bench">
+          <span class="cgs__benchlabel">Atelier de gravure &middot; la suite compl&egrave;te</span>
+          <button class="cgs__prooftab" type="button" data-proof-btn aria-pressed="false">
+            <span class="cgs__tab-off">&Eacute;preuve &middot; see the engraver&rsquo;s proof</span>
+            <span class="cgs__tab-on">Bon &agrave; tirer &middot; back to fair copy</span>
+          </button>
         </div>
-
-        <div class="cg-flacon__stage">
-          <div class="cg-flacon__bottle" aria-label="perfume flacon">
-            <span class="cg-flacon__cap" aria-hidden="true"></span>
-            <div class="cg-flacon__label">
-              <span class="cg-flacon__house">Extrait</span>
-              <h3 class="cg-flacon__name" data-flacon-word>Linceul</h3>
-              <span class="cg-flacon__accent" aria-hidden="true">é</span>
-              <span class="cg-flacon__notes"><em>Oud · Iris · Smoked Leather</em></span>
-              <span class="cg-flacon__rule" aria-hidden="true"></span>
-              <span class="cg-flacon__vol">50 ml <span class="num">℮</span></span>
+        <div class="cgs__lay">
+          <div class="cgs__card cgs__invite">
+            <span class="cgs__reg" aria-hidden="true"></span>
+            <span class="cgs__axis" aria-hidden="true"></span>
+            <span class="cgs__cipher" aria-label="cipher of the couple">TT</span>
+            <p class="cgs__line cgs__small">Together with their families</p>
+            <p class="cgs__name"><span class="cgs__ring" data-n="1">Th</span>&eacute;r&egrave;se Aubier</p>
+            <p class="cgs__amp">and</p>
+            <p class="cgs__name">Th<span class="cgs__ring cgs__ring--acc" data-n="2">&eacute;</span>odore Maraval</p>
+            <p class="cgs__line">request the pleasure of your company<br/>at their marriage</p>
+            <p class="cgs__date"><span class="cgs__ring cgs__ring--wide" data-n="3">Saturday, the twentieth of June<br/>two thousand twenty-six</span><br/>at half past four in the afternoon</p>
+            <p class="cgs__place">Domaine de la Cormoraie &middot; Grasse</p>
+            <p class="cgs__docket" aria-hidden="true">1 &middot; the T&middot;h tied, cast as one sort&ensp;&mdash;&ensp;2 &middot; the accent flies above the cap line&ensp;&mdash;&ensp;3 &middot; figures spelled out, per etiquette</p>
+            <span class="cgs__bat" aria-hidden="true">BON &Agrave; TIRER &mdash; &eacute;preuve n&ordm; 2</span>
+          </div>
+          <div class="cgs__card cgs__menu" lang="fr">
+            <span class="cgs__chead">Le D&icirc;ner</span>
+            <ul class="cgs__courses">
+              <li><b>Loup de mer en cro&ucirc;te de sel</b><i>fenouil confit, beurre blanc</i></li>
+              <li><b>Filet de b&oelig;uf, jus au thym</b><i>pommes de terre &eacute;cras&eacute;es</i></li>
+              <li><b>Vacherin aux fraises des bois</b><i>une <span class="cgs__ring cgs__ring--frac" data-n="4"><span class="cgs__frac">1/2</span></span> mesure de Chartreuse</i></li>
+            </ul>
+            <span class="cgs__wines">vins du domaine &mdash; blanc 2019 &middot; rouge 2015</span>
+            <span class="cgs__docket cgs__docket--menu" aria-hidden="true">4 &middot; the &frac12; is cut as one fraction (frac), not stacked by hand</span>
+          </div>
+          <div class="cgs__pair">
+            <div class="cgs__card cgs__placecard">
+              <span class="cgs__pname">Th&eacute;a Maraval</span>
+              <span class="cgs__ptable">Table <span class="cgs__ring cgs__ring--pc" data-n="5">3</span></span>
+              <span class="cgs__docket cgs__docket--pc" aria-hidden="true">5 &middot; the 3 hangs below the line, as cast</span>
+            </div>
+            <div class="cgs__card cgs__reply">
+              <span class="cgs__chead cgs__chead--sm">La R&eacute;ponse</span>
+              <p class="cgs__rline">The favour of a reply is requested<br/>before the first of May</p>
+              <p class="cgs__mline">M<span aria-hidden="true"></span></p>
+              <p class="cgs__rchoice"><em>accepts with pleasure</em> &middot; <em>declines with regret</em></p>
             </div>
           </div>
         </div>
-
-        <div class="cg-flacon__foot">
-          <span>Extrait de Parfum</span>
-          <span class="cg-flacon__yr">depuis <span class="num">1911</span></span>
-        </div>
       </div>
     </div>
-    <p class="iu__hint label">A real label object — the tall, flamboyant accent and razor serifs set against open space, the kind of contrast that only blooms at this size.</p>
+    <p class="iu__hint label">Cormorant&rsquo;s true habitat — the wedding suite — held to Crane&rsquo;s engraver&rsquo;s etiquette: the date spelled out to the last letter, the reply card&rsquo;s bare <em>M</em> line. The cipher is the face&rsquo;s own <em>TT</em> ligature, the names carry the tied <em>Th</em>, and the only figures on the table hang below the line, as cast. The proof opens itself once as the suite enters view — the engraver audits the whole table, five marks across three cards, the cut <em>&frac12;</em> and the hanging <em>3</em> included; the red stamp on the bench hands it back to fair copy.</p>
   </figure>
 
-  <!-- 04 — editorial feature opener -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — the feature opener</span></figcaption>
-    <div class="iu__scene cg-scene-43">
-      <div class="iu__poster cg-spread" data-reveal-cover>
-        <div class="cg-spread__rail">
-          <span class="cg-spread__folio">Feature · <span class="num">072</span></span>
-          <span class="cg-spread__sec">Atelier</span>
-        </div>
-        <div class="cg-spread__main">
-          <span class="cg-spread__kicker">On craft</span>
-          <h3 class="cg-spread__head" data-cover-word>The <em>Vanishing</em> Stroke</h3>
-          <p class="cg-spread__deck">How a Swiss astronomer filed the Garamond serif to a needle, and let it bloom only at the size of a whisper.</p>
-          <div class="cg-spread__body">
-            <p><span class="cg-spread__drop">F</span>or four centuries the Garamond serif kept its weight, sturdy enough to survive the spread of ink across damp rag paper. Cormorant takes the opposite vow: it assumes a screen, a fine press, and a generous size — and files every ending to a point.</p>
-            <p>The counters close, the contrast runs high, the accents climb tall above the cap line. Set small it would collapse; set large and light it becomes the quietest kind of luxury — the letter that asks to be looked at, never read in a hurry.</p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       03 · EDITORIAL — the slow-living profile.
+       Reference: the Kinfolk / Cereal school of slow editorial (Ouur,
+       Copenhagen) — hairline rules, air as material, light display serif,
+       a profile of the person whose hands made the thing. The subject is
+       the literal truth from this font's story: an astronomer who draws
+       type at night. Hanging figures are the default; a chip in the
+       colophon flips them to lining (lnum) live.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item" data-shoot-click="[data-fig-btn]">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — a slow-living profile, in the Kinfolk school</span></figcaption>
+    <div class="iu__scene cge" data-mag>
+      <header class="cge__band">
+        <span class="cge__pub">DEMEURE</span>
+        <span class="cge__tag"><em>a quarterly of the slow crafts</em></span>
+        <span class="cge__issue">Midsummer &middot; n&ordm; <span class="cge__fig">21</span></span>
+      </header>
+      <div class="cge__grid">
+        <div class="cge__main">
+          <span class="cge__kicker">HANDS</span>
+          <h3 class="cge__head">The Astronomer<br/><em>of the Small Hours</em></h3>
+          <p class="cge__deck">By day, Christian Thalmann studies the sky. At night, when the house goes quiet, he draws the Garamond that metal could never print.</p>
+          <div class="cge__body">
+            <p><span class="cge__drop">Q</span>uietly, in the slivers of time left over from research and parenthood, the Garamond he wanted began to appear — conceived, drawn, spaced, kerned and produced by one person, then given away to anyone who asks. Faithful revivals already served the book page, where Garamond is exquisite at twelve point. His complaint was the other end of the scale: enlarged to a headline, the old cuts turn clumpy, their forms still braced against spreading ink.</p>
+            <p>Cormorant is the answer. The serifs are filed to needles, the counters squeezed scandalously small, the accents drawn tall enough to graze the line above. Every one of those moves would be suicide in metal at six point; on a sharp screen at a hundred, they are the whole point.</p>
           </div>
         </div>
+        <aside class="cge__side">
+          <div class="cge__giant" aria-label="Folio numeral set at display size — old-style figures hang below the baseline">
+            <span class="cge__giantrow" aria-hidden="true"><span class="cge__giantfig cge__fig">85</span><i class="cge__giantrule"></i></span>
+            <span class="cge__giantlab">folio &middot; enlarged to the size that breaks the old cuts &mdash; the 8 stands on the baseline, the 5 hangs through it; the footnote below stands its figures up</span>
+          </div>
+          <blockquote class="cge__quote"><p>&ldquo;Distil the essence of Garamond, free it from metal&nbsp;&mdash; and let it bloom.&rdquo;</p><cite>the brief he set himself, <span class="cge__fig">2015</span></cite></blockquote>
+          <dl class="cge__file">
+            <div><dt>The face</dt><dd>Cormorant Garamond</dd></div>
+            <div><dt>The hand</dt><dd>Christian Thalmann, Catharsis Fonts</dd></div>
+            <div><dt>The cut</dt><dd>five weights &middot; two true italics</dd></div>
+            <div><dt>The licence</dt><dd>SIL Open Font, <span class="cge__fig">2015</span></dd></div>
+          </dl>
+        </aside>
       </div>
+      <footer class="cge__colo">
+        <span class="cge__folio">pages <span class="cge__fig">84</span>&nbsp;&mdash;&nbsp;<span class="cge__fig">85</span></span>
+        <button class="cge__figbtn" type="button" data-fig-btn aria-pressed="false">
+          <span class="cge__fb-ast" aria-hidden="true">*</span>
+          <span class="cge__fb-off">the figures of this page hang below the line, as cast &mdash; press to stand them up (lnum)</span>
+          <span class="cge__fb-on">the figures stand as lining alternates (lnum) &mdash; press to let them hang again</span>
+        </button>
+      </footer>
     </div>
-    <p class="iu__hint label">Hover the headline — the display weight lightens to a hairline and the italic word leads.</p>
+    <p class="iu__hint label">The Kinfolk school — hairline rules, air as material, a light serif doing the talking — telling this face&rsquo;s own true story, and taking the one display risk the school allows: the folio enlarged to headline size, enacting the article&rsquo;s thesis on the very page that argues it. The <em>Th</em> of the headline is one tied glyph; the drop cap is the famous flowing-tailed Q. Every numeral hangs below the line because old-style figures are this font&rsquo;s default — the folio&rsquo;s baseline is drawn clear across the sidebar, so the 8 visibly stands on it and the 5 hangs through it; press the asterisked footnote in the colophon and <em>lnum</em> stands them all up live, the giant <em>85</em> included.</p>
   </figure>
 
-  <!-- 05 — INTERACTIVE boutique lookbook (real px, filter + sort + hover) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Product UI — boutique lookbook (real scale, interactive)</span></figcaption>
+  <!-- ════════════════════════════════════════════════════════════════════
+       04 · INTERACTIVE & EXPERIMENTAL — the scale of bodies, run off the table.
+       Reference: Pierre-Simon Fournier's Table des Proportions (Manuel
+       Typographique, 1764) — the first standardized scale of type bodies,
+       running Nonpareille (6) through Double Canon (56) to Grosse
+       Nonpareille (96) — rebuilt as an instrument and run PAST its own end.
+       Drag the rail: below Cicéro the prover's red declares the letter
+       forbidden; past Grosse Nonpareille the letter leaves the entire 1764
+       table behind.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-body='6']">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Experimental — the scale of bodies, after Fournier, run off the end of his table</span></figcaption>
+    <div class="iu__scene cgi">
+      <div class="cgi__in" data-inst>
+        <header class="cgi__top">
+          <span class="cgi__title">LA TAILLE</span>
+          <span class="cgi__ref"><em>an instrument after Fournier&rsquo;s</em> Table des Proportions, <span class="cgi__lf">1764</span></span>
+          <span class="cgi__law">the table ends at Grosse Nonpareille, <span class="cgi__lf">96</span> &middot; this letter outruns it</span>
+        </header>
+        <div class="cgi__stage">
+          <span class="cgi__reticle" aria-hidden="true"></span>
+          <span class="cgi__word" data-word>souffle</span>
+        </div>
+        <div class="cgi__read">
+          <span class="cgi__pt"><b data-pt>120</b><i>pt</i></span>
+          <span class="cgi__body-name" data-body-name>&mdash; past Grosse Nonpareille</span>
+          <p class="cgi__verdict" data-verdict data-zone="bloom">En fleur. Past Grosse Nonpareille — the end of Fournier&rsquo;s entire table. The scale itself runs out; the serifs come to their points and the counters dare to close. The only country this letter was drawn for.</p>
+        </div>
+        <div class="cgi__railwrap">
+          <div class="cgi__ticks" data-ticks>
+            {bodies.map((b) => (
+              <button class={`cgi__tick${b.label ? ' cgi__tick--named' : ''}${b.cls ? ` ${b.cls}` : ''}`} type="button" data-body={b.pt} title={`${b.name} · ${b.pt} pt`}>
+                <i aria-hidden="true"></i>
+                {b.label && <span>{b.name}<b class="cgi__lf">{b.pt}</b></span>}
+              </button>
+            ))}
+            <span class="cgi__beyond" data-beyond aria-hidden="true"><i></i><span>hors table &middot; past Grosse Nonpareille, off the 1764 scale</span></span>
+          </div>
+          <input class="cgi__rail" type="range" min="0" max="1000" step="1" value="912" data-rail aria-label="Type size, from Nonpareille to beyond metal" />
+          <div class="cgi__zones" aria-hidden="true"><i class="cgi__zone-red" data-zone-red></i></div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Fournier&rsquo;s 1764 scale of bodies — Nonpareille through Double Canon to Grosse Nonpareille, <em>96</em>, where the table simply stops — rebuilt as an instrument and run off its own end, the inverse of the 1592 sheet two rooms over. Drag the rail (its ceiling adapts honestly to your viewport, and always clears the table&rsquo;s end): below Cic&eacute;ro the prover&rsquo;s red declares the letter forbidden — counters flood, hairlines fall below the pixel — and past Grosse Nonpareille the letter leaves the entire scale behind. The readout&rsquo;s figures stand up and align because <em>lnum</em> and <em>tnum</em> are real in this file.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       05 · WEB & APP UI — the wedding website's RSVP, live at real px.
+       Reference: the contemporary wedding-web current (Zola, Minted,
+       Squarespace), where Cormorant Garamond is — measurably — the house
+       serif of the entire industry. The same wedding as act 02, gone
+       digital: type a name and watch the place card engrave itself.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item" data-shoot-click="[data-send]">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Web UI — the wedding website&rsquo;s RSVP, live at real scale</span></figcaption>
     <div class="iu__scene">
-      <div class="iu__device cg-shop" data-shop>
+      <div class="iu__device cgr" data-rsvp>
         <div class="iu__chrome">
           <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">aubepine.paris/collection/automne</span>
+          <span class="iu__addr">lacormoraie.fr/juin/rsvp</span>
         </div>
-        <header class="cg-shop__head">
-          <span class="cg-shop__logo">Aubépine <em>&amp; Cie</em></span>
-          <nav class="cg-shop__filters" aria-label="Filter collection">
-            <button class="is-on" data-filter="all">Tout</button>
-            <button data-filter="eau">Eau de Parfum</button>
-            <button data-filter="extrait">Extrait</button>
-            <button data-filter="home">Maison</button>
+        <header class="cgr__head">
+          <span class="cgr__cipher" aria-hidden="true">TT</span>
+          <span class="cgr__names">Th&eacute;r&egrave;se <em>&amp;</em> Th&eacute;odore</span>
+          <nav class="cgr__nav" aria-label="Wedding site">
+            <a>Le week-end</a><a>Voyage</a><a>La liste</a><a class="is-here" aria-current="page">RSVP</a>
           </nav>
-          <div class="cg-shop__sort">
-            <span class="cg-shop__sortlabel">Trier</span>
-            <button data-sort aria-pressed="false"><span data-sort-label>Nouveautés</span></button>
-          </div>
         </header>
-
-        <div class="cg-shop__grid" data-grid>
-          {looks.map((l, i)=>{
-            const hero = i === 0;
-            return (
-            <article class={`cg-card${hero ? ' cg-card--hero' : ''}`} data-cat={l.cat} data-price={l.price} data-id={l.id}>
-              <div class="cg-card__img" aria-hidden="true">
-                <span class="cg-card__ghost">{l.name.slice(0,1)}</span>
-                <span class="cg-card__word">{l.name}</span>
-                {l.tag && <span class="cg-card__tag">{l.tag}</span>}
-                <span class="cg-card__cta">View · Ajouter</span>
-              </div>
-              <div class="cg-card__meta">
-                <div class="cg-card__row cg-card__row--top">
-                  <h4 class="cg-card__name">{l.name}</h4>
-                  <span class="cg-card__price num">£{l.price}</span>
-                </div>
-                <span class="cg-card__note"><em>{l.note}</em></span>
-                <div class="cg-card__row cg-card__row--foot">
-                  <span class="cg-card__vol">{l.vol}</span>
-                  <span class="cg-card__id num">{l.id}</span>
-                </div>
-              </div>
-            </article>
-          );})}
+        <div class="cgr__split">
+          <form class="cgr__form" data-form>
+            <h4 class="cgr__ftitle">R&eacute;ponse</h4>
+            <p class="cgr__fsub"><em>by the first of May, s&rsquo;il vous pla&icirc;t</em></p>
+            <label class="cgr__lab" for="cgr-name">Your name, as it should be set</label>
+            <input class="cgr__input" id="cgr-name" type="text" value="Th&eacute;a Maraval" autocomplete="off" spellcheck="false" data-name />
+            <p class="cgr__fnote"><em>engraved as typed &mdash; try Th&eacute;a, Th&eacute;odore, Joffrey, or Steffi</em></p>
+            <span class="cgr__lab">Will you join us?</span>
+            <div class="cgr__seg" role="group" aria-label="Attendance">
+              <button class="is-on" type="button" data-yes aria-pressed="true">With pleasure</button>
+              <button type="button" data-no aria-pressed="false">With regret</button>
+            </div>
+            <span class="cgr__lab">Choose your supper</span>
+            <div class="cgr__menu" role="radiogroup" aria-label="Supper">
+              {suppers.map((s, i) => (
+                <label class="cgr__dish">
+                  <input type="radio" name="cgr-supper" value={s.id} checked={i === 0} data-dish={s.card} />
+                  <span class="cgr__dishname">{s.dish}</span>
+                  <span class="cgr__dishnote"><em>{s.note}</em></span>
+                </label>
+              ))}
+            </div>
+            <button class="cgr__send" type="button" data-send>Seal the reply</button>
+          </form>
+          <div class="cgr__sealed" data-sealed hidden>
+            <div class="cgr__bigcard" aria-label="The engraved place card">
+              <span class="cgr__bigcipher" aria-hidden="true">TT</span>
+              <span class="cgr__bigname" data-echo-name>Th&eacute;a Maraval</span>
+              <span class="cgr__bigtable cgr__seal-yes">Table <span class="cgr__os">3</span> &middot; beneath the lindens</span>
+              <span class="cgr__bigdish cgr__seal-yes" data-card-dish>le loup de mer</span>
+              <span class="cgr__bigregret cgr__seal-no"><em>we will drink your share &mdash; you will be missed</em></span>
+            </div>
+            <p class="cgr__sealline"><span class="cgr__seal-yes">Sealed &mdash; the card goes to the engraver; the cellar has been warned.</span><span class="cgr__seal-no">Sealed, with a sigh.</span></p>
+            <button class="cgr__again" type="button" data-again>amend the reply</button>
+          </div>
+          <aside class="cgr__side">
+            <div class="cgr__card" aria-label="Place card preview">
+              <span class="cgr__ccipher" aria-hidden="true">TT</span>
+              <span class="cgr__cname" data-card-name>Th&eacute;a Maraval</span>
+              <span class="cgr__ctable">Table <span class="cgr__os">3</span></span>
+              <span class="cgr__cdish" data-card-dish>le loup de mer</span>
+            </div>
+            <div class="cgr__sched">
+              <span class="cgr__schedhead">Le programme &middot; samedi</span>
+              <ul>
+                <li><span>c&eacute;r&eacute;monie, beneath the lindens</span><i class="cgr__lead" aria-hidden="true"></i><b class="cgr__lf">16.30</b></li>
+                <li><span>ap&eacute;ritif on the terrace</span><i class="cgr__lead" aria-hidden="true"></i><b class="cgr__lf">18.00</b></li>
+                <li><span>supper &amp; toasts</span><i class="cgr__lead" aria-hidden="true"></i><b class="cgr__lf">20.00</b></li>
+                <li><span>brandy, for the brave</span><i class="cgr__lead" aria-hidden="true"></i><b class="cgr__lf">00.30</b></li>
+              </ul>
+            </div>
+          </aside>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Filter by family and re-sort by price — hover any flacon to reveal the live italic note &amp; add-to-bag.</p>
+    <p class="iu__hint label">Cormorant is, demonstrably, the house serif of the wedding web (the Zola / Minted / Squarespace current) — so here is that artifact done properly, at true interface scale. Type a name and the place card engraves itself live; seal the reply and the card is rendered writ large — the engraving idea completing on screen, hairlines at display size inside the interface itself. The programme&rsquo;s times stand up and align (<em>lnum&nbsp;tnum</em>); the cards keep the hanging defaults.</p>
   </figure>
 
 </div>
 
 <script>
-  // ── Scene 05: filter + sort + hover lookbook ──────────────────────────────
-  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((shop) => {
-    const grid = shop.querySelector<HTMLElement>('[data-grid]')!;
-    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.cg-card'));
-    const order = cards.slice();
-
-    let filter = 'all';
-    let byPrice = false;
-
-    const relayout = () => {
-      // filter
-      cards.forEach((c) => {
-        const show = filter === 'all' || c.dataset.cat === filter;
-        c.classList.toggle('is-hidden', !show);
+  // ── 02 · the engraver's proof ─────────────────────────────────────────────
+  // The proof opens ITSELF once, the first time the suite enters the viewport —
+  // the act's best idea should not hide behind a link. A state change, not
+  // motion (transitions are already stilled under prefers-reduced-motion).
+  document.querySelectorAll<HTMLElement>('[data-suite]').forEach((suite) => {
+    const btn = suite.querySelector<HTMLButtonElement>('[data-proof-btn]')!;
+    const set = (on: boolean) => {
+      suite.dataset.proof = on ? 'on' : 'off';
+      btn.setAttribute('aria-pressed', String(on));
+    };
+    btn.addEventListener('click', () => set(suite.dataset.proof !== 'on'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        if (suite.dataset.proof !== 'on') set(true);
       });
-      // sort (only meaningful re-order; hero keeps its span)
-      const visible = (byPrice
-        ? order.slice().sort((a, b) => +a.dataset.price! - +b.dataset.price!)
-        : order
-      );
-      visible.forEach((c) => grid.appendChild(c));
+    }, { threshold: 0.4 });
+    io.observe(suite);
+  });
+
+  // ── 03 · hanging ↔ lining figures ────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-mag]').forEach((mag) => {
+    const btn = mag.querySelector<HTMLButtonElement>('[data-fig-btn]')!;
+    btn.addEventListener('click', () => {
+      const on = mag.classList.toggle('is-lining');
+      btn.setAttribute('aria-pressed', String(on));
+    });
+  });
+
+  // ── 04 · the instrument ───────────────────────────────────────────────────
+  // pt maps exponentially along the rail: pt = 6 · (max/6)^(v/1000).
+  // The ceiling adapts to the word's measured width so the readout NEVER
+  // claims a size the stage can't truly show.
+  document.querySelectorAll<HTMLElement>('[data-inst]').forEach((inst) => {
+    const word = inst.querySelector<HTMLElement>('[data-word]')!;
+    const rail = inst.querySelector<HTMLInputElement>('[data-rail]')!;
+    const ptOut = inst.querySelector<HTMLElement>('[data-pt]')!;
+    const bodyName = inst.querySelector<HTMLElement>('[data-body-name]')!;
+    const verdict = inst.querySelector<HTMLElement>('[data-verdict]')!;
+    const beyond = inst.querySelector<HTMLElement>('[data-beyond]')!;
+    const zoneRed = inst.querySelector<HTMLElement>('[data-zone-red]')!;
+    const ticks = Array.from(inst.querySelectorAll<HTMLButtonElement>('[data-body]'));
+
+    const MIN = 6;
+    let MAX = 160;
+    let emW = 4; // word width in em, measured
+
+    const NAMES: [number, string][] = [
+      [6, 'Nonpareille'], [12, 'Cicéro'], [14, 'Saint-Augustin'], [18, 'Gros Romain'],
+      [22, 'Gros Parangon'], [28, 'Petit Canon'], [44, 'Gros Canon'],
+      [56, 'Double Canon'], [96, 'Grosse Nonpareille'],
+    ];
+    const nearName = (pt: number) => {
+      if (pt > 96) return '— past Grosse Nonpareille';
+      let best = NAMES[0];
+      for (const n of NAMES) if (Math.abs(n[0] - pt) < Math.abs(best[0] - pt)) best = n;
+      return `≈ ${best[1]}`;
+    };
+    const VERDICTS = {
+      red: 'Interdit. At the bodies of the book the counters flood and the hairlines fall below the pixel — set a book Garamond here, never this one.',
+      dim: 'Survivable, joyless. These are the bodies the old cuts were braced for; Cormorant keeps its needles sheathed and waits.',
+      grand: 'Les grands corps. Gros Canon, Double Canon, Grosse Nonpareille — the table runs all the way to 96, and the founders truly cast these giants. The needles begin to show; metal still owns the names.',
+      bloom: 'En fleur. Past Grosse Nonpareille — the end of Fournier’s entire table. The scale itself runs out; the serifs come to their points and the counters dare to close. The only country this letter was drawn for.',
     };
 
-    shop.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+    const toPt = (v: number) => MIN * Math.pow(MAX / MIN, v / 1000);
+    const toV = (pt: number) => Math.round(1000 * Math.log(pt / MIN) / Math.log(MAX / MIN));
+    const pos = (pt: number) => (100 * Math.log(pt / MIN)) / Math.log(MAX / MIN);
+
+    const apply = () => {
+      const pt = Math.round(toPt(+rail.value));
+      word.style.fontSize = `${pt}pt`;
+      ptOut.textContent = String(pt);
+      bodyName.textContent = nearName(pt);
+      const zone = pt < 12 ? 'red' : pt < 44 ? 'dim' : pt <= 96 ? 'grand' : 'bloom';
+      if (verdict.dataset.zone !== zone) {
+        verdict.dataset.zone = zone;
+        verdict.textContent = VERDICTS[zone as keyof typeof VERDICTS];
+      }
+      inst.dataset.zone = zone;
+    };
+
+    const layout = () => {
+      // measure the word at a known size, derive the honest ceiling.
+      // 'souffle' carries the ffl at full size; where a narrow viewport can't
+      // honestly clear the table's end (96), 'été' — two flying accents —
+      // takes over, so the whole 1764 scale stays provable on every screen.
+      const avail = (word.parentElement as HTMLElement).clientWidth * 0.96;
+      const prev = word.style.fontSize;
+      word.style.fontSize = '100px';
+      const fit = (txt: string) => {
+        if (word.textContent !== txt) word.textContent = txt;
+        emW = word.scrollWidth / 100;
+        return Math.max(48, Math.min(160, Math.floor((avail * 3) / (emW * 4) / 1.02)));
+      };
+      MAX = fit('souffle');
+      if (MAX < 110) MAX = fit('été');
+      word.style.fontSize = prev;
+      // place the ticks; hide those past the ceiling
+      ticks.forEach((t) => {
+        const pt = +t.dataset.body!;
+        t.style.left = `${pos(pt)}%`;
+        t.hidden = pt > MAX;
+      });
+      const end = pos(96);
+      beyond.hidden = end > 98;
+      beyond.style.left = `${end}%`;
+      beyond.style.width = `${100 - end}%`;
+      zoneRed.style.width = `${pos(12)}%`;
+      apply();
+    };
+
+    ticks.forEach((t) =>
+      t.addEventListener('click', () => {
+        rail.value = String(toV(+t.dataset.body!));
+        apply();
+      })
+    );
+    rail.addEventListener('input', apply);
+    new ResizeObserver(layout).observe(inst);
+    document.fonts?.ready.then(layout);
+    layout();
+  });
+
+  // ── 05 · the RSVP ─────────────────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-rsvp]').forEach((rsvp) => {
+    const nameIn = rsvp.querySelector<HTMLInputElement>('[data-name]')!;
+    const cardName = rsvp.querySelector<HTMLElement>('[data-card-name]')!;
+    const cardDishes = Array.from(rsvp.querySelectorAll<HTMLElement>('[data-card-dish]'));
+    const echoes = Array.from(rsvp.querySelectorAll<HTMLElement>('[data-echo-name]'));
+    const form = rsvp.querySelector<HTMLElement>('[data-form]')!;
+    const sealed = rsvp.querySelector<HTMLElement>('[data-sealed]')!;
+    const yes = rsvp.querySelector<HTMLButtonElement>('[data-yes]')!;
+    const no = rsvp.querySelector<HTMLButtonElement>('[data-no]')!;
+    let attending = true;
+
+    const reflectName = () => {
+      const v = nameIn.value.trim() || 'A. Guest';
+      cardName.textContent = v;
+      echoes.forEach((e) => (e.textContent = v));
+    };
+    nameIn.addEventListener('input', reflectName);
+
+    [yes, no].forEach((b) =>
       b.addEventListener('click', () => {
-        shop.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
-        b.classList.add('is-on');
-        filter = b.dataset.filter!;
-        relayout();
+        attending = b === yes;
+        yes.classList.toggle('is-on', attending);
+        no.classList.toggle('is-on', !attending);
+        yes.setAttribute('aria-pressed', String(attending));
+        no.setAttribute('aria-pressed', String(!attending));
+        rsvp.classList.toggle('is-regret', !attending);
       })
     );
 
-    const sortBtn = shop.querySelector<HTMLButtonElement>('[data-sort]');
-    const sortLabel = shop.querySelector<HTMLElement>('[data-sort-label]');
-    sortBtn?.addEventListener('click', () => {
-      byPrice = !byPrice;
-      sortBtn.setAttribute('aria-pressed', String(byPrice));
-      if (sortLabel) sortLabel.textContent = byPrice ? 'Prix · ↑' : 'Nouveautés';
-      relayout();
+    rsvp.querySelectorAll<HTMLInputElement>('[data-dish]').forEach((r) =>
+      r.addEventListener('change', () => {
+        if (r.checked) cardDishes.forEach((d) => (d.textContent = r.dataset.dish!));
+      })
+    );
+
+    rsvp.querySelector<HTMLButtonElement>('[data-send]')!.addEventListener('click', () => {
+      reflectName();
+      form.hidden = true;
+      sealed.hidden = false;
+      rsvp.classList.add('is-sent');
+    });
+    rsvp.querySelector<HTMLButtonElement>('[data-again]')!.addEventListener('click', () => {
+      sealed.hidden = true;
+      form.hidden = false;
+      rsvp.classList.remove('is-sent');
     });
   });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ── the stack: paced tighter than default; night ↔ cream alternation ──── */
+  .cg { gap: clamp(3.25rem, 8vh, 5.75rem); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
-  .cg-scene-43 { aspect-ratio: 4 / 3; }
-  /* every glyph in every scene resolves to Cormorant Garamond */
-  .iu__scene * { font-family: var(--fam); }
-  /* real, tabular figures wherever .num is used */
-  .iu__scene .num { font-feature-settings: 'lnum' 1, 'tnum' 1; font-variant-numeric: lining-nums tabular-nums; }
+  .iu__hint em { font-style: italic; }
+  .iu__scene { font-family: var(--fam); }
+  .iu__scene :is(button, input, a) { font-family: inherit; }
+  .iu__scene .iu__addr { font-family: var(--font-mono); }
+  .iu__scene ::selection { background: color-mix(in srgb, var(--accent) 26%, transparent); }
 
-  /* ============================================================
-     01 — FASHION COVER
-     A confident masthead-led cover. The big word LIGHTNESS breaks across
-     two lines; "Light" carries a real roman→italic flip on hover (a static
-     face's one honest move). Accent is reserved for the publication mark.
-     ============================================================ */
-  .cg-cover { --card-ar: 3 / 4; background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 5.5cqi 4.5cqi; }
-  .cg-cover__top { display: flex; justify-content: space-between; align-items: baseline; gap: 3cqi; border-bottom: 1px solid var(--line); padding-bottom: 2.6cqi; }
-  .cg-cover__pub { font-size: 4.6cqi; font-style: italic; font-weight: 500; letter-spacing: 0; color: var(--accent); line-height: 1; }
-  .cg-cover__no { font-size: 2.4cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); align-self: center; }
+  /* the night surfaces (01 & 04) declare themselves fully — both modes */
+  .cgp, .cgi { --nt: #16241b; --nt-2: #1e3126; --cream: #f0e7d3; --cream-dim: #b3ab92; --red: #d4674a; }
 
-  .cg-cover__hero { align-self: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .cg-cover__over { font-size: 3.1cqi; font-style: italic; font-weight: 400; letter-spacing: 0.04em; color: var(--fg-3); margin-bottom: 1cqi; }
-  .cg-cover__masthead { margin: 0; text-align: center; color: var(--fg); font-weight: 400; line-height: 0.82; }
-  .cg-cover__line { display: block; font-size: 30cqi; }
-  .cg-cover__line--2 { color: var(--fg-2); }
-  .cg-cover__line--2 em { font-style: italic; font-weight: 400; }
-  /* roman / italic flip — both glyphs stacked, swapped by opacity */
-  .cg-cover__line--1 { position: relative; display: inline-grid; }
-  .cg-cover__roman, .cg-cover__ital { grid-area: 1 / 1; transition: opacity 0.5s var(--ease); }
-  .cg-cover__ital { font-style: italic; opacity: 0; color: var(--accent); }
+  /* ════════════════════════════════════════════════════════════════════
+     01 · L'EFFLEUREMENT — type as the picture, on the night field
+     ════════════════════════════════════════════════════════════════════ */
+  .cgp {
+    background: radial-gradient(120% 95% at 50% 0%, var(--nt-2) 0%, var(--nt) 62%, #101a13 100%);
+    color: var(--cream);
+  }
+  .cgp__in {
+    max-width: 1240px; margin-inline: auto; min-height: clamp(520px, 78vh, 760px);
+    display: flex; flex-direction: column;
+    padding: clamp(1.6rem, 3.4cqi, 3.2rem) clamp(1.2rem, 4.5cqi, 4.5rem) clamp(1.6rem, 3.2cqi, 3rem);
+  }
+  .cgp__top {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding-bottom: clamp(0.8rem, 1.6cqi, 1.4rem); border-bottom: 1px solid #f0e7d326;
+  }
+  .cgp__house { font-size: clamp(13px, 1.5cqi, 20px); font-weight: 500; letter-spacing: 0.3em; text-indent: 0.3em; }
+  .cgp__trade { font-size: clamp(11px, 1.15cqi, 15px); font-style: italic; color: var(--cream-dim); }
+  .cgp__since { font-size: clamp(11px, 1.2cqi, 16px); color: var(--cream-dim); }
+  .cgp__since em { font-style: italic; }
 
-  .cg-cover__lines { display: flex; flex-direction: column; gap: 2.4cqi; }
-  .cg-cover__feat { font-size: 5.4cqi; line-height: 1.06; color: var(--fg); max-width: 22ch; }
-  .cg-cover__rule { height: 1px; background: var(--line); width: 100%; }
-  .cg-cover__more { font-size: 2.5cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
-
+  .cgp__hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-block: clamp(1rem, 3cqi, 3rem); }
+  .cgp__over { font-size: clamp(13px, 1.7cqi, 23px); font-style: italic; color: var(--cream-dim); }
+  .cgp__word { position: relative; margin: 0.05em 0 0; display: grid; line-height: 1.04; font-weight: 400; font-style: italic; font-size: clamp(46px, 11.4cqi, 162px); letter-spacing: 0.002em; }
+  .cgp__ink { grid-area: 1 / 1; white-space: nowrap; }
+  /* the ghost is lifted out of the grid so its opening letter-fit never
+     reflows the ink beneath it */
+  .cgp__ghost { position: absolute; left: 50%; top: 0; transform: translateX(-50%); white-space: nowrap; opacity: 0; color: var(--cream); pointer-events: none; }
   @media (prefers-reduced-motion: no-preference) {
-    .cg-cover[data-cover]:hover .cg-cover__roman,
-    .cg-cover[data-cover]:focus-within .cg-cover__roman { opacity: 0; }
-    .cg-cover[data-cover]:hover .cg-cover__ital,
-    .cg-cover[data-cover]:focus-within .cg-cover__ital { opacity: 1; }
+    .cgp__ghost { animation: cgp-vapor 9s var(--ease) infinite; }
+    @keyframes cgp-vapor {
+      0%, 18% { opacity: 0; letter-spacing: 0.002em; transform: translateX(-50%); }
+      45% { opacity: 0.3; }
+      78%, 100% { opacity: 0; letter-spacing: 0.013em; transform: translateX(-50%) translateY(-13%) scale(1.015); }
+    }
   }
 
-  /* ============================================================
-     02 — TASTING MENU
-     Real hospitality scale: large roman dish names, italic descriptions
-     with frac fractions, prices in a tabular hairline column. Hover a
-     course to reveal its cellar pairing in true italic.
-     ============================================================ */
-  .cg-menu { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 6.5cqi 7cqi 5.5cqi; }
-  .cg-menu__head { text-align: center; display: flex; flex-direction: column; gap: 1.6cqi; }
-  .cg-menu__estd { font-size: 2.2cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-menu__name { font-size: 11cqi; line-height: 0.96; font-weight: 400; color: var(--fg); }
-  .cg-menu__name em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .cg-menu__sub { font-size: 2.6cqi; letter-spacing: 0.26em; text-transform: uppercase; color: var(--fg-2); }
-
-  .cg-menu__list { list-style: none; margin: 5cqi 0 0; padding: 0; display: flex; flex-direction: column; flex: 1; justify-content: space-evenly; width: 100%; }
-  .cg-dish { display: flex; flex-direction: column; gap: 0.7cqi; padding: 4.4cqi 0; border-top: 1px solid var(--line-soft); }
-  .cg-dish:first-child { border-top: 0; }
-  .cg-dish__top { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi; }
-  .cg-dish__name { font-size: 5.2cqi; line-height: 1.0; font-weight: 400; color: var(--fg); transition: color 0.3s var(--ease); }
-  .cg-dish__price { font-size: 4.4cqi; font-weight: 400; color: var(--fg-2); font-variant-numeric: tabular-nums lining-nums; flex: none; }
-  .cg-dish__desc { font-size: 3.2cqi; line-height: 1.32; color: var(--fg-2); font-style: italic; max-width: 40ch; }
-  .cg-dish__desc .num { font-style: normal; font-feature-settings: 'frac' 1; }
-  .cg-dish__pair {
-    font-size: 2.9cqi; line-height: 1; letter-spacing: 0.02em; color: var(--accent);
-    overflow: hidden; max-height: 0; opacity: 0;
-    transition: max-height 0.4s var(--ease), opacity 0.3s var(--ease), margin-top 0.4s var(--ease);
-    margin-top: 0;
-  }
-  .cg-dish__pair em { font-style: italic; font-weight: 500; }
-  .cg-dish__pair::before { content: '⟡  '; color: var(--fg-3); }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .cg-dish[data-dish]:hover .cg-dish__pair,
-    .cg-dish[data-dish]:focus-within .cg-dish__pair { max-height: 6cqi; opacity: 1; margin-top: 1.2cqi; }
-    .cg-dish[data-dish]:hover .cg-dish__name { color: var(--accent); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .cg-dish__pair { max-height: none; opacity: 1; margin-top: 1.2cqi; }
-  }
-
-  .cg-menu__foot { display: flex; align-items: baseline; justify-content: space-between; gap: 2cqi; margin-top: 4cqi; padding-top: 3.4cqi; border-top: 1px solid var(--line); font-size: 3.2cqi; color: var(--fg); }
-  .cg-menu__set { letter-spacing: 0.02em; }
-  .cg-menu__foot .num { color: var(--accent); margin-left: 0.5cqi; font-variant-numeric: tabular-nums lining-nums; }
-  .cg-menu__pair-note { color: var(--fg-2); }
-  .cg-menu__pair-note em { font-style: italic; }
-
-  /* ============================================================
-     03 — FLACON & LABEL
-     A tall portrait packaging shot. A real bottle silhouette holds a
-     centred label; the giant tall accent (é) is set as a flourish at
-     dramatic scale against open cream space. Slow draw-in on the name.
-     ============================================================ */
-  .cg-flacon { --card-ar: 3 / 4; background: var(--bg-2); display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 6cqi 4.5cqi; }
-  .cg-flacon__id, .cg-flacon__foot { display: flex; align-items: center; justify-content: center; gap: 2.4cqi; font-size: 2.2cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-flacon__foot { justify-content: space-between; }
-  .cg-flacon__dot { width: 0.6cqi; height: 0.6cqi; border-radius: 50%; background: var(--accent); }
-  .cg-flacon__yr .num { color: var(--accent); }
-
-  .cg-flacon__stage { display: grid; justify-items: center; align-items: stretch; min-height: 0; padding: 1.5cqi 0; }
-  .cg-flacon__bottle {
-    position: relative; width: 78cqi; background: var(--bg);
-    border: 1px solid var(--line); box-shadow: 0 3cqi 8cqi -4cqi rgba(0,0,0,0.28);
-    padding: 7cqi; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  }
-  /* the stopper */
-  .cg-flacon__cap { position: absolute; top: -4.4cqi; left: 50%; transform: translateX(-50%); width: 22cqi; height: 4.4cqi; background: var(--bg); border: 1px solid var(--line); border-bottom: 0; }
-  .cg-flacon__label { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
-  .cg-flacon__house { order: 1; font-size: 2.6cqi; letter-spacing: 0.4em; text-transform: uppercase; color: var(--fg-3); }
-  /* the é set as a giant flamboyant flourish above the name — the face's tall accent at dramatic scale */
-  .cg-flacon__accent { order: 2; font-size: 17cqi; line-height: 0.62; font-style: italic; color: var(--accent); margin: 3cqi 0 0; }
-  .cg-flacon__name { order: 3; font-size: 21cqi; line-height: 0.86; font-weight: 400; color: var(--fg); margin: 0.4cqi 0 0; letter-spacing: 0.005em; }
-  .cg-flacon__notes { order: 4; font-size: 3cqi; line-height: 1.3; color: var(--fg-2); margin-top: 3cqi; max-width: 24ch; }
-  .cg-flacon__notes em { font-style: italic; font-weight: 400; }
-  .cg-flacon__rule { order: 5; width: 20cqi; height: 1px; background: var(--line); margin: 3.4cqi 0 2.8cqi; }
-  .cg-flacon__vol { order: 6; font-size: 2.5cqi; letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-flacon__vol .num { letter-spacing: 0; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .cg-flacon__name { animation: cg-draw 1.4s var(--ease) both; }
-    .cg-flacon__accent { animation: cg-accent 1.6s var(--ease) 0.3s both; }
-    .cg-flacon__rule { animation: cg-rule 1.1s var(--ease) 0.5s both; transform-origin: center; }
-    @keyframes cg-draw { from { opacity: 0; letter-spacing: 0.14em; } to { opacity: 1; letter-spacing: 0.01em; } }
-    @keyframes cg-accent { from { opacity: 0; transform: translateY(2cqi); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes cg-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  }
-
-  /* ============================================================
-     04 — EDITORIAL FEATURE OPENER
-     Light display headline, italic lead word; drop-cap two-column body.
-     ============================================================ */
-  .cg-spread { background: var(--bg); display: grid; grid-template-columns: 13% 1fr; padding: 4.5cqi 5cqi; gap: 4cqi; }
-  .cg-spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 3cqi; }
-  .cg-spread__folio { font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-  .cg-spread__sec { font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
-  .cg-spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
-  .cg-spread__kicker { font-size: 2.2cqi; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 1.4cqi; }
-  .cg-spread__head {
-    font-size: 12cqi; line-height: 0.94; font-weight: 300; letter-spacing: 0.005em; color: var(--fg);
-    transition: font-weight 0.6s var(--ease), letter-spacing 0.6s var(--ease);
-  }
-  .cg-spread__head em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .cg-spread__deck { font-size: 3.2cqi; line-height: 1.28; font-style: italic; font-weight: 400; color: var(--fg-2); max-width: 84%; margin-top: 2.4cqi; }
-  .cg-spread__body { columns: 2; column-gap: 4cqi; font-size: 2.15cqi; line-height: 1.46; color: var(--fg-2); margin-top: 3cqi; }
-  .cg-spread__body p { margin: 0 0 0.8em; }
-  .cg-spread__drop { float: left; font-size: 9cqi; line-height: 0.66; font-weight: 300; padding: 0.04em 0.12em 0 0; color: var(--accent); }
-
-  /* ── shared hover for cover/spread: lighten the display, lead the italic ── */
-  @media (prefers-reduced-motion: no-preference) {
-    [data-reveal-cover]:hover [data-cover-word],
-    [data-reveal-cover]:focus-within [data-cover-word] { letter-spacing: 0.04em; }
-    .cg-cover[data-reveal-cover]:hover .cg-cover__lines em { color: var(--accent); }
-  }
-
-  /* ============================================================
-     05 — BOUTIQUE LOOKBOOK UI (real px sizing)
-     Hero flacon spans 2 cols; hover reveals italic note + CTA.
-     ============================================================ */
-  .cg-shop { font-size: 13px; line-height: 1.4; background: var(--bg); }
-  .cg-shop__head { display: flex; align-items: center; gap: 1.2rem; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .cg-shop__logo { font-size: 26px; font-weight: 400; letter-spacing: 0.01em; color: var(--fg); }
-  .cg-shop__logo em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .cg-shop__filters { display: flex; gap: 0.2rem; margin-left: 0.4rem; }
-  .cg-shop__filters button { font-size: 13px; font-style: italic; color: var(--fg-3); padding: 0.32rem 0.7rem; border-radius: 100px; transition: color .15s var(--ease), background .15s var(--ease); }
-  .cg-shop__filters button:hover { color: var(--fg); }
-  .cg-shop__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-style: normal; }
-  .cg-shop__sort { margin-left: auto; display: flex; align-items: baseline; gap: 0.5rem; }
-  .cg-shop__sortlabel { font-size: 13px; font-style: italic; color: var(--fg-3); }
-  .cg-shop__sort button { font-size: 14px; font-style: italic; color: var(--fg); border-bottom: 1px solid var(--line); padding-bottom: 1px; }
-  .cg-shop__sort button:hover { border-color: var(--accent); }
-
-  .cg-shop__grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr 1fr auto; grid-auto-flow: dense;
-    gap: 1px; background: var(--line); padding: 1px;
-  }
-  .cg-card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-  .cg-card.is-hidden { display: none; }
-  .cg-card__img {
-    position: relative; flex: 1; min-height: 168px; display: grid; place-items: center;
-    overflow: hidden; padding: 0.8rem; container-type: inline-size;
-    /* tonal well: a soft vertical wash + faint paper grain so the cards read as objects */
+  /* the act's focal idea, staged: the f_f_l span traced as one sort of
+     three letters — a hairline rule divided into three cells beneath it,
+     with the engraver's sidenote */
+  .cgp__ffl { position: relative; }
+  .cgp__ffl::before {
+    content: ''; position: absolute; left: -0.1em; right: 0.005em; bottom: -0.068em; height: 0.055em;
+    border-bottom: 1px solid #f0e7d38c;
     background:
-      radial-gradient(120% 90% at 50% 12%, color-mix(in srgb, var(--accent) 6%, var(--bg-2)) 0%, var(--bg-2) 62%),
-      var(--bg-2);
+      linear-gradient(#f0e7d38c, #f0e7d38c) 0 100% / 1px 100% no-repeat,
+      linear-gradient(#f0e7d38c, #f0e7d38c) 33.4% 100% / 1px 100% no-repeat,
+      linear-gradient(#f0e7d38c, #f0e7d38c) 66.7% 100% / 1px 100% no-repeat,
+      linear-gradient(#f0e7d38c, #f0e7d38c) 100% 100% / 1px 100% no-repeat;
+    pointer-events: none;
   }
-  .cg-card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
-  .cg-card__ghost {
-    position: absolute; inset: 0; display: grid; place-items: center;
-    font-size: clamp(64px, 34cqi, 120px); font-weight: 400; font-style: italic; color: var(--fg);
-    opacity: 0.07; pointer-events: none; line-height: 1; overflow: hidden;
+  .cgp__fflnote {
+    /* the +offset is in container units: this element's own em is tiny, the
+       ligature's em is huge — cqi tracks the word's cqi-driven size */
+    position: absolute; left: 50%; top: calc(100% + 1.25cqi); transform: translateX(-50%);
+    font-size: clamp(9.5px, 1cqi, 13.5px); font-style: italic; font-weight: 400; line-height: 1;
+    letter-spacing: 0.03em; white-space: nowrap; color: var(--cream-dim);
   }
-  .cg-card__word { position: relative; font-size: clamp(20px, 15cqi, 30px); line-height: 0.98; text-align: center; color: var(--fg); font-style: italic; font-weight: 400; max-width: 100%; transition: opacity .25s var(--ease), transform .25s var(--ease); }
-  .cg-card__tag { position: absolute; top: 0.7rem; left: 0.7rem; z-index: 2; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
-  .cg-card__cta {
-    position: absolute; left: 50%; bottom: 0.9rem; transform: translate(-50%, 0.6rem);
-    z-index: 2; font-size: 12.5px; font-style: italic; letter-spacing: 0.02em;
-    color: var(--accent-contrast); background: var(--accent); padding: 0.3rem 0.9rem; border-radius: 100px;
-    opacity: 0; transition: opacity .2s var(--ease), transform .2s var(--ease); white-space: nowrap; pointer-events: none;
+  .cgp__under { margin-top: clamp(2rem, 3.9cqi, 3.7rem); font-size: clamp(11px, 1.25cqi, 17px); letter-spacing: 0.46em; text-indent: 0.46em; color: var(--cream-dim); }
+
+  /* the pyramid — Draeger catalogue furniture: the italic stepped through
+     three sizes, tête to fond */
+  .cgp__pyr { display: flex; flex-direction: column; align-items: center; gap: clamp(0.4rem, 0.9cqi, 0.8rem); margin: 0 auto clamp(1.5rem, 3cqi, 2.8rem); text-align: center; }
+  .cgp__pnote { margin: 0; font-style: italic; line-height: 1.25; color: var(--cream); }
+  .cgp__pnote span { color: var(--cream-dim); }
+  .cgp__pnote span::after { content: '\2002\2014\2002'; color: var(--cream-dim); }
+  .cgp__pnote--1 { font-size: clamp(12.5px, 1.45cqi, 19px); }
+  .cgp__pnote--2 { font-size: clamp(14.5px, 1.85cqi, 25px); }
+  .cgp__pnote--3 { font-size: clamp(17px, 2.35cqi, 32px); }
+
+  .cgp__claim {
+    margin: 0 auto clamp(1.2rem, 2.6cqi, 2.4rem); max-width: 44ch; text-align: center;
+    font-size: clamp(14px, 1.65cqi, 22px); line-height: 1.5; font-style: italic; color: var(--cream);
   }
-  .cg-card:hover .cg-card__cta { opacity: 1; transform: translate(-50%, 0); }
-  .cg-card:hover .cg-card__word { transform: translateY(-0.5rem); opacity: 0.85; }
+  .cgp__foot {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    padding-top: clamp(0.8rem, 1.5cqi, 1.3rem); border-top: 1px solid #f0e7d326;
+    font-size: clamp(11px, 1.15cqi, 15px); color: var(--cream-dim);
+  }
+  /* the maison's mark: a flacon drawn entirely from hairline rules, nº 3 on
+     its belly — Draeger pages carried the house device, never a dingbat */
+  .cgp__flacon { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .cgp__fl-stopper { width: 11px; border-top: 1px solid #f0e7d3a0; }
+  .cgp__fl-neck { width: 7px; height: 6px; border-left: 1px solid #f0e7d3a0; border-right: 1px solid #f0e7d3a0; }
+  .cgp__fl-body {
+    width: 36px; height: 34px; border: 1px solid #f0e7d3a0;
+    display: grid; place-items: center;
+    font-weight: 400; font-style: italic; font-size: 13.5px; color: var(--cream);
+  }
 
-  .cg-card__meta { padding: 0.7rem 0.85rem 0.9rem; display: flex; flex-direction: column; gap: 0.2rem; }
-  .cg-card__row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-  .cg-card__name { font-size: 19px; font-weight: 400; letter-spacing: 0; color: var(--fg); }
-  .cg-card__price { font-size: 15px; color: var(--fg); }
-  .cg-card__note { font-size: 12.5px; font-style: italic; font-weight: 400; color: var(--fg-3); line-height: 1.25; }
-  .cg-card__row--foot { margin-top: 0.25rem; }
-  .cg-card__vol { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
-  .cg-card__id { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--fg-3); }
+  /* ════════════════════════════════════════════════════════════════════
+     02 · THE WEDDING SUITE — cream cards on the engraver's linen
+     ════════════════════════════════════════════════════════════════════ */
+  /* the suite declares its daylight fully: linen table, cream stock, iron-gall
+     ink, the engraver's red — intentional in both site modes */
+  .cgs-scene { background: #e2d9c2; }
+  .cgs {
+    --linen: #e2d9c2; --stock: #f9f4e6; --ink: #2b2316; --soft: #7c7058;
+    --green: #36513f; --proof-red: #a23524;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 5px, #2b231608 5px 6px),
+      repeating-linear-gradient(90deg, transparent 0 5px, #2b231605 5px 6px),
+      var(--linen);
+    color: var(--ink);
+    padding: clamp(1.4rem, 3cqi, 2.6rem) clamp(1rem, 4cqi, 4rem) clamp(1.8rem, 3.6cqi, 3.4rem);
+  }
+  .cgs__bench {
+    max-width: 1180px; margin: 0 auto clamp(1.1rem, 2.2cqi, 1.8rem);
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  }
+  .cgs__benchlabel { font-size: clamp(11px, 1.2cqi, 14px); letter-spacing: 0.26em; text-transform: uppercase; color: var(--soft); }
+  /* the proof tab is a red stamp on the bench, not a shy italic link */
+  .cgs__prooftab {
+    font-size: clamp(10.5px, 1.1cqi, 13px); letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--proof-red); background: transparent;
+    border: 1px solid #a23524aa; padding: 0.5em 1em; cursor: pointer;
+    transform: rotate(-1.4deg);
+  }
+  .cgs__prooftab:hover { background: #a2352414; border-color: var(--proof-red); }
+  .cgs__tab-on { display: none; }
+  .cgs[data-proof='on'] .cgs__tab-off { display: none; }
+  .cgs[data-proof='on'] .cgs__tab-on { display: inline; }
 
-  /* hero flacon: spans two columns + two rows, large italic word */
-  .cg-card--hero { grid-column: 1 / span 2; grid-row: 1 / span 2; }
-  .cg-card--hero .cg-card__img { flex: 1; min-height: 0; }
-  .cg-card--hero .cg-card__ghost { font-size: clamp(110px, 30cqi, 140px); opacity: 0.05; }
-  .cg-card--hero .cg-card__word { font-size: clamp(34px, 11cqi, 64px); }
-  .cg-card--hero .cg-card__name { font-size: 24px; }
-  .cg-card--hero .cg-card__tag { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+  .cgs__lay {
+    max-width: 1180px; margin-inline: auto;
+    display: grid; grid-template-columns: minmax(0, 54%) 1fr;
+    grid-template-rows: 1fr auto;
+    gap: clamp(1rem, 2.4cqi, 2.2rem); align-items: stretch;
+  }
+  .cgs__card {
+    background: var(--stock); color: var(--ink);
+    box-shadow: 0 16px 30px -18px rgba(43, 35, 22, 0.55), 0 2px 6px rgba(43, 35, 22, 0.12);
+    container-type: inline-size;
+  }
 
+  /* the invitation */
+  .cgs__invite {
+    position: relative; text-align: center;
+    padding: 9cqi 7cqi 8cqi;
+  }
+  /* the cipher is the T_T sort; its joined crossbar carries the kern — what
+     we tune optically is its fit against the line below */
+  .cgs__cipher { display: block; font-size: 11.6cqi; line-height: 0.88; color: var(--green); font-weight: 400; }
+  .cgs__small { font-size: 3.2cqi; letter-spacing: 0.12em; margin: 4.4cqi 0 0; }
+  .cgs__name { margin: 3.2cqi 0 0; font-size: 9cqi; line-height: 1.1; font-style: italic; font-weight: 400; }
+  .cgs__amp { margin: 1.2cqi 0 0; font-size: 3.7cqi; font-style: italic; color: var(--soft); }
+  .cgs__name + .cgs__amp + .cgs__name { margin-top: 1.2cqi; }
+  .cgs__line { margin: 4.4cqi 0 0; font-size: 3.5cqi; line-height: 1.5; letter-spacing: 0.04em; }
+  /* the bottom third holds its rhythm: the date block sits close against the
+     place line, leading tightened to the invitation's beat */
+  .cgs__date { margin: 3cqi 0 0; font-size: 3.5cqi; line-height: 1.42; letter-spacing: 0.04em; }
+  .cgs__place { margin: 2.6cqi 0 0; font-size: 3.2cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); }
+
+  /* the proof: axis, registration, stamp, red rings — snap on, no theatrics */
+  .cgs__axis, .cgs__reg, .cgs__bat { opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease); }
+  .cgs__axis { position: absolute; inset: 4cqi 50% 4cqi auto; width: 0; border-left: 1px dashed #a2352480; }
+  .cgs__reg { position: absolute; inset: 2.4cqi; }
+  .cgs__reg::before, .cgs__reg::after {
+    content: ''; position: absolute; width: 4cqi; height: 4cqi;
+    border: 1px solid #a23524aa;
+  }
+  .cgs__reg::before { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+  .cgs__reg::after { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+  .cgs__bat {
+    position: absolute; top: 4.4cqi; right: 4.6cqi; transform: rotate(6deg);
+    font-size: 2.5cqi; letter-spacing: 0.18em; color: var(--proof-red);
+    border: 1px solid #a23524aa; padding: 0.9cqi 1.6cqi;
+  }
+  .cgs__ring { position: relative; }
+  .cgs__ring::before {
+    content: ''; position: absolute; inset: -0.1em -0.16em -0.18em;
+    border: 1.5px solid var(--proof-red); border-radius: 50%;
+    opacity: 0; transition: opacity 0.3s var(--ease); pointer-events: none;
+  }
+  /* the engraver's numbered marks, keyed to the docket below */
+  .cgs__ring::after {
+    content: attr(data-n); position: absolute; top: -0.62em; right: -0.85em;
+    font-size: 0.42em; font-style: italic; font-weight: 500; line-height: 1;
+    color: var(--proof-red); opacity: 0; transition: opacity 0.3s var(--ease); pointer-events: none;
+  }
+  .cgs__ring--acc::before { inset: auto -0.16em; top: -0.42em; height: 0.7em; }
+  .cgs__ring--acc::after { top: -1.15em; right: -0.5em; }
+  .cgs__ring--wide { display: inline-block; }
+  .cgs__ring--wide::before { inset: -0.2em -1.1em; border-radius: 3em / 1.7em; }
+  .cgs__ring--wide::after { font-size: 0.8em; top: 0.1em; right: -1.9em; }
+  /* the audit reaches every card: 4 — the menu's cut fraction; 5 — the place
+     card's hanging 3 (the ring drops below the baseline with it) */
+  .cgs__ring--frac::before { inset: -0.2em -0.24em; }
+  .cgs__ring--frac::after { font-size: 0.72em; top: -1.1em; right: -1.1em; }
+  .cgs__ring--pc::before { inset: -0.12em -0.22em -0.4em; }
+  .cgs__ring--pc::after { font-size: 0.5em; top: -0.8em; right: -1em; }
+  .cgs__docket {
+    margin: 4.6cqi 0 0; font-size: 2.8cqi; line-height: 1.55; font-style: italic;
+    color: var(--proof-red); opacity: 0; transition: opacity 0.3s var(--ease);
+  }
+  .cgs__docket--menu { display: block; margin-top: 3.2cqi; font-size: 3cqi; }
+  .cgs__docket--pc { display: block; margin-top: 2.8cqi; font-size: 3.6cqi; line-height: 1.4; }
+  .cgs[data-proof='on'] :is(.cgs__axis, .cgs__reg, .cgs__bat, .cgs__docket) { opacity: 1; }
+  .cgs[data-proof='on'] .cgs__ring::before, .cgs[data-proof='on'] .cgs__ring::after { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .cgs__axis, .cgs__reg, .cgs__bat, .cgs__docket, .cgs__ring::before, .cgs__ring::after { transition: none; }
+  }
+
+  /* the right-hand column: menu over the small pair */
+  .cgs__menu { text-align: center; padding: 7cqi 8cqi 6.5cqi; display: flex; flex-direction: column; justify-content: center; }
+  .cgs__chead { display: block; font-size: 8cqi; font-style: italic; color: var(--green); line-height: 1; }
+  .cgs__courses { list-style: none; margin: 5cqi 0 0; padding: 0; }
+  .cgs__courses li { padding: 3.4cqi 0; border-top: 1px solid #2b231620; display: flex; flex-direction: column; gap: 0.9cqi; }
+  .cgs__courses li:first-child { border-top: 0; padding-top: 0; }
+  .cgs__courses b { font-weight: 500; font-size: 4.2cqi; line-height: 1.15; }
+  .cgs__courses i { font-style: italic; font-size: 3.3cqi; color: var(--soft); }
+  .cgs__frac { font-feature-settings: 'frac' 1; font-style: normal; }
+  .cgs__wines { display: block; margin-top: 4.4cqi; padding-top: 3.4cqi; border-top: 1px solid #2b231620; font-size: 3.1cqi; letter-spacing: 0.12em; color: var(--soft); }
+
+  .cgs__pair { min-width: 0; }
+  .cgs__pair { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(1rem, 2.4cqi, 2.2rem); margin-top: clamp(1rem, 2.4cqi, 2.2rem); align-items: stretch; }
+  .cgs__placecard { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 9cqi 5cqi; }
+  .cgs__pname { font-size: 16.5cqi; font-style: italic; line-height: 1.1; }
+  .cgs__ptable { margin-top: 4.5cqi; font-size: 7.2cqi; letter-spacing: 0.14em; color: var(--green); }
+  .cgs__reply { text-align: center; padding: 7cqi 6cqi; display: flex; flex-direction: column; justify-content: center; }
+  .cgs__chead--sm { font-size: 10.5cqi; }
+  .cgs__rline { margin: 4.6cqi 0 0; font-size: 4.7cqi; line-height: 1.5; letter-spacing: 0.04em; }
+  .cgs__mline { margin: 5cqi auto 0; font-size: 6cqi; font-style: italic; display: flex; align-items: baseline; gap: 1.4cqi; justify-content: center; width: 78%; }
+  .cgs__mline span { flex: 1; border-bottom: 1px solid #2b231655; }
+  .cgs__rchoice { margin: 4.6cqi 0 0; font-size: 4.3cqi; color: var(--soft); }
+  .cgs__rchoice em { font-style: italic; }
+
+  /* grid placement: invitation spans, menu + pair stack beside it */
+  .cgs__invite { grid-row: 1 / span 2; }
+  .cgs__menu { grid-column: 2; }
+  .cgs__pair { grid-column: 2; margin-top: 0; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     03 · DEMEURE — the Kinfolk school, on theme tokens (both modes)
+     ════════════════════════════════════════════════════════════════════ */
+  .cge { background: var(--bg-2); color: var(--fg); padding: clamp(1.6rem, 4cqi, 3.6rem) clamp(1.2rem, 4.5cqi, 4.2rem) clamp(1.4rem, 3cqi, 2.6rem); }
+  .cge__band {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding-bottom: clamp(0.7rem, 1.4cqi, 1.2rem); border-bottom: 1px solid var(--line);
+  }
+  .cge__pub { font-size: clamp(15px, 1.8cqi, 24px); font-weight: 500; letter-spacing: 0.34em; text-indent: 0.34em; }
+  .cge__tag { font-size: clamp(11px, 1.2cqi, 15px); color: var(--fg-3); }
+  .cge__tag em { font-style: italic; }
+  .cge__issue { font-size: clamp(11px, 1.2cqi, 15px); color: var(--fg-2); }
+
+  .cge__grid {
+    display: grid; grid-template-columns: 1fr minmax(220px, 30%);
+    gap: clamp(1.4rem, 3.4cqi, 3.4rem);
+    padding-block: clamp(1.4rem, 3cqi, 2.8rem);
+  }
+  .cge__kicker { font-size: clamp(11px, 1.15cqi, 14px); letter-spacing: 0.32em; color: var(--accent); }
+  .cge__head { margin: 0.45em 0 0; font-size: clamp(34px, 6.2cqi, 86px); line-height: 1.02; font-weight: 300; letter-spacing: 0.002em; }
+  .cge__head em { font-style: italic; font-weight: 400; }
+  .cge__deck {
+    margin: clamp(0.9rem, 1.8cqi, 1.6rem) 0 0; max-width: 52ch;
+    font-size: clamp(15px, 1.75cqi, 23px); line-height: 1.42; font-style: italic; color: var(--fg-2);
+  }
+  .cge__body {
+    columns: 2; column-gap: clamp(1.4rem, 3cqi, 2.8rem);
+    margin-top: clamp(1.1rem, 2.4cqi, 2.2rem); padding-top: clamp(1rem, 2cqi, 1.8rem);
+    border-top: 1px solid var(--line);
+    /* the school's own text setting: ~16px, regular, generous leading —
+       never a mid-gray 500 slab */
+    font-size: clamp(15.5px, 1.15cqi, 16px); font-weight: 400; line-height: 1.7; color: var(--fg);
+  }
+  .cge__body p { margin: 0 0 0.9em; }
+  .cge__drop { float: left; font-size: 4.6em; line-height: 0.74; font-weight: 300; padding: 0.04em 0.1em 0 0; color: var(--fg); }
+
+  .cge__side { display: flex; flex-direction: column; gap: clamp(1.2rem, 2.6cqi, 2.4rem); padding-top: 0; }
+  /* the one display risk the school allows: the folio at headline size.
+     The baseline is a DRAWN GRID FACT: the underline (skip-ink off) runs
+     beneath the digits and a flex filler extends the same 1.5px rule to the
+     sidebar's far edge — the 8 stands on it, the old-style 5 hangs through
+     it, and under lnum the 5 stands up onto it. */
+  .cge__giant { display: flex; flex-direction: column; gap: 0.7rem; }
+  .cge__giantrow {
+    display: flex; align-items: baseline; width: 100%;
+    /* clear the overflowing descender (line-height 0.7) before the label */
+    margin-bottom: clamp(36px, 5cqi, 64px);
+  }
+  .cge__giantfig {
+    font-size: clamp(118px, 16.5cqi, 212px); line-height: 0.7; font-weight: 300;
+    letter-spacing: -0.015em; color: var(--fg);
+    text-decoration: underline; text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--fg-3); text-underline-offset: 0.012em;
+    text-decoration-skip-ink: none;
+  }
+  .cge__giantrule {
+    flex: 1; height: 1.5px; background: var(--fg-3);
+    /* sit the filler's rule exactly on the underline: baseline-aligned flex
+       items hang from their bottom margin edge */
+    font-size: clamp(118px, 16.5cqi, 212px);
+    margin-bottom: calc(-0.012em - 1.5px);
+  }
+  .cge__giantlab {
+    font-size: clamp(10.5px, 1.05cqi, 13px); letter-spacing: 0.18em; line-height: 1.6;
+    text-transform: uppercase; color: var(--fg-3); max-width: 26em;
+  }
+  .cge__quote { margin: 0; border: 0; }
+  .cge__quote p {
+    margin: 0; font-size: clamp(19px, 2.3cqi, 31px); line-height: 1.28; font-style: italic; font-weight: 400;
+    text-indent: -0.42em; /* hang the opening quote */
+    color: var(--fg);
+  }
+  .cge__quote cite { display: block; margin-top: 0.8em; font-size: clamp(11.5px, 1.2cqi, 15px); font-style: normal; color: var(--fg-3); }
+  .cge__file { margin: 0; padding-top: clamp(0.9rem, 1.8cqi, 1.5rem); border-top: 1px solid var(--line); }
+  .cge__file div { display: grid; grid-template-columns: 7.5em 1fr; gap: 1em; padding: 0.42em 0; border-bottom: 1px solid var(--line-soft); }
+  .cge__file dt { font-size: clamp(10.5px, 1.05cqi, 13px); letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3); align-self: baseline; }
+  .cge__file dd { margin: 0; font-size: clamp(12.5px, 1.25cqi, 16px); font-weight: 500; color: var(--fg-2); }
+
+  .cge__colo {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding-top: clamp(0.7rem, 1.4cqi, 1.2rem); border-top: 1px solid var(--line);
+  }
+  .cge__folio { font-size: clamp(11px, 1.2cqi, 15px); color: var(--fg-3); letter-spacing: 0.08em; }
+  /* the toggle is typeset as the page's own footnote convention — an
+     asterisked italic colophon line, not a chip */
+  .cge__figbtn {
+    font-size: clamp(11.5px, 1.2cqi, 14.5px); font-style: italic; color: var(--fg-3);
+    background: transparent; border: 0; padding: 0; cursor: pointer; text-align: right;
+  }
+  .cge__fb-ast { font-style: normal; color: var(--accent); margin-right: 0.4em; }
+  .cge__figbtn:hover { color: var(--fg); }
+  .cge__fb-on { display: none; }
+  .cge.is-lining .cge__fb-off { display: none; }
+  .cge.is-lining .cge__fb-on { display: inline; }
+  /* the live figures: hanging by default (the font's truth); lnum stands them up */
+  .cge.is-lining .cge__fig { font-feature-settings: 'lnum' 1; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     04 · LA TAILLE — the instrument, on the night field again (bookend)
+     ════════════════════════════════════════════════════════════════════ */
+  .cgi {
+    background: radial-gradient(120% 100% at 50% 100%, var(--nt-2) 0%, var(--nt) 60%, #101a13 100%);
+    color: var(--cream);
+  }
+  .cgi__in {
+    max-width: 1240px; margin-inline: auto;
+    display: flex; flex-direction: column;
+    padding: clamp(1.4rem, 3cqi, 2.8rem) clamp(1.2rem, 4.5cqi, 4.5rem) clamp(2rem, 4cqi, 3.6rem);
+  }
+  .cgi__top {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding-bottom: clamp(0.7rem, 1.4cqi, 1.2rem); border-bottom: 1px solid #f0e7d326;
+  }
+  .cgi__title { font-size: clamp(13px, 1.5cqi, 20px); font-weight: 500; letter-spacing: 0.32em; text-indent: 0.32em; }
+  .cgi__ref { font-size: clamp(11px, 1.2cqi, 15px); color: var(--cream-dim); }
+  .cgi__ref em { font-style: italic; }
+  .cgi__law { font-size: clamp(11px, 1.15cqi, 14.5px); font-style: italic; color: var(--cream-dim); }
+  .cgi__lf { font-feature-settings: 'lnum' 1, 'tnum' 1; font-style: normal; }
+
+  .cgi__stage {
+    position: relative;
+    min-height: clamp(190px, 34vh, 330px);
+    display: grid; place-items: center; overflow: clip;
+  }
+  .cgi__stage > * { grid-area: 1 / 1; }
+  /* the instrument's reticle: the stage is a measuring glass, so the letter
+     is pinned even when the forbidden sizes shrink it to a speck */
+  .cgi__reticle {
+    position: relative; place-self: center; width: min(46cqi, 380px); aspect-ratio: 1;
+    border: 1px solid #f0e7d31c; border-radius: 50%; pointer-events: none;
+  }
+  .cgi__reticle::before, .cgi__reticle::after {
+    content: ''; position: absolute; background: #f0e7d322;
+  }
+  .cgi__reticle::before { left: 50%; top: -7%; bottom: -7%; width: 1px; }
+  .cgi__reticle::after { top: 50%; left: -7%; right: -7%; height: 1px; }
+  [data-inst][data-zone='red'] .cgi__reticle { border-color: color-mix(in srgb, var(--red) 36%, transparent); }
+  [data-inst][data-zone='red'] .cgi__reticle::before,
+  [data-inst][data-zone='red'] .cgi__reticle::after { background: color-mix(in srgb, var(--red) 30%, transparent); }
+  .cgi__word { font-style: italic; font-weight: 400; line-height: 1; white-space: nowrap; color: var(--cream); transition: color 0.3s var(--ease); }
+  [data-inst][data-zone='red'] .cgi__word { color: var(--cream-dim); }
+
+  .cgi__read {
+    display: flex; align-items: baseline; gap: clamp(0.9rem, 2.4cqi, 2rem);
+    padding-top: clamp(0.6rem, 1.4cqi, 1.2rem); border-top: 1px solid #f0e7d326;
+  }
+  .cgi__pt b { font-size: clamp(40px, 5.4cqi, 76px); font-weight: 300; font-feature-settings: 'lnum' 1, 'tnum' 1; letter-spacing: 0.01em; }
+  .cgi__pt i { font-style: italic; font-size: clamp(15px, 1.7cqi, 23px); color: var(--cream-dim); margin-left: 0.18em; }
+  .cgi__body-name { font-size: clamp(13px, 1.5cqi, 20px); font-style: italic; color: var(--cream-dim); white-space: nowrap; }
+  .cgi__verdict {
+    margin: 0 0 0 auto; max-width: 46ch; text-align: right;
+    font-size: clamp(12px, 1.3cqi, 16.5px); line-height: 1.42; font-style: italic; color: var(--cream-dim);
+  }
+  .cgi__verdict[data-zone='red'] { color: var(--red); }
+  .cgi__verdict[data-zone='grand'] { color: var(--cream); }
+  .cgi__verdict[data-zone='bloom'] { color: #a9c3a0; }
+
+  .cgi__railwrap { position: relative; margin-top: clamp(1.6rem, 3.4cqi, 3rem); padding-top: 4.75rem; }
+  .cgi__rail {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 2px; display: block;
+    background: #f0e7d340; border-radius: 2px; cursor: ew-resize; position: relative; z-index: 2;
+  }
+  .cgi__rail::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 14px; height: 26px; border-radius: 3px;
+    background: var(--cream); border: 1px solid #101a13; cursor: ew-resize;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .cgi__rail::-moz-range-thumb { width: 14px; height: 26px; border: 1px solid #101a13; border-radius: 3px; background: var(--cream); cursor: ew-resize; }
+  .cgi__zones { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; z-index: 1; }
+  .cgi__zone-red { position: absolute; left: 0; top: 0; height: 100%; background: color-mix(in srgb, var(--red) 70%, transparent); }
+
+  .cgi__ticks { position: absolute; inset: 0 0 0 0; pointer-events: none; }
+  .cgi__tick {
+    position: absolute; bottom: -1px; transform: translateX(-50%);
+    display: flex; flex-direction: column-reverse; align-items: center; gap: 0.45rem;
+    background: transparent; border: 0; padding: 0; cursor: pointer; pointer-events: auto;
+    color: var(--cream-dim);
+  }
+  .cgi__tick i { display: block; width: 1px; height: 12px; background: #f0e7d366; }
+  .cgi__tick--named i { height: 18px; background: #f0e7d3aa; }
+  .cgi__tick span {
+    font-size: clamp(10px, 1.05cqi, 13px); letter-spacing: 0.14em; text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 0.1em; white-space: nowrap;
+  }
+  .cgi__tick span b { font-weight: 400; letter-spacing: 0.04em; }
+  .cgi__tick:hover { color: var(--cream); }
+  .cgi__tick:first-child { transform: none; align-items: flex-start; }
+  /* Grosse Nonpareille's long name breaks to two centred lines so the
+     table's true terminus stays readable close to the rail's right edge */
+  .cgi__tick--wrap span { white-space: normal; max-width: 7.5em; text-align: center; }
+  .cgi__beyond { position: absolute; bottom: -1px; height: 0; }
+  .cgi__beyond i { position: absolute; left: 0; right: 0; bottom: 0; display: block; height: 2px; background: linear-gradient(90deg, transparent, #a9c3a0aa); }
+  .cgi__beyond span {
+    position: absolute; top: 0.85rem; right: 0;
+    font-size: clamp(10px, 1.05cqi, 13px); font-style: italic; letter-spacing: 0.06em;
+    color: #a9c3a0; white-space: nowrap;
+  }
+
+  /* ════════════════════════════════════════════════════════════════════
+     05 · THE RSVP — real px, theme tokens; the place card is printed cream
+     ════════════════════════════════════════════════════════════════════ */
+  .cgr { max-width: 980px; margin-inline: auto; width: 100%; border: 1px solid var(--line); font-size: 15px; line-height: 1.45; background: var(--bg); }
+  .cgr__head {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 0.95rem 1.3rem; border-bottom: 1px solid var(--line);
+  }
+  .cgr__cipher { font-size: 26px; line-height: 1; color: var(--accent); }
+  .cgr__names { font-size: 19px; color: var(--fg); white-space: nowrap; }
+  .cgr__names em { font-style: italic; color: var(--fg-2); }
+  .cgr__nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .cgr__nav a { font-size: 14px; font-style: italic; color: var(--fg-3); cursor: pointer; }
+  .cgr__nav a:hover { color: var(--fg); }
+  .cgr__nav a.is-here { color: var(--accent); border-bottom: 1px solid var(--accent); font-style: normal; }
+
+  .cgr__split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .cgr__form, .cgr__sealed { padding: 1.4rem 1.5rem 1.5rem; border-right: 1px solid var(--line); min-width: 0; }
+  /* the one display moment the genre allows — Réponse at true hairline scale.
+     Weight 400: the italic is loaded at 400 & 600 only, so 400 is what the
+     browser can honestly draw. */
+  .cgr__ftitle { margin: 0; font-size: 52px; font-weight: 400; font-style: italic; line-height: 1; color: var(--fg); }
+  .cgr__fsub { margin: 0.4rem 0 1.2rem; font-size: 14.5px; color: var(--fg-3); }
+  .cgr__fsub em { font-style: italic; }
+  .cgr__lab { display: block; font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); margin: 1.1rem 0 0.45rem; }
+  .cgr__input {
+    width: 100%; font-size: 19px; font-style: italic; color: var(--fg);
+    background: transparent; border: 0; border-bottom: 1px solid var(--fg-3);
+    padding: 0.15rem 0 0.3rem; border-radius: 0; outline-offset: 4px;
+  }
+  .cgr__input:focus-visible { outline: 1px dotted var(--accent); border-bottom-color: var(--accent); }
+  .cgr__fnote { margin: 0.35rem 0 0; font-size: 12.5px; color: var(--fg-3); }
+  .cgr__fnote em { font-style: italic; }
+  /* the form furniture speaks the engraver's language: hairline-ruled
+     choices led by engraver's points, no pills, no rounded chrome */
+  .cgr__seg { display: flex; }
+  .cgr__seg button {
+    display: flex; align-items: baseline; gap: 0.55rem;
+    font-size: 15px; font-style: italic; color: var(--fg-3); cursor: pointer;
+    background: transparent; border: 0; padding: 0.25rem 0;
+    transition: color 0.18s var(--ease);
+  }
+  .cgr__seg button + button { margin-left: 1.4rem; padding-left: 1.4rem; border-left: 1px solid var(--line); }
+  .cgr__seg button::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%; align-self: center;
+    border: 1px solid var(--fg-3); transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+  }
+  .cgr__seg button:hover { color: var(--fg); }
+  .cgr__seg button.is-on { color: var(--fg); }
+  .cgr__seg button.is-on::before { background: var(--accent); border-color: var(--accent); }
+  .cgr__menu { display: flex; flex-direction: column; }
+  .cgr__dish {
+    display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto;
+    column-gap: 0.65rem; align-items: baseline;
+    padding: 0.55rem 0.2rem; border-top: 1px solid var(--line-soft); cursor: pointer;
+  }
+  .cgr__dish:first-child { border-top: 0; }
+  /* the radio is an engraver's point, not a platform widget */
+  .cgr__dish input {
+    grid-row: 1 / span 2; align-self: center; margin: 0; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--fg-3);
+    transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+  }
+  .cgr__dish input:checked { background: var(--accent); border-color: var(--accent); }
+  .cgr__dish input:focus-visible { outline: 1px dotted var(--accent); outline-offset: 3px; }
+  .cgr__dishname { font-size: 16.5px; font-weight: 500; color: var(--fg); }
+  .cgr__dishnote { grid-column: 2; font-size: 13px; color: var(--fg-3); }
+  .cgr__dishnote em { font-style: italic; }
+  /* the seal: a rectangular, letterspaced-caps press — closer to a die stamp
+     than a web button */
+  .cgr__send {
+    margin-top: 1.4rem; font-size: 13px; letter-spacing: 0.26em; text-indent: 0.26em;
+    text-transform: uppercase; cursor: pointer;
+    color: var(--accent-contrast); background: var(--accent); border: 1px solid var(--accent);
+    padding: 0.72rem 1.7rem; border-radius: 0;
+    transition: opacity 0.18s var(--ease);
+  }
+  .cgr__send:hover { opacity: 0.88; }
+
+  /* the payoff: the confirmation IS the place card, writ large — the engraving
+     idea completing on screen. Cream stock and iron-gall ink, both site modes. */
+  .cgr__sealed { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.85rem; }
+  .cgr__sealed[hidden] { display: none; }
+  .cgr__bigcard {
+    width: 100%; background: #f9f4e6; color: #2b2316; text-align: center;
+    padding: 2.4rem 1.4rem 2.2rem;
+    box-shadow: 0 18px 34px -18px rgba(43, 35, 22, 0.55), 0 2px 6px rgba(43, 35, 22, 0.14);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cgr__bigcard { animation: cgr-engrave 0.55s var(--ease-out) both; }
+    @keyframes cgr-engrave { from { opacity: 0; transform: translateY(10px); } }
+  }
+  .cgr__bigcipher { display: block; font-size: 30px; line-height: 1; color: #36513f; }
+  .cgr__bigname { display: block; margin-top: 0.9rem; font-size: 54px; line-height: 1.04; font-style: italic; font-weight: 400; overflow-wrap: anywhere; }
+  .cgr__bigtable { display: block; margin-top: 1rem; font-size: 14.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #36513f; }
+  .cgr__bigtable .cgr__os { text-transform: none; letter-spacing: 0.04em; }
+  .cgr__bigdish { display: block; margin-top: 0.4rem; font-size: 14px; font-style: italic; color: #7c7058; }
+  .cgr__bigregret { margin-top: 1rem; font-size: 15px; color: #7c7058; }
+  .cgr__bigregret em { font-style: italic; }
+  .cgr__sealline { margin: 0; font-size: 14px; font-style: italic; color: var(--fg-2); }
+  .cgr__os { font-style: normal; }
+  .cgr__seal-no { display: none; }
+  .cgr.is-regret .cgr__seal-yes { display: none; }
+  .cgr.is-regret .cgr__seal-no { display: block; }
+  /* once sealed, the engraved card replaces its own preview */
+  .cgr.is-sent .cgr__card { display: none; }
+  .cgr__again {
+    margin-top: 0.5rem; font-size: 13.5px; font-style: italic; color: var(--fg-3); cursor: pointer;
+    background: transparent; border: 0; border-bottom: 1px solid var(--line); padding: 0 0 0.1rem;
+  }
+  .cgr__again:hover { color: var(--fg); }
+
+  .cgr__side { padding: 1.4rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; background: color-mix(in srgb, var(--fg) 3%, var(--bg)); min-width: 0; }
+  /* the place card is a printed object: cream stock, iron-gall ink — both modes */
+  .cgr__card {
+    background: #f9f4e6; color: #2b2316; text-align: center;
+    padding: 1.5rem 1rem 1.3rem;
+    box-shadow: 0 12px 22px -14px rgba(43, 35, 22, 0.5), 0 1px 4px rgba(43, 35, 22, 0.14);
+  }
+  .cgr__ccipher { display: block; font-size: 21px; line-height: 1; color: #36513f; }
+  .cgr__cname { display: block; margin-top: 0.65rem; font-size: 31px; line-height: 1.1; font-style: italic; overflow-wrap: anywhere; }
+  .cgr__ctable { display: block; margin-top: 0.55rem; font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: #36513f; }
+  .cgr__ctable .cgr__os { text-transform: none; letter-spacing: 0.04em; }
+  .cgr__cdish { display: block; margin-top: 0.3rem; font-size: 13.5px; font-style: italic; color: #7c7058; }
+  .cgr.is-regret .cgr__cdish { visibility: hidden; }
+
+  /* the programme stages the figures claim: times large, standing (lnum),
+     on a shared right-aligned tabular column behind hairline leaders */
+  .cgr__sched { border-top: 1px solid var(--line); padding-top: 0.95rem; }
+  .cgr__schedhead { font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
+  .cgr__sched ul { list-style: none; margin: 0.7rem 0 0; padding: 0; }
+  .cgr__sched li { display: flex; gap: 0.6rem; align-items: baseline; padding: 0.42rem 0; }
+  .cgr__lead { flex: 1; min-width: 1.1rem; border-bottom: 1px solid var(--line); }
+  .cgr__sched b { font-weight: 400; font-size: 20px; color: var(--fg); min-width: 3em; text-align: right; }
+  .cgr__lf { font-feature-settings: 'lnum' 1, 'tnum' 1; }
+  .cgr__sched span { font-size: 13.5px; font-style: italic; color: var(--fg-2); }
+
+  /* ════════════════════════════════════════════════════════════════════
+     RESPONSIVE — three compositions, not one squished
+     ════════════════════════════════════════════════════════════════════ */
+  /* 01 · the page squares up; the footer stacks */
   @container (max-width: 640px) {
-    .cg-shop__grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto auto auto; }
-    .cg-card--hero { grid-column: 1 / span 2; grid-row: 1; }
-    .cg-card--hero .cg-card__img { min-height: 220px; }
-  }
-  /* narrow: a clean two-row header — logo alone, then a single controls row */
-  @container (max-width: 520px) {
-    .cg-shop__head {
-      display: grid; grid-template-columns: 1fr auto; align-items: center;
-      gap: 0.6rem 0.8rem; padding: 0.9rem 1rem;
-    }
-    .cg-shop__logo { grid-column: 1; grid-row: 1; }
-    .cg-shop__sort { grid-column: 2; grid-row: 1; margin-left: 0; }
-    .cg-shop__filters {
-      grid-column: 1 / -1; grid-row: 2; margin-left: 0; flex-wrap: wrap;
-      gap: 0.25rem; padding-top: 0.6rem; border-top: 1px solid var(--line-soft);
-    }
+    .cgp__in { min-height: 0; }
+    .cgp__top { flex-wrap: wrap; }
+    .cgp__trade { order: 3; width: 100%; }
+    .cgp__word { font-size: 13.4cqi; }
+    .cgp__foot { flex-direction: column; align-items: center; gap: 0.55rem; text-align: center; }
+    .cgp__flacon { order: 3; margin-top: 0.3rem; }
+    .cgp__pnote span { display: block; }
+    .cgp__pnote span::after { content: none; }
   }
 
-  /* narrow: let the flacon fill more of its portrait frame */
-  @container (max-width: 480px) {
-    .cg-flacon__bottle { width: 88cqi; padding: 6cqi 5cqi; }
-    .cg-flacon__name { font-size: 24cqi; }
-    .cg-flacon__accent { font-size: 19cqi; }
+  /* 02 · tablet: invitation + a single right column; phone: one column,
+     the small pair stays side by side as long as it can */
+  @container (max-width: 900px) {
+    .cgs__lay { grid-template-columns: minmax(0, 52%) 1fr; }
+  }
+  @container (max-width: 640px) {
+    .cgs__lay { grid-template-columns: 1fr; }
+    .cgs__invite { grid-row: auto; }
+    .cgs__menu, .cgs__pair { grid-column: 1; }
+    .cgs__pair { grid-template-columns: 1fr 1.4fr; }
+    .cgs__bench { flex-direction: column; gap: 0.35rem; align-items: flex-start; }
+  }
+  @container (max-width: 420px) {
+    .cgs__pair { grid-template-columns: 1fr; }
   }
 
-  /* ── responsive: editorial scenes restack ── */
+  /* 03 · tablet: the sidebar drops below as a three-cell band — the giant
+     folio leads it; phone: one column */
+  @container (max-width: 860px) {
+    .cge__grid { grid-template-columns: 1fr; }
+    .cge__side { flex-direction: row; align-items: flex-start; gap: clamp(1.2rem, 3cqi, 2.6rem); border-top: 1px solid var(--line); padding-top: clamp(1rem, 2.4cqi, 2rem); }
+    .cge__giant { flex: 0 0 auto; max-width: 11rem; }
+    .cge__quote { flex: 1.2; }
+    .cge__file { flex: 1; border-top: 0; padding-top: 0; }
+  }
+  @container (max-width: 620px) {
+    .cge__band { flex-wrap: wrap; }
+    .cge__tag { order: 3; width: 100%; }
+    .cge__body { columns: 1; }
+    .cge__side { flex-direction: column; }
+    .cge__head { font-size: 9.4cqi; }
+    .cge__colo { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+  }
+
+  /* 04 · the readout stacks; the verdict joins the left edge */
+  @container (max-width: 760px) {
+    .cgi__top { flex-wrap: wrap; }
+    .cgi__law { order: 3; width: 100%; }
+    .cgi__read { flex-wrap: wrap; row-gap: 0.4rem; }
+    .cgi__verdict { margin-left: 0; text-align: left; max-width: 100%; }
+    .cgi__stage { min-height: clamp(150px, 26vh, 240px); }
+    .cgi__beyond span { display: none; }
+    /* Double Canon keeps its tick but yields its name where the rail tightens */
+    .cgi__tick--tight span { font-size: 0; letter-spacing: 0.06em; }
+    .cgi__tick--tight span b { font-size: clamp(10px, 1.05cqi, 13px); }
+  }
+  /* phone: the rail keeps only its numbers; the names live in the readout */
   @container (max-width: 560px) {
-    .cg-spread { grid-template-columns: 1fr; }
-    .cg-spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
-    .cg-spread__sec { writing-mode: horizontal-tb; }
-    .cg-spread__main { grid-column: 1; }
-    .cg-spread__body { columns: 1; }
+    .cgi__tick span { letter-spacing: 0.06em; }
+    .cgi__tick--named:not(:first-child) span { font-size: 0; }
+    .cgi__tick--named:not(:first-child) span b { font-size: clamp(10px, 1.05cqi, 13px); }
+  }
+
+  /* 05 · tablet keeps the split; phone stacks form over card */
+  @container (max-width: 700px) {
+    .cgr__split { grid-template-columns: 1fr; }
+    .cgr__form, .cgr__sealed { border-right: 0; border-bottom: 1px solid var(--line); }
+    .cgr__head { flex-wrap: wrap; row-gap: 0.2rem; }
+    .cgr__nav { margin-left: 0; width: 100%; padding-top: 0.5rem; }
+  }
+  @container (max-width: 430px) {
+    .cgr__nav { gap: 0.8rem; }
+    .cgr__nav a { font-size: 13px; }
+    .cgr__seg { flex-wrap: wrap; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cg-cover__roman, .cg-cover__ital, .cg-spread__head,
-    .cg-card__word, .cg-card__cta, .cg-dish__name { transition: none; }
+    .cgr__seg button, .cgr__seg button::before, .cgr__dish input, .cgr__send, .cgi__word { transition: none; }
   }
 </style>
