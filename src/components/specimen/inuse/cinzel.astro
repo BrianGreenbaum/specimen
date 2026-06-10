@@ -3,482 +3,1028 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
-// Loaded companion serif for the rare lines of small body/caption text — Cinzel is
-// caps-only and must never carry running text.
-const serif = "'Spectral', Georgia, serif";
 
-// ── Scene 04 (interactive maison microsite) collection data ──────────────────
-const cuvees = [
-  { id: 'I',   name: 'BLANC DE CRAIE', cat: 'champagne', cuvee: 'Brut Nature',     year: '2014', price: '210', note: 'Chalk · Citron · Brioche',    tag: 'Prestige' },
-  { id: 'II',  name: 'NOIR DE NUIT',   cat: 'champagne', cuvee: 'Extra Brut',      year: '2012', price: '340', note: 'Quince · Ash · Toasted Almond', tag: '' },
-  { id: 'III', name: 'AURUM',          cat: 'cognac',    cuvee: 'Grande Champagne', year: '1971', price: '1,900', note: 'Rancio · Walnut · Saffron',  tag: 'Rare' },
-  { id: 'IV',  name: 'SOLSTICE',       cat: 'champagne', cuvee: 'Rosé de Saignée', year: '2016', price: '290', note: 'Redcurrant · Rose · Flint',   tag: '' },
-  { id: 'V',   name: 'OBSIDIAN',       cat: 'cognac',    cuvee: 'Hors d’Âge',  year: '1958', price: '4,500', note: 'Leather · Fig · Dark Honey', tag: 'Cellar' },
-  { id: 'VI',  name: 'MERIDIEN',       cat: 'spirit',    cuvee: 'Vermouth Doré',   year: 'NV',   price: '120', note: 'Gentian · Wormwood · Orange', tag: '' },
+// ── The sequence ─────────────────────────────────────────────────────────────
+// TYPECASTING — Cinzel is the Trajan that escaped the foundry: the capital
+// that always gets hired to play the emperor. Five engagements, one thread of
+// gold (the gilt the Romans pressed into their bronze letters): the gold-leaf
+// movie title (01) becomes the gilded medallion of a Roman maison (02), the
+// gold-stamped canon of a classic text (03), the gilt title treatment of
+// prestige streaming (04), until the pointer itself gilds the stone (05).
+// Surfaces: black one-sheet → daylight paper → book paper → screen dark →
+// black granite. Loud, quiet, quiet, device, loud.
+
+// Honesty notes, verified against the woff2 (fontTools):
+// · single axis wght 400–900 — the only axis ever performed here.
+// · GSUB carries only `locl`: no liga/dlig/smcp/tnum claims anywhere.
+// · Cinzel's lowercase slots carry true drawn SMALL CAPITALS (614/1000 vs cap
+//   714/1000) — mixed-case strings give a genuine two-tier inscription.
+
+const serif = "'Spectral', Georgia, serif";       // loaded site-wide
+const cond  = "'Oswald Variable', 'Arial Narrow', sans-serif"; // loaded site-wide
+
+// ── Act 01 — one film, four genres ───────────────────────────────────────────
+const genres = [
+  { id: 'epic',     name: 'Epic',     note: 'wght 800 · gold leaf' },
+  { id: 'horror',   name: 'Horror',   note: 'wght 400 · letterspaced dread' },
+  { id: 'romance',  name: 'Romance',  note: 'wght 500 · warm paper' },
+  { id: 'prestige', name: 'Prestige', note: 'wght 600 · the laurels' },
 ];
+
+// ── Act 04 — ÆTERNA, two seasons ─────────────────────────────────────────────
+const seasons = [
+  {
+    id: 'i', label: 'Season I',
+    eps: [
+      { n: 'I',   title: 'The Wolf of the Capitol',  len: '58 min', desc: 'A widowed senator buys the silence of two legions — and misprices it.', prog: 100 },
+      { n: 'II',  title: 'Bread, Salt and Iron',     len: '54 min', desc: 'The grain fleet is late. The city counts in days; the palace counts in heirs.', prog: 100 },
+      { n: 'III', title: 'A Forum of Knives',        len: '61 min', desc: 'Every faction sends a friend to the games. None of them watches the sand.', prog: 42 },
+      { n: 'IV',  title: 'The Gilded Hour',          len: '67 min', desc: 'At the triumph, the slave behind the emperor whispers the old words.', prog: 0 },
+    ],
+  },
+  {
+    id: 'ii', label: 'Season II',
+    eps: [
+      { n: 'I',   title: 'Ashes of the Census',      len: '57 min', desc: 'The new emperor orders the empire counted. The count comes back wrong.', prog: 0 },
+      { n: 'II',  title: 'The Vestal’s Ledger',  len: '59 min', desc: 'A fire in the archive spares one shelf. It is the wrong shelf.', prog: 0 },
+      { n: 'III', title: 'Crossing the Rubicon, Twice', len: '63 min', desc: 'An exiled general discovers the river has two banks — and two armies.', prog: 0 },
+      { n: 'IV',  title: 'Littera Scripta Manet',    len: '71 min', desc: 'What was carved cannot be unsaid. The season’s knives come home.', prog: 0 },
+    ],
+  },
+];
+
+// ── Act 05 — the carving field ───────────────────────────────────────────────
+// Static composition (no-JS / reduced-motion) = the carver's pass: weight
+// sweeps 400 → 900 across each line, so the act is complete without motion.
+const carveLines = ['LITTERA', 'SCRIPTA', 'MANET'].map((word) =>
+  word.split('').map((ch, i, arr) => ({
+    ch,
+    w: Math.round(400 + (500 * i) / Math.max(1, arr.length - 1)),
+  }))
+);
 ---
-<div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
 
-  <!-- 01 — CINEMATIC TITLE CARD: kinetic letter-spaced reveal -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Film — the main title card</span></figcaption>
-    <div class="iu__scene cz-scene-cine">
-      <div class="cz-cine" data-cine>
-        <span class="cz-cine__corner cz-cine__corner--tl" aria-hidden="true"></span>
-        <span class="cz-cine__corner cz-cine__corner--br" aria-hidden="true"></span>
-        <button class="cz-cine__replay" type="button" data-cine-replay aria-label="Replay the title sequence">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
-        </button>
-        <span class="cz-cine__pres">A · GUILLERMO&nbsp;SAINT-CLAIR · FILM</span>
-        <h3 class="cz-cine__title" data-cine-title aria-label="Imperium">
-          <span>I</span><span>M</span><span>P</span><span>E</span><span>R</span><span>I</span><span>V</span><span>M</span>
-        </h3>
-        <span class="cz-cine__rule" aria-hidden="true"></span>
-        <span class="cz-cine__sub">IN · ASSOCIATION · WITH · THE · AUREATE · COMPANY</span>
-        <span class="cz-cine__cast">NEARING&nbsp;·&nbsp;LE&nbsp;GALL&nbsp;·&nbsp;VESPUCCI&nbsp;·&nbsp;DRAKOS</span>
-        <span class="cz-cine__strip" aria-hidden="true">
-          <span>CERTIFICATE · 12A</span><i></i><span>SCOPE&nbsp;2.39:1</span><i></i><span>DOLBY&nbsp;ATMOS</span>
-        </span>
-      </div>
-    </div>
-    <p class="iu__hint label">A cinematic main title: the capitals fade up and the tracking opens from a tight cluster to monumental width. Hover the card — or tap the replay mark — to run it again.</p>
-  </figure>
+<div class="iu cz" style={`--fam:${fam}; --serif:${serif}; --cond:${cond}`}>
 
-  <!-- 02 — WINE / SPIRITS LABEL: engraved cuvée label with SVG textPath arc -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Packaging — the cuvée label (SVG textPath)</span></figcaption>
-    <div class="iu__scene cz-scene-label">
-      <div class="cz-label-ground" data-label>
-        <div class="cz-label">
-          <span class="cz-label__top">CHAMPAGNE · GRAND&nbsp;CRU</span>
-          <svg class="cz-label__svg" viewBox="0 0 360 372" role="img" aria-label="Cuvée Aurum champagne label, engraved capitals on an oval medallion">
-            <defs>
-              <path id="cz-arc-top" d="M 56 178 A 124 124 0 0 1 304 178" fill="none" />
-              <path id="cz-arc-bot" d="M 60 250 A 120 120 0 0 0 300 250" fill="none" />
-            </defs>
-            <!-- engraved oval frame -->
-            <ellipse class="cz-label__frame" cx="180" cy="186" rx="156" ry="172" />
-            <ellipse class="cz-label__frame cz-label__frame--in" cx="180" cy="186" rx="146" ry="162" />
-            <!-- arced legends -->
-            <text class="cz-label__arc"><textPath href="#cz-arc-top" startOffset="50%" text-anchor="middle">MAISON · DE&nbsp;CRAIE · FONDÉE&nbsp;EN&nbsp;MDCCCXII</textPath></text>
-            <text class="cz-label__arc cz-label__arc--bot"><textPath href="#cz-arc-bot" startOffset="50%" text-anchor="middle">MIS · EN · BOVTEILLE · AV · DOMAINE</textPath></text>
-            <!-- centred lockup -->
-            <text class="cz-label__cuvee" x="180" y="118" text-anchor="middle">CVVÉE</text>
-            <text class="cz-label__name"  x="180" y="186" text-anchor="middle">AVRVM</text>
-            <line class="cz-label__hair" x1="120" y1="214" x2="240" y2="214" />
-            <text class="cz-label__year"  x="180" y="236" text-anchor="middle">VENDANGE&nbsp;·&nbsp;MCMLXXI</text>
-            <text class="cz-label__appel" x="180" y="262" text-anchor="middle">CÔTE&nbsp;DES&nbsp;BLANCS</text>
-          </svg>
-          <span class="cz-label__notes">RANCIO · NOISETTE · MIEL&nbsp;SOMBRE · SAFRAN</span>
-          <span class="cz-label__foot"><span>BRVT&nbsp;NATVRE</span><i></i><span class="num">12,5% VOL</span><i></i><span class="num">750&nbsp;ML</span></span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">Live SVG <code>textPath</code> engraves the legends around the medallion; the embossed label sits on its bottle ground, and the frame redraws and the lockup re-engraves on hover.</p>
-  </figure>
-
-  <!-- 03 — FASHION / JEWELRY HOUSE IDENTITY: variable-weight breathing wordmark -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — the maison de joaillerie identity</span></figcaption>
-    <div class="iu__scene cz-scene-house">
-      <div class="cz-house-ground">
-        <div class="cz-house" data-house>
-          <div class="cz-house__id">
-            <span>HAVTE&nbsp;·&nbsp;JOAILLERIE</span>
-            <i class="cz-house__dot" aria-hidden="true"></i>
-            <span>PLACE&nbsp;·&nbsp;VENDÔME</span>
-          </div>
-          <div class="cz-house__center">
-            <span class="cz-house__rule" aria-hidden="true"></span>
-            <h3 class="cz-house__word" data-house-word>VALORE</h3>
-            <span class="cz-house__sub">ORFÈVRE&nbsp;·&nbsp;PARIS&nbsp;·&nbsp;DEPVIS&nbsp;MDCCCXLIV</span>
-            <span class="cz-house__rule" aria-hidden="true"></span>
-          </div>
-          <div class="cz-house__mark" aria-label="hallmark">
-            <span class="cz-house__mono">V</span>
-            <span class="cz-house__mark-r">POINÇON&nbsp;·&nbsp;DE&nbsp;MAÎTRE<br/><i>or 750 · diamant · serti grain</i></span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">A letterpressed identity card: the wordmark breathes the weight axis from Medium up to a struck Black on a slow loop — the engraved capital, alive.</p>
-  </figure>
-
-  <!-- 04 — INTERACTIVE MAISON MICROSITE: real-scale luxury cellar, weight axis + filter -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Maison microsite — the cellar (real scale, interactive)</span></figcaption>
+  <!-- ════════════════════════════════════════════════════════════════════
+       01 · ILLUSTRATION & COMMERCIAL — "IMMORTAL", the one-sheet four ways.
+       Reference: Yves Peters' ScreenFonts studies (The FontFeed, 2005–2015),
+       which documented how Trajan became "the movie font" — one Roman capital
+       serving every genre on the one-sheet. Here the joke is played straight:
+       the same title is recast by genre, and the only actor that changes is
+       the weight axis (400 dread → 500 romance → 600 laurels → 800 gold).
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Illustration — the one-sheet, four genres</span></figcaption>
     <div class="iu__scene">
-      <div class="iu__device cz-site" data-site>
+      <div class="cz-one" data-one data-genre="epic">
+      <aside class="cz-one__rail">
+        <span class="cz-one__kick">Trajan plays every genre<i>— after Yves Peters&rsquo; ScreenFonts</i></span>
+        <div class="cz-one__tabs" role="group" aria-label="Recast the poster by genre">
+          {genres.map((g, i) => (
+            <button class={i === 0 ? 'is-on' : ''} type="button" data-genre-btn={g.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <b>{g.name.toUpperCase()}</b><span>{g.note}</span>
+            </button>
+          ))}
+        </div>
+        <span class="cz-one__railfoot">One title &middot; one face &middot; four castings</span>
+      </aside>
+      <div class="cz-one__sheet">
+        <div class="cz-one__laurel" aria-hidden="true">
+          <svg viewBox="0 0 46 30"><path d="M44 28C32 26 26 18 25 4m1 6c-3-1-5-4-5-7m5 12c-4 0-7-2-8-5m9 11c-4 1-8 0-10-3m12 8c-4 2-9 2-12-1" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <span>Official Selection<br/><b>VENEZIA &middot; CANNES &middot; TELLVRIDE</b></span>
+          <svg viewBox="0 0 46 30" style="transform:scaleX(-1)"><path d="M44 28C32 26 26 18 25 4m1 6c-3-1-5-4-5-7m5 12c-4 0-7-2-8-5m9 11c-4 1-8 0-10-3m12 8c-4 2-9 2-12-1" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+        </div>
+        <span class="cz-one__pres">AQVILA PICTVRES PRESENTS</span>
+        <span class="cz-one__tag" data-tagline>EVERY EMPIRE FALLS</span>
+        <h3 class="cz-one__title">IMMORTAL</h3>
+        <span class="cz-one__dir">A film by Lucia Ferro</span>
+        <div class="cz-one__credits">
+          <p>AQVILA PICTVRES PRESENTS IN ASSOCIATION WITH MERIDIAN LIGHT A LUCIA FERRO FILM &ldquo;IMMORTAL&rdquo; ELENA VESPUCCI &nbsp;MARC&nbsp;DRAKOS &nbsp;ODILE&nbsp;NEARING &nbsp;AND&nbsp;TOMAS&nbsp;LE&nbsp;GALL</p>
+          <p>CASTING&nbsp;BY PRISCA&nbsp;ADEYEMI&nbsp;CSA &nbsp;MUSIC&nbsp;BY HALVARD&nbsp;ROST &nbsp;COSTUME&nbsp;DESIGNER IRIS&nbsp;KANE &nbsp;EDITED&nbsp;BY PAUL&nbsp;OYELARAN &nbsp;PRODUCTION&nbsp;DESIGNER SOFIA&nbsp;BRANDT &nbsp;DIRECTOR&nbsp;OF&nbsp;PHOTOGRAPHY MATEO&nbsp;RUIZ&nbsp;AIC &nbsp;PRODUCED&nbsp;BY HANA&nbsp;OKAFOR &nbsp;WRITTEN&nbsp;AND&nbsp;DIRECTED&nbsp;BY LUCIA&nbsp;FERRO</p>
+        </div>
+        <div class="cz-one__bill">
+          <span class="cz-one__rating">R</span>
+          <span class="cz-one__date" data-dateline>CHRISTMAS DAY</span>
+          <span class="cz-one__fmt">FILMED&nbsp;ENTIRELY&nbsp;IN&nbsp;70&nbsp;MM</span>
+        </div>
+      </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Yves Peters spent a decade logging Trajan on movie one-sheets — epic, horror, romance, Oscar bait — and the face never broke character. Recast the poster: only the surface, the tagline and Cinzel&rsquo;s weight axis change, from a letterspaced 400 dread to gold-leaf 800.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       02 · BRANDING & IDENTITY — AVRELIA, alta gioielleria di Roma.
+       Reference: the Bulgari logotype (the modern house that sets its U as
+       the Roman V, straight off the inscriptional model). The identity is
+       carried by three honest devices of this file: the lapidary V, the true
+       small capitals drawn in the lowercase slots, and the weight axis read
+       as engraving depth — printed, embossed, carved.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Branding — Avrelia di Roma, an identity on the lapidary V</span></figcaption>
+    <div class="iu__scene">
+      <div class="cz-mai" data-mai>
+        <div class="cz-mai__left">
+          <span class="cz-mai__over">Alta Gioielleria <i>&middot;</i> Roma</span>
+          <h3 class="cz-mai__word">A<b>V</b>RELIA</h3>
+          <span class="cz-mai__est">Fondata in Roma &middot; MCMXXI</span>
+          <p class="cz-mai__note">From the house rules: the U is cut as the lapicides cut it — <b>V</b>, never U. Secondary lines are set in the inscription&rsquo;s small capitals, and weight is reserved as depth of engraving — <i>stampata</i> on paper, <i>sbalzata</i> in relief, <i>scolpita</i> in stone.</p>
+          <div class="cz-mai__depths" aria-label="The three engraving depths of the identity">
+            <span style="font-variation-settings:'wght' 400">AVRELIA<i>stampata &middot; 400</i></span>
+            <span style="font-variation-settings:'wght' 650">AVRELIA<i>sbalzata &middot; 650</i></span>
+            <span style="font-variation-settings:'wght' 900">AVRELIA<i>scolpita &middot; 900</i></span>
+          </div>
+        </div>
+        <div class="cz-mai__right">
+          <div class="cz-mai__medal">
+            <svg viewBox="0 0 240 240" role="img" aria-label="Gilded medallion: Avrelia, Roma, alta gioielleria, circling a carved A">
+              <defs><path id="cz-mai-ring" d="M 120 26 A 94 94 0 1 1 119.9 26" fill="none" /></defs>
+              <circle class="cz-mai__rim" cx="120" cy="120" r="113" />
+              <circle class="cz-mai__rim cz-mai__rim--in" cx="120" cy="120" r="74" />
+              <g class="cz-mai__spin">
+                <text class="cz-mai__ringtext"><textPath href="#cz-mai-ring" startOffset="0">AVRELIA &middot; ROMA &middot; ALTA &middot; GIOIELLERIA &middot; ANNO &middot; MCMXXI &middot;</textPath></text>
+              </g>
+              <text class="cz-mai__mono" x="120" y="152" text-anchor="middle">A</text>
+            </svg>
+          </div>
+          <i class="cz-mai__thread" aria-hidden="true"></i>
+          <div class="cz-mai__card">
+            <span class="cz-mai__cardname">A<b>V</b>RELIA</span>
+            <span class="cz-mai__cardline">Via dei Condotti IX &middot; Roma</span>
+            <span class="cz-mai__cardline cz-mai__cardline--soft">Su appuntamento &middot; Tel LXX&middot;IV&middot;XXI</span>
+          </div>
+          <i class="cz-mai__thread cz-mai__thread--short" aria-hidden="true"></i>
+          <div class="cz-mai__hall"><span>AV</span><i>&#9670;</i><span>oro 750</span><i>&#9670;</i><span>roma</span><i>&#9670;</i><span>N&ordm; ccxiv</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The gold leaf of the one-sheet becomes a maison&rsquo;s gilding, after the Bulgari V. As the identity arrives, the wordmark eases out to inscription spacing — the slow cut of a letterspaced capital — and the medallion legend turns on a live SVG <code>textPath</code>. Every line marked <em>Roma</em> or <em>Su appuntamento</em> is typed as lowercase: Cinzel carries true drawn small capitals in those slots, so the maison&rsquo;s second voice is the same stone, cut shallower.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       03 · EDITORIAL — Gibbon set to Tschichold's canon.
+       Reference: Jan Tschichold's Penguin reform (1947–49) — the centred,
+       letterspaced-capital title page and the Composition Rules — and the
+       Van de Graaf page canon he championed in "The Form of the Book."
+       Cinzel does what Trajan-model titling was revived to do: carry a
+       classical title page; the small caps lead the chapter in.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-canon]">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — Gibbon, set to Tschichold&rsquo;s canon</span></figcaption>
+    <div class="iu__scene cz-book-scene">
+      <div class="cz-book" data-book>
+        <div class="cz-book__spread">
+          <div class="cz-book__page cz-book__page--verso">
+            <!-- Tschichold's title-page rule: the title block lives INSIDE the
+                 text block — never wider, centred on the canon rect, not the leaf -->
+            <div class="cz-book__block">
+              <span class="cz-book__author">EDWARD GIBBON</span>
+              <span class="cz-book__rule" aria-hidden="true"></span>
+              <span class="cz-book__t1">THE HISTORY</span>
+              <span class="cz-book__of">OF THE</span>
+              <span class="cz-book__t2">DECLINE AND FALL</span>
+              <span class="cz-book__of">OF THE</span>
+              <span class="cz-book__t1">ROMAN EMPIRE</span>
+              <span class="cz-book__vol">Volume the First</span>
+              <span class="cz-book__device" aria-hidden="true">&middot;&#10022;&middot;</span>
+              <span class="cz-book__imprint">LONDON &middot; THE AVREATE PRESS<br/>MMXXVI</span>
+            </div>
+            <svg class="cz-book__canon" viewBox="0 0 600 900" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="600" y1="900" x2="0" y2="0" /><line x1="600" y1="900" x2="0" y2="-900" class="cz-book__canon-spread" />
+              <line x1="0" y1="900" x2="600" y2="0" />
+              <rect x="133.3" y="100" width="400" height="600" />
+            </svg>
+          </div>
+          <div class="cz-book__page cz-book__page--recto">
+            <div class="cz-book__block cz-book__block--text">
+              <div class="cz-book__rh"><span>The Decline and Fall</span><span>3</span></div>
+              <span class="cz-book__ch">CHAPTER THE FIRST</span>
+              <span class="cz-book__chrule" aria-hidden="true"></span>
+              <p class="cz-book__arg">The extent and military force of the Empire in the age of the Antonines</p>
+              <div class="cz-book__body">
+                <p><span class="cz-book__drop">I</span><span class="cz-book__lead">n the second century</span> of the Christian &AElig;ra, the empire of Rome comprehended the fairest part of the earth, and the most civilized portion of mankind. The frontiers of that extensive monarchy were guarded by ancient renown and disciplined valour.</p>
+                <p>The gentle but powerful influence of laws and manners had gradually cemented the union of the provinces. Their peaceful inhabitants enjoyed and abused the advantages of wealth and luxury; the image of a free constitution was preserved with decent reverence.</p>
+              </div>
+            </div>
+            <span class="cz-book__catch" aria-hidden="true">The</span>
+            <svg class="cz-book__canon" viewBox="0 0 600 900" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="0" y1="900" x2="600" y2="0" /><line x1="0" y1="900" x2="600" y2="-900" class="cz-book__canon-spread" />
+              <line x1="600" y1="900" x2="0" y2="0" />
+              <rect x="66.7" y="100" width="400" height="600" />
+            </svg>
+          </div>
+        </div>
+        <button class="cz-book__toggle" type="button" data-canon aria-pressed="false"><i aria-hidden="true"></i>SHOW THE CANON</button>
+      </div>
+    </div>
+    <p class="iu__hint label">Tschichold&rsquo;s Penguin reform in miniature, and the pages are <em>set on</em> the geometry, not decorated by it: inner margin a ninth of the page, outer and foot two ninths, title block and text block filling exactly the Van de Graaf rect. Centred, letterspaced capitals carry the title — the rule Tschichold took from the inscriptions Cinzel descends from — and Cinzel&rsquo;s small caps lead the Spectral text in. Press <strong>SHOW THE CANON</strong> to draw the construction over the live page.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       04 · WEB & APP UI — ÆTERNA, a prestige-streaming title page.
+       Reference: the post–Game of Thrones streaming idiom (the HBO Max /
+       key-art detail page) in which a Trajan-style capital became
+       television's shorthand for epic. Real device px, genuinely driven:
+       season tabs, a My-List toggle, resumable episode rows.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Product UI — &AElig;terna, a streaming title page (real scale, interactive)</span></figcaption>
+    <div class="iu__scene">
+      <div class="iu__device cz-app" data-app>
         <div class="iu__chrome">
           <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">maison-de-craie.fr/cellier</span>
+          <span class="iu__addr">stream.aquila.tv/series/aeterna</span>
         </div>
-        <header class="cz-site__head">
-          <span class="cz-site__logo">DE&nbsp;CRAIE</span>
-          <nav class="cz-site__filters" aria-label="Filter the cellar">
-            <button class="is-on" data-filter="all">TOUT</button>
-            <button data-filter="champagne">CHAMPAGNE</button>
-            <button data-filter="cognac">COGNAC</button>
-            <button data-filter="spirit">SPIRITUEUX</button>
+        <div class="cz-app__body">
+          <header class="cz-app__hero">
+            <div class="cz-app__heroink">
+              <span class="cz-app__net">AQVILA&nbsp;ORIGINALS</span>
+              <h3 class="cz-app__logo">&AElig;TERNA</h3>
+              <div class="cz-app__meta">
+                <b>MMXXVI</b><i>TV-MA</i><span>II seasons</span><span>Epic</span>
+              </div>
+              <p class="cz-app__sell">Rome does not fall in a day. It falls in committee.</p>
+              <div class="cz-app__cta">
+                <button class="cz-app__play" type="button" data-play>&#9654;&nbsp;&nbsp;Resume&nbsp;S&middot;I&nbsp;E&middot;III</button>
+                <button class="cz-app__list" type="button" data-mylist aria-pressed="false"><b>+</b>&nbsp;My list</button>
+              </div>
+            </div>
+            <span class="cz-app__heroglyph" aria-hidden="true">&AElig;</span>
+            <span class="cz-app__heroglyph cz-app__heroglyph--gilt" aria-hidden="true">&AElig;</span>
+          </header>
+          <nav class="cz-app__tabs" role="tablist" aria-label="Seasons">
+            {seasons.map((s, i) => (
+              <button class={i === 0 ? 'is-on' : ''} type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={s.id}>{s.label.toUpperCase()}</button>
+            ))}
+            <span class="cz-app__tabnote">IV episodes</span>
           </nav>
-          <span class="cz-site__reserve">RÉSERVER</span>
-        </header>
-
-        <div class="cz-site__axis">
-          <label for="cz-wght">WEIGHT — <span data-wght-val>400</span></label>
-          <input id="cz-wght" type="range" min="400" max="900" value="400" step="10" data-wght />
-          <span class="cz-site__axis-hint">drag — the featured cuvée is struck heavier into the stone</span>
-        </div>
-
-        <div class="cz-site__grid" data-grid>
-          {cuvees.map((l, i) => {
-            const hero = i === 0;
-            return (
-            <article class={`cz-card${hero ? ' cz-card--hero' : ''}`} data-cat={l.cat} data-id={l.id}>
-              <div class="cz-card__img" aria-hidden="true">
-                <span class="cz-card__ghost">{l.id}</span>
-                {hero
-                  ? <span class="cz-card__hero-word" data-wght-type>{l.name}</span>
-                  : <span class="cz-card__word">{l.name}</span>}
-                {l.tag && <span class="cz-card__tag">{l.tag}</span>}
-              </div>
-              <div class="cz-card__meta">
-                <div class="cz-card__row cz-card__row--top">
-                  <h4 class="cz-card__name">{l.name}</h4>
-                  <span class="cz-card__price num">€{l.price}</span>
-                </div>
-                <span class="cz-card__cuvee">{l.cuvee} · <span class="num">{l.year}</span></span>
-                <span class="cz-card__note">{l.note}</span>
-              </div>
-            </article>
-          );})}
+          {seasons.map((s, i) => (
+            <ul class={`cz-app__eps${i === 0 ? ' is-on' : ''}`} data-eps={s.id}>
+              {s.eps.map((e, j) => (
+                <li class={`cz-app__ep${i === 0 && j === 2 ? ' is-now' : ''}`}>
+                  <button type="button" data-ep={`${s.label.toUpperCase()} · E·${e.n}`}>
+                    <span class="cz-app__epthumb" aria-hidden="true"><b>{e.n}</b>{e.prog > 0 && <i style={`width:${e.prog}%`}></i>}</span>
+                    <span class="cz-app__epmain">
+                      <span class="cz-app__eptitle"><b>{e.n}&middot;</b>{e.title}<em class="cz-app__now">Now playing</em></span>
+                      <span class="cz-app__epdesc">{e.desc}</span>
+                    </span>
+                    <span class="cz-app__eplen">{e.len}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ))}
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Filter the cellar by family, then drag the weight axis — the featured cuvée is struck deeper, from a quiet Regular to a monumental Black. Display in Cinzel, the small notes in Spectral.</p>
+    <p class="iu__hint label">The casting Trajan never auditioned for: after <em>Game of Thrones</em>, the Roman capital became streaming&rsquo;s shorthand for epic. Aqvila&rsquo;s page speaks its own house language — metadata in roman numerals and small caps, buttons set in the brand face (typed lowercase, rendered in Cinzel&rsquo;s drawn small capitals) over a UI sans for episode text. The key art&rsquo;s &AElig; is carved into the screen; pass the hand over it and the gilt is pressed into the incision. The active season swells on the weight axis, the logotype deepens as the pointer nears, and picking an episode re-arms the resume button.</p>
+  </figure>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       05 · INTERACTIVE & EXPERIMENTAL — Littera Scripta Manet.
+       Reference: the pointer-reactive kinetic typography of Dia Studio
+       (Mitch Paone) — type as an instrument the visitor plays. Here the
+       pointer is the chisel: wherever the hand passes, the single wght axis
+       cuts deeper, 400 → 900, and the incision takes the gilt. Without a
+       pointer (or with reduced motion) the field rests as the carver's
+       pass — weight sweeping across each line.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Experimental — Littera Scripta Manet, the pointer as chisel</span></figcaption>
+    <div class="iu__scene cz-carve" data-carve>
+      <div class="cz-carve__field" aria-label="Littera scripta manet — the written letter remains">
+        {carveLines.map((line) => (
+          <span class="cz-carve__line">
+            {line.map((l) => (
+              <b class="cz-carve__l" style={`--w:${l.w}`} data-l>{l.ch}</b>
+            ))}
+          </span>
+        ))}
+      </div>
+      <span class="cz-carve__foot"><span class="cz-carve__sc">Littera scripta manet</span><span class="cz-carve__en">&mdash;&nbsp;the written letter remains</span></span>
+    </div>
+    <p class="iu__hint label">The thread ends where the face began: black granite, gilt in the cuts. Drag your hand across the stone — the pointer is the chisel, and Cinzel&rsquo;s one axis is the depth of the blow, swelling 400&nbsp;&rarr;&nbsp;900 under your touch and cooling to bronze behind you. Kinetic type in the school of Dia Studio; left alone, the carver cuts the three lines one after another, each cooling to bronze behind the chisel.</p>
   </figure>
 
 </div>
 
 <script>
-  // ── Scene 04: filter + live weight axis on the hero cuvée ─────────────────
-  document.querySelectorAll<HTMLElement>('[data-site]').forEach((site) => {
-    const grid = site.querySelector<HTMLElement>('[data-grid]')!;
-    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.cz-card'));
-    site.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
-      b.addEventListener('click', () => {
-        site.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
-        b.classList.add('is-on');
-        const f = b.dataset.filter!;
-        cards.forEach((c) => c.classList.toggle('is-hidden', !(f === 'all' || c.dataset.cat === f)));
-      })
-    );
-
-    const slider = site.querySelector<HTMLInputElement>('[data-wght]')!;
-    const val = site.querySelector<HTMLElement>('[data-wght-val]')!;
-    const heads = site.querySelectorAll<HTMLElement>('[data-wght-type]');
-    const apply = () => {
-      const v = slider.value;
-      val.textContent = v;
-      heads.forEach((h) => {
-        h.style.fontVariationSettings = `'wght' ${v}`;
-        h.style.fontWeight = v;
+  // ── 01 · recast the one-sheet by genre ─────────────────────────────────
+  const TAGLINES: Record<string, [string, string]> = {
+    epic:     ['EVERY EMPIRE FALLS', 'CHRISTMAS DAY'],
+    horror:   ['IT REMEMBERS YOU', 'OCTOBER'],
+    romance:  ['Love is the longest war', 'THIS VALENTINE’S'],
+    prestige: ['From the director of “The Gilded Hour”', 'AWARDS SEASON'],
+  };
+  document.querySelectorAll<HTMLElement>('[data-one]').forEach((one) => {
+    const tag = one.querySelector<HTMLElement>('[data-tagline]')!;
+    const date = one.querySelector<HTMLElement>('[data-dateline]')!;
+    const btns = Array.from(one.querySelectorAll<HTMLButtonElement>('[data-genre-btn]'));
+    btns.forEach((b) => b.addEventListener('click', () => {
+      const g = b.dataset.genreBtn!;
+      one.dataset.genre = g;
+      btns.forEach((x) => {
+        x.classList.toggle('is-on', x === b);
+        x.setAttribute('aria-pressed', String(x === b));
       });
-    };
-    slider.addEventListener('input', apply);
-    apply();
+      const [t, d] = TAGLINES[g];
+      tag.textContent = t;
+      date.textContent = d;
+    }));
   });
 
-  // ── Scene 01: replay the cinematic title reveal on hover/focus ────────────
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce) {
-    document.querySelectorAll<HTMLElement>('[data-cine]').forEach((scene) => {
-      const title = scene.querySelector<HTMLElement>('[data-cine-title]');
-      if (!title) return;
-      const replay = () => {
-        title.classList.remove('is-in');
-        // force reflow so the animation restarts
-        void title.offsetWidth;
-        title.classList.add('is-in');
-      };
-      scene.addEventListener('pointerenter', replay);
-      const btn = scene.querySelector<HTMLElement>('[data-cine-replay]');
-      btn?.addEventListener('click', (e) => { e.stopPropagation(); replay(); });
+  // ── 02 · the wordmark eases to inscription spacing on arrival ──────────
+  // The act's one kinetic idea must exist without a pointer: when the
+  // identity enters the viewport the letterspacing tracks out, slowly,
+  // like the second pass of the chisel. Gated to no-preference.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-mai]').forEach((mai) => {
+      const io = new IntersectionObserver((es) => es.forEach((en) => {
+        if (en.isIntersecting) { mai.classList.add('is-cut'); io.disconnect(); }
+      }), { threshold: 0.45 });
+      io.observe(mai);
     });
   }
+
+  // ── 03 · the Van de Graaf canon toggle ─────────────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-book]').forEach((book) => {
+    const btn = book.querySelector<HTMLButtonElement>('[data-canon]')!;
+    btn.addEventListener('click', () => {
+      const on = book.classList.toggle('is-canon');
+      btn.setAttribute('aria-pressed', String(on));
+      btn.lastChild!.textContent = on ? 'HIDE THE CANON' : 'SHOW THE CANON';
+    });
+  });
+
+  // ── 04 · ÆTERNA: tabs, my list, resume state ───────────────────────────
+  document.querySelectorAll<HTMLElement>('[data-app]').forEach((app) => {
+    const tabs = Array.from(app.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const lists = Array.from(app.querySelectorAll<HTMLElement>('[data-eps]'));
+    tabs.forEach((t) => t.addEventListener('click', () => {
+      tabs.forEach((x) => { x.classList.toggle('is-on', x === t); x.setAttribute('aria-selected', String(x === t)); });
+      lists.forEach((l) => l.classList.toggle('is-on', l.dataset.eps === t.dataset.tab));
+    }));
+    const list = app.querySelector<HTMLButtonElement>('[data-mylist]')!;
+    list.addEventListener('click', () => {
+      const on = list.getAttribute('aria-pressed') !== 'true';
+      list.setAttribute('aria-pressed', String(on));
+      const mark = list.querySelector('b')!;
+      mark.textContent = on ? '✓' : '+';
+    });
+    const play = app.querySelector<HTMLElement>('[data-play]')!;
+    app.querySelectorAll<HTMLButtonElement>('[data-ep]').forEach((ep) => {
+      ep.addEventListener('click', () => {
+        app.querySelectorAll('.cz-app__ep').forEach((r) => r.classList.remove('is-now'));
+        ep.closest('.cz-app__ep')!.classList.add('is-now');
+        play.textContent = `▶  Resume ${(ep.dataset.ep || '').replace('SEASON ', 'S·')}`;
+      });
+    });
+    // pointer over the key art: the ghost Æ takes the gilt where the hand
+    // passes, and the logotype deepens on the weight axis with proximity
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const hero = app.querySelector<HTMLElement>('.cz-app__hero')!;
+      const gilt = app.querySelector<HTMLElement>('.cz-app__heroglyph--gilt')!;
+      const logo = app.querySelector<HTMLElement>('.cz-app__logo')!;
+      hero.addEventListener('pointermove', (e) => {
+        const g = gilt.getBoundingClientRect();
+        gilt.style.setProperty('--mx', `${(e.clientX - g.left).toFixed(0)}px`);
+        gilt.style.setProperty('--my', `${(e.clientY - g.top).toFixed(0)}px`);
+        const l = logo.getBoundingClientRect();
+        const d = Math.hypot(e.clientX - (l.left + l.width / 2), e.clientY - (l.top + l.height / 2));
+        const f = Math.max(0, 1 - d / 420);
+        logo.style.setProperty('--lw', String(Math.round(700 + 180 * f)));
+      });
+      hero.addEventListener('pointerleave', () => {
+        gilt.style.setProperty('--mx', '-999px');
+        gilt.style.setProperty('--my', '-999px');
+        logo.style.setProperty('--lw', '700');
+      });
+    }
+  });
+
+  // ── 05 · the pointer as chisel ─────────────────────────────────────────
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) document.querySelectorAll<HTMLElement>('[data-carve]').forEach((carve) => {
+    const lineEls = Array.from(carve.querySelectorAll<HTMLElement>('.cz-carve__line'));
+    const letters = Array.from(carve.querySelectorAll<HTMLElement>('[data-l]'));
+    const lits = new Float32Array(letters.length);   // heat persists, then cools
+    // the server-rendered carver's sweep (the inline --w values) is the act's
+    // rest state. It is a FLOOR, not a memory: every painted frame keeps each
+    // letter at least as deep as its sweep weight, so no frame — parked,
+    // cooling, or mid-cycle — ever reads flatter than the no-JS fallback.
+    const sweep = letters.map((l) => l.style.getPropertyValue('--w'));
+    const restW = sweep.map((w) => parseFloat(w) || 400);
+    const restoreSweep = () => {
+      letters.forEach((l, i) => {
+        l.style.setProperty('--w', sweep[i]);
+        l.style.removeProperty('--lit');
+        lits[i] = 0;
+      });
+    };
+    let centers: { x: number; y: number }[] = [];
+    let lineGeo: { x0: number; x1: number; y: number }[] = [];
+    let raf = 0;
+    let px = -1e4, py = -1e4;        // pointer in page coords
+    let lastMove = -Infinity;        // never moved ⇒ first paint is the carver's
+    let visible = false;
+    const measure = () => {
+      centers = letters.map((l) => {
+        const r = l.getBoundingClientRect();
+        return { x: r.left + r.width / 2 + window.scrollX, y: r.top + r.height / 2 + window.scrollY };
+      });
+      lineGeo = lineEls.map((ln) => {
+        const r = ln.getBoundingClientRect();
+        return { x0: r.left + window.scrollX, x1: r.right + window.scrollX, y: r.top + r.height / 2 + window.scrollY };
+      });
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(carve);
+    document.fonts?.ready.then(measure);
+
+    const PASS = 3000, REST = 650;   // ms per carved line, breath between lines
+    const paint = (t: number) => {
+      raf = 0;
+      const R = Math.max(200, carve.clientWidth * 0.2);
+      const idle = performance.now() - lastMove > 2400;
+      let cx = px, cy = py;
+      if (idle && lineGeo.length) {
+        // the carver's own pass: LITTERA, then SCRIPTA, then MANET —
+        // each line struck left to right while the last one cools
+        const cycle = lineGeo.length * (PASS + REST);
+        const ph = t % cycle;
+        const k = Math.min(lineGeo.length - 1, Math.floor(ph / (PASS + REST)));
+        const p = Math.min(1, (ph - k * (PASS + REST)) / PASS);
+        const g = lineGeo[k];
+        const pad = R * 0.7;
+        cx = g.x0 - pad + (g.x1 - g.x0 + 2 * pad) * p;
+        cy = g.y;
+      }
+      letters.forEach((l, i) => {
+        const c = centers[i];
+        if (!c) return;
+        const d = Math.hypot(c.x - cx, c.y - cy);
+        const f = Math.max(0, 1 - d / R);               // 0 far … 1 under the blow
+        const lit = Math.max(f, lits[i] * 0.962);       // strike, then cool to bronze
+        lits[i] = lit;
+        // heat deepens the cut, but never above the blow nor below the sweep
+        l.style.setProperty('--w', String(Math.round(Math.max(restW[i], 400 + 500 * lit * lit))));
+        l.style.setProperty('--lit', lit.toFixed(3));
+      });
+      // while on stage the loop never parks (the carver's pass is the act's
+      // idle state, so it must always be able to resume on its own clock);
+      // offscreen the IO below stops it and puts the sweep back.
+      if (visible) raf = requestAnimationFrame(paint);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(paint); };
+    carve.addEventListener('pointermove', (e) => {
+      px = e.pageX; py = e.pageY; lastMove = performance.now(); kick();
+    });
+    // hand off the stone to the carver the moment the visitor leaves
+    carve.addEventListener('pointerleave', () => { px = -1e4; py = -1e4; lastMove = -Infinity; kick(); });
+    // start the idle pass when the act enters the viewport; rest it offscreen —
+    // and never freeze mid-heat: restore the sweep so re-entry starts clean
+    const io = new IntersectionObserver((es) => es.forEach((en) => {
+      visible = en.isIntersecting;
+      if (visible) kick();
+      else { if (raf) { cancelAnimationFrame(raf); raf = 0; } restoreSweep(); }
+    }), { threshold: 0.2 });
+    io.observe(carve);
+  });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ── the stack: gold thread, slightly tighter pacing than default ────── */
+  /* NOTE: never re-declare `.iu__item` margins here — the scoped selector
+     outranks the global `.iu__item--bleed { margin-left: calc(50% - 50vw) }`
+     and un-bleeds every bleed act (round-1 gate failure). */
+  .cz { gap: clamp(3.25rem, 8vh, 5.5rem); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  .iu__hint em { font-style: italic; }
+  .iu__hint strong { font-weight: 600; color: var(--fg-2); }
   .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
-  .cz-scene-house { aspect-ratio: 16 / 10; }
-  .cz-scene-label { aspect-ratio: 4 / 3; }
-  .cz-scene-cine { aspect-ratio: 16 / 9; container-type: inline-size; }
 
-  /* Display type is Cinzel everywhere; the few lines of small body copy use the
-     loaded Spectral companion (Cinzel is caps-only and must not run as text). */
+  /* Cinzel everywhere by default — by inheritance, so each act's reading
+     voice (Spectral, Oswald, the UI sans) cascades to its descendants */
   .iu__scene { font-family: var(--fam); }
-  .iu__scene .num { font-feature-settings: 'lnum' 1, 'tnum' 1; font-variant-numeric: lining-nums tabular-nums; }
+  .iu__scene :is(button, input, select, textarea) { font-family: inherit; }
 
-  /* ============================================================
-     01 — CINEMATIC TITLE CARD
-     Kinetic letter-spacing reveal: glyphs fade up and the tracking
-     opens from a tight cluster to monumental width. Dark cinema surface.
-     ============================================================ */
-  .cz-cine {
-    position: relative; height: 100%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3.4cqi;
+  /* the gilt, shared by every act */
+  .cz { --gilt: #e4c787; --gilt-deep: #ad8546; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     01 · IMMORTAL — the one-sheet, four ways (its own surface per genre)
+     ════════════════════════════════════════════════════════════════════ */
+  .cz-one {
+    display: grid; grid-template-columns: minmax(232px, 300px) 1fr;
+    background: var(--p-field, #0b0908);
+    transition: background 0.6s var(--ease);
+  }
+  /* the four castings */
+  .cz-one[data-genre='epic'] {
+    --p-field: #0b0908; --p-ink: #e9ddc3; --p-soft: #9b8d72; --p-acc: var(--gilt);
+    --p-twght: 800; --p-tls: 0.12em; --p-tsize: 9.3cqi;
+    --p-tg1: #f7e9c8; --p-tg2: var(--gilt); --p-tg3: #8a5f2a;
+  }
+  .cz-one[data-genre='horror'] {
+    --p-field: #08080a; --p-ink: #cfd0c8; --p-soft: #6f7069; --p-acc: #a32e1f;
+    --p-twght: 400; --p-tls: 0.46em; --p-tsize: 6.4cqi;
+    --p-tg1: #dadbd2; --p-tg2: #c9cabe; --p-tg3: #8f9086;
+  }
+  .cz-one[data-genre='romance'] {
+    --p-field: #efe4d6; --p-ink: #43332b; --p-soft: #93806f; --p-acc: #9c5a47;
+    --p-twght: 500; --p-tls: 0.2em; --p-tsize: 8cqi;
+    --p-tg1: #8a4f3d; --p-tg2: #9c5a47; --p-tg3: #6e3a2c;
+  }
+  .cz-one[data-genre='prestige'] {
+    --p-field: #16171b; --p-ink: #e8e4d8; --p-soft: #8d8a7c; --p-acc: #cdc4a4;
+    --p-twght: 600; --p-tls: 0.18em; --p-tsize: 7.4cqi;
+    --p-tg1: #f1ecdc; --p-tg2: #ddd5bd; --p-tg3: #a89e80;
+  }
+
+  .cz-one__rail {
+    display: flex; flex-direction: column; gap: 1.6rem;
+    padding: clamp(1.6rem, 3cqi, 3rem);
+    border-right: 1px solid color-mix(in srgb, var(--p-ink) 14%, transparent);
+    transition: border-color 0.6s var(--ease);
+  }
+  .cz-one__kick {
+    font-size: 13px; letter-spacing: 0.22em; line-height: 1.7; color: var(--p-ink);
+    transition: color 0.6s var(--ease);
+  }
+  .cz-one__kick i { display: block; font-family: var(--serif); font-style: italic; font-size: 12.5px;
+    letter-spacing: 0.02em; text-transform: none; color: var(--p-soft); margin-top: 0.45em;
+    transition: color 0.6s var(--ease); }
+  .cz-one__tabs { display: flex; flex-direction: column; gap: 0.45rem; }
+  .cz-one__tabs button {
+    display: flex; flex-direction: column; gap: 0.22em; text-align: left; cursor: pointer;
+    padding: 0.62rem 0.8rem; border: 1px solid color-mix(in srgb, var(--p-ink) 18%, transparent);
+    background: transparent; color: var(--p-soft);
+    transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .cz-one__tabs button b { font-family: var(--fam); font-weight: 600; font-size: 13.5px; letter-spacing: 0.2em; }
+  .cz-one__tabs button span { font-family: var(--serif); font-style: italic; font-size: 11.5px; letter-spacing: 0.02em; }
+  .cz-one__tabs button:hover { color: var(--p-ink); border-color: color-mix(in srgb, var(--p-ink) 40%, transparent); }
+  .cz-one__tabs button.is-on { color: var(--p-field); background: var(--p-acc); border-color: var(--p-acc); }
+  .cz-one__railfoot { margin-top: auto; font-size: 10.5px; letter-spacing: 0.3em; color: var(--p-soft);
+    transition: color 0.6s var(--ease); }
+
+  /* the sheet itself */
+  .cz-one__sheet {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 2.3cqi; padding: 4.6cqi 6cqi 3.2cqi; min-height: clamp(540px, 46cqi, 700px);
+    color: var(--p-ink); transition: color 0.6s var(--ease);
+  }
+  .cz-one__laurel {
+    display: flex; align-items: center; gap: 1.1cqi;
+    color: var(--p-acc); font-size: 1.05cqi; letter-spacing: 0.26em; line-height: 1.7;
+    opacity: 0; max-height: 0; overflow: hidden; transform: translateY(0.4cqi);
+    transition: opacity 0.5s var(--ease), max-height 0.5s var(--ease), transform 0.5s var(--ease);
+  }
+  .cz-one__laurel b { font-weight: 600; letter-spacing: 0.3em; }
+  .cz-one__laurel svg { width: 3.4cqi; min-width: 30px; }
+  .cz-one[data-genre='prestige'] .cz-one__laurel { opacity: 1; max-height: 6cqi; transform: none; }
+  .cz-one__pres { font-size: 1.25cqi; letter-spacing: 0.5em; padding-left: 0.5em; color: var(--p-soft);
+    transition: color 0.6s var(--ease); }
+  .cz-one__tag {
+    min-height: 1.5em;
+    font-size: 1.7cqi; letter-spacing: 0.34em; padding-left: 0.34em; color: var(--p-acc);
+    transition: color 0.6s var(--ease);
+  }
+  .cz-one[data-genre='romance'] .cz-one__tag,
+  .cz-one[data-genre='prestige'] .cz-one__tag {
+    font-family: var(--serif); font-style: italic; font-size: 2cqi; letter-spacing: 0.06em; padding-left: 0;
+  }
+  .cz-one__title {
+    margin: 0; line-height: 1; white-space: nowrap;
+    font-size: var(--p-tsize); font-weight: var(--p-twght);
+    font-variation-settings: 'wght' var(--p-twght);
+    letter-spacing: var(--p-tls); padding-left: var(--p-tls);
+    background: linear-gradient(180deg, var(--p-tg1) 0%, var(--p-tg2) 52%, var(--p-tg3) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    transition: font-variation-settings 0.7s var(--ease), font-weight 0.7s var(--ease),
+      letter-spacing 0.7s var(--ease), padding-left 0.7s var(--ease), font-size 0.7s var(--ease);
+  }
+  .cz-one__dir { font-size: 1.35cqi; letter-spacing: 0.32em; padding-left: 0.32em; color: var(--p-soft);
+    transition: color 0.6s var(--ease); }
+  .cz-one__credits {
+    margin-top: 1.4cqi; max-width: 62cqi;
+    font-family: var(--cond); font-weight: 500; color: color-mix(in srgb, var(--p-ink) 62%, transparent);
+    transition: color 0.6s var(--ease);
+  }
+  .cz-one__credits p { margin: 0 0 0.5em; font-size: clamp(7.5px, 0.72cqi, 10px); line-height: 1.7;
+    letter-spacing: 0.09em; text-transform: uppercase; }
+  .cz-one__bill {
+    display: flex; align-items: center; gap: 2.2cqi; margin-top: 1.7cqi;
+    font-size: 1.05cqi; letter-spacing: 0.28em; color: var(--p-soft);
+    transition: color 0.6s var(--ease);
+  }
+  .cz-one__rating { border: 1px solid currentColor; padding: 0.3em 0.55em 0.22em; letter-spacing: 0; font-weight: 700; }
+  .cz-one__date { color: var(--p-acc); font-weight: 600; transition: color 0.6s var(--ease); }
+
+  /* reduced motion: the recast (and the canon fade, and every hover ease)
+     snaps instantly — the states themselves are the design, not the tween */
+  @media (prefers-reduced-motion: reduce) {
+    .cz-one, .cz-one *, .cz-book *, .cz-mai__word { transition: none !important; }
+  }
+
+  /* ════════════════════════════════════════════════════════════════════
+     02 · AVRELIA — identity on theme tokens (light + dark safe)
+     ════════════════════════════════════════════════════════════════════ */
+  .cz-mai {
+    display: grid; grid-template-columns: 1.06fr 0.94fr; gap: 5cqi;
+    background: var(--bg); padding: 5cqi 5.5cqi;
+  }
+  .cz-mai__left { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  /* "Alta Gioielleria · Roma" — typed lowercase, rendered in Cinzel's drawn small caps */
+  .cz-mai__over { font-size: 1.6cqi; letter-spacing: 0.34em; color: var(--fg-3); }
+  .cz-mai__over i { color: var(--accent); font-style: normal; }
+  .cz-mai__word {
+    margin: 1.6cqi 0 0; font-size: 8.7cqi; line-height: 1; font-weight: 500;
+    letter-spacing: 0.06em; color: var(--fg); white-space: nowrap;
+    transition: letter-spacing 0.9s var(--ease-out);
+  }
+  .cz-mai__word b { font-weight: 500; color: var(--accent); }
+  /* the one kinetic idea, pointer-free: arrival eases the wordmark out to
+     inscription spacing (JS adds .is-cut on entry, gated to no-preference) */
+  .cz-mai.is-cut .cz-mai__word { letter-spacing: 0.105em; }
+  .cz-mai__est { font-size: 1.4cqi; letter-spacing: 0.3em; color: var(--fg-3); margin-top: 1.4cqi; }
+  .cz-mai__note { font-family: var(--serif); font-size: 1.45cqi; line-height: 1.6; color: var(--fg-2);
+    max-width: 40ch; margin: 2.4cqi 0 0; }
+  .cz-mai__note b { font-family: var(--fam); font-weight: 600; color: var(--accent); }
+  .cz-mai__note i { font-style: italic; }
+  /* weight as engraving depth */
+  .cz-mai__depths { display: flex; gap: 3cqi; margin-top: 2.8cqi; border-top: 1px solid var(--line); padding-top: 2.2cqi; }
+  .cz-mai__depths span { display: flex; flex-direction: column; gap: 0.55cqi; font-size: 2.5cqi; letter-spacing: 0.1em; color: var(--fg); }
+  .cz-mai__depths i { font-family: var(--serif); font-style: italic; font-size: 1.25cqi; letter-spacing: 0.04em; color: var(--fg-3); }
+
+  /* the right column is ONE artifact: the medallion sits directly on the
+     canvas and the card + hallmark hang from it on a single gilt thread —
+     not an inventory of boxed components */
+  .cz-mai__right { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; }
+  .cz-mai__medal { display: grid; place-items: center; }
+  .cz-mai__medal svg { width: min(27cqi, 280px); height: auto; display: block; }
+  .cz-mai__rim { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+  .cz-mai__rim--in { stroke: var(--line); stroke-width: 1; }
+  .cz-mai__ringtext { font-size: 14.5px; letter-spacing: 3.4px; font-weight: 600; fill: var(--accent); }
+  .cz-mai__mono { font-size: 96px; font-weight: 700; fill: var(--fg); }
+  .cz-mai__spin { transform-origin: 120px 120px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cz-mai__spin { animation: cz-mai-turn 44s linear infinite; }
+    @keyframes cz-mai-turn { to { transform: rotate(360deg); } }
+  }
+  .cz-mai__thread { width: 1px; height: 3.2cqi; background: var(--accent); }
+  .cz-mai__thread--short { height: 2.2cqi; }
+  .cz-mai__card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5cqi;
+    min-width: 24cqi; padding: 1.9cqi 2.6cqi;
+    border: 1px solid var(--line); border-top: 2px solid var(--accent); }
+  .cz-mai__cardname { font-size: 2.5cqi; letter-spacing: 0.22em; padding-left: 0.22em; color: var(--fg); }
+  .cz-mai__cardname b { font-weight: 500; color: var(--accent); }
+  /* small caps again — typed lowercase */
+  .cz-mai__cardline { font-size: 1.5cqi; letter-spacing: 0.22em; color: var(--fg-2); }
+  .cz-mai__cardline--soft { color: var(--fg-3); }
+  .cz-mai__hall { display: flex; align-items: baseline; gap: 1.3cqi;
+    font-size: 1.3cqi; letter-spacing: 0.26em; color: var(--fg-3); }
+  .cz-mai__hall i { font-style: normal; font-size: 0.55em; color: var(--accent); align-self: center; }
+  .cz-mai__hall span:first-child { color: var(--accent); font-weight: 600; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     03 · GIBBON — the spread (its own paper, declared for both modes)
+     ════════════════════════════════════════════════════════════════════ */
+  /* The pages are SET ON the canon they draw. Each leaf is a true 2:3 page;
+     the live content lives in an absolutely-placed block whose insets are the
+     Van de Graaf margins — inner 1/9 and outer 2/9 of the page width, head 1/9
+     and foot 2/9 of the height — i.e. exactly the rect the SVG draws.
+     .cz-book is its own inline-size container so every cqi below tracks the
+     book, not the bleed scene. The unit --u = 1% of one page's width. */
+  .cz-book-scene { background: color-mix(in srgb, var(--bg-2) 86%, var(--fg) 14%);
+    padding: clamp(2rem, 4.5cqi, 4rem) clamp(1rem, 4cqi, 3.5rem) clamp(2.2rem, 5cqi, 4.5rem); }
+  .cz-book { --paper: #f4edde; --paper-2: #ece2cc; --ink: #2c2417; --ink-2: #6b5d45; --canon: #a4642a;
+    --u: 0.5cqi;
+    max-width: 1180px; margin-inline: auto; container-type: inline-size;
+    display: flex; flex-direction: column; align-items: flex-start; }
+  .cz-book ::selection { background: var(--gilt-deep); color: #f4edde; }
+  .cz-book__spread { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .cz-book__page {
+    position: relative; aspect-ratio: 2 / 3; min-width: 0;
+    background: linear-gradient(105deg, var(--paper), var(--paper-2) 96%);
+    color: var(--ink);
+  }
+  .cz-book__page--verso { box-shadow: inset calc(-4.4 * var(--u)) 0 calc(5.2 * var(--u)) calc(-4.4 * var(--u)) rgba(58, 44, 22, 0.38); }
+  .cz-book__page--recto { box-shadow: inset calc(4.4 * var(--u)) 0 calc(5.2 * var(--u)) calc(-4.4 * var(--u)) rgba(58, 44, 22, 0.30); }
+
+  /* the text block = the canon rect (insets are % of the page box) */
+  .cz-book__block {
+    position: absolute; inset: 11.111% 11.111% 22.222% 22.222%;   /* verso: spine right */
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .cz-book__page--recto .cz-book__block { inset: 11.111% 22.222% 22.222% 11.111%;
+    align-items: stretch; text-align: left; }
+
+  /* verso — the Tschichold title page: centred, letterspaced capitals,
+     no line wider than the text block, imprint on the block's foot line */
+  .cz-book__author { font-size: calc(3 * var(--u)); letter-spacing: 0.4em; padding-left: 0.4em; }
+  .cz-book__rule { width: calc(18 * var(--u)); height: 1px; background: var(--ink-2); margin: calc(3.2 * var(--u)) 0 calc(5 * var(--u)); }
+  .cz-book__t1 { font-size: calc(4.2 * var(--u)); letter-spacing: 0.24em; padding-left: 0.24em; line-height: 1.35; }
+  .cz-book__t2 { font-size: calc(5 * var(--u)); letter-spacing: 0.08em; padding-left: 0.08em; line-height: 1.3; font-weight: 600; }
+  .cz-book__of { font-size: calc(2.4 * var(--u)); letter-spacing: 0.5em; padding-left: 0.5em; color: var(--ink-2); margin: calc(2 * var(--u)) 0; }
+  .cz-book__vol { font-size: calc(2.8 * var(--u)); letter-spacing: 0.3em; padding-left: 0.3em; color: var(--ink-2); margin-top: calc(5 * var(--u)); }
+  .cz-book__device { color: var(--gilt-deep); font-size: calc(3.4 * var(--u)); letter-spacing: 0.4em; padding-left: 0.4em; margin-top: auto; }
+  .cz-book__imprint { font-size: calc(2.1 * var(--u)); letter-spacing: 0.34em; padding-left: 0.34em; line-height: 2; color: var(--ink-2); margin-top: calc(2.6 * var(--u)); }
+
+  /* recto — chapter opener: small caps lead the text in; the body fills the
+     full width of the canon rect (no centring narrower than the block) */
+  .cz-book__rh { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: calc(2.3 * var(--u)); letter-spacing: 0.26em; color: var(--ink-2);
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); padding-bottom: calc(1.8 * var(--u)); }
+  .cz-book__ch { font-size: calc(3.4 * var(--u)); letter-spacing: 0.28em; padding-left: 0.28em; text-align: center; margin-top: calc(6 * var(--u)); }
+  .cz-book__chrule { width: calc(14 * var(--u)); height: 1px; background: var(--gilt-deep); margin: calc(2.8 * var(--u)) auto calc(3.2 * var(--u)); }
+  .cz-book__arg { font-family: var(--serif); font-style: italic; font-size: calc(2.9 * var(--u)); line-height: 1.5;
+    text-align: center; color: var(--ink-2); margin: 0 auto calc(4.6 * var(--u)); max-width: 30ch; }
+  .cz-book__body { font-family: var(--serif); font-weight: 400; font-size: calc(2.95 * var(--u)); line-height: 1.7;
+    color: var(--ink); width: 100%; }
+  .cz-book__body p { margin: 0 0 1.1em; text-indent: 1.6em; }
+  .cz-book__body p:first-child { text-indent: 0; }
+  .cz-book__drop { float: left; font-family: var(--fam); font-size: calc(10.5 * var(--u)); line-height: 0.8;
+    padding: 0.08em 0.14em 0 0; color: var(--gilt-deep); }
+  /* the lead-in: typed lowercase = Cinzel's true small capitals */
+  .cz-book__lead { font-family: var(--fam); font-size: 0.94em; letter-spacing: 0.08em; }
+  /* the catchword sits in the foot margin, on the block's outer edge */
+  .cz-book__catch { position: absolute; right: 22.222%; bottom: 17.5%;
+    font-family: var(--serif); font-style: italic;
+    font-size: calc(2.4 * var(--u)); color: var(--ink-2); }
+
+  /* the Van de Graaf canon — drawn over each page on demand */
+  .cz-book__canon { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0;
+    transition: opacity 0.45s var(--ease); }
+  .cz-book__canon line, .cz-book__canon rect { fill: none; stroke: var(--canon); stroke-width: 1.6;
+    vector-effect: non-scaling-stroke; }
+  .cz-book__canon line { stroke-dasharray: 5 6; opacity: 0.75; }
+  .cz-book__canon rect { stroke-width: 2; }
+  .cz-book.is-canon .cz-book__canon { opacity: 1; }
+  .cz-book.is-canon .cz-book__page > :not(.cz-book__canon) { opacity: 0.42; }
+  .cz-book__page > :not(.cz-book__canon) { transition: opacity 0.45s var(--ease); }
+
+  .cz-book__toggle {
+    margin-top: 1.4rem;
+    display: inline-flex; align-items: center; gap: 0.6em; cursor: pointer;
+    font-family: var(--fam); font-size: 12px; letter-spacing: 0.22em;
+    color: var(--fg); padding: 0.6em 1.05em 0.5em 0.85em;
+    border: 1px solid color-mix(in srgb, var(--fg) 35%, transparent); background: transparent;
+    transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .cz-book__toggle i { width: 9px; height: 9px; border-radius: 50%; background: var(--canon); }
+  .cz-book__toggle:hover { border-color: var(--fg); }
+  .cz-book__toggle[aria-pressed='true'] { background: var(--canon); border-color: var(--canon); color: #f6efe0; }
+  .cz-book__toggle[aria-pressed='true'] i { background: #f6efe0; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     04 · ÆTERNA — streaming title page at real device px (own dark surface)
+     ════════════════════════════════════════════════════════════════════ */
+  .cz-app__body { background: #0e0d10; color: #ddd6c6; font-size: 13px; line-height: 1.5; }
+  .cz-app__body ::selection { background: var(--gilt-deep); color: #0e0d10; }
+  .cz-app__hero {
+    position: relative; overflow: clip;
     background:
-      radial-gradient(120% 90% at 50% 36%, color-mix(in srgb, #211c16 88%, var(--accent) 12%), #0c0a07 82%);
-    color: #efe6d2; text-align: center; overflow: hidden; padding: 7cqi 10cqi 4.6cqi;
+      radial-gradient(120% 130% at 84% 10%, color-mix(in srgb, var(--gilt-deep) 26%, transparent), transparent 58%),
+      linear-gradient(168deg, #1c1a18, #0e0d10 76%);
+    padding: 2.1rem 1.6rem 1.7rem;
   }
-  /* faint engraved corner ticks — frame the title like a real card */
-  .cz-cine__corner { position: absolute; width: 5.5cqi; height: 5.5cqi; border: 1px solid color-mix(in srgb, #e8cf9a 30%, transparent); pointer-events: none; }
-  .cz-cine__corner--tl { top: 3.4cqi; left: 3.4cqi; border-right: 0; border-bottom: 0; }
-  .cz-cine__corner--br { bottom: 3.4cqi; right: 3.4cqi; border-left: 0; border-top: 0; }
-  /* visible replay affordance */
-  .cz-cine__replay {
-    position: absolute; top: 3cqi; right: 3cqi; z-index: 3;
-    width: 4.6cqi; height: 4.6cqi; min-width: 26px; min-height: 26px;
-    display: grid; place-items: center; border-radius: 50%;
-    border: 1px solid color-mix(in srgb, #e8cf9a 40%, transparent);
-    background: color-mix(in srgb, #efe6d2 6%, transparent); color: #e8cf9a; cursor: pointer;
-    transition: background .18s var(--ease), transform .18s var(--ease), border-color .18s var(--ease);
+  .cz-app__heroink { position: relative; z-index: 1; max-width: 560px; display: flex; flex-direction: column; gap: 0.65rem; }
+  /* the key art Æ is CARVED into the screen, not watermarked on it: the glyph
+     itself is cut darker than the ground, with a lit lower arris and a hard
+     shadowed upper edge — an incision before the pointer ever arrives */
+  .cz-app__heroglyph {
+    position: absolute; right: -0.05em; top: 50%; transform: translateY(-50%);
+    font-size: 230px; line-height: 1; font-weight: 700; pointer-events: none;
+    color: #0a090c;
+    text-shadow:
+      -1px -2px 1px rgba(0, 0, 0, 0.9),
+      1px 1.5px 0 rgba(228, 199, 135, 0.22),
+      2px 3px 2px rgba(228, 199, 135, 0.07);
   }
-  .cz-cine__replay svg { width: 56%; height: 56%; fill: currentColor; }
-  .cz-cine__replay:hover { background: color-mix(in srgb, #e8cf9a 22%, transparent); border-color: #e8cf9a; transform: rotate(-30deg); }
-  .cz-cine__pres { font-size: 2.15cqi; letter-spacing: 0.5em; padding-left: 0.5em; color: color-mix(in srgb, #efe6d2 60%, transparent); }
-  .cz-cine__title {
-    display: flex; justify-content: center; flex-wrap: nowrap;
-    font-size: 13cqi; line-height: 1; font-weight: 600;
-    color: #f3ead6;
+  /* the chisel foreshadowed: where the pointer passes, gold leaf is pressed
+     into the incision — a masked gilded copy riding over the carved glyph
+     (act 05's move, played quiet). JS feeds --mx/--my; offscreen by default. */
+  .cz-app__heroglyph--gilt {
+    text-shadow: none; opacity: 0.85;
+    background: linear-gradient(180deg, #f3e3bd, var(--gilt) 55%, var(--gilt-deep));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-mask-image: radial-gradient(170px 170px at var(--mx, -999px) var(--my, -999px), #000 0%, transparent 72%);
+    mask-image: radial-gradient(170px 170px at var(--mx, -999px) var(--my, -999px), #000 0%, transparent 72%);
   }
-  .cz-cine__title span {
-    display: inline-block;
-    background: linear-gradient(180deg, #fff4dc 0%, #e8cf9a 46%, #b48a44 100%);
+  .cz-app__net { font-size: 10.5px; letter-spacing: 0.34em; color: #8d8674; }
+  /* the one axis, performed: pointer proximity deepens the cut, 700 → 880 */
+  .cz-app__logo {
+    margin: 0; font-size: 64px; line-height: 0.95; font-weight: 700; letter-spacing: 0.1em;
+    font-variation-settings: 'wght' var(--lw, 700);
+    background: linear-gradient(180deg, #f3e3bd, var(--gilt) 55%, var(--gilt-deep));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  /* engraved double-rule device — reads even in a still */
-  .cz-cine__rule { position: relative; width: 0; height: 3px; }
-  .cz-cine__rule::before,
-  .cz-cine__rule::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, #e8cf9a 75%, transparent) 22%, color-mix(in srgb, #e8cf9a 75%, transparent) 78%, transparent); }
-  .cz-cine__rule::before { top: 0; }
-  .cz-cine__rule::after { bottom: 0; opacity: 0.55; }
-  .cz-cine__sub { font-size: 1.95cqi; letter-spacing: 0.42em; padding-left: 0.42em; color: color-mix(in srgb, #efe6d2 52%, transparent); }
-  .cz-cine__cast { font-size: 2.35cqi; letter-spacing: 0.38em; padding-left: 0.38em; color: color-mix(in srgb, #efe6d2 80%, transparent); font-weight: 600; white-space: nowrap; }
-  .cz-cine__strip {
-    display: flex; align-items: center; justify-content: center; gap: 2cqi; margin-top: 1cqi;
-    font-family: var(--serif); font-size: 1.55cqi; letter-spacing: 0.22em; padding-left: 0.22em;
-    color: color-mix(in srgb, #efe6d2 38%, transparent);
-  }
-  .cz-cine__strip i { width: 0.5cqi; height: 0.5cqi; border-radius: 50%; background: color-mix(in srgb, #e8cf9a 55%, transparent); }
-
-  /* static rendered state (no-JS / reduced-motion screenshot = the finished card) */
-  .cz-cine__title { letter-spacing: 0.12em; padding-left: 0.12em; }
-  .cz-cine__rule { width: 30cqi; }
-
-  /* Default (no-JS / reduced-motion / screenshot) = the finished, fully visible card.
-     Motion only ADDS an entrance/replay; it never hides the resting state. */
   @media (prefers-reduced-motion: no-preference) {
-    /* one-shot entrance on load, then replay by toggling .is-in */
-    .cz-cine__title { animation: cz-track 1.6s var(--ease-out) both; }
-    .cz-cine__title span { animation: cz-rise 0.9s var(--ease-out) both; }
-    .cz-cine__title span:nth-child(1) { animation-delay: 0.05s; }
-    .cz-cine__title span:nth-child(2) { animation-delay: 0.13s; }
-    .cz-cine__title span:nth-child(3) { animation-delay: 0.21s; }
-    .cz-cine__title span:nth-child(4) { animation-delay: 0.29s; }
-    .cz-cine__title span:nth-child(5) { animation-delay: 0.37s; }
-    .cz-cine__title span:nth-child(6) { animation-delay: 0.45s; }
-    .cz-cine__title span:nth-child(7) { animation-delay: 0.53s; }
-    .cz-cine__title span:nth-child(8) { animation-delay: 0.61s; }
-    .cz-cine__rule { animation: cz-wipe 1.2s var(--ease-out) 0.6s both; }
-    .cz-cine__pres  { animation: cz-fade 1s var(--ease-out) 0.3s both; }
-    .cz-cine__sub   { animation: cz-fade 1s var(--ease-out) 0.9s both; }
-    .cz-cine__cast  { animation: cz-fade 1s var(--ease-out) 1.1s both; }
-    .cz-cine__strip { animation: cz-fade 1s var(--ease-out) 1.3s both; }
-
-    /* replay: re-run the same animations */
-    .cz-cine__title.is-in { animation: cz-track 1.6s var(--ease-out) both; }
-    .cz-cine__title.is-in span { animation: cz-rise 0.9s var(--ease-out) both; }
-
-    @keyframes cz-track { from { letter-spacing: -0.02em; padding-left: 0; } to { letter-spacing: 0.12em; padding-left: 0.12em; } }
-    @keyframes cz-rise  { from { opacity: 0; transform: translateY(0.6cqi); } to { opacity: 1; transform: none; } }
-    @keyframes cz-wipe  { from { width: 0; } to { width: 30cqi; } }
-    @keyframes cz-fade  { from { opacity: 0; } to { opacity: 1; } }
+    .cz-app__logo { transition: font-variation-settings 0.25s linear; }
   }
-
-  /* ============================================================
-     02 — CUVÉE LABEL (SVG textPath, engraved medallion)
-     Distinct silhouette + curved type; the one accent is the year.
-     ============================================================ */
-  /* the bottle ground: a dark glass field the paper label is wrapped onto */
-  .cz-scene-label { container-type: inline-size; }
-  .cz-label-ground {
-    height: 100%; display: grid; place-items: center; padding: 7cqi 8cqi;
-    background:
-      radial-gradient(140% 120% at 22% 0%, color-mix(in srgb, var(--fg) 8%, transparent), transparent 55%),
-      linear-gradient(105deg, color-mix(in srgb, var(--fg) 78%, var(--accent) 22%), color-mix(in srgb, var(--fg) 92%, #000) 100%);
+  /* metadata in the network's own voice: roman numerals, small caps, gilt —
+     no borrowed match-percentage chip from another platform's algorithm */
+  .cz-app__meta { display: flex; align-items: baseline; gap: 0.9rem;
+    font-size: 12px; letter-spacing: 0.12em; color: #9b937e; }
+  .cz-app__meta b { color: var(--gilt); font-weight: 600; letter-spacing: 0.14em; }
+  .cz-app__meta i { font-style: normal; font-size: 10px; letter-spacing: 0.1em;
+    border: 1px solid #4a463c; padding: 0.1rem 0.4rem 0.05rem; }
+  .cz-app__sell { margin: 0; font-family: var(--serif); font-style: italic; font-size: 14.5px; color: #b3a98f; }
+  .cz-app__cta { display: flex; gap: 0.6rem; margin-top: 0.5rem; }
+  /* CTAs in the brand face — a decision, not a cascade accident: typed
+     lowercase so Cinzel sets them in its true small capitals, kerned and
+     weighted for the 13px button size. Selector carries the .cz-app scope
+     (0,2,0) so it outranks the generic `.iu__scene :is(button)` (0,1,1). */
+  .cz-app .cz-app__play, .cz-app .cz-app__list {
+    font-family: var(--fam); font-size: 13.5px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer;
+    padding: 0.6rem 1.15rem 0.5rem; transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease);
   }
-  /* the embossed paper label */
-  .cz-label {
-    position: relative; width: min(70cqi, 100%); aspect-ratio: 3 / 4;
-    display: flex; flex-direction: column; align-items: center;
-    padding: 5cqi 5cqi 4.4cqi;
-    background:
-      repeating-linear-gradient(92deg, transparent 0 3px, color-mix(in srgb, var(--fg) 4%, transparent) 3px 4px),
-      linear-gradient(170deg, color-mix(in srgb, var(--bg) 60%, #fff 40%), var(--bg) 62%, var(--bg-2));
-    box-shadow:
-      0 1cqi 5cqi -1cqi color-mix(in srgb, #000 70%, transparent),
-      0 0.4cqi 1.4cqi -0.6cqi color-mix(in srgb, #000 60%, transparent),
-      inset 0 0 0 0.4cqi color-mix(in srgb, var(--fg) 10%, transparent);
+  .cz-app__play { background: #ece2c8; color: #16140f; border: 1px solid #ece2c8; }
+  .cz-app__play:hover { background: #fff7e2; }
+  .cz-app__list { background: transparent; color: #ddd6c6; border: 1px solid #57523f; }
+  .cz-app__list b { font-weight: 700; color: var(--gilt); }
+  .cz-app__list:hover { border-color: var(--gilt); }
+  .cz-app__list[aria-pressed='true'] { border-color: var(--gilt); color: var(--gilt); }
+
+  .cz-app__tabs { display: flex; align-items: baseline; gap: 1.3rem; padding: 0.95rem 1.6rem 0;
+    border-bottom: 1px solid #29261f; }
+  .cz-app__tabs button {
+    font-family: var(--fam); font-size: 13px; letter-spacing: 0.18em; font-weight: 600;
+    font-variation-settings: 'wght' 600;
+    color: #8d8674; padding: 0 0 0.7rem; cursor: pointer; background: none; border: 0;
+    border-bottom: 2px solid transparent; transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
   }
-  .cz-label::before { content: ''; position: absolute; inset: 2.2cqi; border: 1px solid var(--line); pointer-events: none; }
-  .cz-label__top { font-size: 2.1cqi; letter-spacing: 0.36em; padding-left: 0.36em; color: var(--fg-2); margin-bottom: 0.6cqi; }
-  .cz-label__svg { width: 100%; height: auto; margin: auto 0; display: block; }
-  .cz-label__notes { font-family: var(--serif); font-style: italic; font-size: 2cqi; letter-spacing: 0.04em; color: var(--fg-2); margin-bottom: 1.2cqi; }
-  .cz-label__foot { display: flex; align-items: center; gap: 1.6cqi; font-size: 1.85cqi; letter-spacing: 0.2em; padding-left: 0.2em; color: var(--fg-3); }
-  .cz-label__foot i { width: 0.5cqi; height: 0.5cqi; border-radius: 50%; background: var(--accent); }
-
-  .cz-label__frame { fill: none; stroke: var(--fg-2); stroke-width: 1.1; }
-  .cz-label__frame--in { stroke: var(--line); stroke-width: 0.75; }
-  .cz-label__svg text { fill: var(--fg); }
-  .cz-label__arc { font-size: 11px; letter-spacing: 2.6px; fill: var(--fg-2); font-weight: 600; }
-  .cz-label__arc--bot { font-size: 11px; letter-spacing: 2.6px; fill: var(--fg-2); font-weight: 600; }
-  .cz-label__cuvee { font-size: 32px; letter-spacing: 11px; font-weight: 600; fill: var(--fg); }
-  .cz-label__name { font-size: 58px; letter-spacing: 3px; font-weight: 800; fill: var(--fg); }
-  .cz-label__hair { stroke: var(--accent); stroke-width: 1; }
-  .cz-label__year { font-size: 13px; letter-spacing: 4px; fill: var(--accent); font-weight: 600; }
-  .cz-label__appel { font-size: 12px; letter-spacing: 3px; fill: var(--fg-3); font-weight: 500; }
-
-  .cz-label__frame { stroke-dasharray: 1100; stroke-dashoffset: 0; }
+  .cz-app__tabs button:hover { color: #ddd6c6; }
+  /* the active season swells on the weight axis — the same engraving-depth
+     move the identity (02) prints, here as UI state */
+  .cz-app__tabs button.is-on { color: var(--gilt); border-bottom-color: var(--gilt); font-variation-settings: 'wght' 760; }
   @media (prefers-reduced-motion: no-preference) {
-    .cz-label:hover .cz-label__frame { animation: cz-redraw 1.4s var(--ease); }
-    .cz-label:hover .cz-label__cuvee,
-    .cz-label:hover .cz-label__name,
-    .cz-label:hover .cz-label__year,
-    .cz-label:hover .cz-label__appel,
-    .cz-label:hover .cz-label__arc,
-    .cz-label:hover .cz-label__arc--bot { animation: cz-engrave 1.1s var(--ease); }
-    @keyframes cz-redraw { from { stroke-dashoffset: 1100; } to { stroke-dashoffset: 0; } }
-    @keyframes cz-engrave { 0% { opacity: 0; } 45% { opacity: 0; } 100% { opacity: 1; } }
+    .cz-app__tabs button { transition: color 0.18s var(--ease), border-color 0.18s var(--ease), font-variation-settings 0.4s var(--ease); }
   }
+  .cz-app__tabnote { margin-left: auto; font-size: 11px; letter-spacing: 0.14em; color: #6e6856; }
 
-  /* ============================================================
-     03 — MAISON DE JOAILLERIE IDENTITY
-     Wordmark breathes the weight axis. The single accent is the centre dot.
-     ============================================================ */
-  /* a tinted ground so the identity card reads as a distinct artifact */
-  .cz-scene-house { container-type: inline-size; }
-  .cz-house-ground {
-    height: 100%; display: grid; place-items: center; padding: 6cqi 7cqi;
-    background:
-      radial-gradient(120% 100% at 50% 0%, color-mix(in srgb, var(--accent) 9%, var(--bg-2)), var(--bg-2) 70%);
+  .cz-app__eps { display: none; list-style: none; margin: 0; padding: 0.4rem 0.8rem 0.8rem; }
+  .cz-app__eps.is-on { display: block; }
+  .cz-app__ep button {
+    display: grid; grid-template-columns: 118px minmax(0, 1fr) auto; gap: 1rem; align-items: center;
+    width: 100%; text-align: left; padding: 0.7rem 0.8rem; cursor: pointer; background: none; border: 0;
+    border-radius: 4px; transition: background 0.15s var(--ease);
   }
-  .cz-house {
-    position: relative; width: 100%; height: 100%;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 50%, #fff 50%), var(--bg));
-    display: grid; grid-template-rows: auto 1fr auto; padding: 5.6cqi 6cqi 5cqi;
-    box-shadow:
-      0 1.4cqi 5cqi -1.6cqi color-mix(in srgb, var(--fg) 55%, transparent),
-      0 0.5cqi 1.6cqi -0.8cqi color-mix(in srgb, var(--fg) 40%, transparent);
+  .cz-app__ep button:hover { background: #17151a; }
+  .cz-app__ep.is-now button { background: #1b1817; }
+  .cz-app__epthumb {
+    position: relative; aspect-ratio: 16 / 9; border-radius: 2px; overflow: hidden;
+    background: linear-gradient(150deg, #2a2620, #151310);
+    display: grid; place-items: center;
   }
-  /* engraved inner keyline frame */
-  .cz-house::before { content: ''; position: absolute; inset: 2.6cqi; border: 1px solid var(--line); pointer-events: none; }
-  .cz-house::after  { content: ''; position: absolute; inset: 3.3cqi; border: 1px solid var(--line-soft); pointer-events: none; }
-  .cz-house__id { display: flex; align-items: center; justify-content: center; gap: 2.4cqi; font-size: 2.1cqi; letter-spacing: 0.36em; padding-left: 0.36em; color: var(--fg-3); }
-  .cz-house__dot { width: 0.7cqi; height: 0.7cqi; border-radius: 50%; background: var(--accent); }
-  .cz-house__center { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6cqi; }
-  .cz-house__rule { width: 26cqi; height: 1px; background: linear-gradient(90deg, transparent, var(--line) 30%, var(--line) 70%, transparent); }
-  .cz-house__word {
-    font-size: 17cqi; line-height: 0.92; letter-spacing: 0.07em; padding-left: 0.07em; color: var(--fg);
-    font-weight: 600; font-variation-settings: 'wght' 600; text-align: center;
-  }
-  .cz-house__sub { font-size: 2.1cqi; letter-spacing: 0.36em; padding-left: 0.36em; color: var(--fg-2); }
-  .cz-house__mark { display: flex; align-items: center; gap: 3cqi; justify-self: center; border: 1px solid var(--line); padding: 2.4cqi 4cqi; background: color-mix(in srgb, var(--bg) 60%, #fff 40%); }
-  .cz-house__mono { font-size: 8.5cqi; line-height: 1; font-weight: 700; color: var(--fg); }
-  .cz-house__mark-r { font-family: var(--serif); font-size: 2.5cqi; line-height: 1.35; color: var(--fg-2); letter-spacing: 0.04em; }
-  .cz-house__mark-r i { font-style: italic; color: var(--fg-3); font-size: 2.3cqi; letter-spacing: 0; }
-
+  .cz-app__epthumb b { font-family: var(--fam); font-weight: 600; font-size: 26px; color: var(--gilt); opacity: 0.8; }
+  .cz-app__epthumb i { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--gilt); transform-origin: left; }
+  /* hover reward: the progress bar re-runs to its mark */
   @media (prefers-reduced-motion: no-preference) {
-    .cz-house__word { animation: cz-strike 7s var(--ease) infinite; }
-    @keyframes cz-strike {
-      0%, 100% { font-variation-settings: 'wght' 500; font-weight: 500; }
-      50%      { font-variation-settings: 'wght' 900; font-weight: 900; }
-    }
+    .cz-app__ep button:hover .cz-app__epthumb i { animation: cz-prog 0.7s var(--ease-out); }
+    @keyframes cz-prog { from { transform: scaleX(0); } }
   }
+  .cz-app__epmain { display: flex; flex-direction: column; gap: 0.18rem; min-width: 0; }
+  .cz-app__eptitle { font-family: var(--font-ui); font-size: 14px; font-weight: 600; color: #e8e1cf;
+    display: flex; align-items: baseline; gap: 0.5em; min-width: 0; }
+  .cz-app__eptitle b { font-family: var(--fam); font-weight: 600; font-size: 13px; letter-spacing: 0.06em; color: var(--gilt); }
+  .cz-app__now { display: none; font-family: var(--font-ui); font-style: normal; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: #0e0d10; background: var(--gilt);
+    padding: 0.1rem 0.4rem; border-radius: 2px; }
+  .cz-app__ep.is-now .cz-app__now { display: inline-block; }
+  .cz-app__epdesc { font-family: var(--font-ui); font-size: 12.5px; color: #9b937e;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cz-app__eplen { font-family: var(--font-ui); font-size: 12px; color: #6e6856; white-space: nowrap; }
 
-  /* ============================================================
-     04 — MAISON MICROSITE / CELLAR (real px sizing)
-     Hero cuvée spans two columns; live weight axis strikes it heavier.
-     ============================================================ */
-  .cz-site { font-size: 13px; line-height: 1.4; background: var(--bg); }
-  .cz-site__head { display: flex; align-items: center; gap: 1.1rem; padding: 0.95rem 1.15rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .cz-site__logo { font-size: 21px; font-weight: 700; letter-spacing: 0.14em; padding-left: 0.14em; color: var(--fg); }
-  .cz-site__filters { display: flex; gap: 0.2rem; margin-left: 0.5rem; }
-  .cz-site__filters button { font-size: 11px; letter-spacing: 0.12em; color: var(--fg-3); padding: 0.34rem 0.7rem; border-radius: 100px; transition: color .15s var(--ease), background .15s var(--ease); }
-  .cz-site__filters button:hover { color: var(--fg); }
-  .cz-site__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-weight: 600; }
-  .cz-site__reserve { margin-left: auto; font-size: 11px; letter-spacing: 0.14em; color: var(--fg-2); border: 1px solid var(--line); padding: 0.34rem 0.8rem; }
-
-  .cz-site__axis { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.15rem; border-bottom: 1px solid var(--line); }
-  .cz-site__axis label { font-size: 10.5px; letter-spacing: 0.16em; color: var(--fg-3); white-space: nowrap; }
-  .cz-site__axis label span { color: var(--accent); font-feature-settings: 'tnum'; }
-  .cz-site__axis-hint { font-family: var(--serif); font-size: 11.5px; font-style: italic; color: var(--fg-3); margin-left: auto; }
-  .cz-site__axis input[type='range'] { -webkit-appearance: none; appearance: none; width: 180px; height: 2px; background: var(--line); border-radius: 2px; cursor: pointer; }
-  .cz-site__axis input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
-  .cz-site__axis input[type='range']::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: var(--accent); cursor: pointer; }
-
-  .cz-site__grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr 1fr auto; grid-auto-flow: dense;
-    gap: 1px; background: var(--line); padding: 1px;
+  /* ════════════════════════════════════════════════════════════════════
+     05 · LITTERA SCRIPTA MANET — black granite, gilt in the cuts
+     ════════════════════════════════════════════════════════════════════ */
+  .cz-carve {
+    background:
+      radial-gradient(110% 90% at 50% 0%, #17150f, #0b0a08 70%);
+    cursor: crosshair;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3cqi; padding: 7cqi 4cqi 5.4cqi; min-height: clamp(380px, 44cqi, 640px);
   }
-  .cz-card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-  .cz-card.is-hidden { display: none; }
-  .cz-card__img { position: relative; flex: 1; min-height: 170px; background: var(--bg-2); display: grid; place-items: center; overflow: hidden; padding: 0.8rem; container-type: inline-size; }
-  .cz-card__img::after { content: ''; position: absolute; inset: 0.5rem; border: 1px solid var(--line-soft); pointer-events: none; }
-  .cz-card__ghost {
-    position: absolute; inset: 0; display: grid; place-items: center;
-    font-size: clamp(70px, 42cqi, 150px); font-weight: 800; color: var(--fg);
-    opacity: 0.05; pointer-events: none; line-height: 1; letter-spacing: 0;
+  .cz-carve ::selection { background: var(--gilt); color: #0b0a08; }
+  .cz-carve__field { display: flex; flex-direction: column; align-items: center; gap: 0.6cqi; }
+  .cz-carve__line { display: flex; justify-content: center; line-height: 1.02; }
+  .cz-carve__l {
+    --w: 400; --lit: 0;
+    font-weight: 400;
+    font-variation-settings: 'wght' var(--w);
+    font-size: 12.5cqi; letter-spacing: 0.08em;
+    /* hot gilt under the blow → bronze as it cools → warm stone at rest:
+       the hue itself rides --lit through gilt-deep on the way down */
+    color: color-mix(in srgb,
+      color-mix(in srgb, #f5e2b3 calc(var(--lit) * 100%), var(--gilt-deep)) calc(26% + 66% * var(--lit)),
+      #46402f);
   }
-  .cz-card__word { position: relative; font-size: clamp(15px, 12cqi, 26px); line-height: 1.05; text-align: center; letter-spacing: 0.06em; color: var(--fg); font-weight: 500; max-width: 100%; }
-  .cz-card__tag { position: absolute; top: 0.7rem; left: 0.7rem; z-index: 2; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg); border: 1px solid var(--line); padding: 0.15rem 0.45rem; background: var(--bg); }
-
-  .cz-card__meta { padding: 0.7rem 0.85rem 0.9rem; display: flex; flex-direction: column; gap: 0.25rem; }
-  .cz-card__row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-  .cz-card__name { font-size: 15px; font-weight: 600; letter-spacing: 0.05em; color: var(--fg); }
-  .cz-card__price { font-family: var(--serif); font-size: 14px; font-weight: 500; color: var(--fg); }
-  .cz-card__cuvee { font-family: var(--serif); font-size: 12.5px; font-style: italic; color: var(--fg-2); }
-  .cz-card__note { font-family: var(--serif); font-size: 11.5px; color: var(--fg-3); letter-spacing: 0.01em; }
-
-  /* hero cuvée: spans two columns + two rows, large live-weight word */
-  .cz-card--hero { grid-column: 1 / span 2; grid-row: 1 / span 2; }
-  .cz-card--hero .cz-card__img { flex: 1; min-height: 0; }
-  .cz-card--hero .cz-card__ghost { font-size: clamp(120px, 40cqi, 220px); opacity: 0.06; }
-  .cz-card__hero-word {
-    position: relative; font-size: clamp(26px, 9cqi, 58px); line-height: 1; text-align: center; letter-spacing: 0.06em;
-    color: var(--fg); font-weight: 400; font-variation-settings: 'wght' 400;
-    transition: font-variation-settings .1s linear; max-width: 100%; padding: 0 0.2em;
+  /* the static composition (no-JS / reduced motion): the carver's pass is
+     already cut into the inline --w sweep; light the deep cuts to match */
+  @media (prefers-reduced-motion: reduce) {
+    .cz-carve__l { color: color-mix(in srgb, var(--gilt) calc(22% + (var(--w) - 400) * 0.13%), #4c4434); }
   }
-  .cz-card--hero .cz-card__name { font-size: 19px; }
-  .cz-card--hero .cz-card__tag { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+  .cz-carve__foot {
+    display: flex; align-items: baseline; justify-content: center; column-gap: 0.7em;
+    font-size: 1.5cqi; letter-spacing: 0.22em; color: #6e6450;
+  }
+  .cz-carve__sc { color: #a08a5e; }
 
-  @container (max-width: 640px) {
-    .cz-site__grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto auto auto; }
-    .cz-card--hero { grid-column: 1 / span 2; grid-row: 1; }
-    .cz-card--hero .cz-card__img { min-height: 210px; }
-    .cz-site__axis-hint { display: none; }
+  /* ════════════════════════════════════════════════════════════════════
+     RESPONSIVE — recomposed at 768 and 390, not shrunk
+     ════════════════════════════════════════════════════════════════════ */
+  /* 01 — rail folds to a header band; the sheet keeps one-sheet bearing */
+  @container (max-width: 980px) {
+    .cz-one { grid-template-columns: 1fr; }
+    .cz-one__rail { border-right: 0; border-bottom: 1px solid color-mix(in srgb, var(--p-ink) 14%, transparent);
+      padding: 1.5rem 1.5rem 1.25rem; gap: 0.9rem; }
+    .cz-one__tabs { flex-direction: row; flex-wrap: wrap; gap: 0.45rem; }
+    .cz-one__tabs button { flex: 1 1 40%; }
+    .cz-one__railfoot { display: none; }
+    .cz-one__sheet { min-height: clamp(440px, 88cqi, 620px); gap: 3.4cqi; padding-top: 6cqi; }
+    .cz-one__title { font-size: calc(var(--p-tsize) * 1.25); }
+    .cz-one__pres { font-size: 1.7cqi; }
+    .cz-one__tag { font-size: 2.3cqi; }
+    .cz-one[data-genre='romance'] .cz-one__tag, .cz-one[data-genre='prestige'] .cz-one__tag { font-size: 2.7cqi; }
+    .cz-one__dir { font-size: 1.9cqi; }
+    .cz-one__bill { font-size: 1.5cqi; }
+    .cz-one__credits { max-width: 86cqi; }
+    .cz-one__credits p { font-size: clamp(6.5px, 1.05cqi, 9px); }
+    .cz-one__laurel { font-size: 1.5cqi; }
+    .cz-one[data-genre='prestige'] .cz-one__laurel { max-height: 10cqi; }
   }
   @container (max-width: 460px) {
-    .cz-site__head { gap: 0.6rem; }
-    .cz-site__reserve { display: none; }
-    .cz-site__filters { margin-left: 0; flex-wrap: wrap; }
-    .cz-site__axis input[type='range'] { width: 120px; }
+    .cz-one__tabs button { flex: 1 1 44%; padding: 0.5rem 0.6rem; }
+    .cz-one__tabs button span { display: none; }
+    .cz-one__title { font-size: calc(var(--p-tsize) * 1.28); }
+    .cz-one__credits p:last-child { display: none; }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .cz-card__hero-word { transition: none; }
+  /* 02 — the system stacks; the hung artifact stays one vertical thread */
+  @container (max-width: 880px) {
+    .cz-mai { grid-template-columns: 1fr; gap: 6cqi; padding: 6cqi 6cqi 7cqi; }
+    .cz-mai__over { font-size: 2.3cqi; }
+    .cz-mai__word { font-size: 15cqi; }
+    .cz-mai__est { font-size: 2cqi; }
+    .cz-mai__note { font-size: 2.3cqi; max-width: 52ch; }
+    .cz-mai__depths span { font-size: 3.6cqi; }
+    .cz-mai__depths i { font-size: 1.9cqi; }
+    .cz-mai__medal svg { width: min(38cqi, 280px); }
+    .cz-mai__thread { height: 4.6cqi; }
+    .cz-mai__thread--short { height: 3.2cqi; }
+    .cz-mai__card { min-width: 38cqi; padding: 2.6cqi 4cqi; }
+    .cz-mai__cardname { font-size: 3.4cqi; }
+    .cz-mai__cardline { font-size: 2.1cqi; }
+    .cz-mai__hall { font-size: 1.8cqi; gap: 2cqi; }
+  }
+  @container (max-width: 520px) {
+    .cz-mai__medal svg { width: 52cqi; }
+    .cz-mai__card { min-width: 56cqi; }
+    .cz-mai__depths { gap: 2.4cqi; }
+  }
+
+  /* 03 — the spread becomes leaves: pages stack at 74% of the book, the canon
+     (and every size, via --u = 1% of page width) rides along unchanged */
+  @container (max-width: 860px) {
+    .cz-book { --u: 0.74cqi; align-items: center; }
+    .cz-book__spread { grid-template-columns: 1fr; gap: calc(5 * var(--u)); justify-items: center; }
+    .cz-book__page { width: 74cqi; }
+    .cz-book__page--verso { box-shadow: inset 0 calc(-4.4 * var(--u)) calc(5.2 * var(--u)) calc(-4.4 * var(--u)) rgba(58, 44, 22, 0.38); }
+    .cz-book__page--recto { box-shadow: inset 0 calc(4.4 * var(--u)) calc(5.2 * var(--u)) calc(-4.4 * var(--u)) rgba(58, 44, 22, 0.3); }
+    .cz-book__canon-spread { display: none; }
+  }
+  @container (max-width: 560px) {
+    .cz-book { --u: 1cqi; }
+    .cz-book__page { width: 100cqi; }
+    .cz-book__spread { gap: calc(4 * var(--u)); }
+  }
+
+  /* 04 — the title page recomposes for narrow devices */
+  @container (max-width: 640px) {
+    .cz-app__hero { padding: 1.6rem 1.1rem 1.3rem; }
+    .cz-app__logo { font-size: 44px; }
+    .cz-app__heroglyph { font-size: 150px; right: -0.12em; }
+    .cz-app__tabs { padding: 0.85rem 1.1rem 0; gap: 1rem; }
+    .cz-app__ep button { grid-template-columns: 86px minmax(0, 1fr); }
+    .cz-app__eplen { display: none; }
+    .cz-app__epdesc { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  }
+  @container (max-width: 420px) {
+    .cz-app__meta span:last-child { display: none; }
+    .cz-app__sell { display: none; }
+  }
+
+  /* 05 — the stone keeps its bearing; lines simply cut larger.
+     The foot line loosens its tracking, then breaks to two centred lines */
+  @container (max-width: 640px) {
+    .cz-carve__l { font-size: 17cqi; }
+    .cz-carve__foot { font-size: 2.6cqi; letter-spacing: 0.14em; text-align: center; }
+  }
+  @container (max-width: 460px) {
+    .cz-carve__foot { flex-direction: column; align-items: center; row-gap: 0.6em; font-size: 3cqi; }
   }
 </style>

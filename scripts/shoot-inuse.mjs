@@ -52,6 +52,15 @@ async function shoot(slug) {
     await fig.scrollIntoView();
     await force(page);
     await fig.screenshot({ path: `${dir}/scene-${String(n).padStart(2, '0')}.png` });
+    // opt-in second state: a figure may declare data-shoot-click="<selector>"
+    // to put an interaction outcome into the evidence (scene-NNb.png)
+    const sel = await fig.evaluate((el) => el.getAttribute('data-shoot-click'));
+    if (sel) {
+      await fig.evaluate((el, s) => el.querySelector(s)?.click(), sel);
+      await new Promise((r) => setTimeout(r, 700));
+      await fig.screenshot({ path: `${dir}/scene-${String(n).padStart(2, '0')}b.png` });
+      await fig.evaluate((el, s) => el.querySelector(s)?.click(), sel); // restore
+    }
   }
 
   // full-stack responsiveness gates (whole section, one shot per viewport)
