@@ -1,7 +1,11 @@
 // Headless capture of the isolated In-Use harness (/lab/<slug>) for font slugs.
 // Usage: node scripts/shoot-inuse.mjs <slug> [slug...]
-// Outputs to /tmp/specimen-shots/<slug>/ : scene-NN.png (cropped, desktop) and
-// section-390.png (mobile responsiveness gate). Lower DPR keeps critic tokens down.
+// Outputs to /tmp/specimen-shots/<slug>/ :
+//   scene-NN.png    cropped per-act shots at 1440px desktop
+//   section-1440.png  full stack, desktop — judge the act-to-act handoffs
+//   section-768.png   full stack, tablet responsiveness gate
+//   section-390.png   full stack, mobile responsiveness gate
+// Lower DPR on the stacks keeps critic tokens down.
 import puppeteer from 'puppeteer-core';
 import { mkdir, rm } from 'node:fs/promises';
 
@@ -34,7 +38,7 @@ async function shoot(slug) {
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
   const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 1000, deviceScaleFactor: 1.5 });
+  await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1.5 });
   const url = `http://localhost:${PORT}/lab/${slug}`;
   await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
   await force(page);
@@ -50,12 +54,14 @@ async function shoot(slug) {
     await fig.screenshot({ path: `${dir}/scene-${String(n).padStart(2, '0')}.png` });
   }
 
-  // mobile responsiveness gate (whole stack)
-  await page.setViewport({ width: 390, height: 800, deviceScaleFactor: 1.5 });
-  await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
-  await force(page);
-  const m = await page.$('#in-use');
-  await m.screenshot({ path: `${dir}/section-390.png` });
+  // full-stack responsiveness gates (whole section, one shot per viewport)
+  for (const [w, dpr] of [[1440, 1], [768, 1.25], [390, 1.5]]) {
+    await page.setViewport({ width: w, height: 1000, deviceScaleFactor: dpr });
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+    await force(page);
+    const m = await page.$('#in-use');
+    await m.screenshot({ path: `${dir}/section-${w}.png` });
+  }
   await page.close();
   console.log(`${slug}: ${n} scenes`);
 }

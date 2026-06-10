@@ -6,6 +6,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import InUse from '../../components/specimen/InUse.astro';
+import Section from '../../components/specimen/Section.astro';
 import { themeToStyle } from '../../lib/theme';
 
 export async function getStaticPaths() {
@@ -22,9 +23,12 @@ const inUseComponents = import.meta.glob('../../components/specimen/inuse/*.astr
 const BespokeInUse = (inUseComponents[`../../components/specimen/inuse/${entry.id}.astro`] as any)?.default;
 ---
 <Layout title={`lab — ${font.name}`} description="" themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
-  <main id="in-use" class="lab" style="padding: var(--sp-5); display:flex; flex-direction:column; gap: var(--sp-6); max-width: 1200px; margin: 0 auto;">
-    {BespokeInUse
-      ? <BespokeInUse font={font} />
-      : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
+  <main>
+    <!-- Identical wrapper to the specimen page so layout/bleed/screenshots match 1:1 -->
+    <Section id="in-use" num="01" title="In use" note="Built live with the real webfont.">
+      {BespokeInUse
+        ? <BespokeInUse font={font} />
+        : font.inUse.length > 0 && <InUse font={font} startIndex={1} />}
+    </Section>
   </main>
 </Layout>

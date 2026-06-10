@@ -211,22 +211,24 @@ body::after {
 /* ------------------------------------------------------------
    IN-USE (shared scaffolding for bespoke per-font scenes)
    ------------------------------------------------------------ */
-/* A gallery wall, not a slideshow: scenes hang in an editorial rhythm —
-   a full-width plate, then a pair, repeating — with museum captions
-   below each frame instead of shouting labels above. */
+/* No frames, no mats. Each scene is an act on the open web canvas: it owns
+   its surface, its scale, and the handoff into the next act. Components set
+   their own rhythm (override gap, run acts flush, bleed to the viewport). */
 .iu {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(3rem, 7vh, 5rem) var(--sp-5);
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4rem, 10vh, 7.5rem);
 }
-.iu__item { grid-column: 1 / -1; display: flex; flex-direction: column; min-width: 0; }
-@media (min-width: 861px) {
-  .iu__item:nth-child(6n + 2), .iu__item:nth-child(6n + 3),
-  .iu__item:nth-child(6n + 5), .iu__item:nth-child(6n) { grid-column: span 1; }
-  /* a half-width plate with no partner hangs full-width instead */
-  .iu__item:nth-child(6n + 2):last-child,
-  .iu__item:nth-child(6n + 5):last-child { grid-column: 1 / -1; }
+.iu__item { display: flex; flex-direction: column; min-width: 0; margin: 0; }
+/* full-bleed act: escapes the page container to the viewport edges */
+.iu__item--bleed { width: 100vw; margin-left: calc(50% - 50vw); }
+/* captions inside a bleed act stay on the page grid */
+.iu__item--bleed > .iu__cap,
+.iu__item--bleed > .iu__hint {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
 /* caption as a quiet plate label, below the frame */
@@ -259,22 +261,8 @@ p.iu__hint {
 
 .iu__scene {
   position: relative;
-  /* theme-aware mat: the artwork sits inside a light(er) framing surface */
-  border: clamp(18px, 2.6vw, 38px) solid var(--bg-2);
-  outline: 1px solid var(--line);
-  border-radius: 2px;
-  overflow: hidden;
+  overflow: clip;
   container-type: inline-size;
-  background: var(--bg-2);
-  box-shadow: 0 32px 64px -44px rgba(0, 0, 0, 0.5);
-  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
-}
-.iu__item:hover .iu__scene {
-  transform: translateY(-3px);
-  box-shadow: 0 42px 76px -46px rgba(0, 0, 0, 0.55);
-}
-@media (prefers-reduced-motion: reduce) {
-  .iu__scene, .iu__item:hover .iu__scene { transform: none; transition: none; }
 }
 /* Poster canvas: type scales with the box via cqi */
 .iu__poster { position: absolute; inset: 0; }
