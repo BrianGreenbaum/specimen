@@ -6,9 +6,167 @@ const fam = font.fontFamily;
 ---
 <div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — INTERACTIVE READER UI: real-scale long-form blog, adjustable size + reading mode + live progress -->
+  <!-- ============================================================
+       01 — INTERACTIVE & EXPERIMENTAL
+       Baskerville's 1757 Virgil title page, wiped between ink and light.
+       Reference: the quarto Virgil, Birmingham 1757 (letterspaced caps,
+       centred axis, the page that made his name).
+       ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Interactive &mdash; the 1757 Virgil title page, dragged between ink and light</span></figcaption>
+    <div class="iu__scene">
+      <div class="wipe" data-wipe style="--x:62">
+        <div class="wipe__layer wipe__ink">
+          <div class="tp">
+            <p class="tp__l tp__l--xl">PUBLII VIRGILII</p>
+            <p class="tp__l tp__l--lg">MARONIS</p>
+            <p class="tp__l tp__l--md">BUCOLICA,</p>
+            <p class="tp__l tp__l--md">GEORGICA,</p>
+            <p class="tp__l tp__l--sm">ET</p>
+            <p class="tp__l tp__l--md">AENEIS.</p>
+            <span class="tp__rule" aria-hidden="true"></span>
+            <p class="tp__imp">BIRMINGHAMIAE:</p>
+            <p class="tp__typis">Typis <span class="tp__jb">JOHANNIS BASKERVILLE</span>.</p>
+            <p class="tp__date">MDCCLVII.</p>
+          </div>
+          <span class="wipe__tag">Ink on hot-pressed wove paper &middot; Birmingham, 1757</span>
+        </div>
+        <div class="wipe__layer wipe__light" aria-hidden="true">
+          <div class="tp">
+            <p class="tp__l tp__l--xl">PUBLII VIRGILII</p>
+            <p class="tp__l tp__l--lg">MARONIS</p>
+            <p class="tp__l tp__l--md">BUCOLICA,</p>
+            <p class="tp__l tp__l--md">GEORGICA,</p>
+            <p class="tp__l tp__l--sm">ET</p>
+            <p class="tp__l tp__l--md">AENEIS.</p>
+            <span class="tp__rule" aria-hidden="true"></span>
+            <p class="tp__imp">BIRMINGHAMIAE:</p>
+            <p class="tp__typis">Typis <span class="tp__jb">JOHANNIS BASKERVILLE</span>.</p>
+            <p class="tp__date">MDCCLVII.</p>
+          </div>
+          <span class="wipe__tag">Light through glass &middot; the browser, 2012</span>
+        </div>
+        <div class="wipe__handle" data-handle role="slider" tabindex="0"
+             aria-label="Wipe between the printed page and the screen rendering"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="62">
+          <span class="wipe__grip" aria-hidden="true"><i>&#9664;</i><i>&#9654;</i></span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the seam (or focus it and use the arrow keys). Same letters, two media &mdash; the whole reason this face exists.</p>
+  </figure>
+
+  <!-- ============================================================
+       02 — ILLUSTRATION & COMMERCIAL
+       Single-typeface cover series, after Fitzcarraldo Editions
+       (Ray O'Meara's blue-and-white, type-only covers, est. 2014).
+       ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Illustration &amp; commercial &mdash; a one-typeface cover series, after Fitzcarraldo Editions</span></figcaption>
+    <div class="iu__scene">
+      <div class="cvf">
+        <p class="cvf__head">Quire &amp; Wick &middot; New for June</p>
+        <div class="cvf__row">
+          <div class="cv__rev" data-reveal>
+            <div class="cv cv--blue" tabindex="0">
+              <p class="cv__title">The<br/>Gloaming</p>
+              <p class="cv__kind">a novel</p>
+              <p class="cv__author">Ottilie Merck</p>
+              <p class="cv__pub">Quire &amp; Wick</p>
+            </div>
+          </div>
+          <div class="cv__rev" data-reveal style="--reveal-delay:160ms">
+            <div class="cv cv--white" tabindex="0">
+              <p class="cv__title">On Reading<br/>at Night</p>
+              <p class="cv__kind">essays</p>
+              <p class="cv__author">Daniel Ascher</p>
+              <p class="cv__pub">Quire &amp; Wick</p>
+            </div>
+          </div>
+        </div>
+        <p class="cvf__foot">fiction in blue &middot; essays in white &middot; nothing on the cover but the house face</p>
+      </div>
+    </div>
+    <p class="iu__hint label">No image, no second typeface: the cover is carried entirely by the roman, the italic, and one disciplined blue.</p>
+  </figure>
+
+  <!-- ============================================================
+       03 — BRANDING & IDENTITY
+       The press itself: wordmark, printer's device & spine system,
+       in the colophon tradition of the Aldine anchor-and-dolphin.
+       ============================================================ -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Reader — long-form blog at real scale, fully interactive</span></figcaption>
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Branding &mdash; the press identity: wordmark, device &amp; spines, in the Aldine colophon tradition</span></figcaption>
+    <div class="iu__scene">
+      <div class="qw">
+        <div class="qw__id">
+          <p class="qw__mark">Quire<br/><em class="qw__amp">&amp;</em><br/>Wick</p>
+          <p class="qw__est">Independent publishers &middot; Birmingham &middot; est. MMXII</p>
+          <span class="qw__device" aria-hidden="true"><em>&amp;</em></span>
+          <p class="qw__colophon">All Quire &amp; Wick editions are set in <em>Libre Baskerville</em> &mdash; the 2012 re-cut of the letters John Baskerville perfected two streets from this office &mdash; and bound in eighty-gram cream wove.</p>
+        </div>
+        <div class="qw__shelfwrap">
+          <div class="qw__shelf">
+            <div class="qw__spine qw__spine--ink" tabindex="0"><span class="qw__sa">Merck</span><span class="qw__st"><em>The Gloaming</em></span><span class="qw__sm">Q&amp;W &middot; I</span></div>
+            <div class="qw__spine qw__spine--blue" tabindex="0"><span class="qw__sa">Ascher</span><span class="qw__st">On Reading at Night</span><span class="qw__sm">Q&amp;W &middot; II</span></div>
+            <div class="qw__spine qw__spine--madder" tabindex="0"><span class="qw__sa">Voss</span><span class="qw__st"><em>A Life in Eleven Letters</em></span><span class="qw__sm">Q&amp;W &middot; III</span></div>
+            <div class="qw__spine qw__spine--paper" tabindex="0"><span class="qw__sa">Ashford</span><span class="qw__st">The Quiet Letter</span><span class="qw__sm">Q&amp;W &middot; IV</span></div>
+            <div class="qw__spine qw__spine--sage qw__spine--opt" tabindex="0"><span class="qw__sa">Hale</span><span class="qw__st"><em>Wove &amp; Laid</em></span><span class="qw__sm">Q&amp;W &middot; V</span></div>
+            <div class="qw__spine qw__spine--slate qw__spine--opt" tabindex="0"><span class="qw__sa">Imrie</span><span class="qw__st">A Public Type</span><span class="qw__sm">Q&amp;W &middot; VI</span></div>
+          </div>
+          <span class="qw__shelfline" aria-hidden="true"></span>
+          <p class="qw__series">The collected list, spines only &mdash; the identity is the typesetting, not a logo.</p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Ease a book from the shelf (hover or tab). One face, two weights, one italic: a complete identity system.</p>
+  </figure>
+
+  <!-- ============================================================
+       04 — EDITORIAL
+       A review-paper front page in the manner of The New York Review
+       of Books: citation block, three columns, drop cap, spanning pull.
+       ============================================================ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial &mdash; a review front page, in the manner of <em>The New York Review of Books</em></span></figcaption>
+    <div class="iu__scene">
+      <div class="rev">
+        <header class="rev__mast">
+          <p class="rev__name">The Harborlight Review of Books</p>
+          <p class="rev__meta"><span>Vol. XIV &middot; No. 11</span><span>June 11, 2026</span><span>Eight dollars</span></p>
+        </header>
+        <h3 class="rev__head">The Perfectionist of Birmingham</h3>
+        <p class="rev__by">Margaret Ashford</p>
+        <div class="rev__cite">
+          <p><em>Baskerville: A Life in Eleven Letters</em></p>
+          <p>by Eleanor Voss.</p>
+          <p>Quire &amp; Wick, 312 pp., $28.00</p>
+        </div>
+        <div class="rev__cols">
+          <p><span class="rev__drop">J</span>ohn Baskerville came to printing late and impatient. He had made one fortune teaching penmanship and another in japanned ware &mdash; trays and boxes lacquered to a hard black shine &mdash; and when he turned, past fifty, to the making of books, he brought a tradesman&rsquo;s conviction that everything about them could be done better.</p>
+          <p>Voss&rsquo;s biography is best on the apparatus of that conviction. He would not accept the paper of his day, so he commissioned wove sheets without the ladder of chain lines and pressed each printed leaf between heated plates until it shone. He would not accept the ink, so he boiled his own. The letters he cut with John Handy were the point of it all: higher in contrast than Caslon&rsquo;s, rounder in the bowl, rational in their upright stress &mdash; an evenness London called showy and Paris called perfect.</p>
+          <p>The quarto <em>Virgil</em> of 1757 vindicated him by subscription, and the Cambridge folio Bible of 1763 nearly ruined him; he complained that the public would praise his books and buy somebody else&rsquo;s. He refused, to the end, the consolations of the church, and was buried upright in a conical vault in his own garden, a freethinker to the last degree of the compass.</p>
+          <p>What Voss adds is the long afterlife. The punches passed to Beaumarchais, who used them to print the complete Voltaire at Kehl; the reputation passed into the name itself, which by the twentieth century simply meant <em>book</em>. Her closing chapter lands in 2012, in Santiago de Chile, where two designers raise the x-height, open the counters, and ease the hairlines of the 1941 American cut so that Baskerville&rsquo;s letters can survive a medium he never imagined: a page made of light, sixteen pixels tall.</p>
+          <p>It is a sympathetic portrait, but not a soft one. The man who emerges is vain, generous, litigious, and right &mdash; right about paper, right about ink, and right that clarity, pursued ruthlessly enough, becomes a kind of beauty.</p>
+        </div>
+        <blockquote class="rev__pull" data-reveal>Franklin loved the type; a rival swore its sparkle would &ldquo;blind the nation.&rdquo; Both were answering the same letters &mdash; drawn for an age that had decided clarity was a virtue.</blockquote>
+        <footer class="rev__foot">
+          <span>Continued on page 14</span>
+          <span>Margaret Ashford&rsquo;s <em>A Public Type</em> appears from Quire &amp; Wick next spring.</span>
+        </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">A working review-page system: citation block, three balanced columns, drop cap, and a pull quote that breathes in as you reach it.</p>
+  </figure>
+
+  <!-- ============================================================
+       05 — WEB & APP UI
+       A reader interface in the 2011–13 reader-mode current
+       (Readability, Instapaper, early Medium) — the exact current
+       Libre Baskerville was cut for. Real px, fully user-driven.
+       ============================================================ -->
+  <figure class="iu__item" data-shoot-click='[data-mode="night"]'>
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Web &amp; app UI &mdash; a reader in the lineage of Readability, Instapaper &amp; early Medium</span></figcaption>
     <div class="iu__scene">
       <div class="iu__device rdr" data-rdr>
         <div class="iu__chrome">
@@ -38,136 +196,62 @@ const fam = font.fontFamily;
           <article class="rdr__article" data-article>
             <p class="rdr__kicker"><span class="rdr__kdot" aria-hidden="true"></span> An essay on reading</p>
             <h3 class="rdr__title">The comfort of a screen set well</h3>
-            <p class="rdr__byline">by Margaret Ashford &middot; <span class="rdr__fig">11</span> min read &middot; <span class="rdr__fig">June&#8201;2026</span></p>
+            <p class="rdr__byline">by Margaret Ashford &middot; 11 min read &middot; June&#8201;2026</p>
 
-            <p class="rdr__lede"><span class="rdr__drop">F</span>or most of its history the printed letter answered to ink and paper. A face was cut, a punch was struck, a matrix was justified, and a compositor set the line by hand. The whole apparatus existed to put marks on a sheet — and the letters that survived were the ones that printed cleanly, again and again, in that exact medium.</p>
+            <p class="rdr__lede"><span class="rdr__drop">F</span>or most of its history the printed letter answered to ink and paper. A face was cut, a punch was struck, a matrix was justified, and a compositor set the line by hand. The whole apparatus existed to put marks on a sheet &mdash; and the letters that survived were the ones that printed cleanly, again and again, in that exact medium.</p>
 
-            <p>The screen broke the contract. A backlit display flickers where paper holds still; it renders at a tenth of the resolution of fine printing; it throws light at the eye instead of reflecting it. A hairline serif that looked exquisite pressed into damp paper can simply vanish on a phone held at arm's length on a moving train.</p>
+            <p>The screen broke the contract. A backlit display flickers where paper holds still; it renders at a tenth of the resolution of fine printing; it throws light at the eye instead of reflecting it. A hairline serif that looked exquisite pressed into damp paper can simply vanish on a phone held at arm&rsquo;s length on a moving train.</p>
 
-            <p>Libre Baskerville is what happens when a classic answers the new medium honestly. It keeps the bones of Baskerville's transitional roman — the upright stress, the bracketed serifs, the rational proportions that have signalled <em>the book</em> for two and a half centuries. But it quietly renegotiates every term that the screen would have broken.</p>
+            <p>Libre Baskerville is what happens when a classic answers the new medium honestly. It keeps the bones of Baskerville&rsquo;s transitional roman &mdash; the upright stress, the bracketed serifs, the rational proportions that have signalled <em>the book</em> for two and a half centuries. But it quietly renegotiates every term that the screen would have broken.</p>
 
             <blockquote class="rdr__quote">A body face does its best work when you finish the paragraph without once having thought about the shapes that carried it there.</blockquote>
 
             <p>The x-height climbs, so more of every word lands in the band the eye actually scans. The counters open up, so an <em>e</em> or an <em>a</em> will not clog into a dark blot at sixteen pixels. The contrast eases back, so the thin strokes survive the glow instead of guttering out. None of it is showy. All of it is in service of the one thing a reading face is for: keeping you in the text.</p>
 
-            <p>You can feel the result in the rhythm of a long passage. The line holds an even colour. The serifs lay a firm baseline that tugs the eye gently rightward and then returns it, cleanly, to the next line. There are no rivers, no flickering, no fatigue building behind the eyes after the third screen. This is typography as hospitality — the craft of making a reader feel, for a few thousand words, completely at home.</p>
+            <p>You can feel the result in the rhythm of a long passage. The line holds an even colour. The serifs lay a firm baseline that tugs the eye gently rightward and then returns it, cleanly, to the next line. There are no rivers, no flickering, no fatigue building behind the eyes after the third screen. This is typography as hospitality &mdash; the craft of making a reader feel, for a few thousand words, completely at home.</p>
 
             <p class="rdr__close">Drag the controls above and watch the column adapt: it was drawn to stay readable across every comfortable size and every light, because comfort, on a screen, is the entire point.</p>
           </article>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Resize the type, switch Day / Sepia / Night, and scroll the column &mdash; the progress bar tracks you live. A real reading interface, the body face's true home.</p>
-  </figure>
-
-  <!-- 02 — LITERARY LONG-READ: magazine feature with drop cap, pull quotes, scroll reveals -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Magazine &mdash; a literary long-read spread</span></figcaption>
-    <div class="iu__scene scene-mag">
-      <div class="iu__poster mag" data-mag>
-        <header class="mag__head">
-          <span class="mag__pub">Harborlight Review</span>
-          <span class="mag__sec">Fiction &middot; <span class="mag__fig">Summer 2026</span></span>
-        </header>
-        <h3 class="mag__title">The Lighthouse<br/>Keeper&rsquo;s Last Winter</h3>
-        <p class="mag__deck">A short story, in which a man who has tended a light for forty&#8202;years learns that the harbour means to switch it off.</p>
-        <div class="mag__cols">
-          <p class="mag__body"><span class="mag__drop">T</span>he letter came on the first calm day in November, which Aldous took, even then, as a discourtesy. The sea had been throwing itself at the rocks for a fortnight, and the one morning it lay flat enough for the supply boat to land, it brought him this. He read it twice at the foot of the stair, then once more at the lamp, as if the height might change the words.</p>
-          <p class="mag__body">They were retiring the light. Automating it, the letter said, by the spring &mdash; a small electric thing that needed no keeper, no oil, no wick trimmed at two in the morning when the fog came down like a held breath. He was thanked for forty-one years of service, and wished a comfortable retirement inland.</p>
-          <p class="mag__body">That night he climbed the stair as he always had, counting the hundred and twelve steps without thinking, and lit the lamp by hand. The beam swung out over the water and found the same black rocks it had found every night since he was a young man.</p>
-        </div>
-        <blockquote class="mag__pull" data-reveal-q>
-          <span class="mag__pullmark" aria-hidden="true">&ldquo;</span>
-          He had given the light his eyes, his sleep, and the better part of his marriage. It gave him, in return, the one view in the world he could not imagine living without.
-        </blockquote>
-        <div class="mag__cols mag__cols--lower">
-          <p class="mag__body">Aldous stood at the glass and watched the beam go, and did not feel, yet, anything he could have named. It was only later, with the kettle going and the wind picking up again outside, that the thought arrived plainly and would not leave.</p>
-          <p class="mag__body">That come spring there would be a light here still &mdash; faithful and bright and entirely indifferent &mdash; and that nobody at all would be awake, in the small hours, to keep it the kind of company a light has always quietly asked for.</p>
-        </div>
-        <footer class="mag__foot">
-          <span class="mag__cont">continued on page <span class="mag__fig">48</span></span>
-          <span class="mag__orn" aria-hidden="true">&#10086;</span>
-        </footer>
-      </div>
-    </div>
-    <p class="iu__hint label">A literary spread &mdash; full-measure drop cap, true italics for emphasis, and a pull quote that spans the columns and breathes in as you reach it.</p>
-  </figure>
-
-  <!-- 03 — EDITORIAL FEATURE OPENER: poster-scale title spread, italic/roman interplay, hover reveal -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial &mdash; a feature opener</span></figcaption>
-    <div class="iu__scene scene-open">
-      <div class="iu__poster opener" data-opener>
-        <span class="op__issue">The Commonplace &middot; Issue No. <span class="op__fig">07</span></span>
-        <div class="op__center">
-          <span class="op__over">a reading on</span>
-          <h3 class="op__title">The Quiet<br/><em class="op__em">Letter</em></h3>
-          <span class="op__rule" aria-hidden="true"></span>
-          <p class="op__stand"><span class="op__lead">On invisibility.</span> Why the typefaces we never notice are the ones that do the most work &mdash; and how a two&#8209;hundred&#8209;year&#8209;old serif learned to live behind glass.</p>
-        </div>
-        <div class="op__foot">
-          <span class="op__by">Words by <em>Margaret&nbsp;Ashford</em></span>
-          <span class="op__pp">pp. <span class="op__fig">24&ndash;33</span></span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">A feature title page &mdash; oversized roman against a quiet true italic, with a hairline rule that draws on load. Hover the title: the italic <em>Letter</em> warms to colour and the rule redraws.</p>
-  </figure>
-
-  <!-- 04 — EMAIL NEWSLETTER: real device-scale artifact, distinct from the reading column -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Newsletter &mdash; an email issue at real scale</span></figcaption>
-    <div class="iu__scene">
-      <div class="iu__device news">
-        <div class="iu__chrome">
-          <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">inbox &middot; The Marginalia, Issue <span class="news__fig">112</span></span>
-        </div>
-        <div class="news__sheet">
-          <header class="news__masthead">
-            <span class="news__name">The Marginalia</span>
-            <span class="news__tag">notes from the reading life &middot; weekly</span>
-          </header>
-          <div class="news__meta">
-            <span>Issue <span class="news__fig">112</span></span>
-            <span>Friday, <span class="news__fig">6</span> June <span class="news__fig">2026</span></span>
-          </div>
-          <div class="news__lead">
-            <p class="news__hello">Friends &mdash;</p>
-            <p>This week I have been thinking about the difference between a letter that is <em>beautiful</em> and a letter that is <em>kind</em>. The first you admire. The second you forget entirely, which is the highest compliment a reading face can earn.</p>
-          </div>
-          <article class="news__story" tabindex="0">
-            <span class="news__num">01</span>
-            <h4 class="news__h">Read this</h4>
-            <p>An old essay on the etiquette of footnotes, newly reprinted &mdash; charming, exact, and set in a serif so comfortable I read it twice without meaning to.</p>
-          </article>
-          <article class="news__story" tabindex="0">
-            <span class="news__num">02</span>
-            <h4 class="news__h">A line I kept</h4>
-            <blockquote class="news__quote">&ldquo;A book is a machine to think&nbsp;with, but only if the type lets you forget&nbsp;it&nbsp;is&nbsp;there.&rdquo;</blockquote>
-          </article>
-          <article class="news__story" tabindex="0">
-            <span class="news__num">03</span>
-            <h4 class="news__h">From the postbag</h4>
-            <p>Three of you wrote in about reading on small screens at night. The short answer: larger line height, warmer light, and a face built for the medium. More next week.</p>
-          </article>
-          <footer class="news__foot">
-            <p>Until Friday,<br/><em class="news__sign">Margaret</em></p>
-            <div class="news__actions">
-              <button class="news__reply" type="button">Reply to Margaret</button>
-            </div>
-            <p class="news__unsub">You are reading issue <span class="news__fig">112</span> &middot; <span class="news__link">unsubscribe</span></p>
-          </footer>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">A weekly email issue &mdash; masthead, numbered notes, a kept quotation and a signed-off sign-off, all set at real inbox scale.</p>
+    <p class="iu__hint label">Resize the type, switch Day / Sepia / Night, scroll the column &mdash; the progress bar tracks you live. After the monument, the sixteen-pixel ending the story was building to.</p>
   </figure>
 
 </div>
 
 <script>
-  // ---- 01 reader: size, mode, live scroll progress ----
+  // ---- 01 wipe: drag the seam between ink and light ----
+  document.querySelectorAll<HTMLElement>('[data-wipe]').forEach((wipe) => {
+    const handle = wipe.querySelector<HTMLElement>('[data-handle]')!;
+    let x = 62;
+    const set = (v: number) => {
+      x = Math.max(4, Math.min(96, v));
+      wipe.style.setProperty('--x', String(x));
+      handle.setAttribute('aria-valuenow', String(Math.round(x)));
+    };
+    const fromEvent = (e: PointerEvent) => {
+      const r = wipe.getBoundingClientRect();
+      set(((e.clientX - r.left) / r.width) * 100);
+    };
+    let dragging = false;
+    wipe.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      wipe.setPointerCapture(e.pointerId);
+      fromEvent(e);
+    });
+    wipe.addEventListener('pointermove', (e) => { if (dragging) fromEvent(e); });
+    wipe.addEventListener('pointerup', () => { dragging = false; });
+    wipe.addEventListener('pointercancel', () => { dragging = false; });
+    handle.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { set(x - 3); e.preventDefault(); }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { set(x + 3); e.preventDefault(); }
+      if (e.key === 'Home') { set(4); e.preventDefault(); }
+      if (e.key === 'End') { set(96); e.preventDefault(); }
+    });
+  });
+
+  // ---- 05 reader: size, mode, live scroll progress ----
   document.querySelectorAll<HTMLElement>('[data-rdr]').forEach((rdr) => {
     const article = rdr.querySelector<HTMLElement>('[data-article]')!;
     const sizeval = rdr.querySelector<HTMLElement>('[data-sizeval]')!;
@@ -178,7 +262,7 @@ const fam = font.fontFamily;
     const SIZES = [15, 16, 17, 18, 20, 22, 24];
     const applySize = () => {
       article.style.fontSize = size + 'px';
-      sizeval.textContent = size + ' px';
+      sizeval.textContent = size + ' px';
     };
 
     rdr.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) => {
@@ -192,7 +276,6 @@ const fam = font.fontFamily;
     });
 
     const modes: Record<string, [string, string, string, string]> = {
-      // [bg, fg, fg-2/3 muted, accent]
       day:   ['var(--bg)', 'var(--fg)', 'var(--fg-3)', 'var(--accent)'],
       sepia: ['#f4ecd8', '#3a2f22', '#8a7b60', '#9a5b2c'],
       night: ['#16181d', '#d7d3ca', '#8c8a85', '#c9b48a'],
@@ -226,37 +309,300 @@ const fam = font.fontFamily;
     applyMode('day');
     updateProgress();
   });
-
-  // ---- 02 magazine: pull quote breathes in on scroll-into-view ----
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
-    }, { threshold: 0.4 });
-    document.querySelectorAll('[data-reveal-q]').forEach((el) => io.observe(el));
-  } else {
-    document.querySelectorAll('[data-reveal-q]').forEach((el) => el.classList.add('is-in'));
-  }
 </script>
 
 <style>
+  /* ---- sequence pacing: a slightly tighter stack; the choreography is
+     night → deep blue → paper → page → device, monument scale → 16 px ---- */
+  .iu { gap: clamp(3.25rem, 8vh, 5.5rem); }
   .iu__item { margin: 0; }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu__scene * { font-family: var(--fam); }
+  .iu__scene ::selection { background: var(--accent); color: var(--accent-contrast); }
 
-  /* shared figure helpers */
-  .rdr__fig, .mag__fig, .op__fig, .news__fig { font-feature-settings: 'liga' 1, 'kern' 1; }
+  /* shared print palette (acts 01 ink-side & 03 share the same paper) */
+  .iu {
+    --paper: #ede4d0;
+    --paper-2: #e4d9c0;
+    --ink: #241d12;
+    --klein: #0a3ab8;
+    --navy: #04205f;
+    --madder: #93392c;
+    --sage: #5b6b51;
+  }
 
   /* ============================================================
-     01 — READER UI (real px, interactive)
+     01 — INK / LIGHT WIPE (bleed, cqi, drag-driven)
+     ============================================================ */
+  .wipe {
+    position: relative;
+    height: clamp(480px, 46cqi, 700px);
+    cursor: ew-resize;
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .wipe__layer {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+  }
+  .wipe__ink {
+    background:
+      repeating-linear-gradient(0deg, rgba(36, 29, 18, 0.035) 0 1px, transparent 1px 7px),
+      var(--paper);
+    color: var(--ink);
+  }
+  .wipe__light {
+    background:
+      repeating-linear-gradient(0deg, rgba(232, 223, 200, 0.045) 0 1px, transparent 1px 16px),
+      repeating-linear-gradient(90deg, rgba(232, 223, 200, 0.045) 0 1px, transparent 1px 16px),
+      #0e1015;
+    color: #ecdfc0;
+    clip-path: inset(0 0 0 calc(var(--x, 62) * 1%));
+  }
+  .wipe__light .tp { text-shadow: 0 0 18px rgba(236, 223, 192, 0.32); }
+  .wipe__light .tp__rule { background: #ecdfc0; box-shadow: 0 0 10px rgba(236, 223, 192, 0.5); }
+
+  .tp { text-align: center; line-height: 1; padding: 0 6cqi; }
+  .tp p { margin: 0; }
+  .tp__l { font-weight: 400; }
+  /* padding-left equal to tracking re-centres each letterspaced line optically */
+  .tp__l--xl { font-size: clamp(30px, 6cqi, 84px); letter-spacing: 0.14em; padding-left: 0.14em; margin-bottom: 0.32em; }
+  .tp__l--lg { font-size: clamp(22px, 4.2cqi, 60px); letter-spacing: 0.2em;  padding-left: 0.2em;  margin-bottom: 0.55em; }
+  .tp__l--md { font-size: clamp(15px, 2.6cqi, 37px); letter-spacing: 0.24em; padding-left: 0.24em; margin-bottom: 0.5em; }
+  .tp__l--sm { font-size: clamp(11px, 1.7cqi, 24px); letter-spacing: 0.3em;  padding-left: 0.3em;  margin-bottom: 0.55em; }
+  .tp__rule {
+    display: block; width: clamp(90px, 14cqi, 220px); height: 1px;
+    background: currentColor; margin: 1.4em auto 1.5em; opacity: 0.85;
+  }
+  .tp__imp { font-size: clamp(12px, 1.9cqi, 26px); letter-spacing: 0.26em; padding-left: 0.26em; margin-bottom: 0.7em !important; }
+  .tp__typis { font-style: italic; font-size: clamp(12px, 1.9cqi, 26px); letter-spacing: 0.02em; margin-bottom: 0.85em !important; }
+  .tp__jb { font-style: normal; font-size: 0.86em; letter-spacing: 0.18em; }
+  .tp__date { font-size: clamp(11px, 1.6cqi, 22px); letter-spacing: 0.3em; padding-left: 0.3em; }
+
+  .wipe__tag {
+    position: absolute; bottom: clamp(0.9rem, 2cqi, 1.6rem);
+    font-family: var(--font-mono); font-size: clamp(9px, 1cqi, 11.5px);
+    letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.62;
+    white-space: nowrap;
+  }
+  .wipe__ink .wipe__tag { left: clamp(1rem, 3cqi, 2.5rem); }
+  .wipe__light .wipe__tag { right: clamp(1rem, 3cqi, 2.5rem); }
+
+  .wipe__handle {
+    position: absolute; top: 0; bottom: 0;
+    left: calc(var(--x, 62) * 1%);
+    width: 1px; background: rgba(120, 105, 80, 0.55);
+    cursor: ew-resize;
+  }
+  .wipe__handle:focus-visible { outline: none; }
+  .wipe__handle:focus-visible .wipe__grip { box-shadow: 0 0 0 3px rgba(44, 74, 107, 0.55); }
+  .wipe__grip {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--ink); color: var(--paper);
+    display: flex; align-items: center; justify-content: center; gap: 3px;
+    font-size: 9px; font-style: normal;
+  }
+  .wipe__grip i { font-style: normal; line-height: 1; }
+
+  /* ============================================================
+     02 — COVER SERIES (bleed, Klein-blue field, cqi)
+     ============================================================ */
+  .cvf {
+    background: var(--navy);
+    padding: clamp(2.6rem, 6cqi, 5rem) 6cqi clamp(2.2rem, 5cqi, 4rem);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .cvf__head, .cvf__foot {
+    font-size: clamp(10.5px, 1.15cqi, 14px); letter-spacing: 0.3em;
+    text-transform: uppercase; color: rgba(237, 228, 208, 0.66); margin: 0;
+    text-align: center;
+  }
+  .cvf__row {
+    display: flex; gap: clamp(1.6rem, 5cqi, 4.5rem);
+    margin: clamp(2rem, 4.5cqi, 3.6rem) 0;
+    align-items: stretch;
+  }
+  .cv__rev { display: flex; }
+  .cv {
+    width: clamp(220px, 25cqi, 330px); aspect-ratio: 5 / 8;
+    padding: 9% 8% 7%;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
+    transition: transform 0.35s var(--ease, ease-out), box-shadow 0.35s var(--ease, ease-out);
+    cursor: default;
+  }
+  .cv:hover, .cv:focus-visible {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 4px 10px rgba(0, 0, 0, 0.35);
+    outline: none;
+  }
+  .cv--blue { background: var(--klein); color: #f3eee1; }
+  .cv--white { background: #f3eee1; color: var(--klein); }
+  .cv p { margin: 0; }
+  .cv__title {
+    font-size: clamp(24px, 2.9cqi, 40px); line-height: 1.12; font-weight: 400;
+    letter-spacing: 0.005em; margin-top: 6%;
+  }
+  .cv__kind { font-style: italic; font-size: clamp(13px, 1.4cqi, 18px); margin-top: 0.9em; opacity: 0.85; }
+  .cv__author {
+    font-size: clamp(11px, 1.15cqi, 15px); letter-spacing: 0.26em; text-transform: uppercase;
+    margin-top: auto; padding-top: 1.5em;
+  }
+  .cv__pub {
+    font-size: clamp(9px, 0.95cqi, 12px); letter-spacing: 0.3em; text-transform: uppercase;
+    margin-top: 2.2em; opacity: 0.7;
+  }
+
+  /* ============================================================
+     03 — PRESS IDENTITY (paper surface, system not logo)
+     ============================================================ */
+  .qw {
+    background:
+      repeating-linear-gradient(0deg, rgba(36, 29, 18, 0.03) 0 1px, transparent 1px 7px),
+      var(--paper);
+    color: var(--ink);
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 5cqi, 4.5rem);
+    padding: clamp(2.4rem, 5.5cqi, 4.5rem) clamp(1.6rem, 5cqi, 4.5rem);
+    align-items: end;
+  }
+  .qw__id { display: flex; flex-direction: column; }
+  .qw__mark {
+    font-size: clamp(54px, 9cqi, 120px); line-height: 0.94; font-weight: 700;
+    letter-spacing: -0.012em; margin: 0;
+  }
+  .qw__amp {
+    font-style: italic; font-weight: 400; color: var(--madder);
+    font-size: 0.82em; letter-spacing: 0;
+  }
+  .qw__est {
+    font-size: clamp(10px, 1.15cqi, 13.5px); letter-spacing: 0.26em; text-transform: uppercase;
+    color: rgba(36, 29, 18, 0.62); margin: 1.4em 0 0;
+  }
+  .qw__device {
+    width: clamp(54px, 6.5cqi, 84px); height: clamp(54px, 6.5cqi, 84px);
+    border: 1px solid var(--ink); border-radius: 50%;
+    box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--ink);
+    display: grid; place-items: center;
+    margin: clamp(1.4rem, 3cqi, 2.4rem) 0 0;
+  }
+  .qw__device em { font-style: italic; font-size: clamp(26px, 3.2cqi, 42px); color: var(--ink); line-height: 1; transform: translateY(-0.04em); }
+  .qw__colophon {
+    font-size: clamp(12.5px, 1.35cqi, 16px); line-height: 1.62; font-style: italic;
+    color: rgba(36, 29, 18, 0.8); max-width: 34ch;
+    margin: clamp(1.2rem, 2.6cqi, 2rem) 0 0;
+  }
+  .qw__colophon em { font-style: normal; }
+
+  .qw__shelfwrap { min-width: 0; }
+  .qw__shelf {
+    display: flex; align-items: flex-end; justify-content: flex-end;
+    gap: clamp(5px, 0.7cqi, 9px);
+    padding-top: clamp(1rem, 2.5cqi, 1.8rem);
+  }
+  .qw__shelfline { display: block; height: 3px; background: var(--ink); margin-top: 0; }
+  .qw__spine {
+    writing-mode: vertical-rl;
+    display: flex; align-items: center; gap: 0.9em;
+    padding: 1.1em 0;
+    width: clamp(40px, 4.6cqi, 60px);
+    height: clamp(286px, 27cqi, 330px);
+    white-space: nowrap; overflow: clip;
+    transition: transform 0.3s var(--ease, ease-out);
+    cursor: default;
+  }
+  .qw__spine:nth-child(2) { height: clamp(296px, 26cqi, 312px); }
+  .qw__spine:nth-child(3) { height: clamp(330px, 29cqi, 352px); }
+  .qw__spine:nth-child(4) { height: clamp(290px, 26.5cqi, 320px); }
+  .qw__spine:nth-child(5) { height: clamp(266px, 24.5cqi, 296px); }
+  .qw__spine:nth-child(6) { height: clamp(280px, 25cqi, 306px); }
+  .qw__spine:hover, .qw__spine:focus-visible { transform: translateY(-12px); outline: none; }
+  .qw__spine--ink    { background: var(--ink);   color: var(--paper); }
+  .qw__spine--blue   { background: var(--klein); color: #f3eee1; }
+  .qw__spine--madder { background: var(--madder); color: var(--paper); }
+  .qw__spine--paper  { background: var(--paper-2); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(36,29,18,0.35); }
+  .qw__spine--sage   { background: var(--sage);  color: var(--paper); }
+  .qw__spine--slate  { background: #2c4a6b;      color: var(--paper); }
+  .qw__sa { font-size: clamp(9px, 0.95cqi, 11px); letter-spacing: 0.2em; text-transform: uppercase; }
+  .qw__st { font-size: clamp(11.5px, 1.25cqi, 15px); letter-spacing: 0.01em; }
+  .qw__st em { font-style: italic; }
+  .qw__sm { font-size: clamp(8px, 0.85cqi, 9.5px); letter-spacing: 0.16em; margin-top: auto; opacity: 0.75; }
+  .qw__series {
+    font-size: clamp(11px, 1.15cqi, 13.5px); font-style: italic; color: rgba(36, 29, 18, 0.6);
+    text-align: right; margin: 0.9em 0 0;
+  }
+
+  /* ============================================================
+     04 — REVIEW FRONT PAGE (theme tokens; NYRB system)
+     ============================================================ */
+  .rev {
+    background: var(--bg); color: var(--fg);
+    padding: clamp(1.8rem, 4.5cqi, 4rem) clamp(1.2rem, 5cqi, 4.5rem) clamp(1.6rem, 3.5cqi, 3rem);
+    font-feature-settings: 'liga' 1, 'kern' 1;
+  }
+  .rev__mast { border-bottom: 3px double var(--fg); padding-bottom: 0.8em; }
+  .rev__name {
+    font-size: clamp(20px, 3.4cqi, 46px); font-weight: 700; letter-spacing: 0.02em;
+    text-align: center; margin: 0; line-height: 1.1;
+  }
+  .rev__meta {
+    display: flex; justify-content: space-between; gap: 1em;
+    font-size: clamp(9.5px, 1cqi, 13px); letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fg-3); margin: 1em 0 0;
+  }
+  .rev__head {
+    font-size: clamp(26px, 4.6cqi, 62px); line-height: 1.04; font-weight: 700;
+    letter-spacing: -0.012em; text-align: center;
+    margin: clamp(1.4rem, 3cqi, 2.6rem) auto 0; max-width: 24ch;
+  }
+  .rev__by {
+    font-size: clamp(13px, 1.5cqi, 19px); font-style: italic; text-align: center;
+    color: var(--fg-2); margin: 0.7em 0 0;
+  }
+  .rev__cite {
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    width: fit-content; margin: clamp(1.2rem, 2.6cqi, 2.2rem) auto;
+    padding: 0.9em 2.2em; text-align: center;
+    font-size: clamp(12px, 1.3cqi, 16px); line-height: 1.5; color: var(--fg-2);
+  }
+  .rev__cite p { margin: 0; }
+  .rev__cite em { font-style: italic; }
+  .rev__cols {
+    columns: 3; column-gap: clamp(1.4rem, 3cqi, 2.6rem); column-rule: 1px solid var(--line-soft);
+    font-size: clamp(13px, 1.42cqi, 17px); line-height: 1.62;
+    text-align: justify; hyphens: auto;
+  }
+  .rev__cols p { margin: 0 0 0.85em; }
+  .rev__cols em { font-style: italic; }
+  .rev__drop {
+    float: left; font-size: 3.2em; line-height: 0.74; font-weight: 700;
+    padding: 0.05em 0.12em 0 0; color: var(--fg);
+  }
+  .rev__pull {
+    font-size: clamp(17px, 2.5cqi, 30px); line-height: 1.32; font-style: italic;
+    text-align: center; color: var(--fg); max-width: 38ch;
+    border-top: 1px solid var(--fg); border-bottom: 1px solid var(--fg);
+    margin: clamp(1.4rem, 3cqi, 2.4rem) auto 0; padding: 1em 0.5em;
+    hyphens: none;
+  }
+  .rev__foot {
+    display: flex; justify-content: space-between; gap: 1.5em; flex-wrap: wrap;
+    font-size: clamp(10px, 1.05cqi, 13px); letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--fg-3); border-top: 1px solid var(--line-soft);
+    margin-top: clamp(1.4rem, 3cqi, 2.4rem); padding-top: 1em;
+  }
+  .rev__foot em { font-style: italic; text-transform: none; letter-spacing: 0; }
+
+  /* ============================================================
+     05 — READER UI (real px, interactive)
      ============================================================ */
   .rdr { font-size: 14px; }
   .rdr__bar {
     display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
     padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line);
   }
-  .rdr__brand {
-    font-size: 19px; font-weight: 700; color: var(--fg); letter-spacing: 0.005em;
-  }
+  .rdr__brand { font-size: 19px; font-weight: 700; color: var(--fg); letter-spacing: 0.005em; }
   .rdr__tools { display: flex; align-items: center; gap: 0.9rem; margin-left: auto; flex-wrap: wrap; }
   .rdr__size {
     display: flex; align-items: center; gap: 0.5rem;
@@ -281,16 +627,13 @@ const fam = font.fontFamily;
     cursor: pointer; transition: all 0.18s var(--ease); white-space: nowrap;
   }
   .rdr__modes button:hover { color: var(--fg); border-color: var(--fg-3); }
-  .rdr__modes button.is-on {
-    color: var(--accent-contrast); background: var(--accent); border-color: var(--accent);
-  }
+  .rdr__modes button.is-on { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
 
   .rdr__progress { height: 2px; background: var(--line-soft); }
   .rdr__progressfill {
     display: block; height: 100%; width: 0%; background: var(--accent);
     transition: width 0.08s linear;
   }
-
   .rdr__scroll {
     height: 460px; overflow-y: auto; overscroll-behavior: contain;
     background: var(--bg); transition: background 0.3s var(--ease);
@@ -307,10 +650,7 @@ const fam = font.fontFamily;
     font-size: 13px; font-style: italic; letter-spacing: 0.01em;
     color: var(--rm); margin: 0;
   }
-  .rdr__kdot {
-    display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--ra); flex: none;
-  }
+  .rdr__kdot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--ra); flex: none; }
   .rdr__title {
     font-size: 1.85em; line-height: 1.12; font-weight: 700; color: var(--rf);
     margin: 0.5rem 0 0.6rem; letter-spacing: -0.005em;
@@ -330,190 +670,46 @@ const fam = font.fontFamily;
   .rdr__close { color: var(--rm); }
 
   /* ============================================================
-     02 — MAGAZINE LONG-READ (container-query print sizing)
+     RESPONSIVE RECOMPOSITION (768 first-class; 390 recomposed)
      ============================================================ */
-  .scene-mag > .iu__poster { position: relative; inset: auto; }
-  .mag {
-    background: var(--bg); color: var(--fg);
-    padding: 5cqi 5.5cqi 4.5cqi; font-feature-settings: 'liga' 1, 'kern' 1;
-  }
-  .mag__head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    border-bottom: 1px solid var(--fg); padding-bottom: 1.6cqi;
-    font-size: 1.8cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-2);
-  }
-  .mag__pub { color: var(--fg); font-weight: 700; letter-spacing: 0.2em; }
-  .mag__sec { color: var(--fg-3); }
-  .mag__title {
-    font-size: 8.4cqi; line-height: 0.98; font-weight: 700; color: var(--fg);
-    margin: 4cqi 0 0; letter-spacing: -0.012em; text-align: center;
-  }
-  .mag__deck {
-    font-size: 2.9cqi; line-height: 1.42; font-style: italic; color: var(--fg-2);
-    margin: 2.2cqi auto 4.4cqi; max-width: 46ch; text-align: center;
-  }
-  .mag__cols {
-    columns: 2; column-gap: 4.4cqi; column-fill: balance;
-    font-size: 2.85cqi; line-height: 1.66; color: var(--fg); text-align: justify; hyphens: auto;
-  }
-  .mag__cols--lower { columns: 2; column-fill: balance; margin-top: 0; }
-  .mag__body { margin: 0 0 0.85em; }
-  .mag__body em { font-style: italic; }
-  .mag__drop {
-    float: left; font-size: 6.6cqi; line-height: 0.72; font-weight: 700;
-    padding: 0.04em 0.12em 0 0; color: var(--fg);
-  }
-  /* full-width pull quote — commands both columns */
-  .mag__pull {
-    position: relative; margin: 4cqi 0; padding: 3.6cqi 8cqi 0;
-    font-size: 4.4cqi; line-height: 1.28; font-style: italic; font-weight: 400;
-    color: var(--fg); text-align: center; hyphens: none;
-    border-top: 1px solid var(--line);
-  }
-  .mag__pullmark {
-    position: absolute; top: 0.4cqi; left: 50%; transform: translateX(-50%);
-    font-size: 9cqi; line-height: 1; color: var(--accent); font-weight: 700;
-  }
-  .mag__foot {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-top: 4cqi; padding-top: 2cqi; border-top: 1px solid var(--line-soft);
-    font-size: 1.7cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3);
-  }
-  .mag__orn { color: var(--accent); font-size: 3cqi; text-transform: none; }
-
-  /* pull quote breathes in on scroll-into-view (reduced-motion safe) */
-  @media (prefers-reduced-motion: no-preference) {
-    [data-reveal-q] { opacity: 0; transform: translateY(10px); transition: opacity 0.7s var(--ease, ease-out), transform 0.7s var(--ease, ease-out); }
-    [data-reveal-q].is-in { opacity: 1; transform: none; }
+  @container (max-width: 900px) {
+    .rev__cols { columns: 2; }
+    .qw { grid-template-columns: 1fr; align-items: start; gap: clamp(1.8rem, 4cqi, 2.6rem); }
+    .qw__shelf { justify-content: flex-start; }
+    .qw__series { text-align: left; }
+    .qw__colophon { max-width: 44ch; }
   }
 
-  /* ============================================================
-     03 — EDITORIAL FEATURE OPENER (poster-scale, cqi)
-     ============================================================ */
-  .scene-open { --card-ar: auto; }
-  .scene-open > .iu__poster { position: relative; inset: auto; }
-  .opener {
-    background: var(--bg); color: var(--fg); min-height: 56cqi;
-    display: flex; flex-direction: column; padding: 6cqi 6cqi 5cqi;
-    font-feature-settings: 'liga' 1, 'kern' 1;
-  }
-  .op__issue {
-    font-family: var(--font-mono); font-size: 2cqi; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--fg-3);
-  }
-  .op__center {
-    margin: auto 0; display: flex; flex-direction: column; align-items: center; text-align: center;
-  }
-  .op__over {
-    font-size: 2.6cqi; font-style: italic; color: var(--fg-3); letter-spacing: 0.02em;
-    margin-bottom: 1.6cqi;
-  }
-  .op__title {
-    font-size: 17cqi; line-height: 0.92; font-weight: 700; color: var(--fg);
-    margin: 0; letter-spacing: -0.02em;
-  }
-  .op__em {
-    font-style: italic; font-weight: 400; color: var(--fg-2);
-    letter-spacing: -0.005em; transition: color 0.5s var(--ease, ease-out);
-  }
-  .op__rule {
-    display: block; height: 1px; width: 0; max-width: 38cqi; background: var(--accent);
-    margin: 4cqi auto; transition: width 0.9s var(--ease, ease-out);
-  }
-  .op__stand {
-    font-size: 2.7cqi; line-height: 1.5; color: var(--fg-3); max-width: 44ch;
-    margin: 0; font-style: italic;
-  }
-  .op__lead {
-    font-style: normal; font-weight: 700; color: var(--fg); letter-spacing: 0;
-  }
-  .op__foot {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-top: 5cqi; padding-top: 2.4cqi; border-top: 1px solid var(--line-soft);
-    font-size: 2.2cqi; color: var(--fg-3);
-  }
-  .op__foot em { font-style: italic; color: var(--fg-2); }
-  .op__pp { font-family: var(--font-mono); letter-spacing: 0.06em; }
-
-  /* the hairline rule draws across on view; on hover the italic "Letter" warms to accent and the rule redraws */
-  .op__rule { width: 38cqi; }
-  .opener[data-opener]:hover .op__em { color: var(--accent); }
-  @media (prefers-reduced-motion: no-preference) {
-    .op__rule { width: 0; animation: op-draw 1.1s var(--ease, ease-out) 0.2s forwards; }
-    .opener[data-opener]:hover .op__rule { animation: op-redraw 0.9s var(--ease, ease-out) forwards; }
-  }
-  @keyframes op-draw { to { width: 38cqi; } }
-  @keyframes op-redraw { from { width: 0; } to { width: 38cqi; } }
-
-  /* ============================================================
-     04 — EMAIL NEWSLETTER (real px device scale)
-     ============================================================ */
-  .news { font-size: 14px; }
-  .news__sheet {
-    max-width: 600px; margin: 0 auto; background: var(--bg);
-    padding: clamp(1.6rem, 5cqi, 2.8rem) clamp(1.4rem, 6cqi, 3rem) 2.4rem;
-  }
-  .news__masthead { text-align: center; border-bottom: 2px solid var(--fg); padding-bottom: 0.9rem; }
-  .news__name { display: block; font-size: 34px; font-weight: 700; line-height: 1; color: var(--fg); letter-spacing: -0.01em; }
-  .news__tag {
-    display: block; margin-top: 0.5rem; font-size: 11px; font-style: italic;
-    letter-spacing: 0.04em; color: var(--fg-3);
-  }
-  .news__meta {
-    display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--fg-3);
-    padding: 0.7rem 0; border-bottom: 1px solid var(--line); margin-bottom: 1.4rem;
-  }
-  .news__lead { font-size: 16px; line-height: 1.6; color: var(--fg); }
-  .news__lead p { margin: 0 0 0.8em; }
-  .news__hello { font-style: italic; color: var(--fg-2); }
-  .news__lead em, .news__story em { font-style: italic; }
-  .news__story {
-    position: relative; padding: 1.4rem 0.8rem 1.2rem 2.6rem;
-    border-top: 1px solid var(--line-soft);
-    border-radius: 6px; transition: background 0.2s var(--ease); cursor: default;
-  }
-  .news__story:hover { background: var(--bg-2); }
-  .news__story:focus-visible {
-    outline: 2px solid var(--accent); outline-offset: 2px; background: var(--bg-2);
-  }
-  .news__num {
-    position: absolute; left: 0.55rem; top: 1.5rem;
-    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: 0.04em;
-    transition: color 0.2s var(--ease);
-  }
-  .news__story:hover .news__num, .news__story:focus-visible .news__num { color: var(--accent); }
-  .news__h {
-    font-size: 15px; font-weight: 700; font-style: italic; letter-spacing: 0;
-    color: var(--fg); margin: 0 0 0.4rem;
-  }
-  .news__story p { font-size: 15px; line-height: 1.58; color: var(--fg); margin: 0; }
-  .news__quote {
-    font-size: 18px; line-height: 1.4; font-style: italic; color: var(--fg);
-    border-left: 2px solid var(--accent); padding-left: 0.9rem; margin: 0;
-  }
-  .news__foot {
-    margin-top: 1.6rem; padding-top: 1.4rem; border-top: 2px solid var(--fg);
-  }
-  .news__foot > p:first-child { font-size: 16px; line-height: 1.5; color: var(--fg); margin: 0 0 1rem; }
-  .news__sign { font-size: 22px; font-style: italic; color: var(--accent); }
-  .news__actions { margin: 0 0 1.2rem; }
-  .news__reply {
-    font-family: var(--fam); font-size: 14px; font-style: italic; color: var(--accent);
-    background: transparent; border: 1px solid var(--accent); border-radius: 100px;
-    padding: 0.5rem 1.2rem; cursor: pointer; letter-spacing: 0.01em;
-    transition: background 0.2s var(--ease), color 0.2s var(--ease);
-  }
-  .news__reply:hover { background: var(--accent); color: var(--accent-contrast); }
-  .news__reply:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .news__unsub { font-size: 11px; color: var(--fg-3); margin: 0; letter-spacing: 0.02em; }
-  .news__link { text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
-
-  /* ============================================================
-     RESPONSIVE
-     ============================================================ */
   @container (max-width: 560px) {
+    /* 01: tighten the title page; bigger relative type, calmer tracking */
+    .wipe { height: 460px; }
+    .tp__l--xl { letter-spacing: 0.08em; padding-left: 0.08em; }
+    .tp__l--lg { letter-spacing: 0.14em; padding-left: 0.14em; }
+    .tp__l--md { letter-spacing: 0.18em; padding-left: 0.18em; }
+    .wipe__tag { display: none; }
+    .wipe__grip { width: 34px; height: 34px; }
+
+    /* 02: covers become a casual pile, not a shrunken row */
+    .cvf__row { flex-direction: column; align-items: center; gap: 0; }
+    .cv__rev { justify-content: center; }
+    .cv__rev:nth-child(2) { margin-top: -16cqi; }
+    .cv { width: min(70cqi, 280px); }
+    .cv--white { transform: rotate(2.2deg) translateX(7cqi); }
+    .cv--white:hover, .cv--white:focus-visible { transform: rotate(2.2deg) translateX(7cqi) translateY(-8px); }
+    .cvf__head, .cvf__foot { letter-spacing: 0.2em; }
+
+    /* 03: identity stacks; the two newest spines leave the shelf */
+    .qw__spine--opt { display: none; }
+    .qw__spine { width: clamp(44px, 13cqi, 56px); }
+    .qw__mark { font-size: clamp(58px, 19cqi, 86px); }
+    .qw__est { letter-spacing: 0.18em; }
+
+    /* 04: single column, hung headline scale */
+    .rev__cols { columns: 1; text-align: left; hyphens: none; }
+    .rev__meta span:last-child { display: none; }
+    .rev__cite { padding: 0.9em 1.2em; }
+
+    /* 05: toolbar recomposes */
     .rdr__bar { gap: 0.55rem 0.7rem; padding: 0.7rem 0.9rem; }
     .rdr__brand { font-size: 17px; }
     .rdr__tools { width: 100%; margin-left: 0; justify-content: space-between; gap: 0.7rem; }
@@ -521,25 +717,11 @@ const fam = font.fontFamily;
     .rdr__sizeval { min-width: 3.4em; }
     .rdr__modes button { padding: 0.3rem 0.5rem; }
     .rdr__scroll { height: 420px; }
-    .mag { padding: 6cqi 6cqi 5cqi; }
-    .mag__cols, .mag__cols--lower { columns: 1; }
-    .mag__title { font-size: 11cqi; }
-    .mag__deck { font-size: 3.6cqi; }
-    .mag__cols { font-size: 4cqi; line-height: 1.62; }
-    .mag__drop { font-size: 9cqi; }
-    .mag__pull { font-size: 5.6cqi; padding: 5cqi 2cqi 0; }
-    .mag__pullmark { font-size: 12cqi; }
-    .mag__head { font-size: 2.8cqi; }
-    .mag__foot { font-size: 2.6cqi; }
-    .op__title { font-size: 22cqi; }
-    .op__over { font-size: 3.6cqi; }
-    .op__stand { font-size: 4cqi; max-width: 30ch; }
-    .op__issue, .op__foot { font-size: 3cqi; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .rdr__progressfill, .rdr__scroll, .rdr__article,
+    .cv, .qw__spine, .rdr__progressfill, .rdr__scroll, .rdr__article,
     .rdr__size button, .rdr__modes button { transition: none; }
-    .op__rule { width: 38cqi; animation: none; }
+    .cv:hover, .cv:focus-visible, .qw__spine:hover, .qw__spine:focus-visible { transform: none; }
   }
 </style>
