@@ -4,215 +4,247 @@ export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
 
-// Restaurant menu data (scene 04, interactive reservation/menu UI — real device scale)
-const menu = {
-  entrées: [
-    { name: 'Oysters & Mignonette', detail: 'Belon · cucumber · finger lime',        price: '24' },
-    { name: 'Burrata di Andria',    detail: 'heirloom tomato · basil oil · sea salt', price: '21' },
-    { name: 'Steak Tartare',        detail: 'hand-cut · cured yolk · sourdough',      price: '26' },
-  ],
-  plats: [
-    { name: 'Turbot, Beurre Blanc', detail: 'leek · champagne · caviar',              price: '52' },
-    { name: 'Canard à l’Orange',    detail: 'aged duck · bitter orange · endive',     price: '46' },
-    { name: 'Risotto al Tartufo',   detail: 'carnaroli · black truffle · parmigiano', price: '38' },
-  ],
-  desserts: [
-    { name: 'Soufflé au Chocolat',  detail: 'Valrhona · crème anglaise',              price: '18' },
-    { name: 'Tarte Tatin',          detail: 'caramelised apple · crème fraîche',      price: '16' },
-    { name: 'Affogato',             detail: 'espresso · vanilla · amaretto',          price: '14' },
-  ],
-};
-const courses = Object.keys(menu) as (keyof typeof menu)[];
+// 01 — perfume campaign: the name, letter by letter, shouted from the balconies
+const parfum = 'OBSTINÉE'.split('');
 
-// Boutique lookbook (scene 05, interactive hover-reveal hero)
-const pieces = [
-  { id: 'I',   name: 'La Robe Noire',  detail: 'Silk crêpe, bias cut',    price: '2,850' },
-  { id: 'II',  name: 'Cape Monceau',   detail: 'Double wool, hand-felled', price: '3,400' },
-  { id: 'III', name: 'Soie Blanche',   detail: 'Charmeuse, draped',        price: '1,980' },
+// 02 — record sleeve programme
+const sides = [
+  { no: 'I',   title: 'Ondine',  dur: '6′57″' },
+  { no: 'II',  title: 'Le Gibet', dur: '5′52″' },
+  { no: 'III', title: 'Scarbo',  dur: '8′49″' },
 ];
+
+// 04 — auction lot, provenance & condition copy
+const lotTabs = [
+  { id: 'desc', label: 'Description' },
+  { id: 'prov', label: 'Provenance' },
+  { id: 'cond', label: 'Condition' },
+];
+
+// 05 — the kinetic word: two full-word layers (roman / italic), each with its own
+// true metrics. The rest state is BINARY per letter — a hard seam mid-word
+// (ital | ique), so no glyph ever rests as a mid-fade double exposure; the soft
+// crossfade is reserved for pointer play. JS aligns the italic layer so the seam
+// glyphs share a left edge.
+const kinetic = 'italique'.split('');
+const SEAM = 4; // ital | ique
+const rest = kinetic.map((_, i) => (i < SEAM ? 0 : 1));
+const restAvg = rest.reduce((a, b) => a + b, 0) / rest.length;
 ---
 <div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — FASHION / CULTURE MAGAZINE COVER -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the culture cover</span></figcaption>
-    <div class="iu__scene iu__scene--portrait">
-      <div class="iu__poster cover" data-reveal data-reveal-cover>
-        <div class="cover__top">
-          <span class="cover__no">Issue 19</span>
-          <span class="cover__season">Spring 2026</span>
-          <span class="cover__price">$14</span>
-        </div>
-        <div class="cover__mast">
-          <h3 class="cover__word" data-cover-word>Mode</h3>
-          <span class="cover__amp" aria-hidden="true">&amp;</span>
-          <h3 class="cover__word cover__word--it" data-cover-word>Manière</h3>
-        </div>
-        <div class="cover__lines">
-          <p class="cover__feat">The Return of<br />the <em>Hairline</em></p>
-          <ul class="cover__list">
-            <li>Forty pages on couture &amp; the new restraint</li>
-            <li>Tilda Swinton, in her own words</li>
-            <li><span class="cover__plus">Plus</span> a season in Parma</li>
-          </ul>
-        </div>
-        <div class="cover__foot">
-          <span class="cover__bar" aria-hidden="true">
-            {Array.from({ length: 26 }).map((_, i) => (<i style={`width:${(i % 3) + 1}px`}></i>))}
-          </span>
-          <span class="cover__byline">Photograph — Paolo Roversi</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">Roman and true italic share the masthead; the cover lines rise in on scroll.</p>
-  </figure>
-
-  <!-- 02 — RESTAURANT IDENTITY / HOSPITALITY (giant contrast-revealing monogram) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Identity — restaurant &amp; hospitality mark</span></figcaption>
-    <div class="iu__scene scene-16">
-      <div class="iu__poster maison" data-reveal data-reveal-rule>
-        <!-- LEFT: a giant initial cropped at the bowl so the thick-stem→hairline-serif
-             transition is the entire image. Annotation sits in its own caption strip
-             below the crop so it can never clip. -->
-        <div class="maison__crop">
-          <span class="maison__glyph" aria-hidden="true">C</span>
-          <span class="maison__tag">Specimen — the initial, drawn large</span>
-        </div>
-        <!-- RIGHT: the actual identity, supporting type set against the giant letter. -->
-        <div class="maison__id">
-          <div class="maison__est">
-            <span>Restaurant</span>
-            <span class="maison__dot"></span>
-            <span>est. 1921</span>
-          </div>
-          <div class="maison__name">
-            <h3 class="maison__word">Crillon</h3>
-            <span class="maison__sub">Hôtel &amp; Table — Place de la Concorde</span>
-          </div>
-          <div class="maison__foot">
-            <span>Déjeuner &amp; dîner</span>
-            <span class="maison__sep">·</span>
-            <span>Paris VIII<sup>e</sup></span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">The mark is the face itself — a cropped initial whose thick stem falls to a hairline bracketed serif, the identity set beside it.</p>
-  </figure>
-
-  <!-- 03 — EDITORIAL FEATURE OPENER: roman vs the true italic -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — feature opener, roman vs italic</span></figcaption>
-    <div class="iu__scene scene-43">
-      <div class="iu__poster spread">
-        <div class="spread__rail">
-          <span class="spread__folio">Essay · 072</span>
-          <span class="spread__sec">On Contrast</span>
-        </div>
-        <div class="spread__main">
-          <span class="spread__kicker">The thick & the thin</span>
-          <h3 class="spread__head">
-            A letter drawn to <span class="spread__it">vanish</span>
-          </h3>
-          <p class="spread__deck">How the Didone serif taught the page to whisper and shout in a single line.</p>
-          <div class="spread__body">
-            <p><span class="spread__drop">B</span>y the 1790s the press had finally caught the eye — paper smoother, ink blacker, the burin sharper. Firmin Didot in Paris and Bodoni in Parma let the contrast run riot: heavy stems beside hairlines fine enough to cut.</p>
-            <p>Two centuries on, the same drama still reads as one thing only — pure luxury, set large on a cover. The thinner the stroke, the louder the couture. <em>The italic, meanwhile, leans into the curve and keeps the secret.</em></p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">The roman headline anchors; one word swaps to the true italic — the family’s second voice.</p>
-  </figure>
-
-  <!-- 04 — INTERACTIVE: restaurant menu + reservation UI (real device scale) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Menu &amp; reservation UI (real scale, interactive)</span></figcaption>
+  <!-- ============ 01 — ILLUSTRATION & COMMERCIAL ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Illustration &amp; commercial — a perfume launch, after Jean-Paul Goude’s <em>Égoïste</em> film for Chanel (1990)</span>
+    </figcaption>
     <div class="iu__scene">
-      <div class="iu__device carte" data-carte>
-        <div class="iu__chrome">
-          <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">crillon.paris/la-carte</span>
-        </div>
-        <header class="carte__head">
-          <span class="carte__logo">Crillon</span>
-          <nav class="carte__tabs" aria-label="Menu sections">
-            {courses.map((c, i) => (
-              <button class={i === 0 ? 'is-on' : ''} data-course={c}>{c}</button>
-            ))}
-          </nav>
+      <div class="parf" data-reveal-act>
+        <header class="parf__top">
+          <span class="parf__house">Vairelle · Paris</span>
+          <span class="parf__claim">Le nouveau parfum</span>
+          <span class="parf__no">N<sup>o</sup> 7</span>
         </header>
-        <div class="carte__panel">
-          {courses.map((c, i) => (
-            <ul class={`carte__list${i === 0 ? ' is-on' : ''}`} data-panel={c}>
-              {menu[c].map((d) => (
-                <li class="dish">
-                  <div class="dish__row">
-                    <span class="dish__name">{d.name}</span>
-                    <span class="dish__dots" aria-hidden="true"></span>
-                    <span class="dish__price">{d.price}</span>
-                  </div>
-                  <span class="dish__detail">{d.detail}</span>
-                </li>
-              ))}
-            </ul>
+        <div class="parf__row" role="img" aria-label="Obstinée, set letter by letter across shuttered windows">
+          {parfum.map((ch, i) => (
+            <span class={`parf__cell${i % 2 ? ' parf__cell--alt' : ''}`}>
+              <i class={`parf__shout${i % 3 === 1 ? '' : ' parf__shout--quiet'}`} aria-hidden="true">« Obstinée ! »</i>
+              <b class="parf__letter" style={`--d:${i * 0.07}s`}>{ch}</b>
+            </span>
           ))}
         </div>
-        <div class="carte__resa">
-          <span class="carte__resa-h">Réservez</span>
-          <div class="carte__party">
-            <span class="carte__plabel">Table for</span>
-            <div class="carte__steps" data-party>
-              <button data-step="-1" aria-label="Fewer guests">–</button>
-              <span class="carte__count" data-count>2</span>
-              <button data-step="1" aria-label="More guests">+</button>
+        <footer class="parf__foot">
+          <span>Eau de parfum — 100 ml</span>
+          <span class="parf__foot-mid">la façade entière le crie</span>
+          <span>Filmé au Carlton, Cannes</span>
+        </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">Hairline caps at façade scale — each letter slams down like a shutter; rest on any window and it whispers back.</p>
+  </figure>
+
+  <!-- ============ 02 — BRANDING & IDENTITY ============ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Branding — a classical record label, after Deutsche Grammophon’s yellow cartouche</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="disq" data-reveal-act>
+        <div class="disq__shelf" data-disq>
+          <span class="disq__slide" aria-hidden="true"><span class="disq__vinyl" data-vinyl><i class="disq__paper"><em>Aurel</em></i></span></span>
+          <div class="disq__sleeve">
+            <span class="disq__cartouche"><b>Disques<br />Aurel</b></span>
+            <div class="disq__main">
+              <h3 class="disq__composer">Ravel</h3>
+              <p class="disq__work">Gaspard de la nuit</p>
+            </div>
+            <div class="disq__credit">
+              <span class="disq__artist">Élodie Marchand, <em>piano</em></span>
+              <span class="disq__cat">ADL 1907 · Stéréo</span>
             </div>
           </div>
-          <button class="carte__book" data-book>Book — <span data-book-n>2</span> guests</button>
+        </div>
+        <div class="disq__back">
+          <span class="disq__back-k">Face A</span>
+          <ul class="disq__tracks">
+            {sides.map((t) => (
+              <li><span class="disq__tno">{t.no}</span><span class="disq__tname">{t.title}</span><span class="disq__lead" aria-hidden="true"></span><span class="disq__dur">{t.dur}</span></li>
+            ))}
+          </ul>
+          <p class="disq__poeme"><em>Trois poèmes pour piano<br />d’après Aloysius Bertrand</em></p>
+          <p class="disq__note">Enregistré à la Salle Gaveau, Paris — mars 1969.</p>
+          <span class="disq__back-foot">Disques Aurel — Série Cartouche · Made in France</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Switch courses, set your party size — the booking line restates it in display italic.</p>
+    <p class="iu__hint label">One weight carries a whole identity: cartouche, composer, catalogue — the record slides out, and spins up under a resting pointer.</p>
   </figure>
 
-  <!-- 05 — INTERACTIVE: boutique e-commerce editorial hero, hover-reveal -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Boutique hero — editorial e-commerce (interactive)</span></figcaption>
+  <!-- ============ 03 — EDITORIAL ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Editorial — a food quarterly, in the manner of <em>The Gourmand</em></span>
+    </figcaption>
     <div class="iu__scene">
-      <div class="iu__device shop" data-shop>
-        <div class="iu__chrome">
-          <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">atelier-crillon.com/collection</span>
+      <div class="gour" data-reveal-act>
+        <div class="gour__page gour__page--l">
+          <span class="gour__kicker">The Pantry Essays · iv</span>
+          <h3 class="gour__head">Butter,<em>at last.</em></h3>
+          <p class="gour__deck">Why the croissant owes everything to a hairline of fat — and what Parma’s printers knew about richness all along.</p>
+          <span class="gour__by">Words — Sylvie Arnoux · Plates — D. Okafor</span>
+          <span class="gour__folio">Mouthfeel — N<sup>o</sup> 11</span>
         </div>
-        <header class="shop__head">
-          <span class="shop__logo">Atelier</span>
-          <nav class="shop__nav"><span>Collection</span><span>Atelier</span><span class="shop__bag">Bag · 0</span></nav>
-        </header>
-        <div class="shop__stage" data-stage>
-          <span class="shop__ghost" data-ghost>01</span>
-          <div class="shop__lockup">
-            <span class="shop__no" data-no>Look 01</span>
-            <h4 class="shop__name" data-name>La Robe Noire</h4>
-            <span class="shop__detail" data-detail>Silk crêpe, bias cut</span>
-            <span class="shop__price" data-price>$2,850</span>
+        <div class="gour__fold" aria-hidden="true"></div>
+        <div class="gour__page gour__page--r">
+          <div class="gour__cols">
+            <p><b class="gour__drop">T</b>he beurrier at Maison Bordier will tell you that butter, like a Didone, is a question of contrast: the fat must be cold, the lamination thin enough to vanish. Seventy-two folds later the dough holds a hundred hairlines, each one load-bearing.</p>
+            <p>Bodoni would have understood. His pages, like good pastry, depend on the thinnest possible line surviving the press. <em>Too much heat and the hairline melts; too little and it never blooms.</em></p>
           </div>
-        </div>
-        <div class="shop__thumbs" data-thumbs>
-          {pieces.map((p, i) => (
-            <button
-              class={`thumb${i === 0 ? ' is-on' : ''}`}
-              data-look={String(i)}
-              data-name={p.name} data-detail={p.detail} data-price={p.price} data-id={p.id}
-            >
-              <span class="thumb__no">{p.id}</span>
-              <span class="thumb__name">{p.name}</span>
-            </button>
-          ))}
+          <blockquote class="gour__pull" data-pull><p>“Richness is restraint,<br />repeated until it shines.”</p></blockquote>
+          <aside class="gour__recipe">
+            <span class="gour__recipe-k">Beurre noisette — the only recipe</span>
+            <ul>
+              <li><span class="gour__fr">1/2</span> lb cultured butter, cubed cold</li>
+              <li><span class="gour__fr">1/4</span> tsp fleur de sel, at the very end</li>
+              <li><span class="gour__fr">3/4</span> of your patience, unsalted</li>
+            </ul>
+          </aside>
+          <span class="gour__folio gour__folio--r">Spring 2026 · 64 / 65</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Hover or tap a look — the display name cross-fades and the giant ghost numeral scales in.</p>
+    <p class="iu__hint label">True fractions (<code>frac</code>) in the recipe; the pull-quote rules ink themselves in as the page enters.</p>
+  </figure>
+
+  <!-- ============ 04 — WEB & APP UI ============ -->
+  <figure class="iu__item" data-shoot-click="[data-bid]">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Web &amp; app UI — an auction house’s live lot page, after Sotheby’s 2019 digital identity (real px, interactive)</span>
+    </figcaption>
+    <div class="iu__scene iu__scene--ui">
+      <div class="lot" data-lot>
+        <div class="lot__chrome">
+          <span class="lot__fav" aria-hidden="true">A</span>
+          <span class="lot__addr"><svg class="lot__lock" viewBox="0 0 10 12" width="9" height="11" aria-hidden="true"><path d="M3 5.2V3.6a2 2 0 0 1 4 0v1.6" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="1.2" y="5" width="7.6" height="6" rx="1" fill="currentColor"/></svg>ardent.auction/sale/the-type-sale/lot-47</span>
+        </div>
+        <header class="lot__head">
+          <span class="lot__logo">Ardent</span>
+          <nav class="lot__nav" aria-label="Site"><span>Auctions</span><span>Private Sales</span><span class="lot__live">● Live</span></nav>
+        </header>
+        <div class="lot__body">
+          <div class="lot__info">
+            <div class="lot__plate" role="figure" aria-label="Lot 47 — a specimen leaf from the Manuale Tipografico">
+              <div class="lot__leafwrap" data-loupe-zone>
+                <div class="lot__leaf" data-leaf>
+                  <span class="lot__leaf-k">Manuale Tipografico</span>
+                  <span class="lot__leaf-rule" aria-hidden="true"></span>
+                  <strong class="lot__leaf-xl">Quousque tandem</strong>
+                  <em class="lot__leaf-it">abutêre, Catilina, patientiâ nostrâ?</em>
+                  <span class="lot__leaf-md">Papale. Quousque tandem abutêre, Catilina</span>
+                  <span class="lot__leaf-sm">Ducale. <em>Quousque tandem abutêre, Catilina, patientiâ nostrâ?</em></span>
+                  <span class="lot__leaf-rule" aria-hidden="true"></span>
+                  <span class="lot__leaf-folio">Serie XLII · Parma MDCCCXVIII</span>
+                </div>
+                <div class="lot__loupe" aria-hidden="true" data-loupe>
+                  <div class="lot__loupe-copy" data-loupe-copy>
+                    <div class="lot__leaf">
+                      <span class="lot__leaf-k">Manuale Tipografico</span>
+                      <span class="lot__leaf-rule"></span>
+                      <strong class="lot__leaf-xl">Quousque tandem</strong>
+                      <em class="lot__leaf-it">abutêre, Catilina, patientiâ nostrâ?</em>
+                      <span class="lot__leaf-md">Papale. Quousque tandem abutêre, Catilina</span>
+                      <span class="lot__leaf-sm">Ducale. <em>Quousque tandem abutêre, Catilina, patientiâ nostrâ?</em></span>
+                      <span class="lot__leaf-rule"></span>
+                      <span class="lot__leaf-folio">Serie XLII · Parma MDCCCXVIII</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <span class="lot__plate-cap">Vol. I, leaf 142 — roman &amp; italic series · hover to examine</span>
+            </div>
+            <span class="lot__no">The Type Sale — Lot 47</span>
+            <h4 class="lot__title">Manuale Tipografico</h4>
+            <p class="lot__sub">Giambattista Bodoni · Parma, 1818 · <em>two volumes, quarto, contemporary vellum</em></p>
+            <div class="lot__tabs" role="tablist" aria-label="Lot details">
+              {lotTabs.map((t, i) => (
+                <button role="tab" aria-selected={i === 0 ? 'true' : 'false'} class={i === 0 ? 'is-on' : ''} data-tab={t.id}>{t.label}</button>
+              ))}
+            </div>
+            <div class="lot__panes">
+              <p class="lot__pane is-on" data-pane="desc">The posthumous masterwork: 142 roman and italic series, the hairline pushed to the limit of the hand press. Widow’s edition, completed by Margherita Dall’Aglio Bodoni. A fine, tall copy.</p>
+              <p class="lot__pane" data-pane="prov">Biblioteca Palatina duplicate, sold 1923; thence the library of a Milanese collector of moderns; acquired by the present owner at Christie’s, 1998.</p>
+              <p class="lot__pane" data-pane="cond">Vellum lightly bowed, ties renewed. Internally crisp; the specimen leaves unpressed, hairlines unbroken throughout. Full report on request.</p>
+            </div>
+          </div>
+          <aside class="lot__rail">
+            <span class="lot__k">Current bid</span>
+            <strong class="lot__price"><span class="lot__cur" aria-hidden="true">$</span><span data-price>26,000</span></strong>
+            <span class="lot__meta"><span data-bids>14</span> bids · estimate $30,000–40,000 · ends in <span class="lot__clock" data-clock>2h 14m</span></span>
+            <button class="lot__bid" data-bid>Place bid — <span data-next>$27,000</span></button>
+            <button class="lot__watch" data-watch aria-pressed="false">♡ Watch this lot</button>
+            <ul class="lot__hist" data-hist aria-live="polite">
+              <li><span>Paddle 1027</span><b>$26,000</b><i>2m ago</i></li>
+              <li><span>Paddle 0414</span><b>$25,000</b><i>9m ago</i></li>
+              <li><span>Paddle 1188</span><b>$24,000</b><i>11m ago</i></li>
+            </ul>
+            <template data-row><li><span></span><b></b><i>just now</i></li></template>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Place a bid, switch tabs, run a loupe over the leaf — the lot photography is live text, and the hairlines survive 2× magnification.</p>
+  </figure>
+
+  <!-- ============ 05 — INTERACTIVE & EXPERIMENTAL ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-stage]">
+    <figcaption class="iu__cap">
+      <span class="index-num">05</span>
+      <span class="label">Interactive — <em>The Lean</em>, a roman-to-italic instrument, after DIA Studio’s cursor-reactive wordmarks (Mirage, 2017)</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="lean" data-stage style={`--avg:${restAvg.toFixed(3)}`}>
+        <span class="lean__k">one drawing · two voices</span>
+        <div class="lean__word" data-word>
+          <span class="lean__layer lean__layer--r" data-layer="r">
+            {kinetic.map((ch, i) => (
+              <span class="lean__g" data-gr data-rest={rest[i].toFixed(3)} style={`--lean:${rest[i].toFixed(3)}`}>{ch}</span>
+            ))}
+          </span>
+          <span class="lean__layer lean__layer--i" aria-hidden="true" data-layer="i">
+            {kinetic.map((ch, i) => (
+              <span class="lean__g" data-gi style={`--lean:${rest[i].toFixed(3)}`}>{ch}</span>
+            ))}
+          </span>
+        </div>
+        <div class="lean__rule" aria-hidden="true"></div>
+        <div class="lean__legend"><span class="lean__leg lean__leg--r">roman</span><span class="lean__legend-mid">DM Serif Display · italique <b class="lean__val" data-readout>050</b> / 100</span><span class="lean__leg lean__leg--i"><em>italique</em></span></div>
+      </div>
+    </div>
+    <p class="iu__hint label">At rest the word breaks on a hard seam — <em>ital</em> roman, <em>ique</em> italic. Sweep a pointer to play the crossfade; the legend reads the lean live. Click to latch the full italic.</p>
   </figure>
 
 </div>
@@ -220,318 +252,533 @@ const pieces = [
 <script>
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ---- 01 + 02: scroll-reveal (kinetic rise / hairline draw) ----
+  // ---- 01 + 02 + 03: enter reveals (letters slam / record slides / rules ink in) ----
+  const acts = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal-act]'));
   if (!reduce && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(
       (ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }),
-      { threshold: 0.35 }
+      { threshold: 0.3 }
     );
-    document.querySelectorAll('[data-reveal-cover],[data-reveal-rule]').forEach((el) => io.observe(el));
+    acts.forEach((el) => io.observe(el));
   } else {
-    document.querySelectorAll('[data-reveal-cover],[data-reveal-rule]').forEach((el) => el.classList.add('is-in'));
+    acts.forEach((el) => el.classList.add('is-in'));
   }
 
-  // ---- 04: restaurant menu tabs + party stepper + reservation line ----
-  document.querySelectorAll<HTMLElement>('[data-carte]').forEach((root) => {
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-course]'));
-    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
-    tabs.forEach((t) =>
-      t.addEventListener('click', () => {
-        tabs.forEach((x) => x.classList.remove('is-on'));
-        t.classList.add('is-on');
-        const c = t.dataset.course!;
-        panels.forEach((p) => p.classList.toggle('is-on', p.dataset.panel === c));
-      })
+  // ---- 03: the pull-quote inks its rules when THE QUOTE enters view (mid-scroll beat) ----
+  const pulls = Array.from(document.querySelectorAll<HTMLElement>('[data-pull]'));
+  if (!reduce && 'IntersectionObserver' in window) {
+    const ioPull = new IntersectionObserver(
+      (ents) => ents.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-inked'); ioPull.unobserve(e.target); } }),
+      { threshold: 0.75 }
     );
+    pulls.forEach((el) => ioPull.observe(el));
+  } else {
+    pulls.forEach((el) => el.classList.add('is-inked'));
+  }
 
-    const count = root.querySelector<HTMLElement>('[data-count]')!;
-    const bookN = root.querySelector<HTMLElement>('[data-book-n]')!;
-    let party = 2;
-    const render = () => { count.textContent = String(party); bookN.textContent = String(party); };
-    root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
-      b.addEventListener('click', () => {
-        party = Math.min(8, Math.max(1, party + Number(b.dataset.step)));
-        render();
-      })
-    );
-    render();
+  // ---- 02: the disc spins up under a resting pointer, coasts to a stop on leave ----
+  document.querySelectorAll<HTMLElement>('[data-disq]').forEach((shelf) => {
+    if (reduce) return;
+    const vinyl = shelf.querySelector<HTMLElement>('[data-vinyl]');
+    if (!vinyl) return;
+    let angle = 0, vel = 0, raf = 0, on = false;
+    const tick = () => {
+      vel = on ? Math.min(vel + 0.045, 1.9) : vel * 0.965;
+      angle = (angle + vel) % 360;
+      vinyl.style.transform = `rotate(${angle.toFixed(2)}deg)`;
+      if (on || vel > 0.02) raf = requestAnimationFrame(tick);
+      else { raf = 0; vel = 0; }
+    };
+    shelf.addEventListener('pointerenter', () => { on = true; if (!raf) raf = requestAnimationFrame(tick); });
+    shelf.addEventListener('pointerleave', () => { on = false; });
   });
 
-  // ---- 05: boutique look switcher (hover + click), cross-fade display name ----
-  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((root) => {
-    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
-    const ghost = root.querySelector<HTMLElement>('[data-ghost]')!;
-    const no = root.querySelector<HTMLElement>('[data-no]')!;
-    const name = root.querySelector<HTMLElement>('[data-name]')!;
-    const detail = root.querySelector<HTMLElement>('[data-detail]')!;
-    const price = root.querySelector<HTMLElement>('[data-price]')!;
-    const thumbs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-look]'));
+  // ---- 04: auction lot — tabs, bidding, watch, live countdown ----
+  document.querySelectorAll<HTMLElement>('[data-lot]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panes = Array.from(root.querySelectorAll<HTMLElement>('[data-pane]'));
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        tabs.forEach((x) => { x.classList.toggle('is-on', x === t); x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+        panes.forEach((p) => p.classList.toggle('is-on', p.dataset.pane === t.dataset.tab));
+      })
+    );
 
-    let active = 0;
-    const set = (i: number) => {
-      if (i === active) return;
-      active = i;
-      const t = thumbs[i];
-      thumbs.forEach((x) => x.classList.toggle('is-on', x === t));
-      stage.classList.remove('is-swap'); void stage.offsetWidth; stage.classList.add('is-swap');
-      ghost.textContent = t.dataset.id!;
-      no.textContent = `Look ${String(i + 1).padStart(2, '0')}`;
-      name.textContent = t.dataset.name!;
-      detail.textContent = t.dataset.detail!;
-      price.textContent = `$${t.dataset.price!}`;
-    };
-    thumbs.forEach((t, i) => {
-      t.addEventListener('click', () => set(i));
-      t.addEventListener('pointerenter', () => { if (!reduce) set(i); });
+    const price = root.querySelector<HTMLElement>('[data-price]')!;
+    const next = root.querySelector<HTMLElement>('[data-next]')!;
+    const bids = root.querySelector<HTMLElement>('[data-bids]')!;
+    const hist = root.querySelector<HTMLElement>('[data-hist]')!;
+    const rowTpl = root.querySelector<HTMLTemplateElement>('[data-row]')!;
+    const fmt = (n: number) => '$' + n.toLocaleString('en-US');
+    const fmtNum = (n: number) => n.toLocaleString('en-US');
+    let cur = 26000, n = 14;
+    root.querySelector<HTMLButtonElement>('[data-bid]')!.addEventListener('click', () => {
+      cur += 1000; n += 1;
+      price.textContent = fmtNum(cur);
+      next.textContent = fmt(cur + 1000);
+      bids.textContent = String(n);
+      const row = rowTpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      row.querySelector('span')!.textContent = 'Paddle 2071 (you)';
+      row.querySelector('b')!.textContent = fmt(cur);
+      row.classList.add('is-you', 'is-new');
+      hist.prepend(row);
+      // evict with a transition so the live-sale fiction holds (instant under reduce)
+      Array.from(hist.children).filter((c) => !c.classList.contains('is-out')).slice(4).forEach((old) => {
+        if (reduce) { old.remove(); return; }
+        old.classList.add('is-out');
+        setTimeout(() => old.remove(), 320);
+      });
+      if (!reduce) { const p = price.closest('.lot__price') as HTMLElement; p.classList.remove('is-tick'); void p.offsetWidth; p.classList.add('is-tick'); }
     });
+    const watch = root.querySelector<HTMLButtonElement>('[data-watch]')!;
+    watch.addEventListener('click', () => {
+      const on = watch.getAttribute('aria-pressed') === 'true';
+      watch.setAttribute('aria-pressed', on ? 'false' : 'true');
+      watch.textContent = on ? '♡ Watch this lot' : '♥ Watching — we’ll nudge you';
+    });
+
+    // live countdown — the LIVE badge keeps its promise (static under reduced motion)
+    const clock = root.querySelector<HTMLElement>('[data-clock]');
+    if (clock && !reduce) {
+      let remain = 2 * 3600 + 14 * 60 + 9;
+      const paintClock = () => {
+        const h = Math.floor(remain / 3600), m = Math.floor((remain % 3600) / 60), s = remain % 60;
+        clock.textContent = `${h}h ${m}m ${String(s).padStart(2, '0')}s`;
+      };
+      paintClock();
+      setInterval(() => { if (remain > 0) { remain -= 1; paintClock(); } }, 1000);
+    }
+
+    // the loupe — an auctioneer's glass over the live-text leaf (2× the hairlines)
+    const zone = root.querySelector<HTMLElement>('[data-loupe-zone]');
+    const loupe = root.querySelector<HTMLElement>('[data-loupe]');
+    const copy = root.querySelector<HTMLElement>('[data-loupe-copy]');
+    if (zone && loupe && copy) {
+      const K = 2, R = 78; // magnification, loupe radius
+      let raf2 = 0, lx = 0, ly = 0;
+      const paintLoupe = () => {
+        raf2 = 0;
+        loupe.style.transform = `translate(${(lx - R).toFixed(1)}px, ${(ly - R).toFixed(1)}px)`;
+        copy.style.transform = `translate(${(R - K * lx).toFixed(1)}px, ${(R - K * ly).toFixed(1)}px) scale(${K})`;
+      };
+      zone.addEventListener('pointerenter', () => {
+        copy.style.width = zone.clientWidth + 'px';
+        loupe.classList.add('is-on');
+      });
+      zone.addEventListener('pointermove', (e) => {
+        const r = zone.getBoundingClientRect();
+        lx = e.clientX - r.left; ly = e.clientY - r.top;
+        if (!raf2) raf2 = requestAnimationFrame(paintLoupe);
+      });
+      zone.addEventListener('pointerleave', () => loupe.classList.remove('is-on'));
+    }
+  });
+
+  // ---- 05: the lean — two true word-layers, cross-faded per glyph ----
+  document.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+    const roman = Array.from(stage.querySelectorAll<HTMLElement>('[data-gr]'));
+    const italic = Array.from(stage.querySelectorAll<HTMLElement>('[data-gi]'));
+    const restVals = roman.map((g) => parseFloat(g.dataset.rest || '0'));
+    const readout = stage.querySelector<HTMLElement>('[data-readout]');
+    const layerI = stage.querySelector<HTMLElement>('[data-layer="i"]');
+    let centers: number[] = [];
+    let latched = false;
+    const measure = () => { centers = roman.map((g) => { const r = g.getBoundingClientRect(); return r.left + r.width / 2; }); };
+    // shift the italic layer so the seam glyphs share a left edge — the rest
+    // state reads as one word with a hard roman|italic seam, not a double exposure
+    const SEAM = 4;
+    const align = () => {
+      if (!layerI || !roman[SEAM] || !italic[SEAM]) return;
+      layerI.style.setProperty('--shift', '0px');
+      const d = roman[SEAM].getBoundingClientRect().left - italic[SEAM].getBoundingClientRect().left;
+      layerI.style.setProperty('--shift', `${d.toFixed(2)}px`);
+      measure();
+    };
+    align();
+    if ('fonts' in document) (document as any).fonts.ready.then(align);
+    window.addEventListener('resize', align, { passive: true });
+    const paint = (lean: number[]) => {
+      let sum = 0;
+      lean.forEach((v, i) => {
+        sum += v;
+        roman[i].style.setProperty('--lean', String(v));
+        italic[i]?.style.setProperty('--lean', String(v));
+      });
+      const avg = sum / lean.length;
+      stage.style.setProperty('--avg', String(avg));
+      if (readout) readout.textContent = String(Math.round(avg * 100)).padStart(3, '0');
+    };
+    stage.addEventListener('click', () => {
+      latched = !latched;
+      stage.classList.toggle('is-latched', latched);
+      paint(latched ? roman.map(() => 1) : restVals.slice());
+    });
+    if (!reduce) {
+      let raf = 0, px = -1;
+      stage.addEventListener('pointerenter', measure);
+      window.addEventListener('resize', measure, { passive: true });
+      stage.addEventListener('pointermove', (e) => {
+        px = e.clientX;
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          if (latched) return;
+          if (!centers.length) measure();
+          const radius = Math.max(120, (centers[centers.length - 1] - centers[0]) / 4);
+          paint(centers.map((c) => Math.max(0, 1 - Math.abs(px - c) / radius)));
+        });
+      });
+      stage.addEventListener('pointerleave', () => { if (!latched) paint(restVals.slice()); });
+    }
   });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
-  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
+  /* ---- stack pacing: tighter than default; the seams are designed below ---- */
+  .iu { gap: clamp(3.25rem, 8vh, 5.5rem); }
+  /* NOTE: never re-declare bare `.iu__item` here — Astro's scoped specificity
+     would defeat the global `.iu__item--bleed` margins and crop every bleed act.
+     Re-assert the bleed so the three printed acts truly own the viewport edge. */
+  .iu__item--bleed { width: 100vw; margin-left: calc(50% - 50vw); }
   .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
-  .scene-16 { aspect-ratio: 16 / 9; }
-  .scene-43 { aspect-ratio: 4 / 3; }
-  .iu__scene * { font-family: var(--fam); }
+  .iu__scene :where(h3, h4, p, ul, blockquote) { margin: 0; }
+  .iu__scene { font-family: var(--fam); }
+  .iu__scene * { font-family: inherit; }
+  /* DM Serif Display ships 400 + 400 italic ONLY — never let the browser fake a bold */
+  .iu__scene, .iu__scene * { font-synthesis: none; font-weight: 400; }
+
+  /* shared off-palette inks (printed artifacts declare their own surfaces) */
+  .iu { --noir: #0b0a08; --ivoire: #f3ede1; --or: #d7a23f; --creme: #f1ead9; --encre: #221a12; --rouge: #b5421f; }
 
   /* ============================================================
-     01 — CULTURE COVER
-     High-contrast display serif at masthead scale: roman + true italic
-     sharing the title. Accent reserved to a SINGLE small mark (issue no.).
+     01 — OBSTINÉE · perfume façade (after Goude, Égoïste 1990)
+     Printed black; gold thread starts here and is handed to 02’s cartouche.
      ============================================================ */
-  .cover { --card-ar: 3 / 4; background: var(--bg); display: flex; flex-direction: column; padding: 5.5cqi 5.5cqi 4.5cqi; }
-  .cover__top {
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-family: var(--font-mono); font-size: 2.4cqi; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--fg-3); border-bottom: 1px solid var(--line); padding-bottom: 3cqi;
+  .parf { background: var(--noir); color: var(--ivoire); display: flex; flex-direction: column; min-height: clamp(420px, 46vw, 660px); }
+  .parf__top, .parf__foot {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi;
+    font-family: var(--font-mono); font-size: clamp(10px, 1.05cqi, 14px); letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 1.6cqi 3cqi;
   }
-  .cover__no { color: var(--accent); }
-  .cover__season { letter-spacing: 0.18em; }
-  .cover__mast { display: flex; flex-direction: column; align-items: center; margin: 7cqi 0 4cqi; line-height: 0.82; }
-  .cover__word { font-size: 26cqi; line-height: 0.8; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
-  .cover__word--it { font-style: italic; letter-spacing: 0; }
-  .cover__amp { font-style: italic; font-size: 9cqi; color: var(--accent); line-height: 1; margin: 0.4cqi 0; }
-  .cover__lines { display: flex; flex-direction: column; gap: 3.6cqi; margin-top: auto; }
-  .cover__feat { font-size: 7.2cqi; line-height: 0.98; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
-  .cover__feat em { font-style: italic; color: var(--fg); }
-  .cover__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.7cqi; max-width: 78%; }
-  .cover__list li {
-    font-family: var(--fam); font-style: italic; font-size: 3.2cqi; line-height: 1.22; color: var(--fg-2);
-    padding-left: 4.4cqi; position: relative;
-  }
-  .cover__list li::before {
-    content: ''; position: absolute; left: 0; top: 0.62em; width: 2.8cqi; height: 1px; background: var(--line);
-  }
-  .cover__plus { font-family: var(--font-mono); font-style: normal; font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-right: 0.4em; }
-  .cover__foot {
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi;
-    margin-top: 5cqi; padding-top: 3cqi; border-top: 1px solid var(--line);
-  }
-  .cover__bar { display: flex; align-items: flex-end; gap: 2px; height: 7cqi; }
-  .cover__bar i { background: var(--fg-3); height: 100%; }
-  .cover__byline { font-family: var(--font-mono); font-size: 2.1cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); text-align: right; }
-
-  /* kinetic reveal: masthead + lines rise in */
-  @media (prefers-reduced-motion: no-preference) {
-    .cover.is-in .cover__word, .cover.is-in .cover__amp,
-    .cover.is-in .cover__feat, .cover.is-in .cover__list li {
-      animation: cover-rise 0.7s var(--ease) both;
-    }
-    @keyframes cover-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-    .cover.is-in .cover__word--it { animation-delay: 0.08s; }
-    .cover.is-in .cover__amp { animation-delay: 0.05s; }
-    .cover.is-in .cover__feat { animation-delay: 0.18s; }
-    .cover.is-in .cover__list li:nth-child(1) { animation-delay: 0.26s; }
-    .cover.is-in .cover__list li:nth-child(2) { animation-delay: 0.32s; }
-    .cover.is-in .cover__list li:nth-child(3) { animation-delay: 0.38s; }
-  }
-
-  /* ============================================================
-     02 — RESTAURANT / HOSPITALITY IDENTITY
-     The mark IS the typeface: a giant initial cropped so the thick-stem→
-     hairline bracketed-serif transition fills the frame, annotated, with the
-     identity set tiny beside it. Extreme size jump = unmistakably DM Serif Display.
-     ============================================================ */
-  .maison {
-    background: var(--bg); display: grid; grid-template-columns: 42% 1fr;
-    align-items: stretch; gap: 0; overflow: hidden;
-  }
-
-  /* --- the cropped contrast specimen --- */
-  .maison__crop {
-    position: relative; overflow: hidden; border-right: 1px solid var(--line);
-    background: color-mix(in srgb, var(--accent) 9%, var(--bg)); display: block;
-  }
-  .maison__glyph {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    font-size: 78cqi; line-height: 1;
-    /* the thick stem→hairline drama rendered in the accent for a luxe foil */
-    color: color-mix(in srgb, var(--accent) 78%, var(--fg));
-    letter-spacing: 0;
-  }
-  /* annotation lives in its own strip pinned to the foot of the crop — never clips */
-  .maison__tag {
-    position: absolute; left: 0; right: 0; bottom: 0;
-    padding: 2cqi 4cqi; font-family: var(--font-mono); font-size: 1.7cqi;
-    letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
-    border-top: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
-    background: color-mix(in srgb, var(--bg) 64%, transparent);
-    backdrop-filter: blur(2px);
-  }
-
-  /* --- the identity, set against the giant letter --- */
-  .maison__id {
-    display: flex; flex-direction: column; justify-content: space-between;
-    padding: 6cqi 6cqi 5cqi;
-  }
-  .maison__est {
-    display: flex; align-items: center; gap: 1.6cqi;
-    font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3);
-  }
-  .maison__dot { width: 0.6cqi; height: 0.6cqi; border-radius: 50%; background: var(--accent); }
-  .maison__name { display: flex; flex-direction: column; gap: 1.6cqi; margin: auto 0; }
-  .maison__word { font-size: 17cqi; line-height: 0.84; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
-  .maison__sub { font-size: 2.9cqi; line-height: 1.25; font-style: italic; color: var(--fg-2); max-width: 40cqi; }
-  .maison__foot {
-    display: flex; align-items: baseline; gap: 1.4cqi; flex-wrap: wrap;
-    font-family: var(--font-mono); font-size: 1.7cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3);
-  }
-  .maison__sep { color: var(--accent); }
-  .maison__foot sup { font-size: 0.7em; }
-
-  /* reveal: the giant glyph slides up into the crop; tag fades after */
-  @media (prefers-reduced-motion: no-preference) {
-    .maison .maison__glyph { transform: translate(-50%, calc(-50% + 8cqi)); opacity: 0; }
-    .maison .maison__tag { opacity: 0; }
-    .maison.is-in .maison__glyph { animation: maison-glyph 0.8s var(--ease) both; }
-    .maison.is-in .maison__tag { animation: maison-mark 0.5s var(--ease) 0.3s both; }
-    @keyframes maison-glyph { from { transform: translate(-50%, calc(-50% + 8cqi)); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
-    @keyframes maison-mark { from { opacity: 0; } to { opacity: 1; } }
-  }
-
-  /* ============================================================
-     03 — EDITORIAL FEATURE OPENER (roman vs the true italic)
-     Big roman headline; one word in the true italic. Accent = rail folio.
-     ============================================================ */
-  .spread { background: var(--bg); display: grid; grid-template-columns: 13% 1fr; gap: 4cqi; padding: 5cqi; }
-  .spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 3cqi; }
-  .spread__folio { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-  .spread__sec { font-family: var(--font-mono); font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
-  .spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
-  .spread__kicker { font-family: var(--font-mono); font-size: 2cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
-  .spread__head { font-size: 13cqi; line-height: 0.92; color: var(--fg); margin: 1.5cqi 0 0; letter-spacing: -0.015em; }
-  .spread__it { font-style: italic; color: var(--fg); }
-  .spread__deck { font-size: 3.2cqi; line-height: 1.2; font-style: italic; color: var(--fg-2); max-width: 80%; margin: 3cqi 0 0; }
-  .spread__body { columns: 2; column-gap: 4cqi; font-size: 2.1cqi; line-height: 1.55; color: var(--fg-2); margin-top: 3.5cqi; }
-  .spread__body p { margin: 0 0 0.9em; }
-  .spread__body em { font-style: italic; color: var(--fg); }
-  .spread__drop { float: left; font-size: 10cqi; line-height: 0.66; padding: 0.06em 0.12em 0 0; color: var(--fg); }
-
-  /* ============================================================
-     04 — RESTAURANT MENU + RESERVATION UI (real px, interactive)
-     ============================================================ */
-  .carte { font-size: 14px; line-height: 1.45; background: var(--bg); }
-  .carte__head { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem 0.85rem; border-bottom: 1px solid var(--line); }
-  .carte__logo { font-size: 26px; line-height: 1; color: var(--fg); letter-spacing: 0.01em; }
-  .carte__tabs { display: flex; gap: 0.2rem; margin-left: auto; }
-  .carte__tabs button {
-    font-family: var(--fam); font-style: italic; font-size: 16px; color: var(--fg-3);
-    padding: 0.25rem 0.7rem; border-radius: 100px; cursor: pointer; transition: color 0.18s var(--ease), background 0.18s var(--ease);
-    text-transform: capitalize;
-  }
-  .carte__tabs button:hover { color: var(--fg); }
-  .carte__tabs button.is-on { color: var(--accent-contrast); background: var(--accent); }
-  .carte__panel { padding: 0.5rem 1.2rem 0.4rem; min-height: 184px; }
-  .carte__list { list-style: none; margin: 0; padding: 0; display: none; }
-  .carte__list.is-on { display: block; }
-  @media (prefers-reduced-motion: no-preference) {
-    .carte__list.is-on { animation: carte-fade 0.4s var(--ease); }
-    @keyframes carte-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  }
-  .dish { padding: 0.7rem 0; border-bottom: 1px solid var(--line-soft); }
-  .dish:last-child { border-bottom: 0; }
-  .dish__row { display: flex; align-items: baseline; gap: 0.5rem; }
-  .dish__name { font-size: 19px; color: var(--fg); white-space: nowrap; }
-  .dish__dots { flex: 1; border-bottom: 1px dotted var(--line); transform: translateY(-3px); }
-  .dish__price { font-size: 16px; color: var(--accent); font-feature-settings: 'tnum'; }
-  .dish__price::before { content: '$'; color: var(--fg-3); font-size: 0.8em; margin-right: 0.1em; }
-  .dish__detail { display: block; font-size: 13px; font-style: italic; color: var(--fg-3); margin-top: 0.15rem; }
-
-  .carte__resa { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.2rem; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 3%, var(--bg)); flex-wrap: wrap; }
-  .carte__resa-h { font-size: 22px; font-style: italic; color: var(--fg); }
-  .carte__party { display: flex; align-items: center; gap: 0.7rem; margin-left: auto; }
-  .carte__plabel { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
-  .carte__steps { display: flex; align-items: center; gap: 0.2rem; border: 1px solid var(--line); border-radius: 100px; padding: 0.15rem; }
-  .carte__steps button { width: 26px; height: 26px; border-radius: 50%; font-family: var(--font-mono); font-size: 16px; color: var(--fg-2); cursor: pointer; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
-  .carte__steps button:hover { color: var(--fg); background: var(--line-soft); }
-  .carte__count { min-width: 22px; text-align: center; font-size: 18px; color: var(--fg); font-feature-settings: 'tnum'; }
-  .carte__book { font-family: var(--fam); font-style: italic; font-size: 17px; color: var(--accent-contrast); background: var(--accent); padding: 0.45rem 1.2rem; border-radius: 100px; cursor: pointer; transition: filter 0.15s var(--ease); }
-  .carte__book:hover { filter: brightness(1.08); }
-  .carte__book span { font-feature-settings: 'tnum'; }
-
-  /* ============================================================
-     05 — BOUTIQUE EDITORIAL HERO (real px, interactive hover-reveal)
-     ============================================================ */
-  .shop { font-size: 14px; line-height: 1.45; background: var(--bg); }
-  .shop__head { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); }
-  .shop__logo { font-size: 22px; color: var(--fg); letter-spacing: 0.02em; }
-  .shop__nav { display: flex; gap: 1.1rem; margin-left: auto; align-items: baseline; }
-  .shop__nav span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
-  .shop__bag { color: var(--fg-2) !important; }
-
-  .shop__stage { position: relative; min-height: 300px; display: grid; place-items: center; overflow: hidden; padding: 1.6rem; background: var(--bg-2); }
-  .shop__ghost {
-    position: absolute; inset: 0; display: grid; place-items: center;
-    font-size: 300px; line-height: 1; color: var(--accent); opacity: 0.1; pointer-events: none;
-    font-style: italic; user-select: none; letter-spacing: -0.04em;
-  }
-  .shop__lockup { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.35rem; }
-  .shop__no { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-  .shop__name { font-size: 56px; line-height: 0.92; font-style: italic; color: var(--fg); margin: 0.1rem 0; letter-spacing: -0.005em; }
-  .shop__detail { font-size: 14px; font-style: italic; color: var(--fg-3); }
-  .shop__price { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.1em; color: var(--fg-2); margin-top: 0.3rem; }
+  .parf__top { border-bottom: 1px solid #f3ede122; color: #b9b0a1; }
+  .parf__top .parf__no { color: var(--or); }
+  .parf__top sup { font-size: 0.65em; }
+  .parf__claim { letter-spacing: 0.3em; }
+  .parf__row { flex: 1; display: grid; grid-template-columns: repeat(8, 1fr); align-items: stretch; }
+  .parf__cell { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; overflow: hidden; border-left: 1px solid #f3ede114; padding-bottom: 1.2cqi; }
+  .parf__cell:first-child { border-left: 0; }
+  .parf__cell--alt { background: #f3ede106; }
+  .parf__shout { display: block; min-height: 3.4cqi; font-style: italic; font-size: clamp(9px, 1.5cqi, 19px); color: var(--or); padding-top: 1.4cqi; white-space: nowrap; }
+  .parf__shout--quiet { opacity: 0; }
+  .parf__letter { display: block; font-weight: 400; font-size: 13.5cqi; line-height: 0.92; letter-spacing: -0.01em; }
+  .parf__foot { border-top: 1px solid var(--or); color: #b9b0a1; }
+  .parf__foot-mid { font-family: var(--fam); font-style: italic; text-transform: none; letter-spacing: 0.02em; font-size: clamp(11px, 1.3cqi, 17px); color: var(--ivoire); }
 
   @media (prefers-reduced-motion: no-preference) {
-    .shop__stage.is-swap .shop__lockup { animation: shop-swap 0.45s var(--ease); }
-    .shop__stage.is-swap .shop__ghost { animation: shop-ghost 0.55s var(--ease); }
-    @keyframes shop-swap { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-    @keyframes shop-ghost { from { opacity: 0; transform: scale(0.86); } to { opacity: 0.1; transform: none; } }
+    .parf.is-in .parf__letter { animation: parf-slam 0.55s var(--ease-out) both; animation-delay: var(--d); }
+    .parf.is-in .parf__shout:not(.parf__shout--quiet) { animation: parf-shout 0.5s var(--ease) both; animation-delay: calc(var(--d) + 0.45s); }
+    /* the persistent whisper: rest on any window and it answers — re-fires per hover */
+    .parf__cell:hover .parf__shout--quiet { animation: parf-whisper 1.1s var(--ease) both; }
+    @keyframes parf-slam { from { transform: translateY(108%); } to { transform: none; } }
+    @keyframes parf-shout { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes parf-whisper { 0% { opacity: 0; } 22% { opacity: 1; } 70% { opacity: 0.85; } 100% { opacity: 0; } }
   }
 
-  .shop__thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
-  .thumb { display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; padding: 0.8rem 1rem; background: var(--bg); cursor: pointer; text-align: left; transition: background 0.18s var(--ease); }
-  .thumb:hover { background: var(--bg-2); }
-  .thumb__no { font-size: 20px; font-style: italic; color: var(--fg-3); line-height: 1; transition: color 0.18s var(--ease); }
-  .thumb__name { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); transition: color 0.18s var(--ease); }
-  .thumb.is-on { background: var(--bg-2); }
-  .thumb.is-on .thumb__no { color: var(--accent); }
-  .thumb.is-on .thumb__name { color: var(--fg); }
+  /* ============================================================
+     02 — DISQUES AUREL · sleeve + cartouche (after Deutsche Grammophon)
+     The cartouche carries DG’s top-center tulip frame: arched crown,
+     double rule inside the field.
+     ============================================================ */
+  .disq { display: grid; grid-template-columns: minmax(0, 56%) 1fr; gap: 4cqi; align-items: center; padding: 2cqi 0; }
+  .disq__shelf { position: relative; padding-right: 16%; }
+  .disq__sleeve {
+    position: relative; aspect-ratio: 1; background: var(--noir); color: var(--ivoire);
+    display: flex; flex-direction: column; padding: 3cqi; box-sizing: border-box;
+  }
+  .disq__cartouche {
+    align-self: center; text-align: center; background: var(--or); color: var(--noir);
+    padding: 1.1cqi 2.2cqi 0.9cqi; margin-top: -0.6cqi;
+    border-radius: 2.6cqi 2.6cqi 0.35cqi 0.35cqi / 3.4cqi 3.4cqi 0.35cqi 0.35cqi;
+    box-shadow: inset 0 0 0 0.3cqi var(--or), inset 0 0 0 0.52cqi var(--noir), inset 0 0 0 0.78cqi var(--or), inset 0 0 0 0.96cqi var(--noir);
+  }
+  .disq__cartouche b { font-weight: 400; font-size: 1.9cqi; line-height: 1.18; letter-spacing: 0.06em; display: inline-block; padding: 0.35cqi 0.4cqi; }
+  .disq__main { margin: auto 0; padding-top: 1.6cqi; text-align: left; }
+  .disq__composer { font-weight: 400; font-size: 12.5cqi; line-height: 0.9; letter-spacing: 0.01em; }
+  .disq__work { font-style: italic; font-size: 3.4cqi; color: var(--or); margin-top: 1cqi; }
+  .disq__credit { display: flex; justify-content: space-between; align-items: baseline; gap: 1.5cqi; border-top: 1px solid #f3ede126; padding-top: 1.4cqi; }
+  .disq__artist { font-size: 2cqi; }
+  .disq__cat { font-family: var(--font-mono); font-size: 1.25cqi; letter-spacing: 0.18em; text-transform: uppercase; color: #b9b0a1; }
+  .disq__slide { position: absolute; top: 5%; bottom: 5%; right: 0; aspect-ratio: 1; display: block; }
+  .disq__vinyl {
+    display: grid; place-items: center; width: 100%; height: 100%;
+    border-radius: 50%; background:
+      radial-gradient(circle, #1a1916 0 31%, transparent 31.5%),
+      repeating-radial-gradient(circle, transparent 0 0.5%, #f3ede10e 0.8% 1.6%),
+      conic-gradient(from 210deg, #3a362f, #14120f 22%, #2e2b26 50%, #14120f 76%, #3a362f);
+    box-shadow: 0 0 0 1px #f3ede12c;
+    will-change: transform;
+  }
+  .disq__paper { display: grid; place-items: center; width: 31%; aspect-ratio: 1; border-radius: 50%; background: var(--or); color: var(--noir); font-style: normal; }
+  .disq__paper em { font-size: 2.2cqi; }
+  .disq__back { display: flex; flex-direction: column; gap: 2cqi; color: var(--fg-2); padding-right: 1cqi; }
+  .disq__back-k, .disq__back-foot { font-family: var(--font-mono); font-size: clamp(10px, 1.1cqi, 13px); letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
+  .disq__back-k { color: var(--accent); }
+  .disq__tracks { list-style: none; padding: 0; display: flex; flex-direction: column; }
+  .disq__tracks li { display: flex; align-items: baseline; gap: 1.2cqi; padding: 1.1cqi 0; border-bottom: 1px solid var(--line-soft); }
+  .disq__tno { font-style: italic; color: var(--fg-3); font-size: 1.7cqi; min-width: 2.6cqi; }
+  .disq__tname { font-size: 3.1cqi; color: var(--fg); }
+  .disq__lead { flex: 1; border-bottom: 1px dotted var(--line); transform: translateY(-0.4cqi); }
+  .disq__dur { font-size: 1.9cqi; color: var(--fg-2); }
+  /* the italic line carries the column's second voice; the note is one quiet line */
+  .disq__poeme { font-style: italic; font-size: clamp(17px, 2.7cqi, 30px); line-height: 1.25; color: var(--fg); margin-top: 0.4cqi; }
+  .disq__note { font-size: clamp(11px, 1.35cqi, 14px); line-height: 1.5; font-family: var(--font-ui); color: var(--fg-3); }
 
-  /* ---- responsive ---- */
+  @media (prefers-reduced-motion: no-preference) {
+    .disq__slide { transform: translateX(-26%) rotate(-40deg); transition: transform 1s var(--ease-out); }
+    .disq.is-in .disq__slide { transform: translateX(0) rotate(0deg); }
+  }
+
+  /* ============================================================
+     03 — MOUTHFEEL · the cream interlude (after The Gourmand)
+     ============================================================ */
+  .gour {
+    background: var(--creme); color: var(--encre);
+    display: grid; grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1.15fr);
+    padding: 4.5cqi clamp(1.25rem, 6cqi, 6rem); gap: 0 4cqi; min-height: clamp(420px, 42vw, 640px);
+  }
+  .gour__fold { background: linear-gradient(180deg, transparent, #221a1230 18% 82%, transparent); }
+  .gour__page { display: flex; flex-direction: column; position: relative; padding-bottom: 3cqi; }
+  .gour__kicker { font-family: var(--font-mono); font-size: clamp(10px, 1cqi, 13px); letter-spacing: 0.24em; text-transform: uppercase; color: var(--rouge); }
+  .gour__head { font-weight: 400; font-size: 12.75cqi; line-height: 0.9; letter-spacing: -0.015em; margin-top: 2.2cqi; }
+  .gour__head em { font-style: italic; font-weight: 400; letter-spacing: 0; display: block; padding-left: 0.55em; }
+  .gour__deck { font-style: italic; font-size: 2.5cqi; line-height: 1.3; max-width: 30cqi; margin-top: 2.6cqi; color: #4a3c2c; }
+  .gour__by { font-family: var(--font-mono); font-size: clamp(9px, 0.95cqi, 12px); letter-spacing: 0.18em; text-transform: uppercase; color: #8a7a64; margin-top: auto; padding-top: 3cqi; }
+  .gour__folio { position: absolute; bottom: 0; left: 0; font-family: var(--font-mono); font-size: clamp(9px, 0.9cqi, 12px); letter-spacing: 0.2em; text-transform: uppercase; color: #8a7a64; }
+  .gour__folio sup { font-size: 0.65em; }
+  .gour__folio--r { left: auto; right: 0; }
+  .gour__cols { columns: 2; column-gap: 3cqi; font-family: var(--font-ui); font-size: clamp(12px, 1.35cqi, 16px); line-height: 1.6; color: #33291c; }
+  .gour__cols p { margin: 0 0 0.9em; }
+  .gour__cols em { font-family: var(--fam); font-style: italic; color: var(--encre); }
+  .gour__drop { float: left; font-family: var(--fam); font-weight: 400; font-size: 7.4cqi; line-height: 0.72; padding: 0.05em 0.12em 0 0; color: var(--encre); }
+  .gour__pull { border: 0; padding: 2.6cqi 0; margin: 1cqi 0; position: relative; }
+  .gour__pull::before, .gour__pull::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 1px; background: #221a1233;
+    transform-origin: left center;
+  }
+  .gour__pull::before { top: 0; }
+  .gour__pull::after { bottom: 0; transform-origin: right center; }
+  .gour__pull p { font-style: italic; font-size: 3.6cqi; line-height: 1.12; text-indent: -0.42em; }
+  .gour__recipe { margin-top: 2.6cqi; }
+  .gour__recipe-k { font-family: var(--font-mono); font-size: clamp(9px, 0.95cqi, 12px); letter-spacing: 0.2em; text-transform: uppercase; color: var(--rouge); }
+  .gour__recipe ul { list-style: none; padding: 0; margin-top: 1.2cqi; display: flex; flex-direction: column; }
+  .gour__recipe li { font-size: clamp(13px, 1.9cqi, 22px); padding: 0.85cqi 0; border-bottom: 1px dotted #221a1240; }
+  .gour__fr { font-feature-settings: 'frac' 1; color: var(--rouge); margin-right: 0.3em; }
+  .gour ::selection { background: var(--rouge); color: var(--creme); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* print-born motion: the pull-quote rules ink in when the QUOTE enters view
+       (its own observer, not the act root — the beat lands mid-scroll), the drop cap settles */
+    .gour__pull:not(.is-inked)::before, .gour__pull:not(.is-inked)::after { transform: scaleX(0); }
+    .gour__pull::before, .gour__pull::after { transition: transform 0.9s var(--ease-out) 0.1s; }
+    .gour__pull::after { transition-delay: 0.45s; }
+    .gour:not(.is-in) .gour__drop { opacity: 0; transform: translateY(0.08em); }
+    .gour__drop { transition: opacity 0.7s var(--ease), transform 0.7s var(--ease-out); }
+  }
+
+  /* ============================================================
+     04 — ARDENT · live lot page (real px, after Sotheby’s 2019)
+     Gold has one structural job here: it marks the live transaction —
+     the LIVE badge, the bid action, your paddle. Everything else is ink.
+     ============================================================ */
+  .iu__scene--ui { display: grid; justify-items: center; }
+  .lot { width: min(100%, 860px); background: var(--bg); border-block: 1px solid var(--line); font-family: var(--font-ui); font-size: 13px; line-height: 1.5; color: var(--fg-2); }
+  .lot__chrome { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 4%, var(--bg)); }
+  /* committed chrome: a favicon-scale Ardent mark and a padlock, not stock dots */
+  .lot__fav { width: 16px; height: 16px; display: grid; place-items: center; background: var(--accent); color: var(--accent-contrast); font-family: var(--fam); font-size: 12px; line-height: 1; border-radius: 3px; padding-bottom: 1px; box-sizing: border-box; }
+  .lot__addr { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--fg-3); }
+  .lot__lock { flex: none; opacity: 0.7; }
+  .lot__head { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--line); }
+  .lot__logo { font-family: var(--fam); font-size: 24px; line-height: 1; color: var(--fg); }
+  .lot__nav { display: flex; gap: 1.1rem; margin-left: auto; align-items: baseline; }
+  .lot__nav span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .lot__live { color: var(--accent) !important; }
+  .lot__body { display: grid; grid-template-columns: 1.5fr 1fr; }
+  .lot__info { padding: 1.25rem 1.25rem 1.4rem; border-right: 1px solid var(--line); min-width: 0; }
+  .lot__no { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .lot__title { font-family: var(--fam); font-size: 32px; font-weight: 400; line-height: 1.05; color: var(--fg); margin: 0.45rem 0 0.3rem; }
+  .lot__sub { font-size: 13px; color: var(--fg-2); }
+  .lot__sub em { font-family: var(--fam); font-style: italic; font-size: 15px; color: var(--fg-2); }
+
+  /* the lot photography — a live-text specimen leaf, examined under a loupe */
+  .lot__plate { margin: 0 0 1.2rem; }
+  .lot__leafwrap { position: relative; cursor: zoom-in; }
+  .lot__loupe {
+    position: absolute; top: 0; left: 0; width: 156px; height: 156px; border-radius: 50%;
+    overflow: hidden; pointer-events: none; opacity: 0; z-index: 2;
+    background: #f0e7d2;
+    box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 4px #100f0d2e, 0 14px 30px -10px #00000080, inset 0 0 24px #5b432314;
+  }
+  .lot__loupe.is-on { opacity: 1; }
+  .lot__loupe-copy { position: absolute; top: 0; left: 0; transform-origin: 0 0; will-change: transform; }
+  @media (prefers-reduced-motion: no-preference) { .lot__loupe { transition: opacity 0.18s var(--ease); } }
+  .lot__leaf {
+    background: linear-gradient(168deg, #f4eddd, #ece2cc 78%, #e4d8bd);
+    color: #241b10; padding: 1.6rem 1.4rem 1.2rem; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    box-shadow: 0 1px 2px #0000002e, 0 10px 28px -14px #00000061, inset 0 0 38px #5b432310;
+  }
+  .lot__leaf-k { font-size: 12px; letter-spacing: 0.34em; text-transform: uppercase; color: #6d5a3d; }
+  .lot__leaf-rule { width: 56%; height: 3px; border-block: 1px solid #241b1059; }
+  .lot__leaf-xl { font-weight: 400; font-size: 34px; line-height: 1.05; letter-spacing: -0.005em; }
+  .lot__leaf-it { font-style: italic; font-size: 21px; line-height: 1.15; color: #3a2c19; }
+  .lot__leaf-md { font-size: 15px; letter-spacing: 0.01em; }
+  .lot__leaf-sm { font-size: 12px; color: #4a3a24; }
+  .lot__leaf-sm em { font-style: italic; }
+  .lot__leaf-folio { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #8a7350; margin-top: 0.2rem; }
+  .lot__plate-cap { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); margin-top: 0.5rem; }
+
+  .lot__tabs { display: flex; gap: 0.2rem; margin-top: 1.1rem; border-bottom: 1px solid var(--line); }
+  .lot__tabs button { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding: 0.5rem 0.7rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s var(--ease); }
+  .lot__tabs button:hover { color: var(--fg); }
+  .lot__tabs button.is-on { color: var(--fg); border-bottom-color: var(--fg); }
+  .lot__pane { display: none; padding-top: 0.85rem; font-size: 13px; line-height: 1.6; color: var(--fg-2); }
+  .lot__pane.is-on { display: block; }
+  .lot__rail { display: flex; flex-direction: column; padding: 1.25rem; gap: 0.45rem; background: color-mix(in srgb, var(--fg) 3%, var(--bg)); }
+  .lot__k { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
+  .lot__price { font-family: var(--fam); font-weight: 400; font-size: 46px; line-height: 1; color: var(--fg); display: flex; align-items: flex-start; }
+  .lot__cur { font-size: 0.5em; line-height: 1; margin: 0.12em 0.04em 0 -0.03em; color: var(--fg-2); }
+  .lot__meta { font-size: 12px; color: var(--fg-3); }
+  .lot__clock { font-family: var(--font-mono); font-size: 11px; color: var(--fg-2); font-variant-numeric: tabular-nums; }
+  .lot__bid { font-family: var(--fam); font-size: 17px; color: var(--accent-contrast); background: var(--accent); padding: 0.55rem 1rem; margin-top: 0.5rem; cursor: pointer; transition: filter 0.15s var(--ease); border-radius: 2px; }
+  .lot__bid:hover { filter: brightness(1.08); }
+  .lot__watch { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--fg-2); padding: 0.45rem 0; cursor: pointer; text-align: left; transition: color 0.15s var(--ease); }
+  .lot__watch:hover, .lot__watch[aria-pressed='true'] { color: var(--fg); }
+  .lot__hist { list-style: none; margin: 0.4rem 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .lot__hist li { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.45rem 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; color: var(--fg-3); }
+  .lot__hist b { font-family: var(--fam); font-weight: 400; font-size: 15px; color: var(--fg-2); margin-left: auto; }
+  .lot__hist i { font-style: normal; font-size: 11px; }
+  .lot__hist li.is-you { color: var(--accent); }
+  .lot__hist li.is-you b { color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .lot__price.is-tick { animation: lot-tick 0.45s var(--ease); }
+    @keyframes lot-tick { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+    /* live-sale fiction: new paddle drops in, the oldest fades out before eviction */
+    .lot__hist li.is-new { animation: lot-row-in 0.4s var(--ease-out); }
+    .lot__hist li.is-out { opacity: 0; transform: translateY(5px); transition: opacity 0.28s var(--ease), transform 0.28s var(--ease); }
+    @keyframes lot-row-in { from { opacity: 0; transform: translateY(-7px); } }
+  }
+
+  /* ============================================================
+     05 — THE LEAN · roman↔italic instrument (after DIA Studio)
+     Two superimposed word-layers, each laid out in its own true metrics;
+     the crossfade happens per glyph. Black bookend answering act 01;
+     the gold rule returns as the baseline.
+     ============================================================ */
+  .lean {
+    background: var(--noir); color: var(--ivoire); min-height: clamp(380px, 40vw, 600px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2.4cqi; padding: 4cqi 3cqi; cursor: pointer; touch-action: manipulation;
+  }
+  .lean__k { font-family: var(--font-mono); font-size: clamp(10px, 1cqi, 13px); letter-spacing: 0.3em; text-transform: uppercase; color: #b9b0a1; }
+  .lean__word { display: grid; justify-items: center; align-items: baseline; }
+  .lean__layer { grid-area: 1 / 1; display: flex; align-items: baseline; white-space: pre; }
+  /* JS sets --shift so the seam glyphs (roman[4] / italic[4]) share a left edge —
+     the binary rest state reads as ONE word with a hard roman|italic seam */
+  .lean__layer--i { font-style: italic; color: var(--or); transform: translateX(var(--shift, 0px)); }
+  .lean__g { font-size: 17cqi; line-height: 1; }
+  .lean__layer--r .lean__g { opacity: calc(1 - var(--lean, 0)); }
+  .lean__layer--i .lean__g { opacity: var(--lean, 0); }
+  @media (prefers-reduced-motion: no-preference) {
+    .lean__g { transition: opacity 0.18s var(--ease); }
+  }
+  .lean__rule { width: min(72cqi, 100%); border-top: 1px solid var(--or); }
+  .lean__legend { width: min(72cqi, 100%); display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi; font-family: var(--font-mono); font-size: clamp(9px, 0.95cqi, 12px); letter-spacing: 0.2em; text-transform: uppercase; color: #b9b0a1; }
+  .lean__legend em { font-family: var(--fam); font-style: italic; text-transform: none; letter-spacing: 0.02em; font-size: 1.4em; color: var(--or); }
+  /* the legend trades emphasis as the word leans */
+  .lean__leg--r { opacity: calc(1 - var(--avg, 0) * 0.72); }
+  .lean__leg--i { opacity: calc(0.28 + var(--avg, 0) * 0.72); }
+  .lean__leg--r { color: var(--ivoire); }
+  @media (prefers-reduced-motion: no-preference) {
+    .lean__leg--r, .lean__leg--i { transition: opacity 0.25s var(--ease); }
+  }
+  .lean__legend-mid { text-align: center; }
+  /* DIA tell: the spec legend reads the instrument's state live */
+  .lean__val { font-weight: 400; color: var(--or); font-variant-numeric: tabular-nums; }
+
+  /* ============================================================
+     RESPONSIVE — 768 and 390 are recompositions, not reductions
+     ============================================================ */
+  /* 01: tablet keeps the single rank, tightens the furniture */
+  @container (max-width: 880px) {
+    .parf__shout { min-height: 4.2cqi; }
+    .disq { grid-template-columns: 1fr; gap: 3rem; padding: 0; }
+    .disq__shelf { padding-right: 14%; }
+    /* stacked: the sleeve breaks its strict square and the composer fills it */
+    .disq__sleeve { aspect-ratio: auto; padding: 6cqi 6cqi 5cqi; }
+    .disq__main { margin: 6cqi 0 7cqi; }
+    .disq__composer { font-size: 17cqi; }
+    .disq__work { font-size: clamp(18px, 5cqi, 30px); }
+    .disq__cartouche { padding: 2cqi 4cqi 1.7cqi; margin-top: 0; border-radius: 4.6cqi 4.6cqi 0.6cqi 0.6cqi / 6cqi 6cqi 0.6cqi 0.6cqi; box-shadow: inset 0 0 0 0.34cqi var(--or), inset 0 0 0 0.58cqi var(--noir), inset 0 0 0 0.9cqi var(--or), inset 0 0 0 1.08cqi var(--noir); }
+    .disq__note { max-width: none; }
+    .disq__tname { font-size: clamp(18px, 4.4cqi, 28px); }
+    .disq__tno { font-size: clamp(12px, 2.4cqi, 16px); min-width: 1.4em; }
+    .disq__dur { font-size: clamp(13px, 2.6cqi, 17px); }
+    .disq__back-k, .disq__back-foot { font-size: 11px; }
+    .disq__artist { font-size: clamp(13px, 2.8cqi, 18px); }
+    .disq__cat { font-size: clamp(9px, 1.8cqi, 12px); }
+    .disq__cartouche b { font-size: clamp(12px, 2.6cqi, 17px); }
+    .disq__paper em { font-size: clamp(10px, 3cqi, 16px); }
+    /* 03: the spread becomes a single tall page — content sets the height
+       (min-height off, or the byline orphans above dead space) */
+    .gour { grid-template-columns: 1fr; gap: 2.2cqi; min-height: 0; }
+    .gour__fold { display: none; }
+    .gour__page--l { padding-bottom: 0; }
+    .gour__folio { display: none; }
+    .gour__folio--r { display: block; }
+    .gour__head { font-size: 16cqi; }
+    .gour__deck { font-size: clamp(15px, 3.6cqi, 22px); max-width: 56cqi; }
+    .gour__by { padding-top: 2.6cqi; margin-top: 0; }
+    .gour__pull p { font-size: clamp(18px, 5cqi, 30px); }
+    .gour__drop { font-size: clamp(40px, 10cqi, 64px); }
+    /* 04: rail moves below the lot info */
+    .lot__body { grid-template-columns: 1fr; }
+    .lot__info { border-right: 0; border-bottom: 1px solid var(--line); }
+    .lot__leaf-xl { font-size: 30px; }
+  }
+  /* 390: the perfume façade re-racks to two storeys of four windows */
   @container (max-width: 560px) {
-    .maison { grid-template-columns: 38% 1fr; }
-    .maison__glyph { font-size: 84cqi; left: -6cqi; bottom: -18cqi; }
-    .maison__sub { max-width: none; }
-    .spread { grid-template-columns: 1fr; }
-    .spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
-    .spread__sec { writing-mode: horizontal-tb; }
-    .spread__main { grid-column: 1; }
-    .spread__body { columns: 1; }
-  }
-  @container (max-width: 480px) {
-    .carte__head { flex-wrap: wrap; }
-    .carte__tabs { margin-left: 0; width: 100%; justify-content: space-between; }
-    .carte__resa { gap: 0.7rem; }
-    .carte__resa-h { width: 100%; }
-    .carte__party { margin-left: 0; }
-    .shop__name { font-size: 36px; }
-    .shop__ghost { font-size: 180px; }
-    .shop__thumbs { grid-template-columns: 1fr; }
-    .thumb { flex-direction: row; align-items: baseline; gap: 0.6rem; }
+    .parf { min-height: 0; }
+    .parf__top, .parf__foot { flex-wrap: wrap; row-gap: 0.3rem; padding: 0.8rem 1rem; font-size: 9px; letter-spacing: 0.14em; }
+    .parf__claim, .parf__foot-mid { display: none; }
+    .parf__row { grid-template-columns: repeat(4, 1fr); }
+    .parf__cell:nth-child(5) { border-left: 0; }
+    .parf__cell:nth-child(-n + 4) { border-bottom: 1px solid #f3ede114; }
+    .parf__letter { font-size: 21cqi; }
+    .parf__shout { min-height: 8cqi; font-size: 11px; }
+    .disq__shelf { padding-right: 8%; }
+    .disq__sleeve { padding: 8cqi 7cqi 6cqi; }
+    .disq__composer { font-size: 19cqi; }
+    .gour { padding: 7cqi 1.25rem 5cqi; }
+    .gour__cols { columns: 1; }
+    .gour__kicker, .gour__recipe-k { font-size: 10px; }
+    .gour__by { font-size: 9px; }
+    .gour__recipe li { font-size: 15px; }
+    .lean__g { font-size: 21cqi; }
+    .lean__legend { flex-wrap: wrap; }
+    .lean__legend-mid { order: 3; width: 100%; text-align: left; }
+    .lot__head { flex-wrap: wrap; }
+    .lot__nav { margin-left: 0; }
+    .lot__title { font-size: 26px; }
+    .lot__price { font-size: 38px; }
+    .lot__leaf { padding: 1.2rem 0.9rem 1rem; }
+    .lot__leaf-xl { font-size: 24px; }
+    .lot__leaf-it { font-size: 16px; }
+    .lot__leaf-md { font-size: 13px; }
+    .lot__leaf-sm { font-size: 11px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .carte__tabs button, .carte__steps button, .carte__book, .thumb, .thumb__no, .thumb__name { transition: none; }
+    .lot__tabs button, .lot__bid, .lot__watch { transition: none; }
+    /* the lean rests mid-word and still answers clicks; the clock stays printed */
   }
 </style>
