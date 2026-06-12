@@ -3,446 +3,557 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
-// Real text companion (loaded site-wide in Layout.astro): a quiet serif for running body.
+// Companions (loaded site-wide in Layout.astro)
 const serif = "'Spectral', Georgia, serif";
 const ui = "'Inter Variable', system-ui, sans-serif";
 
-// --- 02 · Interactive long-read reader (real device scale) ----------------
-const para = [
-  "For three hundred years type had been designed for a single object — the book — and at one rough size. The press printed sermons, almanacs and the occasional broadside, and the letters that served those pages were quiet, modest, made to disappear into a column of prose.",
-  "Then the century turned industrial, and the street learned to shout. Railways needed timetables a foot tall. Auctioneers needed bills that carried across a market square. Manufacturers needed a name a customer could read from a moving carriage. The genteel book faces were useless for it, and printers went looking for letters with muscle.",
-  "The answer was the slab: a sturdy skeleton with heavy rectangular serifs bolted on, black enough to hold as solid ink at any size. Robert Besley's refinement of 1845 rounded the joints with a gentle bracket — sturdy without being brutal — and the Clarendon was born. He patented it; everyone copied it anyway.",
+// --- 04 · The Saleroom: timed online sale, Clarendon's auction-bill ancestry ---
+const lots = [
+  { no: 17, title: 'Twelve-line condensed gothic, wood', sub: 'Wm. H. Page & Co., Connecticut, c. 1872', low: 3000, high: 5000, bid: 4200, step: 200, bids: 11 },
+  { no: 18, title: 'Clarendon patent specimen sheets', sub: 'Besley & Co., Fann Street Foundry, 1845', low: 12000, high: 18000, bid: 13000, step: 500, bids: 18 },
+  { no: 19, title: 'Albion hand press, demy folio', sub: 'Hopkinson & Cope, London, 1851', low: 8000, high: 12000, bid: 8500, step: 250, bids: 6 },
+  { no: 20, title: 'Playbill archive, 214 items', sub: 'Theatre Royal, Drury Lane, 1838–1871', low: 5000, high: 7000, bid: 5250, step: 250, bids: 4 },
 ];
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 ---
 <div class="iu" style={`--fam:${fam}; --serif:${serif}; --ui:${ui}`}>
 
-  <!-- 01 — EDITORIAL: long-form feature spread, slab display over a serif text face -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Editorial — a feature spread, slab display over Spectral text</span></figcaption>
-    <div class="iu__scene scene-feature">
-      <div class="iu__poster feat" data-feat>
-        <div class="feat__rail">
-          <span class="feat__masth">The Fann Street Review</span>
-          <span class="feat__folio"><i>No.</i> 18 · Industry &amp; Letters</span>
-        </div>
-        <div class="feat__grid">
-          <div class="feat__lead">
-            <span class="feat__kicker">A history of the loud</span>
-            <h3 class="feat__head" data-breathe>The<br/>Industrial<br/>Shout</h3>
-            <p class="feat__deck">How a patented slab serif taught the nineteenth&nbsp;century to <em>sell</em>.</p>
-            <div class="feat__by">
-              <span class="feat__by-name">Robert Besley</span>
-              <span class="feat__by-meta">Fann Street Foundry · est. <i>MDCCCXLV</i></span>
-            </div>
+  <!-- ============================================================ -->
+  <!-- 01 — ILLUSTRATION & COMMERCIAL · the 1845 patent specimen    -->
+  <!-- ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Illustration &amp; commercial — the patent specimen broadside, after Besley &amp; Co.’s 1845 Clarendon showing, the first typeface registered under the Ornamental Designs Act of 1842</span>
+    </figcaption>
+    <div class="iu__scene spec" data-spec>
+      <div class="spec__sheet">
+        <div class="spec__rules" aria-hidden="true"></div>
+        <p class="spec__house">Fann Street Letter Foundry &nbsp;·&nbsp; London</p>
+        <p class="spec__to">TO PRINTERS.</p>
+        <h3 class="spec__word" data-press>CLARENDON</h3>
+        <p class="spec__reg"><em>Registered at Stationers’ Hall pursuant to the Act — the design protected for three years.</em></p>
+        <div class="spec__showings">
+          <div class="spec__show">
+            <span class="spec__body">TWO-LINE GREAT PRIMER</span>
+            <span class="spec__line spec__line--900">DURABLE</span>
+            <span class="spec__note">wght 900 — black enough to hold as solid ink</span>
           </div>
-          <div class="feat__cols">
-            <p class="feat__first"><span class="feat__drop">F</span>or three hundred years the type that served the printing house was quiet — modest book letters made to vanish into a column of prose. Then the century turned industrial, and the street learned to shout.</p>
-            <p>Railways wanted timetables a foot tall; auctioneers wanted bills that carried across a square. The answer was the <em>slab</em>: a sturdy skeleton with heavy rectangular serifs, black enough to hold as solid ink at any size.</p>
-            <blockquote class="feat__pull">&ldquo;He took out one of the first type patents in history&nbsp;— and everyone copied it anyway.&rdquo;</blockquote>
-            <p>Robert Besley rounded the joints with a gentle bracket in 1845, sturdy without being brutal, and the Clarendon was born — a face built to carry weight, the typographic equivalent of cast iron.</p>
+          <div class="spec__show">
+            <span class="spec__body">TWO-LINE PICA</span>
+            <span class="spec__line spec__line--700">EXPRESSIVE</span>
+            <span class="spec__note">wght 700 — the bill-poster’s workhorse</span>
+          </div>
+          <div class="spec__show">
+            <span class="spec__body">GREAT PRIMER</span>
+            <span class="spec__line spec__line--400">Useful to all</span>
+            <span class="spec__note">wght 400 — reads quietly beside the roman</span>
           </div>
         </div>
-        <div class="feat__foot">
-          <span>fannstreet.review</span>
-          <span class="feat__pg">— 18 —</span>
-          <span>Industry &amp; Letters</span>
+        <div class="spec__rules spec__rules--foot" aria-hidden="true"></div>
+        <p class="spec__imprint">BESLEY &amp; CO. (LATE THOROWGOOD &amp; BESLEY) · Nº 31 FANN STREET, ALDERSGATE · MDCCCXLV</p>
+        <span class="spec__ink" aria-hidden="true"></span>
+      </div>
+    </div>
+    <p class="iu__hint label">Press the big word — the forme bites into the sheet and the ink gains. Three showings climb the weight axis the way a foundry book climbed its bodies.</p>
+  </figure>
+
+  <!-- ============================================================ -->
+  <!-- 02 — BRANDING & IDENTITY · the express-company system        -->
+  <!-- ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Branding &amp; identity — an overland express company, after Wells Fargo’s Clarendon wordmark and the stagecoach express vernacular</span>
+    </figcaption>
+    <div class="iu__scene exco">
+      <div class="exco__grid">
+        <div class="exco__lock">
+          <span class="exco__est">ESTᴰ 1852 · CALIFORNIA &amp; THE STATES</span>
+          <h3 class="exco__mark">OVERLAND<br/>EXPRESS</h3>
+          <span class="exco__amp">&amp; BANKING COMPANY</span>
+          <p class="exco__motto"><em>Carried through, whatever the road.</em></p>
+        </div>
+        <div class="exco__apps">
+          <div class="exco__waybill">
+            <div class="exco__wb-head"><span>WAYBILL</span><b>Nº 04,318</b></div>
+            <div class="exco__wb-row"><span>FROM</span><b>SAN FRANCISCO</b></div>
+            <div class="exco__wb-row"><span>TO</span><b>ST. JOSEPH, MO.</b></div>
+            <div class="exco__wb-row"><span>WEIGHT</span><b>48 lb 12 oz</b></div>
+            <div class="exco__wb-row"><span>CHARGES</span><b>$2.25 PAID</b></div>
+            <div class="exco__wb-row exco__wb-row--last"><span>VIA</span><b>OVERLAND, 25 DAYS</b></div>
+          </div>
+          <div class="exco__specrow">
+            <button class="exco__w is-on" data-w="900"><i>900</i><span>WORDMARK</span></button>
+            <button class="exco__w" data-w="700"><i>700</i><span>SIGNAGE</span></button>
+            <button class="exco__w" data-w="500"><i>500</i><span>DOCUMENT</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="exco__band" aria-hidden="true">
+        <div class="exco__belt">
+          <span>★ OVERLAND EXPRESS ★ SAN FRANCISCO ★ SACRAMENTO ★ SALT LAKE ★ ST. JOSEPH ★ TREASURE SHIPPED UNDER GUARD&nbsp;</span>
+          <span>★ OVERLAND EXPRESS ★ SAN FRANCISCO ★ SACRAMENTO ★ SALT LAKE ★ ST. JOSEPH ★ TREASURE SHIPPED UNDER GUARD&nbsp;</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Besley sets the masthead, headline and pull-quote; Spectral carries the columns. The headline breathes across the weight axis.</p>
+    <p class="iu__hint label">One drawing, three duties: pick a grade — the wordmark re-weights live between its 900 mark, 700 signage and 500 document cuts. Tabular figures keep the waybill ledger flush.</p>
   </figure>
 
-  <!-- 02 — INTERACTIVE READER at real device scale -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Product UI — a long-read reader, real device scale, interactive</span></figcaption>
-    <div class="iu__scene scene-reader">
-      <div class="iu__device reader" data-reader>
+  <!-- ============================================================ -->
+  <!-- 03 — EDITORIAL · the dictionary page, the first related bold -->
+  <!-- ============================================================ -->
+  <figure class="iu__item" data-shoot-click="[data-bold-toggle]">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Editorial — a dictionary page, after the Clarendon Press convention: the first bold designed to sit <em>inside</em> roman text, not beside it</span>
+    </figcaption>
+    <div class="iu__scene dict" data-dict>
+      <div class="dict__page">
+        <div class="dict__rh">
+          <span class="dict__rh-w">CLARENDON</span>
+          <span class="dict__folio">346</span>
+          <span class="dict__rh-w dict__rh-w--r">CLARION</span>
+        </div>
+        <div class="dict__cols">
+          <div class="dict__entry">
+            <p><b class="dict__hw">Clar·en·don</b>, <i>n.</i> <span class="dict__pron">/ˈklarəndən/</span> <span class="dict__ety">[after the <i>Clarendon Press</i>, Oxford.]</span>
+            <b class="dict__sense">1.</b> A letter of slab serif and low contrast, the serifs joined to the stem by a curved bracket; cut 1845 by Robert Besley at the Fann Street Foundry, London, and patented by him — the first such grant for a type design.
+            <b class="dict__sense">2.</b> The first <b class="dict__em">related bold</b>: a dark companion drawn to share a roman’s body and set within its line for emphasis, where earlier printers could only resort to <i>italic</i> or LETTER-SPACED CAPITALS.</p>
+          </div>
+          <div class="dict__entry">
+            <p><b class="dict__hw">clar·i·fy</b>, <i>v.t.</i> <span class="dict__ety">[L. <i>clarus</i> clear + <i>facere</i> to make.]</span>
+            <b class="dict__sense">1.</b> To free from ambiguity or obscurity; to make intelligible.
+            <b class="dict__sense">2.</b> <i>Printing.</i> To mark the load-bearing words of a passage with a related bold, that a reader skimming the column may <b class="dict__em">catch the sense at a glance</b>.</p>
+          </div>
+          <div class="dict__entry">
+            <p><b class="dict__hw">clar·i·on</b>, <i>n.</i> <span class="dict__ety">[O.Fr. <i>claron</i>, f. L. <i>clarus</i>.]</span>
+            <b class="dict__sense">1.</b> A shrill, clear-sounding trumpet of war.
+            <b class="dict__sense">2.</b> <i>fig.</i> Loud and unmistakable; spoken so as to carry: <i>the auctioneer’s bill was set</i> <b class="dict__em">two-line clarendon, a clarion in ink</b>.</p>
+          </div>
+        </div>
+        <div class="dict__margin">
+          <span class="dict__m-h">THE RELATED BOLD</span>
+          <button class="dict__toggle" data-bold-toggle aria-pressed="true"><i class="dict__pip"></i><span data-bold-label>1845 — ON</span></button>
+          <p class="dict__m-note">Strip Besley out and the page loses its signposts — every emphasis falls back to the roman, as it stood before 1845.</p>
+        </div>
+        <p class="dict__foot">Headwords &amp; emphasis: Besley · text: Spectral — the bold sharing the roman’s line, as Besley cut it to.</p>
+      </div>
+    </div>
+    <p class="iu__hint label">Throw the switch in the margin — the related bold drains out of the page and the entries go flat. That difference is the invention.</p>
+  </figure>
+
+  <!-- ============================================================ -->
+  <!-- 04 — WEB & APP UI · the saleroom, real device scale          -->
+  <!-- ============================================================ -->
+  <figure class="iu__item" data-shoot-click="[data-bid]">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Web &amp; app UI — a timed online auction at real device scale, after contemporary saleroom platforms; the auction bill come home as product</span>
+    </figcaption>
+    <div class="iu__scene sale">
+      <div class="iu__device saleui" data-sale>
         <div class="iu__chrome">
           <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">read.clarendon.press/the-industrial-shout</span>
+          <span class="iu__addr">saleroom.fannstreet.co/sale-1845/printing-and-the-industrial-image</span>
         </div>
-        <div class="reader__bar">
-          <span class="reader__logo">Clarendon</span>
-          <div class="reader__tools">
-            <div class="reader__seg" role="group" aria-label="Headline weight">
-              <span class="reader__seg-h">Weight</span>
-              <input class="reader__range" type="range" data-wght min="400" max="900" step="1" value="800" aria-label="Headline weight" />
-              <i class="reader__seg-v" data-wght-out>800</i>
-            </div>
-            <div class="reader__seg" role="group" aria-label="Reading text size">
-              <button class="reader__btn is-on" data-size="cozy">Cozy</button>
-              <button class="reader__btn" data-size="dense">Dense</button>
-            </div>
-            <button class="reader__btn reader__btn--wide" data-serif aria-pressed="true">Serif body</button>
-          </div>
+        <div class="sale__bar">
+          <span class="sale__logo">Fann Street</span>
+          <span class="sale__sale">SALE 1845 · Printing &amp; the Industrial Image · <b data-clock>ends 17:00 BST</b></span>
         </div>
-        <article class="reader__body" data-text data-textsize="cozy" data-bodyface="serif">
-          <header class="reader__hd">
-            <span class="reader__kicker">History · Type</span>
-            <h4 class="reader__head" data-head>The Industrial Shout</h4>
-            <p class="reader__byline">by R. Besley · <span class="reader__fig">9 min</span> · <span class="reader__fig">1845</span></p>
-          </header>
-          <div class="reader__flow">
-            {para.map((p, i) => (
-              <p class={i === 0 ? 'reader__lede' : ''}>{i === 0 ? <span class="reader__drop">F</span> : null}{i === 0 ? p.slice(1) : p}</p>
-            ))}
-            <blockquote class="reader__quote">Letters with muscle, black enough to hold as ink at any size.</blockquote>
-            <div class="reader__end">
-              <span class="reader__end-mark">⬡</span>
-              <p class="reader__bio">Filed under <b>History</b> &amp; <b>Type</b>. Set in Besley, the modern Clarendon, with a Spectral text companion.</p>
+        <div class="sale__main">
+          <div class="sale__live">
+            <div class="sale__lothead">
+              <span class="sale__lotno">LOT <b data-lot-no>18</b></span>
+              <button class="sale__watch" data-watch aria-pressed="false">☆ Watch</button>
+            </div>
+            <h4 class="sale__title" data-lot-title>Clarendon patent specimen sheets</h4>
+            <p class="sale__sub" data-lot-sub>Besley &amp; Co., Fann Street Foundry, 1845</p>
+            <p class="sale__est"><i>Estimate</i> <span data-lot-est>£12,000 – £18,000</span></p>
+            <div class="sale__bidrow">
+              <div class="sale__current">
+                <span class="sale__cur-h">CURRENT BID · <b data-lot-count>18</b> BIDS</span>
+                <strong class="sale__cur-v" data-lot-bid>£13,000</strong>
+                <span class="sale__lead" data-lead hidden>PADDLE 1845 — YOU LEAD</span>
+              </div>
+              <button class="sale__bid" data-bid>Bid <b data-next>£13,500</b></button>
+            </div>
+            <div class="sale__hist">
+              <span class="sale__hist-h">BIDDING</span>
+              <ul class="sale__hist-list" data-hist>
+                <li><b>£13,000</b><span>Paddle 0072</span><i>2 min ago</i></li>
+                <li><b>£12,500</b><span>Paddle 0418</span><i>9 min ago</i></li>
+                <li><b>£12,000</b><span>Paddle 0072</span><i>14 min ago</i></li>
+              </ul>
             </div>
           </div>
-        </article>
-        <div class="reader__more">
-          <span class="reader__more-h">More from Clarendon</span>
-          <ul class="reader__more-list">
-            <li><span class="reader__more-no">№ 02</span> Why the Victorians called them Egyptians</li>
-            <li><span class="reader__more-no">№ 03</span> Bracketed vs. brutal: a field guide to the slab</li>
-            <li><span class="reader__more-no">№ 04</span> Patenting a letter: Besley &amp; the Fann Street Foundry</li>
-          </ul>
+          <div class="sale__lots">
+            <span class="sale__lots-h">LOTS IN THIS SALE</span>
+            <div class="sale__lotlist" role="listbox" aria-label="Lots">
+              {lots.map((l) => (
+                <button class={`sale__lot${l.no === 18 ? ' is-on' : ''}`} data-lot={l.no} role="option" aria-selected={l.no === 18 ? 'true' : 'false'}>
+                  <span class="sale__lot-no">LOT {l.no}</span>
+                  <span class="sale__lot-t">{l.title}</span>
+                  <span class="sale__lot-bid" data-lot-cur={l.no}>{gbp(l.bid)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+      <template data-hist-row><li><b></b><span></span><i></i></li></template>
     </div>
-    <p class="iu__hint label">Drag the weight slider — the headline ramps 400→900 live. Toggle Cozy/Dense and the serif body; the column reflows.</p>
+    <p class="iu__hint label">Place a bid — the price advances by the lot’s increment, your paddle takes the lead, the ledger prepends (and the under-bidder answers). Switch lots; tabular figures hold every column.</p>
   </figure>
 
-  <!-- 03 — BRAND/POSTER: cast-iron hardware identity, kinetic weight -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand poster — cast-iron identity, full wght axis kinetic</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="iu__poster forge" data-forge>
-        <div class="forge__top">
-          <span>EST. 1845</span>
-          <span class="forge__mark">⬡ IRONWORKS ⬡</span>
-          <span>NO. 011</span>
-        </div>
-        <div class="forge__stack">
-          <span class="forge__sub forge__sub--thin">FANN STREET</span>
-          <span class="forge__word" data-pump data-fit style="--d:0s"><span class="forge__fit">CAST</span></span>
-          <span class="forge__word forge__word--accent" data-pump data-fit style="--d:-2.25s"><span class="forge__fit">IRON</span></span>
-          <span class="forge__sub forge__sub--thin">HARDWARE &amp; HEAVY GOODS</span>
-        </div>
-        <div class="forge__foot">
-          <span class="forge__tag">FORGED TO HOLD</span>
-          <span class="forge__rail">wght 400 → 900</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">The two slab words pump across the whole weight axis, phase-offset — Besley from readable Regular to a planted, cast-iron Black.</p>
-  </figure>
-
-  <!-- 04 — ARTIFACT: coffee tin label, tabular figures + fractions + grind selector -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Packaging — a coffee tin label, interactive grind &amp; strength</span></figcaption>
-    <div class="iu__scene iu__scene--portrait" style="--card-ar: 4 / 5;">
-      <div class="iu__poster tin" data-tin>
-        <div class="tin__top">
-          <span class="tin__est">EST. 1845</span>
-          <span class="tin__net">NET <i data-net>340</i> g</span>
-        </div>
-        <div class="tin__brandblock">
-          <span class="tin__pre">SINGLE&nbsp;ORIGIN · WHOLE&nbsp;BEAN</span>
-          <h3 class="tin__brand">BESLEY<br/>&amp; SON</h3>
-          <span class="tin__roast" data-roast><span data-roast-txt>DARK ROAST · BATCH&nbsp;</span><i data-roast-batch>№ 18</i></span>
-        </div>
-        <p class="tin__notes">Cocoa, dried fig &amp; a long, cast-iron finish. Roasted in small batches on Fann&nbsp;Street.</p>
-        <div class="tin__spec">
-          <div class="tin__row"><span>ALTITUDE</span><b><i>1,845</i> m</b></div>
-          <div class="tin__row"><span>PROCESS</span><b>WASHED</b></div>
-          <div class="tin__row"><span>RATIO</span><b data-ratio><i class="tin__num">1</i><span class="tin__sol">&#8260;</span><i class="tin__den">16</i></b></div>
-        </div>
-        <div class="tin__strength">
-          <span class="tin__strength-h">BODY</span>
-          <span class="tin__meter" data-meter aria-hidden="true">
-            <i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i>
-          </span>
-          <span class="tin__strength-v" data-strength>FULL</span>
-        </div>
-        <div class="tin__control">
-          <span class="tin__control-h">GRIND</span>
-          <div class="tin__seg" role="group" aria-label="Grind">
-            <button class="tin__segbtn is-on" data-grind="WHOLE" data-net="340" data-ratio="1/16" data-roast="DARK ROAST · BATCH&nbsp;" data-batch="№ 18" data-body="4" data-strength="FULL">WHOLE</button>
-            <button class="tin__segbtn" data-grind="FILTER" data-net="340" data-ratio="1/15" data-roast="MEDIUM ROAST · BATCH&nbsp;" data-batch="№ 24" data-body="3" data-strength="ROUND">FILTER</button>
-            <button class="tin__segbtn" data-grind="ESPRESSO" data-net="250" data-ratio="1/2" data-roast="ESPRESSO ROAST · BATCH&nbsp;" data-batch="№ 07" data-body="5" data-strength="INTENSE">ESPRESSO</button>
+  <!-- ============================================================ -->
+  <!-- 05 — INTERACTIVE & EXPERIMENTAL · the bounty as an axis      -->
+  <!-- ============================================================ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-rate='5']">
+    <figcaption class="iu__cap">
+      <span class="index-num">05</span>
+      <span class="label">Interactive &amp; experimental — <em>The Going Rate</em>: the American-West reward bill rebuilt as a weight-axis instrument; the louder the money, the blacker the type</span>
+    </figcaption>
+    <div class="iu__scene bounty" data-bounty data-tier="3">
+      <div class="bounty__sheet">
+        <p class="bounty__top" data-toplines>
+          <span class="bounty__topline" data-top="1">INFORMATION WANTED — APPLY TO THE PARISH CONSTABLE</span>
+          <span class="bounty__topline" data-top="2">PROCLAMATION — BY ORDER OF THE COUNTY SHERIFF</span>
+          <span class="bounty__topline" data-top="3">PROCLAMATION — OVERLAND MAIL ROBBED AT DRY CREEK</span>
+          <span class="bounty__topline" data-top="4">PROCLAMATION — EXPRESS SAFE BLOWN, BULLION TAKEN</span>
+          <span class="bounty__topline" data-top="5">DEAD OR ALIVE</span>
+        </p>
+        <h3 class="bounty__word" data-word>REWARD</h3>
+        <p class="bounty__sum" data-sum>$1,000</p>
+        <p class="bounty__for">
+          <span class="bounty__crime" data-crime="1">for the recovery of one stray mule, answers to GENERAL</span>
+          <span class="bounty__crime" data-crime="2">for the apprehension of the horse thieves lately at large</span>
+          <span class="bounty__crime" data-crime="3">for the road agents who stopped the OVERLAND EXPRESS</span>
+          <span class="bounty__crime" data-crime="4">for the gang that dynamited the through-freight express car</span>
+          <span class="bounty__crime" data-crime="5">for the outlaw known in three territories as THE PRINTER</span>
+        </p>
+        <div class="bounty__rates" role="group" aria-label="Raise the bounty">
+          <span class="bounty__rates-h">RAISE THE BOUNTY</span>
+          <div class="bounty__btns">
+            <button class="bounty__rate" data-rate="1">$50</button>
+            <button class="bounty__rate" data-rate="2">$250</button>
+            <button class="bounty__rate is-on" data-rate="3">$1,000</button>
+            <button class="bounty__rate" data-rate="4">$5,000</button>
+            <button class="bounty__rate" data-rate="5">$10,000</button>
           </div>
+          <span class="bounty__axis" data-axis>wght 640</span>
         </div>
-        <div class="tin__foot">
-          <span class="tin__barcode" aria-hidden="true"></span>
-          <span class="tin__price">£<i>14</i><sup>.50</sup></span>
-        </div>
+        <p class="bounty__imprint">PRINTED AT THE OFFICE OF THE TERRITORIAL ENTERPRISE — CLARENDONS &amp; WOOD LETTER KEPT IN ALL BODIES</p>
       </div>
     </div>
-    <p class="iu__hint label">Pick a grind — the net weight, brew ratio and roast batch reset. Tabular lining figures (<em>tnum</em>) hold the spec column flush right.</p>
+    <p class="iu__hint label">Raise the money and the bill re-sets itself: REWARD and the sum climb the axis 430 → 900, tracking tightens, the charge escalates — at $10,000 the sheet finally says it: dead or alive.</p>
   </figure>
 
 </div>
 
 <script>
-  // ---- 02 reader: weight slider + text size + body face ----
-  document.querySelectorAll<HTMLElement>('[data-reader]').forEach((reader) => {
-    const head = reader.querySelector<HTMLElement>('[data-head]')!;
-    const out = reader.querySelector<HTMLElement>('[data-wght-out]')!;
-    const range = reader.querySelector<HTMLInputElement>('[data-wght]')!;
-    const body = reader.querySelector<HTMLElement>('[data-text]')!;
-
-    const applyW = (v: number) => {
-      head.style.fontVariationSettings = `'wght' ${v}`;
-      out.textContent = String(v);
-    };
-    range.addEventListener('input', () => applyW(+range.value));
-    applyW(+range.value);
-
-    reader.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) =>
+  // ---- 02 · express co: grade picker re-weights the wordmark ----
+  document.querySelectorAll<HTMLElement>('.exco').forEach((ex) => {
+    const mark = ex.querySelector<HTMLElement>('.exco__mark')!;
+    ex.querySelectorAll<HTMLButtonElement>('[data-w]').forEach((btn) =>
       btn.addEventListener('click', () => {
-        reader.querySelectorAll('[data-size]').forEach((b) => b.classList.remove('is-on'));
+        ex.querySelectorAll('[data-w]').forEach((b) => b.classList.remove('is-on'));
         btn.classList.add('is-on');
-        body.setAttribute('data-textsize', btn.dataset.size!);
+        mark.style.fontVariationSettings = `'wght' ${btn.dataset.w}`;
       })
     );
+  });
 
-    const serifBtn = reader.querySelector<HTMLButtonElement>('[data-serif]');
-    serifBtn?.addEventListener('click', () => {
-      const on = body.getAttribute('data-bodyface') === 'serif';
-      body.setAttribute('data-bodyface', on ? 'slab' : 'serif');
-      serifBtn.setAttribute('aria-pressed', String(!on));
-      serifBtn.textContent = on ? 'Slab body' : 'Serif body';
+  // ---- 03 · dictionary: strip / restore the related bold ----
+  document.querySelectorAll<HTMLElement>('[data-dict]').forEach((dict) => {
+    const btn = dict.querySelector<HTMLButtonElement>('[data-bold-toggle]')!;
+    const label = dict.querySelector<HTMLElement>('[data-bold-label]')!;
+    btn.addEventListener('click', () => {
+      const on = !dict.classList.contains('is-flat');
+      dict.classList.toggle('is-flat', on);
+      btn.setAttribute('aria-pressed', String(!on));
+      label.textContent = on ? '1845 — OFF' : '1845 — ON';
     });
   });
 
-  // ---- 03 forge: optically equalize CAST / IRON to a shared cap-width ----
-  document.querySelectorAll<HTMLElement>('[data-forge]').forEach((forge) => {
-    const words = Array.from(forge.querySelectorAll<HTMLElement>('[data-fit]'));
-    const fits = words.map((w) => w.querySelector<HTMLElement>('.forge__fit')!);
-    const fit = () => {
-      // measure intrinsic widths at scaleX(1)
-      fits.forEach((f) => (f.style.transform = 'scaleX(1)'));
-      const widths = fits.map((f) => f.getBoundingClientRect().width);
-      const target = Math.max(...widths);
-      fits.forEach((f, i) => {
-        const w = widths[i] || target;
-        f.style.transform = `scaleX(${(target / w).toFixed(4)})`;
-      });
+  // ---- 04 · saleroom: lot switching, bidding, watch ----
+  document.querySelectorAll<HTMLElement>('[data-sale]').forEach((sale) => {
+    type Lot = { no: number; title: string; sub: string; low: number; high: number; bid: number; step: number; bids: number; hist: Array<[string, string, string]> };
+    const data: Record<number, Lot> = {
+      17: { no: 17, title: 'Twelve-line condensed gothic, wood', sub: 'Wm. H. Page & Co., Connecticut, c. 1872', low: 3000, high: 5000, bid: 4200, step: 200, bids: 11, hist: [['£4,200', 'Paddle 0301', '5 min ago'], ['£4,000', 'Paddle 0118', '12 min ago']] },
+      18: { no: 18, title: 'Clarendon patent specimen sheets', sub: 'Besley & Co., Fann Street Foundry, 1845', low: 12000, high: 18000, bid: 13000, step: 500, bids: 18, hist: [['£13,000', 'Paddle 0072', '2 min ago'], ['£12,500', 'Paddle 0418', '9 min ago'], ['£12,000', 'Paddle 0072', '14 min ago']] },
+      19: { no: 19, title: 'Albion hand press, demy folio', sub: 'Hopkinson & Cope, London, 1851', low: 8000, high: 12000, bid: 8500, step: 250, bids: 6, hist: [['£8,500', 'Paddle 0509', '21 min ago'], ['£8,250', 'Paddle 0044', '40 min ago']] },
+      20: { no: 20, title: 'Playbill archive, 214 items', sub: 'Theatre Royal, Drury Lane, 1838–1871', low: 5000, high: 7000, bid: 5250, step: 250, bids: 4, hist: [['£5,250', 'Paddle 0188', '8 min ago'], ['£5,000', 'Paddle 0044', '33 min ago']] },
     };
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-    fit();
-    let raf = 0;
-    new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); }).observe(forge);
+    const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+    let cur = 18;
+    const q = <T extends HTMLElement>(s: string) => sale.querySelector<T>(s)!;
+    const no = q('[data-lot-no]'), title = q('[data-lot-title]'), sub = q('[data-lot-sub]'),
+      est = q('[data-lot-est]'), bidV = q('[data-lot-bid]'), count = q('[data-lot-count]'),
+      next = q('[data-next]'), lead = q('[data-lead]'), hist = q('[data-hist]'),
+      bidBtn = q<HTMLButtonElement>('[data-bid]'), watch = q<HTMLButtonElement>('[data-watch]');
+    const rowTpl = sale.closest('.sale')!.querySelector<HTMLTemplateElement>('[data-hist-row]')!;
+    const watched = new Set<number>();
+
+    const row = (price: string, who: string, when: string) => {
+      const li = (rowTpl.content.cloneNode(true) as DocumentFragment).querySelector('li')!;
+      li.querySelector('b')!.textContent = price;
+      li.querySelector('span')!.textContent = who;
+      li.querySelector('i')!.textContent = when;
+      return li;
+    };
+    const render = () => {
+      const l = data[cur];
+      no.textContent = String(l.no);
+      title.textContent = l.title;
+      sub.textContent = l.sub;
+      est.textContent = `${gbp(l.low)} – ${gbp(l.high)}`;
+      bidV.textContent = gbp(l.bid);
+      count.textContent = String(l.bids);
+      next.textContent = gbp(l.bid + l.step);
+      lead.hidden = l.hist[0]?.[1] !== 'Paddle 1845';
+      hist.replaceChildren(...l.hist.slice(0, 4).map((h) => row(h[0], h[1], h[2])));
+      watch.textContent = watched.has(cur) ? '★ Watching' : '☆ Watch';
+      watch.setAttribute('aria-pressed', String(watched.has(cur)));
+      const curCell = sale.querySelector(`[data-lot-cur='${cur}']`);
+      if (curCell) curCell.textContent = gbp(l.bid);
+    };
+    sale.querySelectorAll<HTMLButtonElement>('[data-lot]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        sale.querySelectorAll('[data-lot]').forEach((b) => { b.classList.remove('is-on'); b.setAttribute('aria-selected', 'false'); });
+        btn.classList.add('is-on');
+        btn.setAttribute('aria-selected', 'true');
+        cur = +btn.dataset.lot!;
+        render();
+      })
+    );
+    bidBtn.addEventListener('click', () => {
+      const l = data[cur];
+      l.bid += l.step;
+      l.bids += 1;
+      l.hist.unshift([gbp(l.bid), 'Paddle 1845', 'just now']);
+      render();
+      bidV.classList.remove('is-tick');
+      void bidV.offsetWidth;
+      bidV.classList.add('is-tick');
+      const mine = cur;
+      window.setTimeout(() => {                      // the room answers
+        const m = data[mine];
+        if (m.hist[0]?.[1] !== 'Paddle 1845') return;
+        m.bid += m.step;
+        m.bids += 1;
+        m.hist.unshift([gbp(m.bid), 'Paddle 0072', 'just now']);
+        if (cur === mine) render();
+      }, 2600);
+    });
+    watch.addEventListener('click', () => {
+      watched.has(cur) ? watched.delete(cur) : watched.add(cur);
+      render();
+    });
+    render();
   });
 
-  // ---- 04 coffee tin: grind selector drives net weight / ratio / batch ----
-  document.querySelectorAll<HTMLElement>('[data-tin]').forEach((tin) => {
-    const net = tin.querySelector<HTMLElement>('[data-net]')!;
-    const ratio = tin.querySelector<HTMLElement>('[data-ratio]')!;
-    const roastTxt = tin.querySelector<HTMLElement>('[data-roast-txt]')!;
-    const roastBatch = tin.querySelector<HTMLElement>('[data-roast-batch]')!;
-    const strength = tin.querySelector<HTMLElement>('[data-strength]')!;
-    const pips = Array.from(tin.querySelectorAll<HTMLElement>('[data-meter] i'));
-    tin.querySelectorAll<HTMLButtonElement>('[data-grind]').forEach((btn) =>
+  // ---- 05 · bounty: tier drives weight, tracking, copy ----
+  document.querySelectorAll<HTMLElement>('[data-bounty]').forEach((b) => {
+    const word = b.querySelector<HTMLElement>('[data-word]')!;
+    const sum = b.querySelector<HTMLElement>('[data-sum]')!;
+    const axis = b.querySelector<HTMLElement>('[data-axis]')!;
+    const sums = ['', '$50', '$250', '$1,000', '$5,000', '$10,000'];
+    const wghts = [0, 430, 540, 640, 780, 900];
+    b.querySelectorAll<HTMLButtonElement>('[data-rate]').forEach((btn) =>
       btn.addEventListener('click', () => {
-        tin.querySelectorAll('[data-grind]').forEach((b) => b.classList.remove('is-on'));
+        const t = +btn.dataset.rate!;
+        b.querySelectorAll('[data-rate]').forEach((x) => x.classList.remove('is-on'));
         btn.classList.add('is-on');
-        net.textContent = btn.dataset.net!;
-        const [a, b] = btn.dataset.ratio!.split('/');
-        ratio.replaceChildren();
-        const ia = document.createElement('i'); ia.className = 'tin__num'; ia.textContent = a;
-        const sol = document.createElement('span'); sol.className = 'tin__sol'; sol.textContent = '⁄';
-        const ib = document.createElement('i'); ib.className = 'tin__den'; ib.textContent = b;
-        ratio.append(ia, sol, ib);
-        roastTxt.textContent = (btn.dataset.roast || '').replace(/&nbsp;/g, ' ');
-        roastBatch.textContent = btn.dataset.batch!;
-        const bodyLevel = +(btn.dataset.body || '0');
-        pips.forEach((p, i) => p.classList.toggle('is-on', i < bodyLevel));
-        strength.textContent = btn.dataset.strength!;
+        b.setAttribute('data-tier', String(t));
+        word.style.fontVariationSettings = `'wght' ${wghts[t]}`;
+        word.style.letterSpacing = `${(0.015 - t * 0.009).toFixed(3)}em`;
+        sum.style.fontVariationSettings = `'wght' ${wghts[t]}`;
+        sum.textContent = sums[t];
+        axis.textContent = `wght ${wghts[t]}`;
       })
     );
   });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ---- the stack: alternating paper / iron beats, tightened gap ---- */
+  .iu { gap: clamp(3rem, 7vh, 5rem); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .iu * { font-family: var(--fam); }
   .iu__scene * { font-family: var(--fam); }
 
-  .scene-tall { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
-  .scene-feature { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-feature { aspect-ratio: 16 / 10; } }
-  .scene-reader { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-reader { aspect-ratio: 16 / 9; } }
+  /* shared paper + ink (acts 01, 03, 05 — printed artifacts, self-declared) */
+  .spec, .dict, .bounty { --paper: #ede3cd; --paper-2: #e4d7bb; --ink: #221b12; --ink-2: #564a37; --rust: #b04a18; }
 
-  /* ============ 01 · FEATURE SPREAD (slab display + Spectral text) ============ */
-  .feat { background: var(--bg); color: var(--fg); padding: 4.5cqi 5cqi 0; display: flex; flex-direction: column; overflow: hidden; --bodysize: 2cqi; }
-  .feat__rail { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi; }
-  .feat__masth { font-size: 3.3cqi; font-weight: 600; letter-spacing: -0.005em; font-variation-settings: 'wght' 560; color: var(--fg); }
-  .feat__folio { font-size: 1.9cqi; font-style: italic; color: var(--fg-3); letter-spacing: 0.01em; font-feature-settings: 'tnum'; }
-  .feat__folio i { font-style: italic; }
-  .feat__grid { flex: 1; display: grid; grid-template-columns: 0.94fr 1.06fr; gap: 5cqi; min-height: 0; padding: 3.4cqi 0 2.6cqi; }
-  .feat__lead { display: flex; flex-direction: column; }
-  .feat__kicker { font-size: 1.8cqi; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
-  .feat__head { font-size: 11.5cqi; font-weight: 800; line-height: 0.88; letter-spacing: -0.015em; margin: 1.6cqi 0 0; font-variation-settings: 'wght' 820; }
-  .feat__deck { font-family: var(--serif); font-size: 2.7cqi; line-height: 1.32; color: var(--fg-2); margin-top: 2.8cqi; max-width: 92%; }
-  .feat__deck em { font-style: italic; color: var(--accent); }
-  .feat__by { margin-top: auto; padding-top: 2.6cqi; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.3cqi; }
-  .feat__by-name { font-size: 2.1cqi; font-weight: 700; letter-spacing: 0.01em; color: var(--fg); }
-  .feat__by-meta { font-family: var(--serif); font-style: italic; font-size: 1.8cqi; color: var(--fg-3); letter-spacing: 0.01em; }
-  .feat__by-meta i { font-style: italic; font-feature-settings: 'tnum'; letter-spacing: 0.04em; }
-  .feat__cols { display: flex; flex-direction: column; font-family: var(--serif); }
-  .feat__cols p { font-size: var(--bodysize); line-height: 1.46; color: var(--fg-2); margin: 0 0 1.1cqi; text-align: left; hyphens: auto; }
-  .feat__cols p em { font-style: italic; color: var(--fg); }
-  .feat__first { margin-top: 0; }
-  .feat__drop { float: left; font-family: var(--fam); font-weight: 800; font-size: 8cqi; line-height: 0.66; padding: 0.5cqi 0.8cqi 0 0; color: var(--accent); }
-  .feat__pull { font-family: var(--fam); font-style: italic; font-weight: 500; font-size: 3.3cqi; line-height: 1.12; color: var(--accent); margin: 1.8cqi 0; padding: 0 0 0 2.4cqi; border-left: 0.6cqi solid var(--accent); font-variation-settings: 'wght' 520; }
-  .feat__foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-top: 1px solid var(--line); padding: 1.6cqi 0 2cqi; font-size: 1.7cqi; letter-spacing: 0.04em; color: var(--fg-3); font-style: italic; font-family: var(--serif); }
-  .feat__foot > :last-child { text-align: right; }
-  .feat__pg { letter-spacing: 0.1em; font-feature-settings: 'tnum'; }
+  /* ============ 01 · PATENT SPECIMEN BROADSIDE ============ */
+  .spec { background: linear-gradient(175deg, var(--paper) 0%, var(--paper-2) 100%); color: var(--ink); }
+  .spec__sheet { position: relative; max-width: 1180px; margin-inline: auto; padding: 5cqi 6cqi 3.5cqi; text-align: center; container-type: inline-size; }
+  @container (min-width: 900px) { .spec__sheet { padding: 3.5cqi 6cqi 2.5cqi; } }
+  .spec__rules { height: 7px; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); }
+  .spec__rules--foot { height: 7px; border-top: 1px solid var(--ink); border-bottom: 3px solid var(--ink); margin-top: 3cqi; }
+  .spec__house { font-size: clamp(12px, 2cqi, 22px); font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; margin: 2.4cqi 0 0; color: var(--ink); }
+  .spec__to { font-size: clamp(10px, 1.4cqi, 15px); font-weight: 700; letter-spacing: 0.5em; margin: 1.4cqi 0 0; color: var(--rust); }
+  .spec__word { font-size: 12.4cqi; line-height: 0.92; letter-spacing: 0.005em; margin: 1cqi 0 0; font-variation-settings: 'wght' 840; color: var(--ink); cursor: pointer; user-select: none; transition: transform 0.18s var(--ease-out, ease-out); will-change: transform; }
+  .spec__reg { font-style: italic; font-size: clamp(11px, 1.8cqi, 19px); color: var(--ink-2); margin: 1.2cqi auto 0; max-width: 60ch; }
+  .spec__showings { display: grid; grid-template-columns: 1fr; gap: 2.6cqi; margin-top: 3.4cqi; }
+  @container (min-width: 880px) { .spec__showings { grid-template-columns: repeat(3, 1fr); gap: 3cqi; align-items: end; } }
+  .spec__show { display: flex; flex-direction: column; gap: 0.8cqi; border-top: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); padding-top: 1.4cqi; }
+  .spec__body { font-size: clamp(9px, 1.2cqi, 12px); font-weight: 600; letter-spacing: 0.28em; color: var(--rust); }
+  .spec__line { font-size: clamp(24px, 3.4cqi, 42px); line-height: 1; white-space: nowrap; color: var(--ink); }
+  .spec__line--900 { font-variation-settings: 'wght' 900; letter-spacing: -0.01em; }
+  .spec__line--700 { font-variation-settings: 'wght' 700; }
+  .spec__line--400 { font-variation-settings: 'wght' 400; }
+  .spec__note { font-style: italic; font-size: clamp(10px, 1.4cqi, 15px); color: var(--ink-2); }
+  .spec__imprint { font-size: clamp(9px, 1.3cqi, 14px); font-weight: 500; letter-spacing: 0.14em; color: var(--ink-2); margin: 1.6cqi 0 0; }
+  /* the press: ink-gain layer + bite */
+  .spec__ink { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(60% 38% at 50% 30%, color-mix(in srgb, var(--ink) 14%, transparent), transparent 70%); opacity: 0; transition: opacity 0.18s var(--ease-out, ease-out); }
+  .spec:has([data-press]:active) .spec__ink, .spec:has([data-press]:hover) .spec__ink { opacity: 0.55; }
+  .spec [data-press]:active { transform: scale(0.988); }
+  @media (prefers-reduced-motion: reduce) {
+    .spec__word, .spec__ink { transition: none; }
+  }
 
+  /* ============ 02 · OVERLAND EXPRESS IDENTITY ============ */
+  .exco { background: #1d140c; color: #efe4cd; --xline: #efe4cd2b; --xacc: #d9692f; }
+  .exco__grid { max-width: 1180px; margin-inline: auto; padding: 6cqi 6cqi 4cqi; display: grid; grid-template-columns: 1fr; gap: 5cqi; container-type: inline-size; }
+  @container (min-width: 820px) { .exco__grid { grid-template-columns: 1.05fr 0.95fr; gap: 6cqi; align-items: center; padding: 4.5cqi 6cqi 3cqi; } }
+  .exco__lock, .exco__apps { min-width: 0; }
+  .exco__lock { display: flex; flex-direction: column; container-type: inline-size; }
+  .exco__est { font-size: clamp(10px, 2.8cqi, 15px); font-weight: 600; letter-spacing: 0.26em; color: var(--xacc); border-bottom: 1px solid var(--xline); padding-bottom: 3cqi; }
+  .exco__mark { font-size: clamp(40px, 14cqi, 100px); line-height: 0.9; letter-spacing: -0.005em; margin: 4cqi 0 0; font-variation-settings: 'wght' 900; transition: font-variation-settings 0.3s var(--ease); color: #efe4cd; }
+  .exco__amp { font-size: clamp(12px, 4.3cqi, 23px); font-weight: 500; letter-spacing: 0.42em; margin-top: 3.4cqi; color: #c9b896; }
+  .exco__motto { font-style: italic; font-size: clamp(13px, 4cqi, 20px); color: #c9b896; margin: 4.6cqi 0 0; border-top: 1px solid var(--xline); padding-top: 3.8cqi; }
+  .exco__apps { display: flex; flex-direction: column; gap: 2.4cqi; }
+  .exco__waybill { background: #efe4cd; color: #221b12; padding: 2.4cqi 2.6cqi 2cqi; transform: rotate(-0.5deg); }
+  .exco__wb-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px double #221b12; padding-bottom: 1cqi; margin-bottom: 0.4cqi; font-size: clamp(13px, 1.9cqi, 21px); font-weight: 800; letter-spacing: 0.1em; }
+  .exco__wb-head b { font-feature-settings: 'tnum'; font-weight: 800; color: var(--rust, #b04a18); }
+  .exco__wb-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1cqi; padding: 0.9cqi 0; border-bottom: 1px solid #221b1233; font-size: clamp(10px, 1.5cqi, 15px); }
+  .exco__wb-row b { white-space: nowrap; }
+  .exco__wb-row--last { border-bottom: none; }
+  .exco__wb-row span { font-weight: 500; letter-spacing: 0.2em; color: #564a37; }
+  .exco__wb-row b { font-weight: 700; letter-spacing: 0.04em; font-feature-settings: 'tnum'; text-align: right; }
+  .exco__specrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2cqi; }
+  .exco__w { display: flex; flex-direction: column; align-items: center; gap: 0.4cqi; padding: 1.4cqi 0.6cqi 1.2cqi; border: 1px solid var(--xline); background: transparent; color: #c9b896; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; }
+  .exco__w i { font-style: normal; font-size: clamp(18px, 2.8cqi, 34px); line-height: 1; font-feature-settings: 'tnum'; }
+  .exco__w[data-w='900'] i { font-variation-settings: 'wght' 900; }
+  .exco__w[data-w='700'] i { font-variation-settings: 'wght' 700; }
+  .exco__w[data-w='500'] i { font-variation-settings: 'wght' 500; }
+  .exco__w span { font-family: var(--ui); font-size: clamp(8px, 1cqi, 10px); font-weight: 600; letter-spacing: 0.18em; }
+  .exco__w:hover { color: #efe4cd; border-color: #efe4cd66; }
+  .exco__w.is-on { background: var(--xacc); border-color: var(--xacc); color: #1d140c; }
+  .exco__band { border-top: 1px solid var(--xline); overflow: hidden; padding: 1.4cqi 0; }
+  .exco__belt { display: flex; white-space: nowrap; width: max-content; }
+  .exco__belt span { font-size: clamp(11px, 1.5cqi, 17px); font-weight: 700; letter-spacing: 0.3em; color: var(--xacc); }
   @media (prefers-reduced-motion: no-preference) {
-    .feat__head[data-breathe] { animation: feat-breathe 6s var(--ease-out, ease-in-out) infinite alternate; }
-    @keyframes feat-breathe {
-      from { font-variation-settings: 'wght' 560; }
-      to   { font-variation-settings: 'wght' 900; }
-    }
+    .exco__belt { animation: exco-belt 36s linear infinite; }
+    @keyframes exco-belt { to { transform: translateX(-50%); } }
   }
+  @media (prefers-reduced-motion: reduce) { .exco__mark { transition: none; } }
 
-  @container (max-width: 560px) {
-    .feat { --bodysize: 3.4cqi; padding: 5cqi 5.5cqi 0; }
-    .feat__grid { grid-template-columns: 1fr; gap: 4cqi; padding: 4cqi 0 3cqi; }
-    .feat__head { font-size: 14cqi; margin-top: 2.4cqi; }
-    .feat__deck { font-size: 4.2cqi; margin-top: 3.2cqi; max-width: 100%; }
-    .feat__kicker { font-size: 3cqi; }
-    .feat__by { padding-top: 3.6cqi; gap: 0.6cqi; }
-    .feat__by-name { font-size: 3.6cqi; }
-    .feat__by-meta { font-size: 3cqi; }
-    .feat__pull { font-size: 5.2cqi; margin: 3cqi 0; padding-left: 3.2cqi; }
-    .feat__drop { font-size: 13cqi; }
-    .feat__masth { font-size: 5cqi; }
-    .feat__folio { font-size: 3cqi; }
-    .feat__foot { font-size: 2.8cqi; }
-  }
+  /* ============ 03 · DICTIONARY PAGE ============ */
+  .dict { background: var(--paper); color: var(--ink); }
+  .dict__page { padding: 4.5cqi 5cqi 3cqi; max-width: 1080px; margin-inline: auto; container-type: inline-size; }
+  .dict__rh { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; border-bottom: 2px solid var(--ink); padding-bottom: 1cqi; font-feature-settings: 'tnum'; }
+  .dict__rh-w { font-size: clamp(11px, 1.6cqi, 17px); font-weight: 700; letter-spacing: 0.2em; }
+  .dict__rh-w--r { text-align: right; }
+  .dict__folio { font-size: clamp(11px, 1.6cqi, 17px); font-weight: 500; text-align: center; color: var(--ink-2); }
+  .dict__cols { columns: 1; column-gap: 4cqi; column-rule: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); margin-top: 2.6cqi; }
+  @container (min-width: 680px) { .dict__cols { columns: 2; } }
+  .dict__entry { break-inside: avoid; margin-bottom: 1.8cqi; }
+  .dict__entry p { font-family: var(--serif); font-size: clamp(13px, 1.75cqi, 18px); line-height: 1.56; margin: 0; color: var(--ink); text-align: justify; hyphens: auto; }
+  .dict__entry i, .dict__ety i, .dict__pron { font-family: var(--serif); font-style: italic; }
+  .dict__hw { font-family: var(--fam); font-weight: 800; font-size: 1.18em; letter-spacing: 0.01em; color: var(--ink); transition: font-variation-settings 0.35s var(--ease), color 0.35s var(--ease); font-variation-settings: 'wght' 800; }
+  .dict__sense { font-family: var(--fam); font-weight: 700; font-variation-settings: 'wght' 700; padding-left: 0.35em; transition: font-variation-settings 0.35s var(--ease); }
+  .dict__em { font-family: var(--fam); font-weight: 650; font-variation-settings: 'wght' 650; font-size: 0.97em; transition: font-variation-settings 0.35s var(--ease); }
+  .dict__ety { color: var(--ink-2); }
+  .dict__pron { color: var(--ink-2); }
+  /* the switch thrown: the related bold drains out */
+  .dict.is-flat .dict__hw, .dict.is-flat .dict__sense, .dict.is-flat .dict__em { font-family: var(--serif); font-weight: 400; font-variation-settings: 'wght' 400; color: var(--ink); }
+  .dict__margin { display: flex; flex-wrap: wrap; align-items: center; gap: 1.6cqi; border-top: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); margin-top: 1.2cqi; padding-top: 1.8cqi; }
+  .dict__m-h { font-size: clamp(10px, 1.3cqi, 13px); font-weight: 700; letter-spacing: 0.26em; color: var(--rust); }
+  .dict__toggle { display: inline-flex; align-items: center; gap: 0.55rem; font-family: var(--fam); font-size: clamp(11px, 1.4cqi, 14px); font-weight: 700; letter-spacing: 0.1em; color: var(--paper); background: var(--ink); border: none; padding: 0.45rem 0.9rem; cursor: pointer; }
+  .dict__pip { width: 9px; height: 9px; border-radius: 50%; background: #7dc77d; transition: background 0.2s; }
+  .dict.is-flat .dict__pip { background: #c2b69d; }
+  .dict__m-note { font-family: var(--serif); font-style: italic; font-size: clamp(11px, 1.5cqi, 15px); color: var(--ink-2); margin: 0; flex: 1 1 26ch; }
+  .dict__foot { font-family: var(--serif); font-style: italic; font-size: clamp(10px, 1.4cqi, 14px); color: var(--ink-2); text-align: center; border-top: 2px solid var(--ink); margin: 2cqi 0 0; padding-top: 1.2cqi; }
+  @media (prefers-reduced-motion: reduce) { .dict__hw, .dict__sense, .dict__em { transition: none; } }
 
-  /* ============ 02 · READER (real px, interactive) ============ */
-  .reader { position: absolute; inset: 0; display: flex; flex-direction: column; font-size: 14px; background: var(--bg); }
-  .reader__bar { display: flex; align-items: center; gap: 1rem; padding: 0.6rem 1.1rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-  .reader__logo { font-size: 20px; font-weight: 800; color: var(--fg); letter-spacing: -0.01em; font-variation-settings: 'wght' 760; }
-  .reader__tools { display: flex; align-items: center; gap: 0.7rem; margin-left: auto; flex-wrap: wrap; }
-  .reader__seg { display: inline-flex; align-items: center; gap: 0.5rem; }
-  .reader__seg-h { font-family: var(--ui); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
-  .reader__seg-v { font-family: var(--ui); font-style: normal; font-size: 11px; font-weight: 600; color: var(--accent); font-feature-settings: 'tnum'; min-width: 22px; text-align: right; }
-  .reader__range { -webkit-appearance: none; appearance: none; width: 92px; height: 3px; background: var(--line); border-radius: 3px; cursor: pointer; }
-  .reader__range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 15px; height: 15px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent); }
-  .reader__range::-moz-range-thumb { width: 15px; height: 15px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent); }
-  .reader__btn { font-family: var(--ui); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; color: var(--fg-3); padding: 0.34rem 0.7rem; border-radius: 100px; border: 1px solid var(--line); cursor: pointer; background: transparent; transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap; }
-  .reader__btn:hover { color: var(--fg); border-color: var(--fg-3); }
-  .reader__btn.is-on, .reader__btn[aria-pressed='true'] { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
-
-  .reader__body { flex: 1; min-height: 0; padding: 1.8rem clamp(1.2rem, 6cqi, 5rem); overflow: auto; --rsize: 16px; --rlead: 1.62; }
-  .reader__hd, .reader__flow { max-width: 78ch; margin-inline: auto; }
-  .reader__more { flex: none; padding: 1rem clamp(1.2rem, 5cqi, 3.4rem) 1.2rem; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 3%, var(--bg)); }
-  .reader__more-h { font-family: var(--ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
-  .reader__more-list { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
-  @container (min-width: 720px) { .reader__more-list { grid-template-columns: repeat(3, 1fr); gap: 1.4rem; } }
-  .reader__more-list li { font-size: 14px; line-height: 1.25; color: var(--fg-2); font-variation-settings: 'wght' 500; }
-  .reader__more-no { display: block; font-family: var(--ui); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.25rem; font-feature-settings: 'tnum'; }
-  .reader__body[data-textsize='dense'] { --rsize: 14px; --rlead: 1.5; }
-  .reader__flow { margin-top: 0.4rem; }
-  @container (min-width: 720px) {
-    .reader__flow { columns: 2; column-gap: 2.4rem; column-rule: 1px solid var(--line-soft); }
-    .reader__quote, .reader__end { break-inside: avoid-column; }
-  }
-  .reader__kicker { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
-  .reader__head { font-size: clamp(30px, 6cqi, 46px); line-height: 1.0; margin: 0.4rem 0 0.6rem; letter-spacing: -0.015em; color: var(--fg); font-variation-settings: 'wght' 800; }
-  .reader__byline { font-family: var(--ui); font-size: 12px; color: var(--fg-3); margin: 0 0 1.3rem; letter-spacing: 0.02em; }
-  .reader__byline .reader__fig { font-feature-settings: 'tnum'; }
-  /* body face is swappable: serif (Spectral) or the slab itself */
-  .reader__body[data-bodyface='serif'] p { font-family: var(--serif); }
-  .reader__body[data-bodyface='slab'] p { font-family: var(--fam); font-variation-settings: 'wght' 420; }
-  .reader__body p { font-size: var(--rsize); line-height: var(--rlead); color: var(--fg); margin: 0 0 0.95em; transition: font-size 0.25s var(--ease), line-height 0.25s var(--ease); }
-  .reader__lede { font-size: calc(var(--rsize) + 1px); }
-  .reader__drop { float: left; font-family: var(--fam); font-weight: 800; font-size: 3.1em; line-height: 0.66; padding: 0.04em 0.12em 0 0; color: var(--accent); }
-  .reader__quote { font-style: italic; font-weight: 500; font-size: calc(var(--rsize) + 4px); line-height: 1.3; color: var(--fg); border-left: 3px solid var(--accent); padding-left: 0.9rem; margin: 1.3rem 0; }
-  .reader__end { display: flex; align-items: baseline; gap: 0.8rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }
-  .reader__end-mark { font-size: 16px; color: var(--accent); }
-  .reader__bio { font-family: var(--ui); font-size: 12px; line-height: 1.5; color: var(--fg-3); margin: 0; }
-  .reader__bio b { color: var(--fg-2); font-weight: 600; }
-
-  @container (max-width: 480px) {
-    .reader__tools { gap: 0.5rem; }
-    .reader__range { width: 64px; }
-    .reader__btn { font-size: 10px; padding: 0.3rem 0.55rem; }
-  }
-
-  /* ============ 03 · FORGE POSTER (kinetic weight) ============ */
-  .forge { background: var(--bg); color: var(--fg); padding: 4cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden; }
-  .forge__top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; font-size: 2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi; }
-  .forge__top > :last-child { text-align: right; }
-  .forge__mark { letter-spacing: 0.22em; color: var(--accent); font-weight: 700; }
-  .forge__stack { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 0.4cqi; padding: 2cqi 0; min-height: 0; }
-  .forge__sub { text-align: center; text-transform: uppercase; }
-  .forge__sub--thin { font-size: 3.4cqi; font-weight: 400; letter-spacing: 0.34em; color: var(--fg-2); line-height: 1; padding: 1cqi 0; font-variation-settings: 'wght' 440; }
-  .forge__word { font-size: 27cqi; line-height: 0.84; text-align: center; text-transform: uppercase; letter-spacing: -0.01em; font-variation-settings: 'wght' 640; display: block; }
-  .forge__word--accent { color: var(--accent); }
-  .forge__word--accent { font-variation-settings: 'wght' 820; }
-  /* optically equalize the two words to a shared cap-width */
-  .forge__fit { display: inline-block; transform: scaleX(var(--fit, 1)); transform-origin: center; will-change: transform; }
-  .forge__foot { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 1.6cqi; font-size: 2.2cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); }
-  .forge__tag { font-weight: 700; }
-  .forge__rail { font-feature-settings: 'tnum'; color: var(--fg-3); letter-spacing: 0.16em; }
-
+  /* ============ 04 · THE SALEROOM (real px, theme tokens) ============ */
+  .sale { background: var(--bg); }
+  .saleui { display: flex; flex-direction: column; font-size: 14px; }
+  .sale__bar { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 1.2rem; padding: 0.7rem 1.2rem; border-bottom: 1px solid var(--line); }
+  .sale__logo { font-size: 19px; font-weight: 800; font-variation-settings: 'wght' 800; letter-spacing: -0.005em; color: var(--fg); }
+  .sale__sale { font-family: var(--ui); font-size: 11px; letter-spacing: 0.06em; color: var(--fg-3); }
+  .sale__sale b { color: var(--accent); font-weight: 600; font-feature-settings: 'tnum'; }
+  .sale__main { display: grid; grid-template-columns: 1fr; }
+  @container (min-width: 820px) { .sale__main { grid-template-columns: 1.5fr 1fr; } }
+  .sale__live { padding: 1.3rem 1.4rem 1.4rem; min-width: 0; }
+  .sale__lothead { display: flex; justify-content: space-between; align-items: center; }
+  .sale__lotno { font-family: var(--ui); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--fg-3); }
+  .sale__lotno b { color: var(--accent); font-feature-settings: 'tnum'; }
+  .sale__watch { font-family: var(--ui); font-size: 11px; color: var(--fg-3); background: transparent; border: 1px solid var(--line); border-radius: 100px; padding: 0.28rem 0.7rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+  .sale__watch:hover, .sale__watch[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); }
+  .sale__title { font-size: 26px; line-height: 1.06; font-variation-settings: 'wght' 750; letter-spacing: -0.01em; color: var(--fg); margin: 0.5rem 0 0.2rem; }
+  .sale__sub { font-style: italic; font-size: 15px; color: var(--fg-2); margin: 0 0 0.5rem; }
+  .sale__est { font-family: var(--ui); font-size: 12px; color: var(--fg-3); margin: 0 0 1rem; }
+  .sale__est span { font-feature-settings: 'tnum'; color: var(--fg-2); }
+  .sale__est i { font-style: italic; }
+  .sale__bidrow { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.8rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0.9rem 0; }
+  .sale__cur-h { display: block; font-family: var(--ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--fg-3); }
+  .sale__cur-h b { color: var(--fg-2); font-feature-settings: 'tnum'; }
+  .sale__cur-v { display: block; font-size: 38px; line-height: 1.05; font-variation-settings: 'wght' 800; font-feature-settings: 'tnum'; color: var(--fg); margin-top: 0.15rem; }
+  .sale__lead[hidden] { display: none; }
+  .sale__lead { display: inline-block; font-family: var(--ui); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent-contrast); background: var(--accent); padding: 0.2rem 0.5rem; border-radius: 3px; margin-top: 0.4rem; }
+  .sale__bid { font-family: var(--fam); font-size: 15px; font-weight: 700; font-variation-settings: 'wght' 700; color: var(--accent-contrast); background: var(--accent); border: none; padding: 0.7rem 1.3rem; cursor: pointer; transition: transform 0.12s var(--ease-out); }
+  .sale__bid b { font-feature-settings: 'tnum'; font-weight: 800; }
+  .sale__bid:hover { transform: translateY(-1px); }
+  .sale__bid:active { transform: translateY(0); }
+  .sale__hist { margin-top: 1rem; }
+  .sale__hist-h { font-family: var(--ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--fg-3); }
+  .sale__hist-list { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+  .sale__hist-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 0.9rem; align-items: baseline; padding: 0.42rem 0; border-bottom: 1px solid var(--line-soft); }
+  .sale__hist-list b { font-size: 14px; font-weight: 700; font-feature-settings: 'tnum'; color: var(--fg); min-width: 64px; }
+  .sale__hist-list span { font-family: var(--ui); font-size: 12px; color: var(--fg-2); }
+  .sale__hist-list i { font-family: var(--ui); font-style: normal; font-size: 11px; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .sale__lots { border-top: 1px solid var(--line); padding: 1.1rem 1.4rem 1.3rem; background: color-mix(in srgb, var(--fg) 3%, var(--bg)); min-width: 0; }
+  @container (min-width: 820px) { .sale__lots { border-top: none; border-left: 1px solid var(--line); } }
+  .sale__lots-h { font-family: var(--ui); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--fg-3); }
+  .sale__lotlist { display: flex; flex-direction: column; margin-top: 0.6rem; }
+  .sale__lot { display: grid; grid-template-columns: auto 1fr auto; gap: 0.8rem; align-items: baseline; text-align: left; padding: 0.6rem 0.55rem; background: transparent; border: none; border-bottom: 1px solid var(--line-soft); cursor: pointer; transition: background 0.15s; min-width: 0; }
+  .sale__lot:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .sale__lot.is-on { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .sale__lot-no { font-family: var(--ui); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--accent); font-feature-settings: 'tnum'; white-space: nowrap; }
+  .sale__lot-t { font-size: 13.5px; font-variation-settings: 'wght' 550; color: var(--fg); line-height: 1.25; min-width: 0; }
+  .sale__lot-bid { font-size: 13px; font-weight: 700; font-feature-settings: 'tnum'; color: var(--fg-2); white-space: nowrap; }
   @media (prefers-reduced-motion: no-preference) {
-    .forge__word[data-pump] { animation: forge-pump 4.5s var(--ease-out, ease-in-out) infinite alternate; animation-delay: var(--d, 0s); }
-    @keyframes forge-pump {
-      from { font-variation-settings: 'wght' 420; letter-spacing: 0.02em; }
-      to   { font-variation-settings: 'wght' 900; letter-spacing: -0.02em; }
-    }
-  }
-  /* static / first-paint state reads mid-pump, not a flat frozen frame */
-  .forge__word[data-pump] { font-variation-settings: 'wght' 600; letter-spacing: 0; }
-  .forge__word--accent[data-pump] { font-variation-settings: 'wght' 840; letter-spacing: -0.012em; }
-
-  @container (max-width: 520px) {
-    .forge__word { font-size: 34cqi; }
-    .forge__sub--thin { font-size: 4cqi; letter-spacing: 0.24em; }
-    .forge__top, .forge__foot { font-size: 2.8cqi; }
+    .sale__cur-v.is-tick { animation: sale-tick 0.4s var(--ease-out); }
+    @keyframes sale-tick { 0% { transform: translateY(5px); opacity: 0.4; } 100% { transform: none; opacity: 1; } }
   }
 
-  /* ============ 04 · COFFEE TIN LABEL (figures + frac + interactive) ============ */
-  .tin { background: var(--bg); color: var(--fg); display: flex; flex-direction: column; padding: 5cqi 5cqi 4cqi; overflow: hidden; border: 1cqi solid var(--fg); }
-  .tin__top { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.4cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); font-feature-settings: 'tnum'; }
-  .tin__net i, .tin__est { font-style: normal; }
-  .tin__net i { color: var(--accent); font-weight: 700; }
-  .tin__brandblock { text-align: center; margin: 3cqi 0 1cqi; }
-  .tin__pre { font-size: 2.4cqi; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
-  .tin__brand { font-size: 18cqi; font-weight: 800; line-height: 0.84; letter-spacing: -0.01em; margin: 1.4cqi 0; font-variation-settings: 'wght' 840; }
-  .tin__roast { font-size: 2.6cqi; font-style: italic; font-weight: 500; letter-spacing: 0.04em; color: var(--accent); }
-  .tin__roast i { font-style: normal; font-feature-settings: 'tnum'; }
-  .tin__notes { font-family: var(--serif); font-size: 2.6cqi; line-height: 1.4; text-align: center; color: var(--fg-2); margin: 3cqi auto 0; max-width: 80%; }
-  .tin__spec { display: flex; flex-direction: column; gap: 0; margin: 3cqi 0; border-top: 1px solid var(--line); }
-  .tin__row { display: flex; justify-content: space-between; align-items: baseline; padding: 1.6cqi 0; border-bottom: 1px solid var(--line); font-size: 2.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
-  .tin__row b { font-weight: 700; color: var(--fg); letter-spacing: 0.04em; }
-  .tin__row b i { font-style: normal; font-feature-settings: 'tnum'; }
-  /* Besley has no `frac` feature — build the fraction from styled lining figures */
-  .tin__row [data-ratio] { display: inline-flex; align-items: baseline; font-feature-settings: 'tnum'; letter-spacing: 0; }
-  .tin__num, .tin__den { font-style: normal; font-size: 0.72em; font-weight: 700; font-feature-settings: 'tnum'; line-height: 1; }
-  .tin__num { vertical-align: 0.34em; }
-  .tin__den { vertical-align: -0.12em; }
-  .tin__sol { font-size: 1.15em; margin: 0 -0.05em; color: var(--fg-2); font-weight: 400; }
-  .tin__strength { display: flex; align-items: center; gap: 2cqi; margin: 2.4cqi 0 0; }
-  .tin__strength-h { font-size: 2.2cqi; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
-  .tin__meter { display: inline-flex; gap: 1cqi; flex: 1; }
-  .tin__meter i { flex: 1; height: 1.6cqi; background: var(--line); border-radius: 1cqi; transition: background 0.2s var(--ease); }
-  .tin__meter i.is-on { background: var(--accent); }
-  .tin__strength-v { font-size: 2.4cqi; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); min-width: 16cqi; text-align: right; }
-  .tin__control { display: flex; align-items: center; gap: 2cqi; margin-top: 3.2cqi; }
-  .tin__control-h { font-size: 2.2cqi; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
-  .tin__seg { display: inline-flex; border: 1px solid var(--line); border-radius: 100px; overflow: hidden; flex: 1; }
-  .tin__segbtn { flex: 1; font-size: 2.2cqi; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 1.2cqi 1cqi; color: var(--fg-3); cursor: pointer; background: transparent; transition: color 0.15s, background 0.15s; }
-  .tin__segbtn + .tin__segbtn { border-left: 1px solid var(--line); }
-  .tin__segbtn:hover { color: var(--fg); }
-  .tin__segbtn.is-on { background: var(--accent); color: var(--accent-contrast); }
-  .tin__foot { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; padding-top: 4cqi; }
-  .tin__barcode { height: 7cqi; width: 30cqi; background: repeating-linear-gradient(90deg, var(--fg) 0 0.55cqi, transparent 0.55cqi 1.4cqi); opacity: 0.8; }
-  .tin__price { font-size: 7cqi; font-weight: 800; color: var(--fg); font-feature-settings: 'tnum'; line-height: 1; }
-  .tin__price i { font-style: normal; }
-  .tin__price sup { font-size: 0.45em; font-weight: 700; vertical-align: super; }
+  /* ============ 05 · THE GOING RATE (bounty instrument) ============ */
+  .bounty { background: linear-gradient(185deg, var(--paper-2) 0%, var(--paper) 55%, var(--paper-2) 100%); color: var(--ink); }
+  .bounty__sheet { max-width: 1100px; margin-inline: auto; text-align: center; padding: 4.5cqi 6cqi 3cqi; container-type: inline-size; }
+  .bounty__top { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 1.1cqi 0; margin: 0; display: grid; }
+  .bounty__topline { grid-area: 1 / 1; font-size: clamp(10px, 1.6cqi, 18px); font-weight: 700; letter-spacing: 0.3em; color: var(--rust); opacity: 0; transition: opacity 0.3s var(--ease); }
+  [data-tier='1'] [data-top='1'], [data-tier='2'] [data-top='2'], [data-tier='3'] [data-top='3'],
+  [data-tier='4'] [data-top='4'], [data-tier='5'] [data-top='5'] { opacity: 1; }
+  [data-tier='5'] .bounty__topline[data-top='5'] { color: var(--ink); letter-spacing: 0.42em; font-variation-settings: 'wght' 900; }
+  .bounty__word { font-size: 15cqi; line-height: 0.95; margin: 1.6cqi 0 0; color: var(--ink); font-variation-settings: 'wght' 640; letter-spacing: -0.012em; }
+  .bounty__sum { font-size: 8.2cqi; line-height: 1; margin: 0.6cqi 0 0; color: var(--rust); font-feature-settings: 'tnum'; font-variation-settings: 'wght' 640; }
+  @media (prefers-reduced-motion: no-preference) {
+    .bounty__word, .bounty__sum { transition: font-variation-settings 0.45s var(--ease), letter-spacing 0.45s var(--ease); }
+  }
+  .bounty__for { display: grid; margin: 1.8cqi auto 0; max-width: 64ch; min-height: 2.6em; align-items: start; }
+  .bounty__crime { grid-area: 1 / 1; font-style: italic; font-size: clamp(13px, 2.2cqi, 24px); line-height: 1.3; color: var(--ink-2); opacity: 0; transition: opacity 0.3s var(--ease); }
+  [data-tier='1'] [data-crime='1'], [data-tier='2'] [data-crime='2'], [data-tier='3'] [data-crime='3'],
+  [data-tier='4'] [data-crime='4'], [data-tier='5'] [data-crime='5'] { opacity: 1; }
+  .bounty__rates { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.2cqi 2cqi; border-top: 1px solid var(--ink); margin-top: 2.6cqi; padding-top: 1.8cqi; }
+  .bounty__rates-h { font-size: clamp(9px, 1.2cqi, 13px); font-weight: 700; letter-spacing: 0.26em; color: var(--ink-2); }
+  .bounty__btns { display: inline-flex; border: 1.5px solid var(--ink); }
+  .bounty__rate { font-family: var(--fam); font-size: clamp(11px, 1.6cqi, 17px); font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: 0.04em; color: var(--ink); background: transparent; border: none; padding: 0.55em 1em; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .bounty__rate + .bounty__rate { border-left: 1px solid var(--ink); }
+  .bounty__rate:hover { background: color-mix(in srgb, var(--ink) 10%, transparent); }
+  .bounty__rate.is-on { background: var(--ink); color: var(--paper); }
+  .bounty__axis { font-size: clamp(9px, 1.2cqi, 13px); font-weight: 500; letter-spacing: 0.18em; color: var(--rust); font-feature-settings: 'tnum'; }
+  .bounty__imprint { font-size: clamp(8px, 1.1cqi, 12px); font-weight: 500; letter-spacing: 0.16em; color: var(--ink-2); border-bottom: 3px solid var(--ink); margin: 2.4cqi 0 0; padding-bottom: 1.4cqi; }
 </style>
