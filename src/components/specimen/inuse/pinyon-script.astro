@@ -3,925 +3,839 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
-// Companion serif for ALL body/supporting text — never set supporting copy in Pinyon Script
+// Companion roman for ALL supporting copy — Pinyon is display-only, mixed case, short phrases.
 const serif = "'EB Garamond Variable', 'EB Garamond', 'Spectral', Georgia, serif";
 
-// Scene 04 — live monogram generator initial pairs
-const monoSamples = [
-  { a: 'E', b: 'M', name: 'Eleanor & Miles' },
-  { a: 'C', b: 'J', name: 'Charlotte & James' },
-  { a: 'A', b: 'R', name: 'Amelia & Robert' },
-  { a: 'V', b: 'L', name: 'Vivienne & Luca' },
+// Act 02 — cuvée range for the champagne house
+const cuvees = [
+  { key: 'brut',  tier: 'Grande Réserve',   name: 'Brut Réserve',    vintage: 'Sans Année',      detail: 'Pinot Noir · Chardonnay · Meunier', note: 'Dosage 8 g/ℓ — dégorgé à la main' },
+  { key: 'blanc', tier: 'Côte des Blancs',  name: 'Blanc de Blancs', vintage: 'Millésime 2016',  detail: 'Chardonnay Grand Cru · Avize',      note: 'Huit années sur lattes' },
+  { key: 'jos',   tier: 'Cuvée de Prestige', name: 'Joséphine',      vintage: 'Millésime 1996',  detail: 'Vieilles Vignes · Verzenay',        note: 'Oenothèque de la Maison — dégorgement 2024' },
 ];
+
+const RAILS = 26;
+
+// Act 01 — the off-hand striking: the actual "command of hand" exercise of the
+// English roundhand masters — a continuous whole-arm oval drill, entered from the
+// headline's final d and exited in a long hairline sweep. The centreline is
+// pressure-weighted at build time: downstrokes swell as the split nib opens,
+// upstrokes ride a single hair — the burin's own swelling line.
+const STRIKE = (() => {
+  const N = 360, cy = 165, shear = 0.35;
+  const q  = (a: number, b: number, c: number, u: number) =>
+    (1 - u) * (1 - u) * a + 2 * (1 - u) * u * b + u * u * c;
+  const cb = (a: number, b: number, c: number, d: number, u: number) => {
+    const v = 1 - u;
+    return v * v * v * a + 3 * v * v * u * b + 3 * v * u * u * c + u * u * u * d;
+  };
+  const pts: Array<[number, number]> = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    let x: number, y: number;
+    if (t < 0.14) {
+      // entry hairline — leaves the exit stroke of the d in "Hand", sweeps
+      // back left over the striking before the pen dives in
+      const u = t / 0.14;
+      x = cb(640, 500, 300, 232, u);
+      y = cb(22, -14, 2, 45, u);
+    } else if (t < 0.86) {
+      // the striking — 3¼ diminishing ovals on the slant, travelling right
+      const u = (t - 0.14) / 0.72;
+      const th = -Math.PI / 2 - Math.PI * 6.5 * u;
+      const k = 1 - 0.55 * u;
+      y = cy + 120 * k * Math.sin(th);
+      x = 190 + 370 * u + 120 * k * 0.66 * Math.cos(th) + shear * (cy - y);
+    } else {
+      // exit — the long flat sweep off the plate
+      const u = (t - 0.86) / 0.14;
+      x = cb(524, 560, 700, 818, u);
+      y = cb(165, 288, 52, 108, u);
+    }
+    pts.push([x, y]);
+  }
+  const segs: Array<{ d: string; w: string; t: string }> = [];
+  for (let i = 0; i < N; i++) {
+    const [x1, y1] = pts[i], [x2, y2] = pts[i + 1];
+    const len = Math.hypot(x2 - x1, y2 - y1) || 1;
+    const down = Math.max(0, (y2 - y1) / len);      // pressure only on downstrokes
+    const t = i / N;
+    const env = Math.min(1, t * 9, (1 - t) * 7);    // taper entry & exit to hairline
+    const w = 1.15 + 6.2 * Math.pow(down, 1.3) * env;
+    segs.push({
+      d: `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)}`,
+      w: w.toFixed(2),
+      t: t.toFixed(4),
+    });
+  }
+  return segs;
+})();
 ---
-<div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
+<div class="iu ps" style={`--fam:${fam}; --serif:${serif}`}>
 
-  <!-- 01 — Wedding invitation suite -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap">
-      <span class="index-num">01</span>
-      <span class="label">Invitation — wedding suite</span>
-    </figcaption>
-    <div class="iu__scene ps-scene-portrait" style="container-type:inline-size">
-      <div class="ps-invite" data-invite>
-        <div class="ps-invite__card">
-          <!-- decorative border -->
-          <svg class="ps-invite__border" viewBox="0 0 360 480" aria-hidden="true" preserveAspectRatio="none">
-            <rect x="10" y="10" width="340" height="460" rx="2" fill="none" stroke="currentColor" stroke-width="0.75" class="ps-invite__border-outer"/>
-            <rect x="17" y="17" width="326" height="446" rx="1" fill="none" stroke="currentColor" stroke-width="0.35" class="ps-invite__border-inner"/>
-            <!-- corner flourishes -->
-            <g class="ps-invite__corners" fill="none" stroke="currentColor" stroke-width="0.6">
-              <path d="M 10 30 Q 10 10 30 10"/>
-              <path d="M 330 10 Q 350 10 350 30"/>
-              <path d="M 350 450 Q 350 470 330 470"/>
-              <path d="M 30 470 Q 10 470 10 450"/>
-            </g>
-          </svg>
+  <!-- ════════ 01 · ILLUSTRATION & COMMERCIAL — the engraver's broadside ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <div class="iu__scene ps-plate" data-plate>
+      <span class="ps-plate__mark" aria-hidden="true"></span>
+      <div class="ps-plate__sheet">
+        <p class="ps-plate__series">The Universal Penman &nbsp;·&nbsp; <span class="ps-plate__rubric">Plate XLVII</span></p>
 
-          <div class="ps-invite__inner">
-            <p class="ps-invite__together" style={`font-family:${serif}`}>Together with their families</p>
+        <h3 class="ps-plate__hero ps-script">
+          <span class="ps-plate__hero-l1"><span class="ps-plate__kernC">C</span>ommand</span>
+          <span class="ps-plate__hero-l2">of Hand</span>
+        </h3>
 
-            <div class="ps-invite__names">
-              <span class="ps-invite__name1">Eleanor</span>
-              <div class="ps-invite__amp-row" aria-label="and">
-                <span class="ps-invite__rule" aria-hidden="true"></span>
-                <span class="ps-invite__amp">&</span>
-                <span class="ps-invite__rule" aria-hidden="true"></span>
-              </div>
-              <span class="ps-invite__name2">Miles</span>
-            </div>
-
-            <p class="ps-invite__request" style={`font-family:${serif}`}>request the pleasure of your company</p>
-            <p class="ps-invite__request" style={`font-family:${serif}`}>at the celebration of their marriage</p>
-
-            <div class="ps-invite__divider" aria-hidden="true">
-              <span></span><span class="ps-invite__diamond">◆</span><span></span>
-            </div>
-
-            <p class="ps-invite__detail" style={`font-family:${serif}`}>Saturday the fourteenth of June</p>
-            <p class="ps-invite__detail" style={`font-family:${serif}`}>Two thousand and twenty-five</p>
-            <p class="ps-invite__detail ps-invite__detail--venue" style={`font-family:${serif}`}>Thornfield Hall · North Yorkshire</p>
-
-            <p class="ps-invite__rsvp" style={`font-family:${serif}`}>R.S.V.P. by the first of May</p>
-          </div>
-        </div>
-
-        <!-- envelope flap detail -->
-        <div class="ps-invite__env" aria-hidden="true">
-          <svg viewBox="0 0 120 40" class="ps-invite__env-svg">
-            <path d="M 0 40 L 60 8 L 120 40" fill="none" stroke="currentColor" stroke-width="0.7"/>
-            <path d="M 0 40 L 60 24 L 120 40" fill="none" stroke="currentColor" stroke-width="0.35" opacity="0.5"/>
-          </svg>
-          <span class="ps-invite__wax" aria-label="wax seal">E &amp; M</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label" style={`font-family:${serif}`}>The names are set in Pinyon Script at display scale; all supporting copy uses EB Garamond. Hover the invitation — the wax seal blooms.</p>
-  </figure>
-
-  <!-- 02 — Luxury patisserie brand identity -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap">
-      <span class="index-num">02</span>
-      <span class="label">Brand — a luxury patisserie identity</span>
-    </figcaption>
-    <div class="iu__scene ps-scene-wide" style="container-type:inline-size">
-      <div class="ps-patisserie" data-patisserie>
-        <!-- main identity panel -->
-        <div class="ps-pat__wordmark">
-          <span class="ps-pat__estd" style={`font-family:${serif}`}>Établie en 1887 · Paris</span>
-          <div class="ps-pat__rule" aria-hidden="true"></div>
-          <h3 class="ps-pat__name">Maison Vernet</h3>
-          <div class="ps-pat__rule" aria-hidden="true"></div>
-          <span class="ps-pat__sub" style={`font-family:${serif}`}>Pâtisserie Fine · Confiserie · Chocolat</span>
-        </div>
-
-        <!-- product labels row -->
-        <div class="ps-pat__labels">
-          <div class="ps-pat__label">
-            <span class="ps-pat__label-tier" style={`font-family:${serif}`}>Collection Printemps</span>
-            <span class="ps-pat__label-name">Madeleine</span>
-            <span class="ps-pat__label-note" style={`font-family:${serif}`}>Citron · Fleur d'Oranger</span>
-          </div>
-          <div class="ps-pat__label ps-pat__label--featured">
-            <span class="ps-pat__label-tier" style={`font-family:${serif}`}>Pièce Maîtresse</span>
-            <span class="ps-pat__label-name">Saint-Honoré</span>
-            <span class="ps-pat__label-note" style={`font-family:${serif}`}>Crème Diplomate · Caramel</span>
-          </div>
-          <div class="ps-pat__label">
-            <span class="ps-pat__label-tier" style={`font-family:${serif}`}>Chocolat Grand Cru</span>
-            <span class="ps-pat__label-name">Guanaja</span>
-            <span class="ps-pat__label-note" style={`font-family:${serif}`}>70% · Cardamome · Sel</span>
-          </div>
-        </div>
-
-        <!-- ribbon band at bottom -->
-        <div class="ps-pat__ribbon" aria-hidden="true">
-          <span style={`font-family:${serif}`}>Fait à la main · Ingrédients d'exception · Paris, France</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label" style={`font-family:${serif}`}>Product names in Pinyon Script at large display size; all supporting text in EB Garamond. Hover a label — it lifts and the gold rule extends.</p>
-  </figure>
-
-  <!-- 03 — Engraved certificate / diploma -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap">
-      <span class="index-num">03</span>
-      <span class="label">Certificate — engraved diploma</span>
-    </figcaption>
-    <div class="iu__scene ps-scene-landscape" style="container-type:inline-size">
-      <div class="ps-cert" data-cert>
-        <!-- outer border with corner ornaments -->
-        <svg class="ps-cert__border" viewBox="0 0 640 440" preserveAspectRatio="none" aria-hidden="true">
-          <!-- double rule border -->
-          <rect x="14" y="14" width="612" height="412" fill="none" stroke="currentColor" stroke-width="1" class="ps-cert__b1"/>
-          <rect x="22" y="22" width="596" height="396" fill="none" stroke="currentColor" stroke-width="0.4" class="ps-cert__b2"/>
-          <!-- corner ornaments -->
-          <g class="ps-cert__ornaments" stroke="currentColor" fill="none">
-            <!-- TL -->
-            <path d="M 14 44 L 14 14 L 44 14" stroke-width="2"/>
-            <circle cx="29" cy="29" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
-            <!-- TR -->
-            <path d="M 596 14 L 626 14 L 626 44" stroke-width="2"/>
-            <circle cx="611" cy="29" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
-            <!-- BR -->
-            <path d="M 626 396 L 626 426 L 596 426" stroke-width="2"/>
-            <circle cx="611" cy="411" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
-            <!-- BL -->
-            <path d="M 44 426 L 14 426 L 14 396" stroke-width="2"/>
-            <circle cx="29" cy="411" r="5" fill="currentColor" stroke="none" class="ps-cert__corner-dot"/>
-          </g>
-          <!-- central divider rules -->
-          <line x1="80" y1="220" x2="268" y2="220" stroke="currentColor" stroke-width="0.6" class="ps-cert__rule-l"/>
-          <line x1="372" y1="220" x2="560" y2="220" stroke="currentColor" stroke-width="0.6" class="ps-cert__rule-r"/>
-          <!-- central diamond -->
-          <polygon points="320,210 330,220 320,230 310,220" fill="currentColor" class="ps-cert__diamond"/>
+        <svg class="ps-plate__flourish" viewBox="0 0 820 320" aria-hidden="true">
+          {STRIKE.map((s) => (
+            <path data-seg data-reveal d={s.d} style={`stroke-width:${s.w};--d:calc(${s.t} * 2s + 0.2s)`} />
+          ))}
         </svg>
 
-        <div class="ps-cert__body">
-          <p class="ps-cert__institution" style={`font-family:${serif}`}>The Royal Academy of Letters &amp; Arts</p>
-          <p class="ps-cert__presents" style={`font-family:${serif}`}>This certifies with honour that</p>
-          <h2 class="ps-cert__recipient">Catherine Ashworth</h2>
-          <p class="ps-cert__presents" style={`font-family:${serif}`}>has completed with distinction the full course of study in</p>
-          <p class="ps-cert__field" style={`font-family:${serif}`}>Illuminated Manuscript &amp; Calligraphic Arts</p>
-          <p class="ps-cert__presents" style={`font-family:${serif}`}>and is hereby awarded the degree of</p>
-          <span class="ps-cert__degree">Master of Fine Arts</span>
+        <p class="ps-plate__sub ps-script">or, the Art of Writing made Easy &amp; Ornamental</p>
 
-          <div class="ps-cert__signatures" style={`font-family:${serif}`}>
-            <div class="ps-cert__sig">
-              <span class="ps-cert__sig-name">Edmund Carrington</span>
-              <span class="ps-cert__sig-rule" aria-hidden="true"></span>
-              <span class="ps-cert__sig-title">Dean of the Faculty</span>
-            </div>
-            <div class="ps-cert__seal" aria-label="seal">
-              <span class="ps-cert__seal-inner">R.A.</span>
-            </div>
-            <div class="ps-cert__sig ps-cert__sig--right">
-              <span class="ps-cert__sig-name">Margaret Frome</span>
-              <span class="ps-cert__sig-rule" aria-hidden="true"></span>
-              <span class="ps-cert__sig-title">Registrar</span>
-            </div>
-          </div>
+        <p class="ps-plate__line">Exemplified in all the masterly performances of the pen, for the use of the youth of Great Britain</p>
 
-          <p class="ps-cert__date" style={`font-family:${serif}`}>London, the fourteenth day of June, in the year two thousand and twenty-five</p>
+        <div class="ps-plate__imprint">
+          <span class="ps-plate__credit">G. Bickham <em>sculpsit.</em></span>
+          <span class="ps-plate__pub">London: Printed for the Author, &amp; sold at the Crown in Bedford-Bury. MDCCXLI.</span>
+          <span class="ps-plate__price">Price 1<em>s.</em></span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label" style={`font-family:${serif}`}>Recipient name and degree title in Pinyon Script; institutional text in EB Garamond, as an engraver would compose it. Hover to see the border draw in.</p>
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Illustration &amp; commercial — an engraver's broadside, after George Bickham's <em>Universal Penman</em>, London 1741</span>
+    </figcaption>
   </figure>
 
-  <!-- 04 — INTERACTIVE: Live Monogram Generator -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap">
-      <span class="index-num">04</span>
-      <span class="label">Interactive — live monogram generator</span>
-    </figcaption>
-    <div class="iu__scene ps-scene-monogram" style="container-type:inline-size">
-      <div class="ps-mono" data-mono>
-        <div class="ps-mono__left">
-          <h3 class="ps-mono__heading" style={`font-family:${serif}`}>Monogram</h3>
-          <p class="ps-mono__sub" style={`font-family:${serif}`}>Enter two initials to compose a formal engraved monogram</p>
+  <!-- ════════ 02 · BRANDING & IDENTITY — the champagne house ════════ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-cuvee='jos']">
+    <div class="iu__scene ps-maison" data-maison>
+      <div class="ps-maison__grid">
 
-          <div class="ps-mono__inputs">
-            <label class="ps-mono__label" style={`font-family:${serif}`}>
-              <span>Initial A</span>
-              <input
-                class="ps-mono__input"
-                type="text"
-                maxlength="1"
-                placeholder="E"
-                data-mono-a
-                aria-label="First initial"
-                style={`font-family:${fam}`}
-              />
-            </label>
-            <span class="ps-mono__and" aria-hidden="true">&amp;</span>
-            <label class="ps-mono__label" style={`font-family:${serif}`}>
-              <span>Initial B</span>
-              <input
-                class="ps-mono__input"
-                type="text"
-                maxlength="1"
-                placeholder="M"
-                data-mono-b
-                aria-label="Second initial"
-                style={`font-family:${fam}`}
-              />
-            </label>
-          </div>
+        <div class="ps-maison__id">
+          <span class="ps-maison__kicker">Champagne</span>
+          <h3 class="ps-maison__mark ps-script">Veuve Aubert</h3>
+          <span class="ps-maison__fils ps-script">&amp; Fils</span>
+          <span class="ps-maison__rule" aria-hidden="true"></span>
+          <p class="ps-maison__since">Maison fondée à Reims en 1838 — négociant-manipulant, caves de la Montagne de Reims</p>
 
-          <p class="ps-mono__nametext" style={`font-family:${serif}`}>Name</p>
-          <input
-            class="ps-mono__nameinput"
-            type="text"
-            placeholder="Eleanor &amp; Miles"
-            data-mono-name
-            aria-label="Couple's names"
-            style={`font-family:${serif}`}
-          />
-
-          <div class="ps-mono__samples" style={`font-family:${serif}`}>
-            {monoSamples.map((s) => (
-              <button class="ps-mono__sample" data-sample-a={s.a} data-sample-b={s.b} data-sample-name={s.name}>
-                <span class="ps-mono__sample-mono" style={`font-family:${fam}`}>{s.a}{s.b}</span>
-                <span class="ps-mono__sample-name">{s.name}</span>
+          <div class="ps-maison__tabs" role="group" aria-label="Choose a cuvée">
+            {cuvees.map((c, i) => (
+              <button class={`ps-maison__tab${i === 0 ? ' is-on' : ''}`} data-cuvee={c.key}
+                data-tier={c.tier} data-name={c.name} data-vintage={c.vintage} data-detail={c.detail} data-note={c.note}>
+                {c.name}
               </button>
             ))}
           </div>
         </div>
 
-        <div class="ps-mono__right">
-          <div class="ps-mono__output" data-mono-output aria-live="polite">
-            <!-- SVG monogram, redrawn by JS -->
-            <svg class="ps-mono__svg" viewBox="0 0 400 420" data-mono-svg role="img" aria-label="Monogram">
-              <!-- decorative circular frame -->
-              <circle class="ps-mono__frame" cx="200" cy="195" r="162"/>
-              <circle class="ps-mono__frame-inner" cx="200" cy="195" r="150"/>
-              <!-- the two initials, slightly overlapping at centre -->
-              <text class="ps-mono__letter ps-mono__letter-a" data-mono-letter-a
-                x="148" y="236" text-anchor="middle">E</text>
-              <text class="ps-mono__letter ps-mono__letter-b" data-mono-letter-b
-                x="256" y="236" text-anchor="middle">M</text>
-              <!-- horizontal rules flanking a central diamond -->
-              <line class="ps-mono__hr" x1="44" y1="328" x2="180" y2="328"/>
-              <polygon class="ps-mono__diamond" points="200,319 210,328 200,337 190,328"/>
-              <line class="ps-mono__hr" x1="220" y1="328" x2="356" y2="328"/>
-              <!-- name beneath -->
-              <text class="ps-mono__namesvg" data-mono-namesvg
-                x="200" y="364" text-anchor="middle">Eleanor &amp; Miles</text>
-            </svg>
+        <div class="ps-maison__proof">
+          <div class="ps-maison__label" data-label>
+            <span class="ps-maison__sheen" aria-hidden="true"></span>
+            <span class="ps-maison__keyline" aria-hidden="true"></span>
+            <span class="ps-label__tier" data-f="tier">{cuvees[0].tier}</span>
+            <span class="ps-label__champagne">Champagne</span>
+            <span class="ps-label__name ps-script" data-f="name">{cuvees[0].name}</span>
+            <span class="ps-label__vintage" data-f="vintage">{cuvees[0].vintage}</span>
+            <span class="ps-label__rules" aria-hidden="true"><i></i><b>❦</b><i></i></span>
+            <span class="ps-label__house ps-script">Veuve Aubert &amp; Fils</span>
+            <span class="ps-label__detail" data-f="detail">{cuvees[0].detail}</span>
+            <span class="ps-label__legal">Élaboré et mis en bouteille à Reims, France · NM-218-002 · 12% vol — 750 ml</span>
           </div>
+          <p class="ps-maison__note" data-f="note">{cuvees[0].note}</p>
         </div>
+
       </div>
     </div>
-    <p class="iu__hint label" style={`font-family:${serif}`}>Type two initials and a name — the engraved monogram updates live in Pinyon Script. Try a preset to see the swash capitals and connecting strokes.</p>
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Branding &amp; identity — a champagne house in the engraved négociant label manner, Reims c. 1890</span>
+    </figcaption>
+    <p class="iu__hint label">Choose a cuvée — the lithographer pulls a fresh label and the gold catches the light.</p>
+  </figure>
+
+  <!-- ════════ 03 · EDITORIAL — the Brodovitch feature opener ════════ -->
+  <figure class="iu__item">
+    <div class="iu__scene ps-mag" data-mag>
+      <div class="ps-mag__folio">
+        <span>Mirabelle</span>
+        <span class="ps-mag__folio-mid">La Saison</span>
+        <span>Décembre 1956</span>
+      </div>
+
+      <h3 class="ps-mag__head">
+        <span class="ps-mag__h1 ps-script" data-nib>The Last Waltz</span>
+        <span class="ps-mag__h2 ps-script" data-nib>of the Season</span>
+      </h3>
+
+      <p class="ps-mag__deck">As the orchestras of the winter season pack away their strings, our correspondent stays behind at the Crillon for one final turn of the floor.</p>
+      <p class="ps-mag__byline">By Céleste Marchand</p>
+
+      <div class="ps-mag__cols">
+        <div class="ps-mag__body">
+          <p><span class="ps-mag__dropcap ps-script" aria-hidden="true">T</span><span class="ps-mag__after-drop">here is an hour, somewhere past two, when a ball begins to dissolve and becomes finer for it.</span> The chandeliers are dimmed by a third; the kitchen sends up consommé instead of champagne; and the dancers who remain are no longer performing for anyone. It was at this hour, on the last Friday of the season, that the Comtesse de V— asked the orchestra for one more waltz, and the orchestra, halfway into its overcoats, obliged her.</p>
+          <p>What followed lasted four minutes and has been discussed for three weeks. The gown was Balenciaga, the partner nobody's husband, and the floor — by then a thicket of abandoned gloves and place cards — entirely theirs. One thinks of such moments as belonging to another century. They do not. They belong to whoever is still standing when the music thins; which is to say, to the patient.</p>
+        </div>
+        <aside class="ps-mag__aside">
+          <span class="ps-mag__pq-rule" aria-hidden="true"></span>
+          <p class="ps-mag__pull ps-script">the floor was entirely theirs</p>
+          <span class="ps-mag__pq-rule" aria-hidden="true"></span>
+          <p class="ps-mag__credit">A waltz, for the record, runs at sixty bars to the minute; the orchestra that night managed fifty-one, and no one on the floor complained. — Hôtel de Crillon, the eighth of December.</p>
+        </aside>
+      </div>
+
+      <div class="ps-mag__pagefoot">
+        <span>85</span>
+        <span>Mirabelle</span>
+      </div>
+    </div>
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Editorial — a feature opener in the Brodovitch <em>Harper's Bazaar</em> manner, mid-century</span>
+    </figcaption>
+  </figure>
+
+  <!-- ════════ 04 · INTERACTIVE & EXPERIMENTAL — the copybook ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <div class="iu__scene ps-copy" data-copy>
+      <div class="ps-copy__head">
+        <span class="ps-copy__lesson">Lesson N° 9 — the connected line</span>
+        <span class="ps-copy__slant">Main slant 52° · whole-arm movement</span>
+      </div>
+
+      <div class="ps-copy__sheet" data-copy-sheet>
+        <svg class="ps-copy__svg" data-copy-svg viewBox="0 0 1200 420" aria-label="Copybook practice sheet">
+          <g class="ps-copy__rails" aria-hidden="true">
+            {Array.from({ length: RAILS }).map(() => (<line data-rail x1="0" y1="0" x2="0" y2="0" />))}
+          </g>
+          <g class="ps-copy__stave ps-copy__stave--model" data-stave-model aria-hidden="true">
+            <line data-gl="m-asc" /><line data-gl="m-x" /><line data-gl="m-base" class="ps-copy__baseline" /><line data-gl="m-desc" />
+          </g>
+          <g class="ps-copy__stave" aria-hidden="true">
+            <line data-gl="p-asc" /><line data-gl="p-x" /><line data-gl="p-base" class="ps-copy__baseline" /><line data-gl="p-desc" />
+          </g>
+          <text class="ps-copy__modeltag" data-model-tag>the master's model —</text>
+          <text class="ps-copy__model ps-script" data-copy-model>Practice maketh the pen obedient</text>
+          <text class="ps-copy__live ps-script" data-copy-live>Yours faithfully,</text>
+        </svg>
+      </div>
+
+      <div class="ps-copy__bench">
+        <label class="ps-copy__field">
+          <span>Your copy</span>
+          <input class="ps-copy__input" data-copy-input type="text" maxlength="28" value="Yours faithfully," autocomplete="off" spellcheck="false" />
+        </label>
+        <label class="ps-copy__check">
+          <input type="checkbox" data-copy-guides checked />
+          <span>Slant rails</span>
+        </label>
+      </div>
+    </div>
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Interactive &amp; experimental — the copybook, a writing instrument after P. R. Spencer's <em>Key to Practical Penmanship</em>, 1866</span>
+    </figcaption>
+    <p class="iu__hint label">Write a line — the pointed pen takes it down on Spencerian guides, entry stroke to exit stroke.</p>
   </figure>
 
 </div>
 
 <script>
-  // ── Scene 04: Live monogram generator ────────────────────────────────────────
-  document.querySelectorAll<HTMLElement>('[data-mono]').forEach((root) => {
-    const inputA   = root.querySelector<HTMLInputElement>('[data-mono-a]')!;
-    const inputB   = root.querySelector<HTMLInputElement>('[data-mono-b]')!;
-    const inputName = root.querySelector<HTMLInputElement>('[data-mono-name]')!;
-    const letterA  = root.querySelector<SVGTextElement>('[data-mono-letter-a]')!;
-    const letterB  = root.querySelector<SVGTextElement>('[data-mono-letter-b]')!;
-    const nameEl   = root.querySelector<SVGTextElement>('[data-mono-namesvg]')!;
-    const svgEl    = root.querySelector<SVGSVGElement>('[data-mono-svg]')!;
+  const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const update = () => {
-      const a = (inputA.value || 'E').toUpperCase();
-      const b = (inputB.value || 'M').toUpperCase();
-      const name = inputName.value || 'Eleanor & Miles';
+  // ── 01: the burin draws the flourish when the plate enters view ──
+  document.querySelectorAll<HTMLElement>('[data-plate]').forEach((plate) => {
+    if (reduced()) { plate.classList.add('is-inked'); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { plate.classList.add('is-inked'); io.disconnect(); }
+      });
+    }, { threshold: 0.45 });
+    io.observe(plate);
+  });
 
-      // Update letters (no innerHTML — use DOM textContent only)
-      letterA.textContent = a;
-      letterB.textContent = b;
-      nameEl.textContent  = name;
+  // ── 03: the nib takes the headline down when the page enters view ──
+  document.querySelectorAll<HTMLElement>('[data-mag]').forEach((mag) => {
+    const lines = [...mag.querySelectorAll<HTMLElement>('[data-nib]')];
+    if (reduced() || !lines.length) return;
+    lines.forEach((l) => l.setAttribute('data-reveal', 'wait'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          lines.forEach((l) => l.setAttribute('data-reveal', 'go'));
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(mag);
+  });
 
-      // Update aria-label safely
-      svgEl.setAttribute('aria-label', `Monogram ${a} and ${b} — ${name}`);
+  // ── 02: cuvée switcher — swap the label copy, replay the foil sheen ──
+  document.querySelectorAll<HTMLElement>('[data-maison]').forEach((root) => {
+    const label = root.querySelector<HTMLElement>('[data-label]')!;
+    const fields = new Map<string, HTMLElement[]>();
+    root.querySelectorAll<HTMLElement>('[data-f]').forEach((el) => {
+      const k = el.dataset.f!;
+      fields.set(k, [...(fields.get(k) ?? []), el]);
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-cuvee]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        root.querySelectorAll('[data-cuvee]').forEach((b) => b.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        (['tier', 'name', 'vintage', 'detail', 'note'] as const).forEach((k) => {
+          (fields.get(k) ?? []).forEach((el) => { el.textContent = btn.dataset[k] ?? ''; });
+        });
+        if (!reduced()) {
+          label.classList.remove('is-fresh');
+          void label.offsetWidth;
+          label.classList.add('is-fresh');
+        }
+      });
+    });
+  });
 
-      // Re-trigger draw-in animation by toggling a class
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduced) {
-        svgEl.classList.remove('ps-mono__svg--drawn');
-        // Force reflow
-        void svgEl.offsetWidth;
-        svgEl.classList.add('ps-mono__svg--drawn');
+  // ── 04: the copybook — JS-laid SVG so 390/768/1440 are true recompositions ──
+  const XR = 760 / 2048;            // Pinyon x-height per em (verified in the woff2)
+  const SLANT = Math.tan((90 - 52) * Math.PI / 180); // Spencerian main slant, 52° from horizontal
+
+  document.querySelectorAll<HTMLElement>('[data-copy]').forEach((root) => {
+    const sheet  = root.querySelector<HTMLElement>('[data-copy-sheet]')!;
+    const svg    = root.querySelector<SVGSVGElement>('[data-copy-svg]')!;
+    const rails  = [...svg.querySelectorAll<SVGLineElement>('[data-rail]')];
+    const live   = svg.querySelector<SVGTextElement>('[data-copy-live]')!;
+    const model  = svg.querySelector<SVGTextElement>('[data-copy-model]')!;
+    const tag    = svg.querySelector<SVGTextElement>('[data-model-tag]')!;
+    const input  = root.querySelector<HTMLInputElement>('[data-copy-input]')!;
+    const guides = root.querySelector<HTMLInputElement>('[data-copy-guides]')!;
+    const gl = (k: string) => svg.querySelector<SVGLineElement>(`[data-gl="${k}"]`)!;
+
+    const setStave = (p: string, base: number, u: number, W: number, x0: number) => {
+      const rows: Array<[string, number]> = [['asc', base - 2.33 * u], ['x', base - u], ['base', base], ['desc', base + 1.1 * u]];
+      rows.forEach(([k, y]) => {
+        const l = gl(`${p}-${k}`);
+        l.setAttribute('x1', String(x0)); l.setAttribute('x2', String(W - x0));
+        l.setAttribute('y1', String(y));  l.setAttribute('y2', String(y));
+      });
+    };
+
+    const fit = (t: SVGTextElement, fs: number, maxW: number) => {
+      t.setAttribute('font-size', String(fs));
+      const w = t.getComputedTextLength();
+      if (w > maxW) t.setAttribute('font-size', String(fs * maxW / w));
+    };
+
+    const layout = () => {
+      const W = sheet.clientWidth;
+      if (!W) return;
+      const narrow = W < 640;
+      const u  = narrow ? W * 0.092 : W * 0.044;       // x-height in px
+      const H  = narrow ? Math.round(W * 0.56) : Math.round(W * 0.355);
+      const x0 = W * 0.055;
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.style.aspectRatio = `${W} / ${H}`;
+      svg.classList.toggle('is-narrow', narrow);
+
+      // slant rails — leaning 52° toward the writing direction
+      const dx = H * SLANT, step = narrow ? W * 0.12 : W * 0.068;
+      rails.forEach((r, i) => {
+        const x = i * step - dx * 0.5;
+        r.setAttribute('x1', String(x + dx)); r.setAttribute('y1', '0');
+        r.setAttribute('x2', String(x));      r.setAttribute('y2', String(H));
+      });
+
+      const fs = u / XR, maxW = W - 2 * x0;
+      if (narrow) {
+        const bP = H * 0.62;
+        setStave('p', bP, u, W, x0);
+        live.setAttribute('x', String(x0)); live.setAttribute('y', String(bP));
+        fit(live, fs, maxW);
+      } else {
+        const bM = H * 0.33, bP = H * 0.80;
+        setStave('m', bM, u, W, x0);
+        setStave('p', bP, u, W, x0);
+        model.setAttribute('x', String(x0)); model.setAttribute('y', String(bM));
+        fit(model, fs, maxW);
+        tag.setAttribute('x', String(x0)); tag.setAttribute('y', String(bM - 2.33 * u - H * 0.035));
+        live.setAttribute('x', String(x0)); live.setAttribute('y', String(bP));
+        fit(live, fs, maxW);
       }
     };
 
-    inputA.addEventListener('input', update);
-    inputB.addEventListener('input', update);
-    inputName.addEventListener('input', update);
+    const write = () => {
+      live.textContent = input.value || ' ';
+      layout();
+      if (!reduced()) {
+        live.classList.remove('is-writing');
+        void (live as unknown as HTMLElement).getBoundingClientRect();
+        live.classList.add('is-writing');
+      }
+    };
 
-    // Preset samples
-    root.querySelectorAll<HTMLButtonElement>('[data-sample-a]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        inputA.value = btn.dataset.sampleA || '';
-        inputB.value = btn.dataset.sampleB || '';
-        inputName.value = btn.dataset.sampleName || '';
-        update();
-        // Highlight active preset
-        root.querySelectorAll('[data-sample-a]').forEach((b) => b.classList.remove('is-on'));
-        btn.classList.add('is-on');
-      });
-    });
-
-    // Initial render
-    update();
+    input.addEventListener('input', write);
+    guides.addEventListener('change', () => svg.classList.toggle('is-noguides', !guides.checked));
+    new ResizeObserver(layout).observe(sheet);
+    document.fonts.ready.then(layout);
+    layout();
   });
-
-  // ── Scene 03: certificate border draw-in on hover ────────────────────────────
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduced) {
-    document.querySelectorAll<HTMLElement>('[data-cert]').forEach((cert) => {
-      cert.addEventListener('mouseenter', () => cert.classList.add('ps-cert--hovered'));
-      cert.addEventListener('mouseleave', () => cert.classList.remove('ps-cert--hovered'));
-    });
-  }
 </script>
 
 <style>
-  .iu__item { margin: 0; }
-  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); font-size: var(--step--1); }
+  /* ───────────────────────── stack choreography ─────────────────────────
+     One thread runs the whole sequence: the engraver's ruled hairline.
+     01 cream plate → quick cut → 02 cellar-dark foil → a wide white breath
+     → 03 the Brodovitch page → 04 the ruled copybook closes the loop. */
+  .iu.ps { gap: 0; }
+  .iu.ps > .iu__item + .iu__item { margin-top: clamp(2rem, 4vh, 3rem); }
+  .iu.ps > .iu__item:nth-of-type(3) { margin-top: clamp(5.5rem, 13vh, 10rem); }
+  .iu.ps > .iu__item:nth-of-type(4) { margin-top: clamp(4rem, 9vh, 7rem); }
 
-  /* The script face (--fam) is used ONLY for display names/short phrases.
-     All body/supporting text uses var(--serif) via inline style. */
-
-  /* Scene aspect-ratio helpers */
-  .ps-scene-portrait  { aspect-ratio: 3 / 4;  }
-  .ps-scene-wide      { aspect-ratio: 16 / 9; }
-  .ps-scene-landscape { aspect-ratio: 4 / 3;  }
-  .ps-scene-monogram  { /* no fixed ratio — fills height */ min-height: 520px; }
-
-  /* ============================================================
-     01 — WEDDING INVITATION SUITE
-     Script names at large scale; all supporting copy in --serif.
-     ============================================================ */
-  .ps-invite {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 3cqi; padding: 4cqi;
-    background: var(--bg);
+  .iu__scene { font-family: var(--serif); }
+  .ps-script {
+    font-family: var(--fam);
+    font-weight: 400;
+    font-feature-settings: 'calt' 1, 'liga' 1;
   }
-  .ps-invite__card {
+  .iu__hint { margin-top: var(--sp-2); }
+
+  /* ════════════════════════════════════════════════════════════════════
+     01 — THE ENGRAVER'S BROADSIDE  (self-declared surface: plate ink on
+     laid paper; identical in light and dark)
+     ════════════════════════════════════════════════════════════════════ */
+  .ps-plate {
+    --paper: #ece1c6;
+    --paper-2: #e3d5b4;
+    --ink: #29200f;
+    --ink-2: #5c4f33;
+    --rubric: #8e3a22;
     position: relative;
-    width: min(100%, 54cqi);
-    background: var(--bg);
-    box-shadow: 0 4px 40px var(--line);
-    padding: 0;
-    display: flex; flex-direction: column;
-    container-type: inline-size;
+    background:
+      radial-gradient(120% 90% at 50% 8%, var(--paper) 55%, var(--paper-2) 100%);
+    color: var(--ink);
   }
-  .ps-invite__border {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    color: var(--accent);
-    pointer-events: none;
+  /* the intaglio plate-mark — the debossed impression the copper leaves in the sheet */
+  .ps-plate__mark {
+    position: absolute; inset: clamp(10px, 1.7cqi, 26px); pointer-events: none;
+    border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+    background: color-mix(in srgb, var(--paper-2) 32%, transparent);
+    box-shadow:
+      inset 0 1px 1px color-mix(in srgb, var(--ink) 12%, transparent),
+      0 1px 0 rgb(255 251 238 / 0.65);
   }
-  .ps-invite__border-outer { opacity: 0.6; }
-  .ps-invite__border-inner { opacity: 0.3; }
-  .ps-invite__corners { opacity: 0.4; }
-
-  .ps-invite__inner {
-    padding: 8cqi 6cqi 6cqi;
+  .ps-plate__sheet {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 7cqi 6cqi 4.5cqi;
+  }
+  .ps-plate__series {
+    margin: 0;
+    font-size: clamp(11px, 1.15cqi, 17px);
+    letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .ps-plate__rubric { color: var(--rubric); }
+  /* the hero is composed, not set: C optically kerned into the o, the second
+     line staggered right in the period-plate manner, its final d handing its
+     exit stroke straight into the striking below */
+  .ps-plate__hero {
+    margin: 3cqi 0 0; align-self: stretch;
     display: flex; flex-direction: column; align-items: center;
-    gap: 3cqi; text-align: center;
+    font-size: 12.5cqi; line-height: 1.06;
+    color: var(--ink);
   }
-  .ps-invite__together {
-    font-size: 2.4cqi; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--fg-3); margin: 0;
+  .ps-plate__kernC { margin-right: -0.055em; }
+  .ps-plate__hero-l1 { transform: translateX(-9cqi); }
+  .ps-plate__hero-l2 { transform: translateX(2cqi); margin-top: -2.2cqi; }
+  .ps-plate__flourish {
+    width: 60cqi; height: auto;
+    align-self: center;
+    margin-top: -4.5cqi; transform: translateX(6.5cqi);
+    overflow: visible; pointer-events: none;
   }
-  .ps-invite__names {
-    display: flex; flex-direction: column; align-items: center; gap: 1.2cqi;
-    width: 100%;
+  .ps-plate__flourish path {
+    fill: none; stroke: var(--ink); stroke-linecap: round;
   }
-  .ps-invite__name1,
-  .ps-invite__name2 {
-    font-family: var(--fam);
-    font-size: 13cqi; line-height: 1.0;
-    color: var(--fg);
-    /* Contextual alternates (connecting forms) + ligatures */
-    font-feature-settings: 'calt' 1, 'liga' 1;
-    letter-spacing: 0.01em;
+  @media (prefers-reduced-motion: no-preference) {
+    .ps-plate:not(.is-inked) .ps-plate__flourish path { opacity: 0; }
+    .ps-plate.is-inked .ps-plate__flourish path {
+      opacity: 0;
+      animation: ps-burin 0.3s linear var(--d) forwards;
+    }
+    @keyframes ps-burin { to { opacity: 1; } }
   }
-  .ps-invite__amp-row {
-    display: flex; align-items: center; gap: 2.4cqi; width: 80%;
+  .ps-plate__sub {
+    margin: 1.6cqi 0 0;
+    font-size: 4.6cqi; line-height: 1.4;
+    color: var(--ink);
   }
-  .ps-invite__rule {
-    flex: 1; height: 1px; background: var(--accent); opacity: 0.35;
+  .ps-plate__line {
+    margin: 2.6cqi auto 0; max-width: 52cqi;
+    font-size: clamp(12px, 1.35cqi, 20px); line-height: 1.55;
+    font-style: italic; color: var(--ink-2);
   }
-  .ps-invite__amp {
-    font-family: var(--fam);
-    font-size: 10cqi; line-height: 1;
-    color: var(--accent);
-    font-feature-settings: 'calt' 1, 'liga' 1;
+  .ps-plate__imprint {
+    display: flex; align-items: baseline; justify-content: space-between;
+    width: 100%; margin-top: 5.5cqi; padding-top: 1.4cqi;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 28%, transparent);
+    font-size: clamp(10px, 1.05cqi, 15px);
+    letter-spacing: 0.08em; color: var(--ink-2);
+    gap: 2cqi;
   }
-  .ps-invite__request {
-    font-size: 2.2cqi; line-height: 1.6; color: var(--fg-2); margin: 0;
-    font-style: italic;
-  }
-  .ps-invite__divider {
-    display: flex; align-items: center; gap: 2cqi; width: 60%;
-    color: var(--accent); opacity: 0.5;
-  }
-  .ps-invite__divider span:first-child,
-  .ps-invite__divider span:last-child {
-    flex: 1; height: 1px; background: currentColor;
-  }
-  .ps-invite__diamond { font-size: 1.8cqi; }
-  .ps-invite__detail {
-    font-size: 2.3cqi; color: var(--fg-2); margin: 0; line-height: 1.5;
-  }
-  .ps-invite__detail--venue {
-    font-size: 2.5cqi; color: var(--fg); letter-spacing: 0.06em;
-    text-transform: uppercase; font-style: normal; margin-top: 0.5cqi;
-  }
-  .ps-invite__rsvp {
-    font-size: 2cqi; color: var(--fg-3); margin: 0;
-    letter-spacing: 0.08em; text-transform: uppercase; font-style: italic;
+  .ps-plate__credit, .ps-plate__price { white-space: nowrap; }
+  .ps-plate__pub { text-align: center; }
+
+  @container (max-width: 640px) {
+    .ps-plate__sheet { padding: 12cqi 7cqi 8cqi; }
+    .ps-plate__hero { font-size: 17cqi; line-height: 1.08; }
+    .ps-plate__hero-l1 { transform: translateX(-5cqi); }
+    .ps-plate__hero-l2 { transform: translateX(1cqi); margin-top: -2.6cqi; }
+    .ps-plate__sub { font-size: 7.4cqi; margin-top: 4cqi; }
+    .ps-plate__flourish { width: 84cqi; margin-top: -6cqi; transform: translateX(5cqi); }
+    .ps-plate__line { max-width: 84cqi; }
+    .ps-plate__imprint { flex-direction: column; align-items: center; gap: 0.6cqi; margin-top: 9cqi; padding-top: 3cqi; text-align: center; }
   }
 
-  /* Envelope flap detail beneath the card */
-  .ps-invite__env {
-    width: min(100%, 54cqi);
-    display: flex; flex-direction: column; align-items: center;
-    position: relative;
+  /* ════════════════════════════════════════════════════════════════════
+     02 — VEUVE AUBERT & FILS  (self-declared surface: cellar green,
+     lithographer's gold, cream stock)
+     ════════════════════════════════════════════════════════════════════ */
+  .ps-maison {
+    --cellar: #0f1f17;
+    --cellar-2: #16291f;
+    --gold: #c9a55d;
+    --gold-soft: #a98c50;
+    --cream: #f3ead4;
+    background: linear-gradient(165deg, var(--cellar) 30%, var(--cellar-2) 100%);
+    color: var(--cream);
   }
-  .ps-invite__env-svg { width: 100%; height: auto; color: var(--line); }
-  .ps-invite__wax {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
-    font-family: var(--fam);
-    font-size: 1.8cqi; color: var(--accentContrast, var(--bg));
-    background: var(--accent);
-    width: 6.4cqi; height: 6.4cqi; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-feature-settings: 'calt' 1;
-    letter-spacing: -0.04em;
-    box-shadow: 0 1px 6px var(--line);
-    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  .ps-maison__grid {
+    display: grid; grid-template-columns: 1.05fr 1fr; align-items: center;
+    gap: 5cqi; padding: 5.5cqi 7cqi;
   }
-  .ps-invite:hover .ps-invite__wax,
-  .ps-invite:focus-within .ps-invite__wax {
-    transform: translate(-50%, -40%) scale(1.18);
-    box-shadow: 0 4px 18px var(--line);
+  .ps-maison__id { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+  .ps-maison__kicker {
+    font-size: clamp(11px, 1.1cqi, 16px); letter-spacing: 0.55em; text-transform: uppercase;
+    color: var(--gold);
   }
+  .ps-maison__mark {
+    margin: 1.4cqi 0 0;
+    font-size: 8.6cqi; line-height: 1.18;
+    color: var(--cream);
+    white-space: nowrap;
+  }
+  .ps-maison__fils {
+    font-size: 3.6cqi; line-height: 1.2; color: var(--gold);
+    margin-left: 12cqi;
+  }
+  .ps-maison__rule {
+    width: 16cqi; height: 1px; margin-top: 2.6cqi;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .ps-maison__since {
+    margin: 1.6cqi 0 0; max-width: 34cqi;
+    font-size: clamp(12px, 1.25cqi, 18px); line-height: 1.6;
+    font-style: italic; color: color-mix(in srgb, var(--cream) 72%, var(--cellar));
+  }
+  .ps-maison__tabs { display: flex; flex-wrap: wrap; column-gap: 3cqi; row-gap: 1.2cqi; margin-top: 3.6cqi; }
+  .ps-maison__tab {
+    font-family: var(--serif);
+    font-size: clamp(11px, 1.1cqi, 16px); letter-spacing: 0.22em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--cream) 58%, var(--cellar));
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    padding: 0 0 0.55em;
+    cursor: pointer;
+    transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .ps-maison__tab:hover { color: var(--cream); border-bottom-color: color-mix(in srgb, var(--gold-soft) 55%, transparent); }
+  .ps-maison__tab.is-on { color: var(--gold); border-bottom-color: var(--gold); }
+  .ps-maison__tab:focus-visible { outline: 1px solid var(--gold-soft); outline-offset: 4px; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .ps-invite__wax { transition: none; }
+  .ps-maison__proof { display: flex; flex-direction: column; align-items: center; gap: 1.6cqi; min-width: 0; }
+  .ps-maison__label {
+    position: relative; overflow: hidden;
+    width: min(100%, 34cqi);
+    background: var(--cream);
+    color: #241d10;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 2.6cqi 2.4cqi 2.2cqi;
+    box-shadow: 0 22px 60px rgb(0 0 0 / 0.45);
   }
-
-  /* ============================================================
-     02 — LUXURY PATISSERIE IDENTITY
-     ============================================================ */
-  .ps-patisserie {
-    width: 100%; height: 100%;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 3cqi 5cqi 2cqi;
-    gap: 1.5cqi;
-    container-type: inline-size;
+  .ps-maison__keyline {
+    position: absolute; inset: 0.85cqi; pointer-events: none;
+    border: 1px solid color-mix(in srgb, var(--gold-soft) 75%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--gold-soft) 35%, transparent);
+    outline-offset: 2px;
   }
-
-  .ps-pat__wordmark {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 2cqi; text-align: center;
+  .ps-maison__sheen {
+    position: absolute; inset: -20% -60%; pointer-events: none;
+    background: linear-gradient(115deg, transparent 38%, rgb(255 244 214 / 0.55) 50%, transparent 62%);
+    transform: translateX(-120%);
   }
-  .ps-pat__estd {
-    font-size: 2cqi; letter-spacing: 0.32em; text-transform: uppercase;
-    color: var(--fg-3);
+  @media (prefers-reduced-motion: no-preference) {
+    .ps-maison__label.is-fresh .ps-maison__sheen { animation: ps-foil 1.1s var(--ease-out) 0.05s both; }
+    @keyframes ps-foil { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
   }
-  .ps-pat__rule {
-    width: 28cqi; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent) 40%, var(--accent) 60%, transparent);
-    opacity: 0.45;
+  .ps-label__tier {
+    font-size: clamp(9px, 0.95cqi, 14px); letter-spacing: 0.34em; text-transform: uppercase;
+    color: #8a6f3a;
   }
-  .ps-pat__name {
-    font-family: var(--fam);
-    font-size: 14cqi; line-height: 0.95;
-    color: var(--fg); margin: 0;
-    font-feature-settings: 'calt' 1, 'liga' 1;
-    letter-spacing: 0.015em;
+  .ps-label__champagne {
+    margin-top: 1.5cqi;
+    font-size: clamp(10px, 1.15cqi, 17px); letter-spacing: 0.5em; text-transform: uppercase;
+    color: #241d10;
   }
-  .ps-pat__sub {
-    font-size: 1.8cqi; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--fg-2);
-  }
-
-  .ps-pat__labels {
-    display: grid; grid-template-columns: 1fr 1.3fr 1fr;
-    gap: 2px; background: var(--line); flex: 1;
-    overflow: visible;
-  }
-  .ps-pat__label {
-    background: var(--bg);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 3cqi 2cqi 3cqi; text-align: center; gap: 0.8cqi;
-    position: relative; overflow: visible;
-    transition: background 0.3s var(--ease);
-  }
-  .ps-pat__label::before {
-    content: '';
-    position: absolute; bottom: 0; left: 12%; right: 12%; height: 1px;
-    background: var(--accent);
-    transform: scaleX(0); transform-origin: center;
-    transition: transform 0.4s var(--ease);
-    opacity: 0.4;
-  }
-  .ps-pat__label:hover::before { transform: scaleX(1); }
-  .ps-pat__label:hover { background: var(--bg-2); }
-  .ps-pat__label--featured { background: var(--bg-2); }
-  .ps-pat__label--featured::before { transform: scaleX(0.6); opacity: 0.6; }
-  .ps-pat__label--featured:hover::before { transform: scaleX(1); }
-
-  .ps-pat__label-tier {
-    font-size: 1.6cqi; letter-spacing: 0.24em; text-transform: uppercase;
-    color: var(--fg-3); font-style: italic;
-  }
-  .ps-pat__label-name {
-    font-family: var(--fam);
-    font-size: 6cqi;
-    line-height: 1.0;
-    /* display:block so padding-bottom expands the layout box, keeping descenders
-       (Guanaja exit tail, Madeleine g, Saint-Honoré final stroke) within the
-       element boundary and clear of .iu__scene overflow:hidden. */
-    display: block;
-    padding-bottom: 4cqi;
-    color: var(--fg);
-    font-feature-settings: 'calt' 1, 'liga' 1;
-    transition: color 0.3s var(--ease);
-    word-break: break-word;
-    overflow-wrap: break-word;
-    hyphens: none;
+  .ps-label__name {
+    margin-top: 0.4cqi;
+    font-size: 4.7cqi; line-height: 1.32;
+    color: #241d10;
     max-width: 100%;
   }
-  .ps-pat__label:hover .ps-pat__label-name { color: var(--accent); }
-  .ps-pat__label--featured .ps-pat__label-name { color: var(--accent); }
-
-  .ps-pat__label-note {
-    font-size: 1.5cqi; color: var(--fg-3); line-height: 1.4; font-style: italic;
+  .ps-label__vintage {
+    margin-top: 0.3cqi;
+    font-size: clamp(10px, 1.1cqi, 16px); letter-spacing: 0.3em; text-transform: uppercase;
+    color: #8a6f3a;
+  }
+  .ps-label__rules {
+    display: flex; align-items: center; gap: 1cqi; width: 62%;
+    margin-top: 1.5cqi; color: #a98c50;
+    font-size: clamp(9px, 1cqi, 14px);
+  }
+  .ps-label__rules i { flex: 1; height: 1px; background: color-mix(in srgb, #a98c50 60%, transparent); }
+  .ps-label__house {
+    margin-top: 1.3cqi;
+    font-size: 2.3cqi; line-height: 1.4; color: #443823;
+  }
+  .ps-label__detail {
+    margin-top: 0.8cqi;
+    font-size: clamp(11px, 1.1cqi, 16px); font-style: italic; color: #5c4f33;
+  }
+  .ps-label__legal {
+    margin-top: 1.8cqi;
+    font-size: clamp(8px, 0.8cqi, 12px); letter-spacing: 0.06em;
+    color: #8a8068;
+  }
+  .ps-maison__note {
+    margin: 0;
+    font-size: clamp(11px, 1.15cqi, 17px); font-style: italic;
+    color: color-mix(in srgb, var(--cream) 62%, var(--cellar));
   }
 
-  .ps-pat__ribbon {
-    text-align: center; padding-top: 1.2cqi;
-    border-top: 1px solid var(--line-soft);
-    font-size: 1.5cqi; letter-spacing: 0.28em; text-transform: uppercase;
-    color: var(--fg-3);
-    flex-shrink: 0;
+  @container (max-width: 880px) {
+    .ps-maison__grid { grid-template-columns: 1fr; gap: 6cqi; padding: 8cqi 7cqi; }
+    .ps-maison__id { align-items: center; text-align: center; }
+    .ps-maison__mark { font-size: 13cqi; white-space: normal; }
+    .ps-maison__fils { font-size: 5.4cqi; margin-left: 18cqi; }
+    .ps-maison__rule { background: linear-gradient(90deg, transparent, var(--gold), transparent); width: 26cqi; }
+    .ps-maison__since { max-width: 70cqi; }
+    .ps-maison__tabs { justify-content: center; }
+    .ps-maison__label { width: min(100%, 64cqi); padding: 5cqi 4.5cqi 4.2cqi; }
+    .ps-maison__keyline { inset: 1.7cqi; }
+    .ps-label__name { font-size: 8.6cqi; }
+    .ps-label__house { font-size: 4.2cqi; }
+    .ps-label__rules { margin-top: 2.6cqi; }
+  }
+  @container (max-width: 470px) {
+    .ps-maison__label { width: 100%; }
+    .ps-label__name { font-size: 11.5cqi; }
+    .ps-label__house { font-size: 5.6cqi; }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .ps-pat__label,
-    .ps-pat__label::before,
-    .ps-pat__label-name { transition: none; }
-  }
-
-  /* ============================================================
-     03 — ENGRAVED CERTIFICATE / DIPLOMA
-     ============================================================ */
-  .ps-cert {
-    width: 100%; height: 100%;
+  /* ════════════════════════════════════════════════════════════════════
+     03 — MIRABELLE, DÉCEMBRE 1956  (theme tokens: the page IS the paper)
+     ════════════════════════════════════════════════════════════════════ */
+  .ps-mag {
     background: var(--bg);
-    position: relative;
-    display: flex; align-items: center; justify-content: center;
-    container-type: inline-size;
-  }
-
-  .ps-cert__border {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    color: var(--accent); pointer-events: none;
-    opacity: 0.55;
-  }
-  .ps-cert__b1 { }
-  .ps-cert__b2 { }
-  .ps-cert__corner-dot { }
-  .ps-cert__diamond { }
-  .ps-cert__rule-l,
-  .ps-cert__rule-r { opacity: 0.5; }
-  .ps-cert__ornaments { opacity: 0.7; }
-
-  /* border draw-in on hover */
-  .ps-cert__b1 { stroke-dasharray: 2124; stroke-dashoffset: 0; }
-  .ps-cert__b2 { stroke-dasharray: 2100; stroke-dashoffset: 0; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .ps-cert--hovered .ps-cert__b1 { animation: ps-draw-border 1.8s var(--ease) both; }
-    .ps-cert--hovered .ps-cert__b2 { animation: ps-draw-border 2.2s var(--ease) 0.1s both; }
-    @keyframes ps-draw-border {
-      from { stroke-dashoffset: 2124; }
-      to   { stroke-dashoffset: 0; }
-    }
-  }
-
-  .ps-cert__body {
-    position: relative; z-index: 1;
-    display: flex; flex-direction: column; align-items: center;
-    text-align: center; gap: 1cqi;
-    padding: 5cqi 9cqi;
-    width: 100%;
-  }
-  .ps-cert__institution {
-    font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--fg); margin: 0;
-  }
-  .ps-cert__presents {
-    font-size: 1.9cqi; color: var(--fg-2); margin: 0;
-    font-style: italic; line-height: 1.4;
-  }
-  .ps-cert__recipient {
-    font-family: var(--fam);
-    font-size: 11cqi; line-height: 1.0;
-    color: var(--fg); margin: 0.2cqi 0;
-    font-feature-settings: 'calt' 1, 'liga' 1;
-    letter-spacing: 0.01em;
-  }
-  .ps-cert__field {
-    font-size: 2.2cqi; color: var(--fg-2); margin: 0;
-    letter-spacing: 0.06em; line-height: 1.4;
-    font-style: italic;
-  }
-  .ps-cert__degree {
-    font-family: var(--fam);
-    font-size: 6cqi; line-height: 1.0;
-    color: var(--accent);
-    font-feature-settings: 'calt' 1, 'liga' 1;
-    display: block; margin: 0.3cqi 0;
-  }
-  .ps-cert__signatures {
-    display: flex; align-items: flex-start; justify-content: center;
-    gap: 4cqi; margin-top: 1cqi; width: 80%;
-  }
-  .ps-cert__sig {
-    display: flex; flex-direction: column; align-items: center; gap: 0.8cqi;
-    flex: 1;
-  }
-  .ps-cert__sig-name {
-    font-family: var(--fam);
-    font-size: 3.8cqi; line-height: 1.1;
     color: var(--fg);
-    font-feature-settings: 'calt' 1, 'liga' 1;
+    padding: 2.5cqi 0 0;
   }
-  .ps-cert__sig-rule {
-    width: 80%; height: 1px; background: var(--fg-3); opacity: 0.4;
-  }
-  .ps-cert__sig-title {
-    font-size: 1.6cqi; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--fg-3); font-style: italic;
-  }
-  .ps-cert__seal {
-    width: 8cqi; height: 8cqi; border-radius: 50%;
-    border: 1px solid var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 0.4cqi;
-    box-shadow: inset 0 0 0 2px var(--bg), 0 0 0 3px var(--accent);
-    opacity: 0.6;
-  }
-  .ps-cert__seal-inner {
-    font-family: var(--fam);
-    font-size: 2.8cqi; color: var(--accent);
-    font-feature-settings: 'calt' 1;
-  }
-  .ps-cert__sig--right { align-items: center; }
-  .ps-cert__date {
-    font-size: 1.8cqi; color: var(--fg-3); margin: 0;
-    letter-spacing: 0.06em; font-style: italic;
-  }
-
-  /* responsive restack on narrow viewport */
-  @container (max-width: 500px) {
-    .ps-cert__body { padding: 5cqi 6cqi; }
-    .ps-cert__signatures { flex-direction: column; align-items: center; width: 100%; }
-    .ps-cert__sig--right { align-items: center; }
-  }
-
-  /* ============================================================
-     04 — INTERACTIVE MONOGRAM GENERATOR
-     Left panel: inputs + presets. Right panel: live SVG monogram.
-     ============================================================ */
-  .ps-mono {
-    --u: min(1cqi, 7px);
-    width: 100%; height: 100%;
-    min-height: 520px;
-    background: var(--bg);
-    display: grid; grid-template-columns: 1fr 1fr;
-    container-type: inline-size;
-  }
-
-  .ps-mono__left {
-    display: flex; flex-direction: column;
-    padding: calc(5 * var(--u)) calc(4 * var(--u)) calc(4 * var(--u)) calc(5 * var(--u)); gap: calc(3.5 * var(--u));
-    border-right: 1px solid var(--line);
-  }
-  .ps-mono__heading {
-    font-size: calc(3.5 * var(--u)); letter-spacing: 0.26em; text-transform: uppercase;
-    color: var(--fg); margin: 0; font-weight: 400;
-  }
-  .ps-mono__sub {
-    font-size: calc(2 * var(--u)); color: var(--fg-3); line-height: 1.5;
-    font-style: italic; margin: 0;
-  }
-
-  .ps-mono__inputs {
-    display: flex; align-items: flex-end; gap: calc(3 * var(--u));
-  }
-  .ps-mono__label {
-    display: flex; flex-direction: column; gap: calc(1 * var(--u));
-    flex: 1;
-  }
-  .ps-mono__label > span {
-    font-size: calc(1.6 * var(--u)); letter-spacing: 0.18em; text-transform: uppercase;
+  .ps-mag ::selection { background: var(--accent); color: var(--accent-contrast); }
+  .ps-mag__folio {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 1cqi; border-bottom: 1px solid var(--line);
+    font-size: clamp(10px, 1cqi, 14px); letter-spacing: 0.34em; text-transform: uppercase;
     color: var(--fg-3);
   }
-  .ps-mono__input {
-    font-size: calc(9 * var(--u)); line-height: 1; text-align: center;
-    background: var(--bg-2); border: 1px solid var(--line);
-    color: var(--fg); width: 100%; padding: calc(1.5 * var(--u)) 0;
-    border-radius: 2px;
-    font-feature-settings: 'calt' 1, 'liga' 1;
-    text-transform: uppercase;
-    transition: border-color 0.2s var(--ease);
+  .ps-mag__head { margin: 5cqi 0 0; padding-left: 3.2cqi; display: flex; flex-direction: column; }
+  .ps-mag__h1 {
+    font-size: 9.2cqi; line-height: 1.04;
+    color: var(--fg);
   }
-  .ps-mono__input:focus {
-    outline: none; border-color: var(--accent);
-    background: var(--bg);
+  .ps-mag__h2 {
+    font-size: 9.2cqi; line-height: 1.04;
+    color: var(--accent);
+    align-self: flex-end; margin-top: -1.2cqi; margin-right: 4cqi;
   }
-  .ps-mono__and {
-    font-size: calc(5 * var(--u)); line-height: 1; color: var(--accent);
-    font-family: var(--fam); padding-bottom: calc(1.8 * var(--u));
-    font-feature-settings: 'calt' 1;
-  }
-
-  .ps-mono__nametext {
-    font-size: calc(1.6 * var(--u)); letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--fg-3); margin: 0;
-  }
-  .ps-mono__nameinput {
-    font-size: calc(2.2 * var(--u)); padding: calc(1.2 * var(--u)) calc(1.5 * var(--u));
-    background: var(--bg-2); border: 1px solid var(--line);
-    color: var(--fg); border-radius: 2px; width: 100%;
-    font-style: italic;
-    transition: border-color 0.2s var(--ease);
-  }
-  .ps-mono__nameinput:focus { outline: none; border-color: var(--accent); background: var(--bg); }
-
-  .ps-mono__samples {
-    display: flex; flex-direction: column; gap: calc(1 * var(--u));
-    margin-top: auto;
-  }
-  .ps-mono__sample {
-    display: flex; align-items: center; gap: calc(2 * var(--u));
-    padding: calc(1.2 * var(--u)) calc(1.6 * var(--u)); text-align: left;
-    border: 1px solid var(--line-soft);
-    border-radius: 2px; width: 100%;
-    transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
-  }
-  .ps-mono__sample:hover { background: var(--bg-2); border-color: var(--line); }
-  .ps-mono__sample.is-on { background: var(--bg-2); border-color: var(--accent); }
-  .ps-mono__sample-mono {
-    font-size: calc(4 * var(--u)); line-height: 1; color: var(--fg);
-    font-feature-settings: 'calt' 1, 'liga' 1; white-space: nowrap;
-    width: calc(6 * var(--u));
-  }
-  .ps-mono__sample-name {
-    font-size: calc(1.7 * var(--u)); color: var(--fg-2); font-style: italic;
-  }
-
-  /* Right panel: SVG output */
-  .ps-mono__right {
-    display: flex; align-items: center; justify-content: center;
-    padding: calc(4 * var(--u));
-    background: var(--bg);
-  }
-  .ps-mono__output { width: 100%; max-width: calc(36 * var(--u)); }
-  .ps-mono__svg { width: 100%; height: auto; display: block; }
-
-  /* SVG element styles */
-  .ps-mono__frame {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.5;
-    opacity: 0.35;
-  }
-  .ps-mono__frame-inner {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 0.5;
-    opacity: 0.2;
-    stroke-dasharray: 942;
-    stroke-dashoffset: 0;
-  }
-  .ps-mono__letter {
-    font-family: var(--fam);
-    font-size: 130px;
-    fill: var(--fg);
-    font-feature-settings: 'calt' 1, 'liga' 1;
-  }
-  .ps-mono__letter-a { fill: var(--fg); }
-  .ps-mono__letter-b { fill: var(--fg); opacity: 0.75; }
-  .ps-mono__hr {
-    stroke: var(--fg-3);
-    stroke-width: 0.75;
-    opacity: 0.45;
-  }
-  .ps-mono__diamond {
-    fill: var(--accent);
-    opacity: 0.55;
-  }
-  .ps-mono__namesvg {
-    font-family: var(--serif, Georgia, serif);
-    font-size: 16px;
-    fill: var(--fg-3);
-    font-style: italic;
-    letter-spacing: 0.04em;
-  }
-
-  /* Draw-in animation for the monogram SVG (circumference of r=162 circle ≈ 1018) */
-  .ps-mono__frame {
-    stroke-dasharray: 1018;
-    stroke-dashoffset: 0;
-  }
+  /* the nib takes the headline down on entry — the same clip stroke as the
+     copybook's. JS arms [data-reveal="wait"]; IntersectionObserver flips it to
+     "go" and the clip transitions open. No JS / reduced motion → complete. */
   @media (prefers-reduced-motion: no-preference) {
-    .ps-mono__svg--drawn .ps-mono__frame {
-      animation: ps-mono-draw 1.2s var(--ease) both;
+    .ps-mag__h1, .ps-mag__h2 { clip-path: inset(-30% -8% -30% -4%); }
+    .ps-mag__h1[data-reveal], .ps-mag__h2[data-reveal] {
+      transition: clip-path 1.25s cubic-bezier(0.3, 0, 0.45, 1);
     }
-    .ps-mono__svg--drawn .ps-mono__frame-inner {
-      animation: ps-mono-draw 1.4s var(--ease) 0.1s both;
+    .ps-mag__h2[data-reveal] { transition-duration: 1.05s; transition-delay: 1s; }
+    .ps-mag__h1[data-reveal='wait'], .ps-mag__h2[data-reveal='wait'] {
+      clip-path: inset(-30% 100% -30% -4%);
     }
-    .ps-mono__svg--drawn .ps-mono__letter {
-      animation: ps-mono-letter 0.7s var(--ease) 0.5s both;
+  }
+  .ps-mag__deck {
+    margin: 4.5cqi 3.2cqi 0 auto; max-width: 46cqi;
+    font-size: clamp(15px, 1.7cqi, 25px); line-height: 1.55;
+    font-style: italic; color: var(--fg-2);
+    text-align: right;
+  }
+  .ps-mag__byline {
+    margin: 1.6cqi 3.2cqi 0 auto;
+    font-size: clamp(10px, 1cqi, 14px); letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--fg-3); text-align: right;
+  }
+  .ps-mag__cols {
+    display: grid; grid-template-columns: 1fr 1fr 0.78fr;
+    gap: 3.5cqi; margin-top: 5cqi;
+  }
+  .ps-mag__body {
+    grid-column: 1 / 3;
+    column-count: 2; column-gap: 3.5cqi;
+    font-size: clamp(13px, 1.2cqi, 17px); line-height: 1.72;
+    color: var(--fg-2);
+    text-align: left;
+  }
+  .ps-mag__body p { margin: 0; }
+  .ps-mag__body p + p { margin-top: 1em; text-indent: 1.6em; }
+  .ps-mag__dropcap {
+    float: left;
+    font-size: 5em; line-height: 0.72;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--accent);
+  }
+  .ps-mag__aside {
+    display: flex; flex-direction: column; justify-content: flex-start; gap: 1.6cqi;
+    padding-top: 0.6cqi;
+  }
+  .ps-mag__pq-rule { height: 1px; background: var(--line); }
+  .ps-mag__pull {
+    margin: 0.6cqi 0;
+    font-size: 3.4cqi; line-height: 1.42;
+    color: var(--fg); text-wrap: balance;
+  }
+  .ps-mag__credit {
+    margin: 1.2cqi 0 0;
+    font-size: clamp(10px, 0.95cqi, 13px); line-height: 1.6;
+    font-style: italic; color: var(--fg-3);
+  }
+  .ps-mag__pagefoot {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-top: 5cqi; padding-top: 1cqi; border-top: 1px solid var(--line);
+    font-size: clamp(10px, 1cqi, 14px); letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  @container (max-width: 880px) {
+    .ps-mag__h1, .ps-mag__h2 { font-size: 11.5cqi; }
+    .ps-mag__deck { max-width: 64cqi; }
+    .ps-mag__cols { grid-template-columns: 1fr; gap: 5cqi; }
+    .ps-mag__body { grid-column: 1; }
+    .ps-mag__aside {
+      flex-direction: row; align-items: center; gap: 3cqi;
     }
-    .ps-mono__svg--drawn .ps-mono__namesvg,
-    .ps-mono__svg--drawn .ps-mono__hr,
-    .ps-mono__svg--drawn .ps-mono__diamond {
-      animation: ps-mono-letter 0.5s var(--ease) 0.9s both;
+    .ps-mag__pq-rule { width: 1px; height: auto; align-self: stretch; }
+    .ps-mag__pull { font-size: 5.4cqi; flex: 1; }
+    .ps-mag__credit { max-width: 26cqi; }
+  }
+  @container (max-width: 560px) {
+    .ps-mag__h1, .ps-mag__h2 { font-size: 13.2cqi; }
+    .ps-mag__h2 { margin-right: 0; }
+    .ps-mag__deck { max-width: 100%; text-align: left; margin-left: 0; margin-top: 8cqi; font-size: 4.4cqi; }
+    .ps-mag__byline { text-align: left; margin-left: 0; margin-top: 3cqi; }
+    .ps-mag__body { column-count: 1; font-size: 4cqi; }
+    .ps-mag__aside { flex-direction: column; align-items: stretch; gap: 3cqi; }
+    .ps-mag__pq-rule { width: auto; height: 1px; }
+    .ps-mag__pull { font-size: 8.4cqi; }
+    .ps-mag__credit { max-width: 100%; }
+    .ps-mag__folio { letter-spacing: 0.22em; }
+    .ps-mag__folio-mid { display: none; }
+  }
+
+  /* ════════════════════════════════════════════════════════════════════
+     04 — THE COPYBOOK  (theme tokens; ruled sheet on --bg-2)
+     ════════════════════════════════════════════════════════════════════ */
+  .ps-copy {
+    background: var(--bg-2);
+    padding: 3cqi 5cqi 2.6cqi;
+  }
+  .ps-copy__head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi;
+    margin-bottom: 2cqi;
+    font-size: clamp(10px, 1.05cqi, 15px); letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .ps-copy__sheet { width: 100%; }
+  .ps-copy__svg { display: block; width: 100%; height: auto; }
+
+  .ps-copy__rails line {
+    stroke: var(--accent); stroke-width: 1; opacity: 0.13;
+    transition: opacity 0.35s var(--ease);
+  }
+  .ps-copy__svg.is-noguides .ps-copy__rails line { opacity: 0; }
+  .ps-copy__stave line { stroke: var(--fg-3); stroke-width: 0.75; opacity: 0.38; }
+  .ps-copy__stave line.ps-copy__baseline { stroke: var(--fg-2); stroke-width: 1; opacity: 0.55; }
+  .ps-copy__svg.is-narrow .ps-copy__stave--model,
+  .ps-copy__svg.is-narrow .ps-copy__model,
+  .ps-copy__svg.is-narrow .ps-copy__modeltag { display: none; }
+
+  .ps-copy__modeltag {
+    font-family: var(--serif); font-size: 13px; font-style: italic;
+    letter-spacing: 0.08em;
+    fill: var(--fg-3);
+  }
+  .ps-copy__model { fill: var(--fg); opacity: 0.22; }
+  .ps-copy__live  { fill: var(--fg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .ps-copy__live.is-writing {
+      animation: ps-nib 1.15s cubic-bezier(0.3, 0, 0.45, 1) both;
     }
-    @keyframes ps-mono-draw {
-      from { stroke-dashoffset: 1018; opacity: 0.1; }
-      to   { stroke-dashoffset: 0;    opacity: 0.35; }
-    }
-    @keyframes ps-mono-letter {
-      from { opacity: 0; transform: translateY(5px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes ps-nib {
+      from { clip-path: inset(-25% 100% -25% 0); }
+      to   { clip-path: inset(-25% -4% -25% 0); }
     }
   }
 
-  /* Responsive: stack monogram panel on narrow */
-  @container (max-width: 600px) {
-    .ps-mono {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto;
-    }
-    .ps-mono__left {
-      border-right: none;
-      border-bottom: 1px solid var(--line);
-      padding: calc(5 * var(--u)) calc(5 * var(--u)) calc(4 * var(--u));
-    }
-    .ps-mono__right { padding: calc(5 * var(--u)); }
-    .ps-mono__heading { font-size: calc(4.5 * var(--u)); }
-    .ps-mono__sub    { font-size: calc(2.8 * var(--u)); }
-    .ps-mono__label > span { font-size: calc(2.2 * var(--u)); }
-    .ps-mono__input  { font-size: calc(12 * var(--u)); }
-    .ps-mono__and    { font-size: calc(7 * var(--u)); }
-    .ps-mono__nametext { font-size: calc(2.2 * var(--u)); }
-    .ps-mono__nameinput { font-size: calc(2.8 * var(--u)); }
-    .ps-mono__sample-mono { font-size: calc(5 * var(--u)); }
-    .ps-mono__sample-name { font-size: calc(2.2 * var(--u)); }
-    .ps-mono__output { max-width: calc(54 * var(--u)); }
+  .ps-copy__bench {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 2cqi;
+    margin-top: 1.6cqi; padding-top: 1.6cqi;
+    border-top: 1px solid var(--line-soft);
+  }
+  .ps-copy__field { display: flex; flex-direction: column; gap: 0.5rem; flex: 0 1 420px; }
+  .ps-copy__field > span {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3);
+    font-family: var(--font-ui);
+  }
+  .ps-copy__input {
+    font-family: var(--serif); font-size: 17px; font-style: italic;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--line); border-radius: 2px;
+    padding: 9px 12px;
+    transition: border-color 0.2s var(--ease);
+  }
+  .ps-copy__input:focus { outline: none; border-color: var(--accent); }
+  .ps-copy__check {
+    display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-3);
+    font-family: var(--font-ui);
+    padding-bottom: 10px;
+  }
+  .ps-copy__check input { accent-color: var(--accent); }
+
+  @container (max-width: 640px) {
+    .ps-copy { padding: 6cqi 5cqi 5cqi; }
+    .ps-copy__head { flex-direction: column; gap: 0.5cqi; margin-bottom: 4cqi; }
+    .ps-copy__bench { flex-direction: column; align-items: stretch; gap: 3cqi; margin-top: 4cqi; padding-top: 4cqi; }
+    .ps-copy__field { flex: 1 1 auto; }
+    .ps-copy__check { padding-bottom: 0; }
   }
 
-  @container (max-width: 400px) {
-    .ps-mono__inputs { gap: calc(2 * var(--u)); }
-    .ps-mono__samples { flex-direction: row; flex-wrap: wrap; }
-    .ps-mono__sample { flex: 1 1 45%; }
-  }
-
-  /* Invitation responsive */
-  @container (max-width: 480px) {
-    .ps-invite__inner { padding: 6cqi 4cqi 4cqi; gap: 2.4cqi; }
-    .ps-invite__name1,
-    .ps-invite__name2 { font-size: 16cqi; }
-    .ps-invite__amp   { font-size: 13cqi; }
-    .ps-invite__detail { font-size: 2.8cqi; }
-  }
-
-  /* Patisserie responsive */
-  @container (max-width: 520px) {
-    .ps-pat__labels { grid-template-columns: 1fr; }
-    .ps-pat__label--featured { order: -1; }
-    .ps-pat__label-name { font-size: 12cqi; }
-  }
-
-  /* Reduced motion: disable all transitions */
   @media (prefers-reduced-motion: reduce) {
-    .ps-mono__input,
-    .ps-mono__nameinput,
-    .ps-mono__sample,
-    .ps-pat__label,
-    .ps-pat__label::before,
-    .ps-pat__label-name { transition: none; }
+    .ps-maison__tab, .ps-copy__input, .ps-copy__rails line { transition: none; }
   }
 </style>
