@@ -3,291 +3,415 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
-// Real text companions (loaded site-wide in Layout.astro).
+// Serif text companion (loaded site-wide in Layout.astro).
 const serif = "'Spectral', Georgia, serif";
 
-// --- 01 · Live sports match-center (interactive) -------------------------
-// Three matches the user can switch between; tabular figures realign on tab.
+// NOTE (verified against the woff2): Oswald variable carries ONE axis, wght 200–700,
+// and the latin subset's OpenType is ccmp/frac/kern/liga/locl — no tnum, no onum,
+// no italic. Every act below performs the weight axis and, where figures align,
+// the columns are designed not to depend on tabular spacing.
+
+// --- 02 · Tabloid editions (the replate cycle) ---------------------------
+const editions = [
+  {
+    id: 'early', flag: 'EARLY EDITION', l1: 'STORM SHUTS', l2: 'THE HARBOR',
+    deck: 'Gale tops fifty knots overnight — every berth empty by dawn, tugs riding it out in the channel',
+    capt: 'Pier 9, 6:04 a.m. — the gantries locked down as the anemometer broke.',
+  },
+  {
+    id: 'late', flag: 'LATE CITY', l1: 'HARBOR BACK —', l2: 'AT A PRICE',
+    deck: 'Channel reopens at noon; pilots run the first convoy in, salvage bill put at $4 million',
+    capt: 'Midday, the breakwater — the first container ship takes the channel.',
+  },
+  {
+    id: 'final', flag: 'FINAL ★★★', l1: 'CRANE No. 9', l2: 'COMES DOWN',
+    deck: 'Storm-cracked gantry demolished at dusk before a crowd of hundreds; port vows rebuild by spring',
+    capt: 'Dusk: forty years of skyline folds into the basin in eleven seconds.',
+  },
+];
+const ed0 = editions[0];
+
+// --- 03 · Live match centre ----------------------------------------------
 const matches = [
   {
-    id: 'a', comp: 'Premier League', venue: 'Emirates Stadium', status: "78'", live: true,
-    home: { name: 'ARSENAL', sh: 'ARS', g: 2 },
-    away: { name: 'CHELSEA', sh: 'CHE', g: 1 },
+    id: 'a', comp: 'Matchweek 34 · The Derby', venue: 'Empire Stadium', status: "78'", live: true,
+    home: { name: 'CITY', sh: 'CIT', g: 2 },
+    away: { name: 'UNITED', sh: 'UTD', g: 1 },
     stats: [
       ['Possession', 58, 42],
       ['Shots', 14, 9],
       ['On target', 6, 3],
       ['Corners', 7, 4],
-      ['xG', 2.1, 1.3],
+      ['Fouls', 8, 13],
     ] as [string, number, number][],
     events: [
-      ['12', 'GOAL', 'Saka', 'home'],
-      ['34', 'GOAL', 'Palmer', 'away'],
-      ['52', 'YEL', 'Rice', 'home'],
-      ['61', 'GOAL', 'Ødegaard', 'home'],
-      ['68', 'SUB', 'Jesus', 'home'],
-      ['74', 'YEL', 'Caicedo', 'away'],
-      ['77', 'SUB', 'Nkunku', 'away'],
+      ['12', 'GOAL', 'Okafor', 'home'],
+      ['34', 'GOAL', 'Brennan', 'away'],
+      ['52', 'YEL', 'Marsh', 'home'],
+      ['61', 'GOAL', 'Da Costa', 'home'],
+      ['68', 'SUB', 'Ferreira', 'home'],
+      ['74', 'YEL', 'Adeyemi', 'away'],
+      ['77', 'SUB', 'Kowalski', 'away'],
     ] as [string, string, string, string][],
   },
   {
-    id: 'b', comp: 'Premier League', venue: 'Anfield', status: 'FT', live: false,
-    home: { name: 'LIVERPOOL', sh: 'LIV', g: 3 },
-    away: { name: 'MAN CITY', sh: 'MCI', g: 3 },
+    id: 'b', comp: 'Matchweek 34', venue: 'The Hollows', status: 'FT', live: false,
+    home: { name: 'ROVERS', sh: 'ROV', g: 3 },
+    away: { name: 'ALBION', sh: 'ALB', g: 3 },
     stats: [
       ['Possession', 44, 56],
       ['Shots', 11, 17],
       ['On target', 5, 7],
       ['Corners', 3, 9],
-      ['xG', 2.4, 2.8],
+      ['Fouls', 12, 7],
     ] as [string, number, number][],
     events: [
-      ['08', 'GOAL', 'Haaland', 'away'],
-      ['23', 'GOAL', 'Salah', 'home'],
-      ['41', 'YEL', 'Rodri', 'away'],
-      ['55', 'GOAL', 'Díaz', 'home'],
-      ['67', 'GOAL', 'Foden', 'away'],
-      ['81', 'GOAL', 'Núñez', 'home'],
-      ['90', 'GOAL', 'Doku', 'away'],
+      ['08', 'GOAL', 'Veld', 'away'],
+      ['23', 'GOAL', 'Murphy', 'home'],
+      ['41', 'YEL', 'Sankoh', 'away'],
+      ['55', 'GOAL', 'Pittman', 'home'],
+      ['67', 'GOAL', 'Reyes', 'away'],
+      ['81', 'GOAL', 'Murphy', 'home'],
+      ['90', 'GOAL', 'Veld', 'away'],
     ] as [string, string, string, string][],
   },
   {
-    id: 'c', comp: 'Champions League', venue: 'Santiago Bernabéu', status: "23'", live: true,
-    home: { name: 'REAL MADRID', sh: 'RMA', g: 0 },
-    away: { name: 'BAYERN', sh: 'BAY', g: 1 },
+    id: 'c', comp: 'Cup · Quarter-final', venue: 'Cathedral Road', status: "23'", live: true,
+    home: { name: 'ATHLETIC', sh: 'ATH', g: 0 },
+    away: { name: 'WANDERERS', sh: 'WDR', g: 1 },
     stats: [
       ['Possession', 51, 49],
       ['Shots', 4, 6],
       ['On target', 1, 2],
       ['Corners', 2, 3],
-      ['xG', 0.4, 0.9],
+      ['Fouls', 4, 5],
     ] as [string, number, number][],
     events: [
-      ['09', 'YEL', 'Rüdiger', 'home'],
-      ['19', 'GOAL', 'Kane', 'away'],
-      ['21', 'YEL', 'Tchouaméni', 'home'],
+      ['09', 'YEL', 'Brandt', 'home'],
+      ['19', 'GOAL', 'Essien', 'away'],
+      ['21', 'YEL', 'Toure', 'home'],
     ] as [string, string, string, string][],
   },
 ];
 const m0 = matches[0];
 
-// --- 03 · Departure board ------------------------------------------------
-// [time, destination, platform, status, revised, minsFromNow, operator]
-const departures = [
-  ['07:42', 'EDINBURGH WAVERLEY', '4', 'ON TIME', '', 4, 'LNER'],
-  ['07:48', 'OXFORD', '8', 'ON TIME', '', 10, 'GWR'],
-  ['07:55', 'MANCHESTER PICCADILLY', '11', 'ON TIME', '', 17, 'AVANTI'],
-  ['08:03', 'BIRMINGHAM NEW STREET', '2', 'DELAYED', '08:19', 25, 'AVANTI'],
-  ['08:10', 'LEEDS', '6', 'ON TIME', '', 32, 'LNER'],
-  ['08:18', 'BRISTOL TEMPLE MEADS', '9', 'BOARDING', '', 40, 'GWR'],
-  ['08:27', 'CARDIFF CENTRAL', '13', 'ON TIME', '', 49, 'GWR'],
-  ['08:34', 'NEWCASTLE', '5', 'CANCELLED', '', 56, 'LNER'],
-  ['08:41', 'NORWICH', '10', 'ON TIME', '', 63, 'GA'],
-] as [string, string, string, string, string, number, string][];
+// --- 04 · Record sleeve --------------------------------------------------
+const sideA = [
+  ['Uptown Local', '6:42'],
+  ['Ninth Avenue', '5:18'],
+  ['Half Past Blue', '7:05'],
+] as [string, string][];
+const sideB = [
+  ['The Turnstile', '4:56'],
+  ['Della', '6:11'],
+  ['Last Car Home', '8:24'],
+] as [string, string][];
+const spines = [
+  { cat: 'CR-4125', artist: 'RAY FELTON TRIO', title: 'NIGHT WORK', w: 300 },
+  { cat: 'CR-4126', artist: 'DELLA MAYES', title: 'CROSSTOWN', w: 500 },
+  { cat: 'CR-4127', artist: 'CURTIS LANE QUARTET', title: 'UPTOWN LOCAL', now: true, w: 700 },
+];
 ---
 <div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
 
-  <!-- 01 — interactive live sports match-center (true device scale) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — live match centre, real device scale</span></figcaption>
-    <div class="iu__scene iu__scene--phone">
-      <div class="iu__device sb" data-sb>
-        <div class="sb__chrome">
-          <span class="sb__time">9:41</span>
-          <span class="sb__brand">MATCHDAY</span>
-          <span class="sb__status">
-            <svg class="sb__wifi" viewBox="0 0 16 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect class="sb__wifi-off" x="12" y="0" width="3" height="12" rx="0.6"/></svg>
-            <svg class="sb__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="15" height="8" rx="1" fill="currentColor"/></svg>
-          </span>
-        </div>
-
-        <div class="sb__tabs" role="tablist">
-          {matches.map((mt, i) => (
-            <button class={`sb__tab ${i === 0 ? 'is-on' : ''}`} data-tab={mt.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
-              <span class="sb__tab-comp">{mt.comp}</span>
-              <span class="sb__tab-score">
-                <em>{mt.home.sh}</em>
-                <b>{mt.home.g}–{mt.away.g}</b>
-                <em>{mt.away.sh}</em>
-              </span>
-              <span class={`sb__tab-min ${mt.live ? 'is-live' : ''}`}>{mt.status}</span>
-            </button>
-          ))}
-        </div>
-
-        <div class="sb__hero" data-hero>
-          <span class={`sb__badge ${m0.live ? 'is-live' : ''}`} data-status>
-            <i class="sb__pulse"></i><span data-statustxt>{m0.live ? `LIVE · ${m0.status}` : 'FULL TIME'}</span>
-          </span>
-          <div class="sb__line">
-            <span class="sb__team sb__team--h" data-hname>{m0.home.name}</span>
-            <span class="sb__nums"><b class="sb__num--h" data-hg>{m0.home.g}</b><span class="sb__dash">–</span><b class="sb__num--a" data-ag>{m0.away.g}</b></span>
-            <span class="sb__team sb__team--a" data-aname>{m0.away.name}</span>
-          </div>
-          <span class="sb__venue" data-venue>{m0.venue}</span>
-        </div>
-
-        <div class="sb__stats" data-stats>
-          {m0.stats.map((s) => {
-            const total = s[1] + s[2];
-            return (
-            <div class="sb__stat" data-stat>
-              <span class="sb__stat-k" data-sk>{s[0]}</span>
-              <span class="sb__stat-v sb__stat-v--h" data-sh>{s[1]}{s[0]==='Possession'?'%':''}</span>
-              <span class="sb__stat-track">
-                <i class="sb__stat-fill sb__stat-fill--h" data-fillh style={`width:${(s[1]/total)*100}%`}></i>
-                <i class="sb__stat-fill sb__stat-fill--a" data-filla style={`width:${(s[2]/total)*100}%`}></i>
-              </span>
-              <span class="sb__stat-v sb__stat-v--a" data-sa>{s[2]}{s[0]==='Possession'?'%':''}</span>
-            </div>
-          );})}
-        </div>
-
-        <div class="sb__feed-h"><span>Match feed</span><span class="sb__feed-key"><i class="sb__key sb__key--h"></i>Home<i class="sb__key sb__key--a"></i>Away</span></div>
-        <ul class="sb__feed" data-feed>
-          {m0.events.slice().reverse().map((e) => (
-            <li class={`sb__ev sb__ev--${e[3]}`}>
-              <span class="sb__ev-min">{e[0]}'</span>
-              <span class={`sb__ev-tag sb__ev-tag--${e[1].toLowerCase()}`}>{e[1]}</span>
-              <span class="sb__ev-name">{e[2]}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-    <p class="iu__hint label">Tap a fixture — the scoreline, two-tone stat bars and feed reload; tabular figures hold their columns.</p>
-  </figure>
-
-  <!-- 02 — front-page broadside -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the broadside, display gothic over a serif text face</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="paper" data-paper data-wght="700">
-        <div class="paper__masthead">
-          <div class="paper__rule paper__rule--top"></div>
-          <div class="paper__nameplate">
-            <span class="paper__flank">
-              <b>VOL. CXXXVIII</b>
-              <i>No. 24,118</i>
-            </span>
-            <h3 class="paper__title">The Clarion</h3>
-            <span class="paper__flank paper__flank--r">
-              <b>LATE CITY EDITION</b>
-              <i>Friday, June 6 · 15¢</i>
-            </span>
-          </div>
-          <div class="paper__rule paper__rule--bottom"></div>
-          <div class="paper__motto">&ldquo;The tall, narrow voice of the broadside&rdquo; · Printed in this city since 1887</div>
-        </div>
-
-        <div class="paper__grid">
-          <article class="paper__lead">
-            <span class="paper__kicker">The Front Page · Special Report</span>
-            <h4 class="paper__head" data-head>City Votes to Reclaim the Waterfront</h4>
-            <p class="paper__deck">After a decade of stalled plans, the council approves a sweeping mile-long park — and the largest public works budget in a generation.</p>
-            <div class="paper__byline"><b>By Margaret Ellison</b><span>City Hall Bureau</span></div>
-            <div class="paper__cols">
-              <p><span class="paper__drop">T</span>he vote came just before midnight, nine to four, ending one of the longest debates the chamber has seen this year. Crowds that had waited in the corridors since dusk spilled out onto the marble steps to cheer the result as it was read aloud.</p>
-              <p>Construction is expected to begin in the autumn, with the first stretch of promenade opening to the public by the following summer. Officials called the plan &ldquo;the spine of the next century,&rdquo; and promised the riverfront walk would remain free to enter for good.</p>
-              <p>Opponents warned of cost overruns, but supporters pointed to a generation of residents cut off from the river by rail yards and fences now slated to come down.</p>
-            </div>
-          </article>
-
-          <aside class="paper__rail">
-            <span class="paper__rail-h">Inside Today</span>
-            <ul class="paper__brief">
-              <li><b>Markets</b><span>The index closes at a record high as traders price in a summer rate cut.</span></li>
-              <li><b>Weather</b><span>Clear and warm through the weekend, with afternoon highs near 28°.</span></li>
-              <li><b>Sport</b><span>United clinch the title with a stoppage-time winner at the Hall.</span></li>
-            </ul>
-            <div class="paper__index">
-              <span class="paper__index-h">Closing Bell</span>
-              <div class="paper__quote"><span>FTSE 100</span><b>8,214</b><i class="is-up">+0.9%</i></div>
-              <div class="paper__quote"><span>S&amp;P 500</span><b>5,477</b><i class="is-up">+0.4%</i></div>
-              <div class="paper__quote"><span>Brent Crude</span><b>$81.30</b><i class="is-down">−1.2%</i></div>
-            </div>
-          </aside>
-        </div>
-
-        <div class="paper__control" role="group" aria-label="Headline weight">
-          <span class="paper__control-h">Headline weight</span>
-          <div class="paper__seg">
-            <button class="paper__segbtn" data-wght="300">Light</button>
-            <button class="paper__segbtn" data-wght="500">Medium</button>
-            <button class="paper__segbtn is-on" data-wght="700">Bold</button>
-          </div>
-          <span class="paper__control-note" data-wghtnote>700 · the broadside shout</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">Oswald sets the nameplate, headline and chapter cap; the deck and columns are Spectral. Drive the headline across Oswald's weight axis — the masthead reweights live, the serif columns hold.</p>
-  </figure>
-
-  <!-- 03 — transit departure board (own dark surface) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Wayfinding — departures board, filterable</span></figcaption>
+  <!-- ============ 01 — ILLUSTRATION & COMMERCIAL ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Illustration &amp; commercial — a day-glo show card, after the boxing and soul-revue posters of Globe Poster Printing Corp., Baltimore (est. 1929)</span>
+    </figcaption>
     <div class="iu__scene">
-      <div class="board" data-board>
-        <div class="board__top">
-          <span class="board__title">DEPARTURES</span>
-          <div class="board__filters" role="group" aria-label="Filter departures">
-            <button class="board__filter is-on" data-filter="all">ALL DAY</button>
-            <button class="board__filter" data-filter="soon">NEXT 30 MIN</button>
-            <button class="board__filter" data-filter="running">RUNNING</button>
+      <div class="gp" data-gp>
+        <div class="gp__wing gp__wing--l" aria-hidden="true"><span>SHOW PRINT</span><span>DAY-GLO</span></div>
+        <div class="gp__sheet">
+          <p class="gp__venue">ROYAL THEATRE <i>·</i> 1329 PENNSYLVANIA AVE. <i>·</i> BALTIMORE</p>
+          <p class="gp__strap">IN PERSON · ONE NITE ONLY · FRI. <b>AUG. 14</b> · TWO SHOWS</p>
+          <div class="gp__main">
+            <p class="gp__the">THE</p>
+            <p class="gp__big gp__big--1" data-gp-fit>SOUL</p>
+            <p class="gp__big gp__big--2" data-gp-fit>CYCLONE</p>
+            <p class="gp__revue"><span class="gp__star" aria-hidden="true">★</span>REVUE<span class="gp__star" aria-hidden="true">★</span></p>
           </div>
-          <span class="board__clock" data-clock>07:38</span>
-        </div>
-        <div class="board__head">
-          <span>TIME</span><span>DESTINATION</span><span class="board__c">PLAT</span><span class="board__s">STATUS</span>
-        </div>
-        <div class="board__rows" data-rows>
-          {departures.map((d) => (
-            <div class="board__row" data-mins={d[5]} data-cancelled={d[3] === 'CANCELLED' ? '1' : '0'}>
-              <span class="board__time">{d[0]}</span>
-              <span class="board__dest">{d[1]}<i class="board__op">{d[6]}</i></span>
-              <span class="board__plat">{d[2]}</span>
-              <span class={`board__status board__status--${d[3].toLowerCase()}`}>
-                {d[3] === 'DELAYED' && d[4] ? <><s>{d[0]}</s> {d[4]}</> : d[3]}
-              </span>
+          <div class="gp__panel">
+            <p class="gp__head-act" data-gp-fit>LITTLE EDDIE KING <span>&amp; THE CROWNS</span></p>
+            <p class="gp__support">MISS DELLA MAYES · THE FAIRMOUNT FOUR · KING COLEMAN’S ORCH.</p>
+          </div>
+          <div class="gp__bar">
+            <p class="gp__price">ADVANCE <b>$2.50</b> — AT THE DOOR <b>$3.00</b></p>
+            <p class="gp__doors">DOORS 7:30</p>
+          </div>
+          <div class="gp__ticker" aria-hidden="true">
+            <div class="gp__ticker-track">
+              <span class="gp__ticker-run">TICKETS AT PANDORA RECORD SHOP · SHOWS 8:30 &amp; 11:00 · NO ADVANCE REFUNDS · BRING THIS BILL FOR 25¢ OFF · </span>
+              <span class="gp__ticker-run">TICKETS AT PANDORA RECORD SHOP · SHOWS 8:30 &amp; 11:00 · NO ADVANCE REFUNDS · BRING THIS BILL FOR 25¢ OFF · </span>
             </div>
-          ))}
+          </div>
+          <p class="gp__imprint">CHESAPEAKE SHOW PRINT — BALTO. 1, MD. · POSTED BY PERMIT No. 114</p>
         </div>
-        <div class="board__foot"><span data-count>9 services</span><span class="board__foot-note">Live · updates every 30s</span></div>
+        <div class="gp__wing gp__wing--r" aria-hidden="true"><span>ONE NITE</span><span>BALTO. MD.</span></div>
       </div>
     </div>
-    <p class="iu__hint label">Filter the board — rows drop in and out and the tabular times re-stack, columns never break.</p>
+    <p class="iu__hint label">One sheet, one family: the bill climbs Oswald’s weight axis 300 → 700 like a case of wood type, black over fluorescent panels. The bottom strip runs the showtimes.</p>
   </figure>
 
-  <!-- 04 — event poster, variable weight in motion -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Poster — the headline shout, full wght axis in motion</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="gig">
-        <div class="gig__rail"><span>wght</span><span>200 — 700</span></div>
-        <div class="gig__top">
-          <span>THE UNDERGROUND PRESENTS</span>
-          <span>ALL AGES · DOORS 8PM</span>
+  <!-- ============ 02 — EDITORIAL ============ -->
+  <figure class="iu__item" data-shoot-click="[data-ed='final']">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Editorial — a tabloid hammer front, after the New York <em>Daily News</em> (“Ford to City: Drop Dead,” 1975) and its condensed headline gothic</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="tb" data-tb data-edition="early">
+        <div class="tb__top">
+          <div class="tb__ear tb__ear--l">
+            <b>WEATHER</b>
+            <span>Gale easing by noon, then clearing — Page 2</span>
+          </div>
+          <h3 class="tb__nameplate">THE EXPRESS</h3>
+          <div class="tb__ear tb__ear--r">
+            <b class="tb__flag" data-tb-flag>{ed0.flag}</b>
+            <span>Tuesday, March 3 · 15¢</span>
+          </div>
         </div>
-        <div class="gig__stack">
-          <span class="gig__line gig__line--thin">FRIDAY NIGHT</span>
-          <span class="gig__line gig__line--mid">THE</span>
-          <span class="gig__line gig__line--shout" data-shout style="--d:0s">NIGHT</span>
-          <span class="gig__line gig__line--shout gig__line--accent" data-shout style="--d:-2.3s">EDITION</span>
-          <span class="gig__line gig__line--thin">LIVE AT THE HALL</span>
+        <div class="tb__lede">
+          <p class="tb__kick">PORT IN CHAOS · SPECIAL HARBOR DESK REPORT</p>
+          <h4 class="tb__hammer">
+            <span class="tb__h1" data-tb-l1>{ed0.l1}</span>
+            <span class="tb__h2" data-tb-l2>{ed0.l2}</span>
+          </h4>
+          <p class="tb__deck" data-tb-deck>{ed0.deck}</p>
         </div>
-        <div class="gig__foot">
-          <span>SAT · 21 NOV · DOWNTOWN HALL A</span>
-          <span class="gig__price">£18 ADV</span>
+        <div class="tb__split">
+          <div class="tb__photo" aria-hidden="true">
+            <i class="tb__photo-crane"></i>
+            <i class="tb__photo-water"></i>
+            <p class="tb__capt" data-tb-capt>{ed0.capt}</p>
+          </div>
+          <div class="tb__copy">
+            <p class="tb__byline">By <b>RAY DELGADO</b> · Harbor Bureau</p>
+            <p><span class="tb__drop">T</span>he first mooring line parted at four in the morning, and by first light the harbormaster had done what no storm since 1962 has forced: closed the channel, both directions, to everything that floats.</p>
+            <p>Longshore crews who reported for the dawn shift were sent home with a day’s pay. The pilots’ association called the swell at the breakwater “the worst working water in a generation,” and the port authority would not put a number on the damage — though everyone on the pier could see Crane No. 9 leaning two degrees out of true.</p>
+            <p class="tb__jump">Continued on Page 3 · Photos, Pages 14–15</p>
+          </div>
+        </div>
+        <div class="tb__replate" role="group" aria-label="Edition">
+          <span class="tb__replate-k">REPLATE ☞</span>
+          {editions.map((e, i) => (
+            <button class={`tb__slug ${i === 0 ? 'is-on' : ''}`} data-ed={e.id}>{e.flag.replace(' ★★★','')}</button>
+          ))}
+          <span class="tb__replate-n">Press run 3 of 3</span>
+        </div>
+        <div class="tb__derby">
+          <span class="tb__derby-l">DERBY NIGHT: <b>CITY v UNITED</b> · KICK-OFF 8:00</span>
+          <span class="tb__derby-r">FOLLOW IT LIVE ▼</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">The two shout lines breathe across the full weight axis, phase-offset — Oswald's whole range, live.</p>
+    <p class="iu__hint label">Work the replate slugs — the front page re-sets through three editions of one harbor story, the hammer recomposing at full weight while the Spectral body columns hold.</p>
   </figure>
+
+  <!-- ============ 03 — WEB & APP UI ============ -->
+  <figure class="iu__item" data-shoot-click="[data-tab='b']">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Web &amp; app UI — a live match centre at real device scale, after FotMob and the broadcast scorebug’s condensed numerals (interactive)</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="mc">
+        <p class="mc__ghost mc__ghost--l" aria-hidden="true">DERBY</p>
+        <p class="mc__ghost mc__ghost--r" aria-hidden="true">NIGHT</p>
+        <aside class="mc__rail">
+          <p class="mc__rail-ghost" aria-hidden="true">DERBY<br />NIGHT</p>
+          <p class="mc__rail-k">TONIGHT’S CARD · MATCHWEEK 34</p>
+          {matches.map((mt) => (
+            <div class="mc__rail-row">
+              <span class="mc__rail-team">{mt.home.name}</span>
+              <span class="mc__rail-score">{mt.home.g}–{mt.away.g}</span>
+              <span class="mc__rail-team mc__rail-team--a">{mt.away.name}</span>
+              <span class={`mc__rail-min ${mt.live ? 'is-live' : ''}`}>{mt.status}</span>
+            </div>
+          ))}
+          <p class="mc__rail-note">Kick-offs 8:00 · full commentary on the match centre — tap a fixture.</p>
+        </aside>
+        <div class="mc__phone" data-sb>
+          <div class="mc__chrome">
+            <span class="mc__time">21:18</span>
+            <span class="mc__brand">MATCHDAY</span>
+            <span class="mc__sig" aria-hidden="true">
+              <svg viewBox="0 0 16 12"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/></svg>
+              <svg viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="14" height="8" rx="1" fill="currentColor"/></svg>
+            </span>
+          </div>
+          <div class="mc__tabs" role="tablist">
+            {matches.map((mt, i) => (
+              <button class={`mc__tab ${i === 0 ? 'is-on' : ''}`} data-tab={mt.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+                <span class="mc__tab-score"><em>{mt.home.sh}</em><b>{mt.home.g}–{mt.away.g}</b><em>{mt.away.sh}</em></span>
+                <span class={`mc__tab-min ${mt.live ? 'is-live' : ''}`}>{mt.status}</span>
+              </button>
+            ))}
+          </div>
+          <div class="mc__hero">
+            <span class={`mc__badge ${m0.live ? 'is-live' : ''}`} data-status>
+              <i class="mc__pulse"></i><span data-statustxt>{m0.live ? `LIVE · ${m0.status}` : 'FULL TIME'}</span>
+            </span>
+            <div class="mc__bug" role="img" aria-label="Scoreboard">
+              <span class="mc__bug-side mc__bug-side--h" data-hname>{m0.home.name}</span>
+              <span class="mc__bug-score"><b data-hg>{m0.home.g}</b><i aria-hidden="true">–</i><b class="mc__bug-a" data-ag>{m0.away.g}</b></span>
+              <span class="mc__bug-side mc__bug-side--a" data-aname>{m0.away.name}</span>
+              <span class="mc__bug-min"><b data-minute>{m0.status}</b></span>
+            </div>
+            <span class="mc__venue" data-venue>{m0.comp} · {m0.venue}</span>
+          </div>
+          <div class="mc__stats" data-stats>
+            {m0.stats.map((s) => {
+              const total = s[1] + s[2];
+              return (
+              <div class="mc__stat" data-stat>
+                <span class="mc__stat-k" data-sk>{s[0]}</span>
+                <span class="mc__stat-v mc__stat-v--h" data-sh>{s[1]}{s[0]==='Possession'?'%':''}</span>
+                <span class="mc__stat-track">
+                  <i class="mc__stat-fill mc__stat-fill--h" data-fillh style={`width:${(s[1]/total)*100}%`}></i>
+                  <i class="mc__stat-fill mc__stat-fill--a" data-filla style={`width:${(s[2]/total)*100}%`}></i>
+                </span>
+                <span class="mc__stat-v mc__stat-v--a" data-sa>{s[2]}{s[0]==='Possession'?'%':''}</span>
+              </div>
+            );})}
+          </div>
+          <div class="mc__feed-h"><span>Match feed</span><span class="mc__feed-key"><i class="mc__key mc__key--h"></i>Home<i class="mc__key mc__key--a"></i>Away</span></div>
+          <ul class="mc__feed" data-feed>
+            {m0.events.slice().reverse().map((e) => (
+              <li class={`mc__ev mc__ev--${e[3]}`}>
+                <span class="mc__ev-min">{e[0]}'</span>
+                <span class={`mc__ev-tag mc__ev-tag--${e[1].toLowerCase()}`}>{e[1]}</span>
+                <span class="mc__ev-name">{e[2]}</span>
+              </li>
+            ))}
+          </ul>
+          <template data-ev-tpl>
+            <li class="mc__ev">
+              <span class="mc__ev-min"></span>
+              <span class="mc__ev-tag"></span>
+              <span class="mc__ev-name"></span>
+            </li>
+          </template>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Tap a fixture — score, momentum bars and the feed reload. Thirteen-pixel labels stay readable because the tall x-height is what lets Oswald run this narrow.</p>
+  </figure>
+
+  <!-- ============ 04 — BRANDING & IDENTITY ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Branding &amp; identity — a jazz label system, after Reid Miles’s type-led Blue Note sleeves (1956–67): one gothic, two inks, cropped hard</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="rv" data-rv data-ink="0">
+        <div class="rv__front" data-rv-front role="button" tabindex="0" aria-label="Proof the next duotone ink pair">
+          <div class="rv__label-row">
+            <span class="rv__mark" aria-hidden="true">C</span>
+            <span class="rv__label-t">CRESCENT RECORDS · NEW YORK 23</span>
+            <span class="rv__cat">CR-4127</span>
+          </div>
+          <div class="rv__title">
+            <p class="rv__t1">UPTOWN</p>
+            <p class="rv__t2">LOCAL</p>
+          </div>
+          <div class="rv__artist">
+            <p class="rv__a1">THE CURTIS LANE QUARTET</p>
+            <p class="rv__a2">CURTIS LANE, tenor saxophone · RAY FELTON, piano · BILL MOTT, bass · PETE DANIELS, drums</p>
+          </div>
+          <span class="rv__fid">HIGH FIDELITY</span>
+        </div>
+        <div class="rv__side">
+          <div class="rv__spines">
+            <p class="rv__spines-k">THE SPINE IS THE SYSTEM — ONE GOTHIC, GRADED BY WEIGHT · SERIES CR-4100</p>
+            {spines.map((s) => (
+              <div class={`rv__spine ${s.now ? 'is-now' : ''}`}>
+                <span class="rv__spine-cat">{s.cat}</span>
+                <span class="rv__spine-artist">{s.artist}</span>
+                <span class="rv__spine-title" style={`font-weight:${s.w}`} data-rv-now={s.now ? '' : undefined}>{s.title}</span>
+                <span class="rv__spine-w">wght {s.w}</span>
+                <span class="rv__spine-lbl">CRESCENT</span>
+              </div>
+            ))}
+          </div>
+          <div class="rv__back">
+            <div class="rv__back-col">
+              <p class="rv__side-k">SIDE ONE</p>
+              {sideA.map((t) => (
+                <p class="rv__track"><span>{t[0]}</span><i></i><span>{t[1]}</span></p>
+              ))}
+            </div>
+            <div class="rv__back-col">
+              <p class="rv__side-k">SIDE TWO</p>
+              {sideB.map((t) => (
+                <p class="rv__track"><span>{t[0]}</span><i></i><span>{t[1]}</span></p>
+              ))}
+            </div>
+            <p class="rv__micro">LONG PLAYING <b class="rv__frac">33 1/3</b> R.P.M. MICROGROOVE · RECORDED AT BERGEN ST. STUDIOS · ENGINEER: R. V. GELLER</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Tap or hover the cover to proof the press’s three duotone ink pairs — orange, blue, green over black. The 33 1/3 is a true typographic fraction (<code>frac</code>, verified in the file).</p>
+  </figure>
+
+  <!-- ============ 05 — INTERACTIVE & EXPERIMENTAL ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-cf-preset='2']">
+    <figcaption class="iu__cap">
+      <span class="index-num">05</span>
+      <span class="label">Interactive &amp; experimental — <em>Counting Heads</em>, a copyfitting instrument; width-graded gothics like ATF’s Alternate Gothic (M. F. Benton, 1903) were cut to win exactly this game</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="cf" data-cf style="--colw:78%">
+        <div class="cf__head-row">
+          <h4 class="cf__name">COUNTING HEADS</h4>
+          <p class="cf__sub">The composing-room problem: a fixed column, a head that must fill it. Alternate Gothic shipped in three widths to solve it; Oswald solves it with one live axis. The instrument finds the exact weight where the line fills the measure.</p>
+        </div>
+        <div class="cf__stage">
+          <div class="cf__dead cf__dead--l" aria-hidden="true"></div>
+          <div class="cf__col" data-cf-col>
+            <span class="cf__colrule cf__colrule--l" aria-hidden="true"></span>
+            <span class="cf__headline" data-cf-head>STORM SHUTS THE HARBOR</span>
+            <span class="cf__colrule cf__colrule--r" aria-hidden="true"></span>
+          </div>
+          <div class="cf__dead cf__dead--r" aria-hidden="true"></div>
+        </div>
+        <p class="cf__slug"><b>THE EXPRESS</b><span>FINAL ★★★</span><span>PAGE 1</span><span data-cf-cols>COLS 1–5 OF 6</span><span>HEAD: SCHEDULE A · 1 LINE · U&amp;LC OFF</span></p>
+        <div class="cf__read">
+          <span class="cf__r"><b data-cf-wght>—</b><i>wght</i></span>
+          <span class="cf__r"><b data-cf-picas>—</b><i>picas</i></span>
+          <span class="cf__r"><b data-cf-chars>—</b><i>characters</i></span>
+          <span class="cf__verdict" data-cf-verdict>FITS</span>
+        </div>
+        <div class="cf__ctrl">
+          <label class="cf__measure">
+            <span>COLUMN MEASURE</span>
+            <input type="range" min="34" max="100" step="1" value="78" data-cf-width aria-label="Column measure" />
+          </label>
+          <label class="cf__write">
+            <span>WRITE THE HEAD</span>
+            <input type="text" maxlength="26" value="STORM SHUTS THE HARBOR" data-cf-input aria-label="Headline text" />
+          </label>
+          <div class="cf__presets" role="group" aria-label="Headline schedule">
+            <button class="cf__preset" data-cf-preset="0">MAYOR VOWS VETO</button>
+            <button class="cf__preset" data-cf-preset="1">LAST TRAIN OUT TONIGHT</button>
+            <button class="cf__preset" data-cf-preset="2">EIGHT-ALARM FIRE ON DOCK STREET</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the measure or write your own head — the instrument solves the weight axis live so the line exactly fills the column. Too long even at 200? That’s a bust: cut the head.</p>
+  </figure>
+
 </div>
 
-<script id="oswald-sb-data" type="application/json" set:html={JSON.stringify(matches)} is:inline></script>
+<script id="oswald-iu-data" type="application/json" set:html={JSON.stringify({ editions, matches })} is:inline></script>
 
 <script>
+  type Edition = { id: string; flag: string; l1: string; l2: string; deck: string; capt: string };
   type Match = {
     id: string; comp: string; venue: string; status: string; live: boolean;
     home: { name: string; sh: string; g: number };
@@ -295,34 +419,97 @@ const departures = [
     stats: [string, number, number][];
     events: [string, string, string, string][];
   };
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const island = document.getElementById('oswald-sb-data');
-  let matches: Match[] = [];
-  try { matches = island ? JSON.parse(island.textContent || '[]') : []; } catch { matches = []; }
-  const byId: Record<string, Match> = {};
-  matches.forEach((m) => (byId[m.id] = m));
+  const island = document.getElementById('oswald-iu-data');
+  let data: { editions: Edition[]; matches: Match[] } = { editions: [], matches: [] };
+  try { data = island ? JSON.parse(island.textContent || '{}') : data; } catch {}
 
+  // ===== 01 · Globe show card — wood-type copyfit =====
+  // A show card forces every display line full measure: size each big line so
+  // its set width exactly fills the sheet column, whatever the act's width.
+  document.querySelectorAll<HTMLElement>('[data-gp]').forEach((gp) => {
+    const lines = Array.from(gp.querySelectorAll<HTMLElement>('[data-gp-fit]'));
+    if (!lines.length) return;
+    let raf = 0;
+    const fit = () => {
+      raf = 0;
+      lines.forEach((el) => {
+        const target = el.clientWidth;
+        if (!target) return;
+        el.style.fontSize = '100px';
+        const w = el.scrollWidth;
+        if (w > 0) el.style.fontSize = `${Math.floor(100 * (target / w) * 0.995 * 10) / 10}px`;
+      });
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(fit); };
+    if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(gp);
+    document.fonts.ready.then(schedule);
+    schedule();
+  });
+
+  // ===== 02 · Tabloid replate =====
+  document.querySelectorAll<HTMLElement>('[data-tb]').forEach((tb) => {
+    const byId: Record<string, Edition> = {};
+    data.editions.forEach((e) => (byId[e.id] = e));
+    const flag = tb.querySelector('[data-tb-flag]') as HTMLElement;
+    const l1 = tb.querySelector('[data-tb-l1]') as HTMLElement;
+    const l2 = tb.querySelector('[data-tb-l2]') as HTMLElement;
+    const deck = tb.querySelector('[data-tb-deck]') as HTMLElement;
+    const capt = tb.querySelector('[data-tb-capt]') as HTMLElement;
+    tb.querySelectorAll<HTMLButtonElement>('[data-ed]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const e = byId[btn.dataset.ed || ''];
+        if (!e) return;
+        tb.dataset.edition = e.id;
+        flag.textContent = e.flag;
+        l1.textContent = e.l1;
+        l2.textContent = e.l2;
+        deck.textContent = e.deck;
+        capt.textContent = e.capt;
+        tb.querySelectorAll('[data-ed]').forEach((b) => b.classList.toggle('is-on', b === btn));
+      })
+    );
+  });
+
+  // ===== 03 · Match centre (template-cloned feed rows) =====
   document.querySelectorAll<HTMLElement>('[data-sb]').forEach((sb) => {
-    if (!matches.length) return;
+    if (!data.matches.length) return;
+    const byId: Record<string, Match> = {};
+    data.matches.forEach((m) => (byId[m.id] = m));
     const q = (s: string) => sb.querySelector(s) as HTMLElement | null;
     const hg = q('[data-hg]')!, ag = q('[data-ag]')!;
     const hname = q('[data-hname]')!, aname = q('[data-aname]')!;
     const venue = q('[data-venue]')!;
     const badge = q('[data-status]')!, statustxt = q('[data-statustxt]')!;
-    const statsWrap = q('[data-stats]')!;
+    const minute = q('[data-minute]')!;
     const feed = q('[data-feed]')!;
-    const statRows = Array.from(statsWrap.querySelectorAll('[data-stat]'));
+    const tpl = sb.querySelector('[data-ev-tpl]') as HTMLTemplateElement;
+    const statRows = Array.from(sb.querySelectorAll('[data-stat]'));
+    let currentId = data.matches[0].id;
+
+    // The single-axis performance, inside the device: numerals land light and
+    // snap to the 700 cut, like a scorebug taking a goal.
+    const snap = (els: HTMLElement[]) => {
+      if (reduce) { els.forEach((el) => (el.style.fontVariationSettings = "'wght' 700")); return; }
+      els.forEach((el) => { el.style.transition = 'none'; el.style.fontVariationSettings = "'wght' 200"; });
+      void els[0].offsetWidth;
+      els.forEach((el) => { el.style.transition = ''; el.style.fontVariationSettings = "'wght' 700"; });
+    };
 
     function render(id: string) {
       const m = byId[id];
       if (!m) return;
+      currentId = id;
       hg.textContent = String(m.home.g);
       ag.textContent = String(m.away.g);
       hname.textContent = m.home.name;
       aname.textContent = m.away.name;
-      venue.textContent = m.venue;
+      venue.textContent = `${m.comp} · ${m.venue}`;
       badge.classList.toggle('is-live', m.live);
       statustxt.textContent = m.live ? `LIVE · ${m.status}` : 'FULL TIME';
+      minute.textContent = m.status;
+      snap([hg, ag, minute]);
 
       statRows.forEach((row, i) => {
         const s = m.stats[i];
@@ -340,18 +527,13 @@ const departures = [
 
       feed.replaceChildren();
       m.events.slice().reverse().forEach((e) => {
-        const li = document.createElement('li');
-        li.className = `sb__ev sb__ev--${e[3]}`;
-        const min = document.createElement('span');
-        min.className = 'sb__ev-min';
-        min.textContent = `${e[0]}'`;
-        const tag = document.createElement('span');
-        tag.className = `sb__ev-tag sb__ev-tag--${e[1].toLowerCase()}`;
+        const li = (tpl.content.firstElementChild as HTMLElement).cloneNode(true) as HTMLElement;
+        li.classList.add(`mc__ev--${e[3]}`);
+        (li.querySelector('.mc__ev-min') as HTMLElement).textContent = `${e[0]}'`;
+        const tag = li.querySelector('.mc__ev-tag') as HTMLElement;
+        tag.classList.add(`mc__ev-tag--${e[1].toLowerCase()}`);
         tag.textContent = e[1];
-        const name = document.createElement('span');
-        name.className = 'sb__ev-name';
-        name.textContent = e[2];
-        li.append(min, tag, name);
+        (li.querySelector('.mc__ev-name') as HTMLElement).textContent = e[2];
         feed.appendChild(li);
       });
 
@@ -365,337 +547,752 @@ const departures = [
     sb.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) =>
       btn.addEventListener('click', () => render(btn.dataset.tab!))
     );
-  });
 
-  // --- 02 · broadside headline-weight toggle (drives Oswald's wght axis) ---
-  document.querySelectorAll<HTMLElement>('[data-paper]').forEach((paper) => {
-    const note = paper.querySelector('[data-wghtnote]') as HTMLElement | null;
-    const labels: Record<string, string> = {
-      '300': '300 · the quiet read',
-      '500': '500 · the working weight',
-      '700': '700 · the broadside shout',
-    };
-    paper.querySelectorAll<HTMLButtonElement>('.paper__segbtn[data-wght]').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        const w = btn.dataset.wght!;
-        paper.querySelectorAll('.paper__segbtn[data-wght]').forEach((b) => b.classList.remove('is-on'));
-        btn.classList.add('is-on');
-        paper.setAttribute('data-wght', w);
-        if (note) note.textContent = labels[w] || '';
-      })
-    );
-  });
-
-  // --- 03 · departures filter (user-driven, reduced-motion safe) ---
-  document.querySelectorAll<HTMLElement>('[data-board]').forEach((board) => {
-    const rowsWrap = board.querySelector('[data-rows]') as HTMLElement;
-    const rows = Array.from(rowsWrap.querySelectorAll<HTMLElement>('.board__row'));
-    const count = board.querySelector('[data-count]') as HTMLElement;
-    function apply(filter: string) {
-      let shown = 0;
-      rows.forEach((row) => {
-        const mins = +(row.dataset.mins || '0');
-        const cancelled = row.dataset.cancelled === '1';
-        let ok = true;
-        if (filter === 'soon') ok = mins <= 30;
-        else if (filter === 'running') ok = !cancelled;
-        row.classList.toggle('is-hidden', !ok);
-        if (ok) shown++;
-      });
-      count.textContent = `${shown} service${shown === 1 ? '' : 's'}`;
-    }
-    board.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        board.querySelectorAll('[data-filter]').forEach((b) => b.classList.remove('is-on'));
-        btn.classList.add('is-on');
-        apply(btn.dataset.filter!);
-      })
-    );
-  });
-
-  // Ticking clock on the board (reduced-motion: leave static).
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce) {
-    document.querySelectorAll<HTMLElement>('[data-clock]').forEach((el) => {
-      let mins = 7 * 60 + 38;
+    // Live minute: the clock runs while a match is live, the numeral pulsing
+    // up the weight axis on each tick (stilled under reduced motion).
+    if (!reduce) {
       setInterval(() => {
-        mins = (mins + 1) % (24 * 60);
-        const h = String(Math.floor(mins / 60)).padStart(2, '0');
-        const mm = String(mins % 60).padStart(2, '0');
-        el.textContent = `${h}:${mm}`;
-      }, 4000);
+        const m = byId[currentId];
+        if (!m || !m.live) return;
+        const n = parseInt(m.status, 10);
+        if (Number.isNaN(n) || n >= 90) return;
+        m.status = `${n + 1}'`;
+        minute.textContent = m.status;
+        statustxt.textContent = `LIVE · ${m.status}`;
+        snap([minute]);
+        const tabMin = sb.querySelector(`[data-tab="${m.id}"] .mc__tab-min`);
+        if (tabMin) tabMin.textContent = m.status;
+      }, 6000);
+    }
+  });
+
+  // ===== 04 · Sleeve duotone proofing =====
+  document.querySelectorAll<HTMLElement>('[data-rv]').forEach((rv) => {
+    const front = rv.querySelector('[data-rv-front]') as HTMLElement;
+    let ink = 0;
+    const next = () => {
+      ink = (ink + 1) % 3;
+      rv.dataset.ink = String(ink);
+      // replay the press pass: headline jolts off-register, now-spine pulses 200→its cut
+      rv.classList.remove('is-pressing');
+      void rv.offsetWidth;
+      rv.classList.add('is-pressing');
+    };
+    front.addEventListener('click', next);
+    front.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); } });
+    if (!reduce) front.addEventListener('mouseenter', next);
+  });
+
+  // ===== 05 · Counting Heads — solve wght so the line fills the measure =====
+  document.querySelectorAll<HTMLElement>('[data-cf]').forEach((cf) => {
+    const head = cf.querySelector('[data-cf-head]') as HTMLElement;
+    const col = cf.querySelector('[data-cf-col]') as HTMLElement;
+    const width = cf.querySelector('[data-cf-width]') as HTMLInputElement;
+    const input = cf.querySelector('[data-cf-input]') as HTMLInputElement;
+    const oW = cf.querySelector('[data-cf-wght]') as HTMLElement;
+    const oP = cf.querySelector('[data-cf-picas]') as HTMLElement;
+    const oC = cf.querySelector('[data-cf-chars]') as HTMLElement;
+    const verdict = cf.querySelector('[data-cf-verdict]') as HTMLElement;
+    const cols = cf.querySelector('[data-cf-cols]') as HTMLElement;
+    let raf = 0;
+
+    const setW = (w: number) => { head.style.fontVariationSettings = `'wght' ${w}`; };
+    const wide = () => head.scrollWidth;
+
+    function fit() {
+      raf = 0;
+      const target = col.clientWidth;
+      if (!target) return;
+      let result = 200;
+      let state = 'FITS';
+      setW(200);
+      if (wide() > target) {
+        // teach like a galley proof: say by how much the head busts
+        const over = (wide() - target) / 16;
+        state = `BUST — ${over.toFixed(1)} PICAS OVER · CUT IT`;
+        result = 200;
+      } else {
+        setW(700);
+        if (wide() <= target) {
+          state = 'PADS — FATTEN IT';
+          result = 700;
+        } else {
+          let lo = 200, hi = 700;
+          for (let i = 0; i < 9; i++) {
+            const mid = Math.round((lo + hi) / 2);
+            setW(mid);
+            if (wide() > target) hi = mid; else lo = mid;
+          }
+          result = lo;
+          setW(lo);
+        }
+      }
+      oW.textContent = String(result);
+      oP.textContent = String(Math.round(target / 16));
+      oC.textContent = String(head.textContent?.length || 0);
+      const nCols = Math.max(2, Math.round((Number(width.value) / 100) * 6));
+      cols.textContent = `COLS 1–${nCols} OF 6`;
+      verdict.textContent = state;
+      verdict.dataset.state = state === 'FITS' ? 'fit' : state.startsWith('BUST') ? 'bust' : 'pads';
+    }
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(fit); };
+
+    width.addEventListener('input', () => {
+      cf.style.setProperty('--colw', width.value + '%');
+      schedule();
     });
-  }
+    input.addEventListener('input', () => {
+      head.textContent = (input.value || 'WRITE THE HEAD').toUpperCase();
+      schedule();
+    });
+    cf.querySelectorAll<HTMLButtonElement>('[data-cf-preset]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const t = btn.textContent || '';
+        head.textContent = t;
+        input.value = t;
+        schedule();
+      })
+    );
+    if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(col);
+    document.fonts.ready.then(schedule);
+    schedule();
+  });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ---- Stack pacing: day-glo shout → newsprint → floodlit pitch → pressing
+     plant duotone → composing-room black. The vermilion family ink threads
+     every act: Globe orange, tabloid red, the live badge, the duotone proof,
+     the instrument's verdict lamp. ---- */
+  .iu { gap: clamp(3.25rem, 8vh, 5.5rem); }
+  /* NOTE: never re-declare `.iu__item` margins here — the scoped attribute
+     selector out-specifies the global `.iu__item--bleed` negative margin and
+     breaks every bleed act (jury round 1). Global global.css owns it. */
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .iu * { font-family: var(--fam); }
-
-  /* shared scene framing — matches InUse.astro / inter.astro */
-  .iu__scene {
-    container-type: inline-size;
-    position: relative;
-    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
-    outline: 1px solid var(--line);
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--bg-2);
-  }
+  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
+  .iu__scene { font-family: var(--fam); }
   .iu__scene * { font-family: var(--fam); }
-  .scene-tall { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 10; } }
+  .iu__scene :where(h3, h4, p, ul, figure) { margin: 0; }
+  /* Oswald has no italic — nothing set in it may slant */
+  .iu__scene :where(i, em, cite) { font-style: normal; }
+  .iu__scene button { background: none; border: 0; color: inherit; cursor: pointer; font-family: var(--fam); }
 
-  /* phone-frame variant: a centered device, not a full-bleed scene */
-  .iu__scene--phone {
-    aspect-ratio: 16 / 10;
-    display: grid; place-items: center;
-    padding: clamp(14px, 3cqi, 34px) 0;
+  /* ============================================================
+     01 — GLOBE SHOW CARD · fluorescent ground, black wood-type stack
+     ============================================================ */
+  .gp {
+    --dayglo: #ff4fa3;
+    --dayglo2: #ff6d1f;
+    --dayglo3: #ffe14d;
+    --ink: #16120e;
+    background: var(--ink);
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 880px) 1fr;
   }
-  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
-
-  .iu__device {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    background: var(--bg); overflow: hidden;
+  .gp__wing {
+    background:
+      repeating-linear-gradient(0deg, transparent 0 18px, #ff4fa322 18px 36px),
+      linear-gradient(180deg, var(--dayglo2), #e8482c);
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    padding: clamp(1.5rem, 4cqi, 4rem) 0;
+    overflow: hidden;
   }
-  /* the scoreboard renders as a real phone, sized in px */
-  .iu__scene--phone .sb {
-    position: relative; inset: auto;
-    width: 348px; max-width: 100%; height: 100%; max-height: 660px;
-    aspect-ratio: 348 / 660;
-    border-radius: 30px; border: 1px solid var(--line);
-    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.7), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
+  .gp__wing span {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-size: clamp(14px, 1.8cqi, 26px); font-weight: 700; letter-spacing: 0.42em;
+    color: var(--ink); opacity: 0.82; white-space: nowrap;
   }
-
-  /* ============ 01 · SCOREBOARD (real px, news/sport UI) ============ */
-  /* second hue: a cool slate keyed off --fg, for the away side + surfaces */
-  .sb {
-    font-size: 13px;
-    --away: #6f8cb0;            /* restrained cool counter-hue to the warm accent */
-    --surf: color-mix(in srgb, var(--fg) 4%, var(--bg));
+  .gp__wing--l span { transform: rotate(180deg); }
+  .gp__sheet {
+    background: var(--dayglo);
+    color: var(--ink);
+    text-align: center;
+    display: flex; flex-direction: column;
+    padding-top: 0;
   }
-  .sb__chrome {
-    display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
-    padding: 0.6rem 1.1rem 0.5rem; border-bottom: 1px solid var(--line);
-    background: var(--bg-2); flex: none; border-radius: 30px 30px 0 0;
+  .gp__venue {
+    background: var(--ink); color: #fdf6ea;
+    font-size: clamp(11px, 1.7cqi, 19px); font-weight: 500; letter-spacing: 0.34em;
+    padding: clamp(0.6rem, 1.4cqi, 1rem) 1rem clamp(0.55rem, 1.3cqi, 0.95rem);
+    white-space: nowrap; overflow: hidden;
   }
-  .sb__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
-  .sb__brand { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: var(--accent); }
-  .sb__status { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); }
-  .sb__wifi { width: 15px; height: 11px; }
-  .sb__wifi rect { fill: currentColor; }
-  .sb__wifi .sb__wifi-off { fill: color-mix(in srgb, currentColor 28%, transparent); }
-  .sb__batt { width: 22px; height: 10px; color: var(--fg-2); }
-
-  .sb__tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); flex: none; }
-  .sb__tab {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 9px 6px 10px; border-right: 1px solid var(--line-soft);
-    background: transparent; cursor: pointer; transition: background 0.15s var(--ease);
-    border-bottom: 2px solid transparent; min-width: 0;
+  .gp__venue i { color: var(--dayglo2); }
+  .gp__strap {
+    background: #fdf6ea;
+    font-size: clamp(11px, 1.6cqi, 18px); font-weight: 400; letter-spacing: 0.18em;
+    padding: clamp(0.45rem, 1cqi, 0.8rem) 1rem;
+    border-bottom: 3px solid var(--ink);
   }
-  .sb__tab:last-child { border-right: 0; }
-  .sb__tab:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); }
-  .sb__tab.is-on { border-bottom-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
-  .sb__tab-comp {
-    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--fg-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  .gp__strap b { font-weight: 700; }
+  .gp__main { padding: clamp(1rem, 2.6cqi, 2.2rem) clamp(0.75rem, 3cqi, 3rem) clamp(0.8rem, 2cqi, 1.6rem); }
+  .gp__the {
+    font-size: clamp(15px, 2.4cqi, 28px); font-weight: 300; letter-spacing: 0.92em;
+    text-indent: 0.92em; /* optically recentre the tracked-out line */
   }
-  .sb__tab-score { display: flex; align-items: baseline; gap: 5px; }
-  .sb__tab-score em { font-style: normal; font-size: 11px; font-weight: 600; color: var(--fg-2); letter-spacing: 0.04em; }
-  .sb__tab-score b { font-size: 17px; font-weight: 700; font-feature-settings: 'tnum'; letter-spacing: 0.01em; color: var(--fg); }
-  .sb__tab-min { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-3); font-feature-settings: 'tnum'; }
-  .sb__tab-min.is-live { color: var(--accent); }
-  .sb__tab.is-on .sb__tab-comp { color: var(--accent); }
-
-  .sb__hero {
-    flex: none; padding: 14px 18px 13px; text-align: center;
-    border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 78%);
+  .gp__big {
+    line-height: 0.88; font-weight: 700; letter-spacing: 0.005em;
+    white-space: nowrap; /* one line of wood type — the copyfitter sizes it to the measure */
+    /* the Globe overprint: a second pass of orange, a hair off-register */
+    text-shadow: 0.045em 0.045em 0 var(--dayglo2);
   }
-  .sb__badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--fg-3); font-feature-settings: 'tnum'; margin-bottom: 9px;
-    padding: 2px 9px; border-radius: 100px; border: 1px solid var(--line);
+  .gp__big--1 { font-size: clamp(4.6rem, 17.5cqi, 13.5rem); }
+  .gp__big--2 { font-size: clamp(3.5rem, 13.4cqi, 10.3rem); margin-top: 0.02em; }
+  .gp__revue {
+    display: flex; align-items: center; justify-content: center; gap: 0.6em;
+    font-size: clamp(1.5rem, 4.6cqi, 3.6rem); font-weight: 500; letter-spacing: 0.34em;
+    margin-top: clamp(0.5rem, 1.4cqi, 1.1rem);
   }
-  .sb__badge.is-live { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
-  .sb__pulse { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.4; }
-  .sb__badge.is-live .sb__pulse { opacity: 1; }
+  .gp__star { font-size: 0.62em; letter-spacing: 0; transform: translateY(-0.08em); color: #fdf6ea; }
+  .gp__panel {
+    background: var(--dayglo2);
+    border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+    padding: clamp(0.8rem, 2cqi, 1.7rem) clamp(0.75rem, 3cqi, 3rem);
+  }
+  .gp__head-act { font-size: clamp(1.5rem, 5.4cqi, 4.4rem); font-weight: 600; line-height: 1; letter-spacing: 0.01em; white-space: nowrap; }
+  .gp__head-act span { font-weight: 400; font-size: 0.62em; letter-spacing: 0.08em; }
+  .gp__support {
+    font-size: clamp(12px, 2cqi, 22px); font-weight: 400; letter-spacing: 0.12em;
+    margin-top: clamp(0.45rem, 1.1cqi, 0.9rem);
+  }
+  .gp__bar {
+    display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 3cqi, 2.5rem);
+    background: var(--dayglo3);
+    padding: clamp(0.6rem, 1.5cqi, 1.2rem) 1rem;
+  }
+  .gp__price { font-size: clamp(13px, 2.2cqi, 25px); font-weight: 400; letter-spacing: 0.1em; }
+  .gp__price b { font-weight: 700; }
+  .gp__doors {
+    font-size: clamp(11px, 1.7cqi, 19px); font-weight: 700; letter-spacing: 0.1em;
+    background: var(--ink); color: var(--dayglo3);
+    padding: 0.3em 0.8em; border-radius: 100px;
+  }
+  .gp__ticker { background: var(--ink); color: #fdf6ea; overflow: hidden; }
+  .gp__ticker-track { display: flex; width: max-content; }
+  .gp__ticker-run {
+    font-size: clamp(12px, 1.9cqi, 21px); font-weight: 500; letter-spacing: 0.22em;
+    padding: clamp(0.55rem, 1.3cqi, 1rem) 0;
+    white-space: nowrap; flex: none;
+  }
   @media (prefers-reduced-motion: no-preference) {
-    .sb__badge.is-live .sb__pulse { animation: sb-pulse 1.4s var(--ease, ease-in-out) infinite; }
-    @keyframes sb-pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); } 70% { box-shadow: 0 0 0 5px transparent; } }
+    .gp__ticker-track { animation: gp-run 26s linear infinite; }
+    @keyframes gp-run { to { transform: translateX(-50%); } }
   }
-  .sb__line { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
-  .sb__team {
-    font-size: 23px; font-weight: 600; letter-spacing: 0.01em; line-height: 1;
-    text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  .gp__imprint {
+    background: var(--dayglo);
+    font-size: clamp(9px, 1.2cqi, 13px); font-weight: 300; letter-spacing: 0.18em;
+    padding: clamp(0.5rem, 1.2cqi, 0.9rem) 1rem;
+    opacity: 0.75;
   }
-  .sb__team--h { text-align: right; }
-  .sb__team--a { text-align: left; color: var(--fg-2); }
-  .sb__nums { display: flex; align-items: baseline; gap: 6px; }
-  .sb__nums b { font-size: 40px; font-weight: 700; line-height: 0.85; font-feature-settings: 'tnum'; letter-spacing: 0; }
-  .sb__num--a { color: var(--away); }
-  .sb__dash { font-size: 24px; color: var(--fg-3); font-weight: 300; }
-  .sb__venue { display: block; margin-top: 9px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); }
-
-  .sb__stats { flex: none; padding: 12px 18px; display: flex; flex-direction: column; gap: 9px; border-bottom: 1px solid var(--line); }
-  /* labels inline, not stacked: key | home | bidirectional bar | away */
-  .sb__stat { display: grid; grid-template-columns: auto 26px 1fr 26px; align-items: center; gap: 10px; }
-  .sb__stat-k { grid-column: 1; text-align: left; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); white-space: nowrap; }
-  .sb__stat-v { font-size: 12.5px; font-weight: 700; font-feature-settings: 'tnum'; }
-  .sb__stat-v--h { grid-column: 2; text-align: right; color: var(--fg); }
-  .sb__stat-v--a { grid-column: 4; text-align: left; color: var(--away); }
-  .sb__stat-track { grid-column: 3; display: flex; height: 5px; gap: 2px; }
-  .sb__stat-fill { display: block; height: 100%; transition: width 0.5s var(--ease); }
-  .sb__stat-fill--h { background: var(--accent); border-radius: 3px 0 0 3px; margin-left: auto; }
-  .sb__stat-fill--a { background: var(--away); border-radius: 0 3px 3px 0; }
-
-  .sb__feed-h { flex: none; padding: 11px 18px 4px; display: flex; align-items: baseline; justify-content: space-between; }
-  .sb__feed-h > span:first-child { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
-  .sb__feed-key { display: inline-flex; align-items: center; gap: 5px; font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
-  .sb__key { width: 7px; height: 7px; border-radius: 2px; }
-  .sb__key--h { background: var(--accent); }
-  .sb__key--a { background: var(--away); margin-left: 7px; }
-  .sb__feed { flex: 1; overflow: auto; margin: 0; padding: 2px 18px 12px; list-style: none; display: flex; flex-direction: column; gap: 0; }
-  .sb__ev { display: flex; align-items: center; gap: 11px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); }
-  .sb__ev:last-child { border-bottom: 0; }
-  .sb__ev-min { font-size: 12px; font-weight: 600; color: var(--fg-3); font-feature-settings: 'tnum'; min-width: 22px; }
-  .sb__ev-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px; line-height: 1; min-width: 30px; text-align: center; }
-  .sb__ev-tag--goal { background: var(--accent); color: var(--accent-contrast); }
-  .sb__ev-tag--yel { background: #d8a200; color: #1a1500; }
-  .sb__ev-tag--sub { background: color-mix(in srgb, var(--away) 22%, transparent); color: var(--away); }
-  .sb__ev-name { font-size: 14px; font-weight: 500; letter-spacing: 0.01em; }
-  .sb__ev--away { flex-direction: row-reverse; }
-  .sb__ev--away .sb__ev-name { text-align: right; color: var(--fg-2); }
-
-  @container (max-width: 460px) {
-    .sb__team { font-size: 19px; }
-    .sb__nums b { font-size: 33px; }
+  @container (max-width: 900px) {
+    /* minmax(0,1fr): a bare 1fr keeps its auto minimum and the nowrap venue
+       line would blow the track out past the clip — pushing all centered
+       glyphs off-canvas. */
+    .gp { grid-template-columns: minmax(0, 1fr); }
+    .gp__wing { display: none; }
   }
-
-  /* ============ 02 · FRONT PAGE (broadside gothic + Spectral text) ============ */
-  .paper { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4.2cqi 5cqi 0; display: flex; flex-direction: column; overflow: hidden; --bodysize: 2cqi; --bodylead: 1.5; }
-  .paper[data-textsize='compact'] { --bodysize: 1.72cqi; --bodylead: 1.36; }
-  .paper__nameplate { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 0.5cqi solid var(--fg); padding-bottom: 1.5cqi; }
-  .paper__edge { font-size: 2.1cqi; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
-  .paper__edge--r { text-align: right; }
-  .paper__title { font-size: 13cqi; font-weight: 700; letter-spacing: 0.02em; line-height: 0.9; text-align: center; text-transform: uppercase; }
-  .paper__ear { font-size: 1.9cqi; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg-2); text-align: center; padding: 1.2cqi 0; border-bottom: 1px solid var(--line); margin-bottom: 2.5cqi; font-feature-settings: 'tnum'; }
-  .paper__grid { flex: 1; display: grid; grid-template-columns: 1fr 0.42fr; gap: 4cqi; min-height: 0; }
-  .paper__lead { display: flex; flex-direction: column; min-height: 0; }
-  .paper__kicker { font-size: 2cqi; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
-  .paper__head { font-size: 9.5cqi; font-weight: 700; line-height: 0.92; letter-spacing: 0; text-transform: uppercase; margin: 0.6cqi 0 1.4cqi; }
-
-  /* deck + body + briefs set in the serif text companion */
-  .paper__deck { font-family: var(--serif); font-size: 2.7cqi; font-weight: 400; line-height: 1.32; color: var(--fg); max-width: 94%; }
-  .paper__byline { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding: 1.6cqi 0; border-bottom: 1px solid var(--line); margin: 1.6cqi 0; }
-  .paper__cols { columns: 2; column-gap: 3.5cqi; column-rule: 1px solid var(--line-soft); font-family: var(--serif); font-size: var(--bodysize); line-height: var(--bodylead); color: var(--fg-2); transition: font-size 0.3s var(--ease); }
-  .paper__cols p { margin: 0 0 1.2cqi; text-align: justify; hyphens: auto; }
-  .paper__cols p + p { text-indent: 1.6cqi; }
-  .paper__drop { float: left; font-family: var(--fam); font-weight: 700; font-size: 7cqi; line-height: 0.72; padding: 0.4cqi 0.6cqi 0 0; color: var(--accent); text-transform: uppercase; }
-  .paper__rail { border-left: 1px solid var(--line); padding-left: 4cqi; display: flex; flex-direction: column; justify-content: space-between; }
-  .paper__rail-h { font-size: 2cqi; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg); border-bottom: 2px solid var(--accent); padding-bottom: 1cqi; display: block; margin-bottom: 1.6cqi; }
-  .paper__brief p { font-family: var(--serif); font-size: var(--bodysize); line-height: 1.36; color: var(--fg-2); margin: 0 0 1.6cqi; transition: font-size 0.3s var(--ease); }
-  .paper__brief b { font-family: var(--fam); color: var(--fg); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 1.85cqi; }
-  .paper__stand { font-size: 3.4cqi; font-weight: 700; line-height: 1.02; text-transform: uppercase; color: var(--accent); border-top: 1px solid var(--line); padding-top: 2cqi; }
-
-  .paper__control { display: flex; align-items: center; gap: 2cqi; margin-top: 2.2cqi; padding: 1.8cqi 0; border-top: 1px solid var(--line); }
-  .paper__control-h { font-size: 1.7cqi; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3); }
-  .paper__seg { display: inline-flex; border: 1px solid var(--line); border-radius: 100px; overflow: hidden; }
-  .paper__segbtn { font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.8cqi 2.2cqi; color: var(--fg-3); cursor: pointer; background: transparent; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
-  .paper__segbtn + .paper__segbtn { border-left: 1px solid var(--line); }
-  .paper__segbtn:hover { color: var(--fg); }
-  .paper__segbtn.is-on { background: var(--accent); color: var(--accent-contrast); }
-
-  @container (max-width: 540px) {
-    .paper { padding-bottom: 0; }
-    .paper__grid { grid-template-columns: 1fr; gap: 2.5cqi; }
-    .paper__rail { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; padding-top: 2.5cqi; }
-    .paper__cols { columns: 1; }
-    .paper { --bodysize: 3.2cqi; }
-    .paper[data-textsize='compact'] { --bodysize: 2.7cqi; }
-    .paper__deck { font-size: 4cqi; }
-    .paper__head { font-size: 11cqi; }
-    .paper__title { font-size: 16cqi; }
-    .paper__drop { font-size: 10cqi; }
-    .paper__brief b { font-size: 3cqi; }
-    .paper__stand { display: none; }
-    .paper__segbtn { font-size: 2.8cqi; padding: 1.2cqi 3cqi; }
-    .paper__control-h { font-size: 2.6cqi; }
-  }
-
-  /* ============ 03 · DEPARTURE BOARD (own dark surface) ============ */
-  .board { position: absolute; inset: 0; background: #0a0c0a; color: #f4d34a; padding: 3cqi 3.5cqi 2.4cqi; display: flex; flex-direction: column; }
-  .board__top { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 2cqi; border-bottom: 0.5cqi solid #f4d34a33; padding-bottom: 1.6cqi; margin-bottom: 1.4cqi; }
-  .board__title { font-size: 5cqi; font-weight: 700; letter-spacing: 0.14em; }
-  .board__filters { display: inline-flex; justify-self: center; gap: 1cqi; }
-  .board__filter { font-size: 1.85cqi; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #f4d34a99; background: transparent; border: 1px solid #f4d34a2e; border-radius: 100px; padding: 0.7cqi 1.8cqi; cursor: pointer; transition: color 0.15s, background 0.15s, border-color 0.15s; white-space: nowrap; }
-  .board__filter:hover { color: #f4d34a; border-color: #f4d34a66; }
-  .board__filter.is-on { color: #0a0c0a; background: #f4d34a; border-color: #f4d34a; }
-  .board__clock { font-size: 4.4cqi; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.04em; justify-self: end; }
-  .board__head { display: grid; grid-template-columns: 14% 1fr 10% 24%; gap: 2cqi; font-size: 1.9cqi; letter-spacing: 0.18em; color: #f4d34a80; padding-bottom: 1.2cqi; border-bottom: 1px solid #f4d34a1f; }
-  .board__c { text-align: center; }
-  .board__s { text-align: right; }
-  .board__rows { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .board__row { display: grid; grid-template-columns: 14% 1fr 10% 24%; gap: 2cqi; align-items: baseline; padding: 1.25cqi 0; border-bottom: 1px solid #f4d34a14; }
-  .board__row.is-hidden { display: none; }
-  .board__time { font-size: 3.4cqi; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
-  .board__dest { font-size: 3.4cqi; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: baseline; gap: 1.4cqi; min-width: 0; }
-  .board__op { font-style: normal; font-size: 1.7cqi; font-weight: 600; letter-spacing: 0.1em; color: #f4d34a66; flex: none; }
-  .board__plat { font-size: 3.4cqi; font-weight: 700; text-align: center; font-feature-settings: 'tnum'; }
-  .board__status { font-size: 2.5cqi; font-weight: 600; letter-spacing: 0.1em; text-align: right; font-feature-settings: 'tnum'; }
-  .board__status s { color: #f4d34a55; text-decoration: line-through; }
-  .board__status--on { color: #5fd16b; }
-  .board__status--boarding { color: #f4d34a; animation: board-blink 1.1s steps(1) infinite; }
-  .board__status--delayed { color: #ff9d3c; }
-  .board__status--cancelled { color: #ff5a4d; }
-  .board__foot { display: flex; align-items: baseline; justify-content: space-between; padding-top: 1.4cqi; margin-top: 0.4cqi; border-top: 1px solid #f4d34a1f; font-size: 1.8cqi; letter-spacing: 0.14em; text-transform: uppercase; color: #f4d34a80; font-feature-settings: 'tnum'; }
-
-  @keyframes board-blink { 50% { opacity: 0.25; } }
-  @media (prefers-reduced-motion: reduce) { .board__status--boarding { animation: none; } }
-
   @container (max-width: 560px) {
-    .board__top { grid-template-columns: 1fr auto; }
-    .board__filters { grid-column: 1 / -1; grid-row: 2; justify-self: start; margin-top: 1.4cqi; flex-wrap: wrap; }
-    .board__head, .board__row { grid-template-columns: 16% 1fr 24%; }
-    .board__c, .board__plat { display: none; }
-    .board__time, .board__dest { font-size: 3cqi; }
-    .board__op { display: none; }
-    .board__filter { font-size: 2.6cqi; }
+    .gp__venue { white-space: normal; line-height: 1.6; letter-spacing: 0.26em; }
   }
 
-  /* ============ 04 · GIG POSTER (variable weight shout) ============ */
-  .gig { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 4cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden; }
-  .gig__rail { position: absolute; top: 50%; right: 1.4cqi; transform: translateY(-50%); writing-mode: vertical-rl; display: flex; gap: 3cqi; font-size: 1.8cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
-  .gig__top { display: flex; justify-content: space-between; font-size: 2.1cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2); border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi; }
-  .gig__stack { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 0.4cqi; padding: 2cqi 0; min-height: 0; }
-  .gig__line { line-height: 0.9; text-transform: uppercase; text-align: center; white-space: nowrap; }
-  .gig__line--thin { font-size: 4cqi; font-weight: 300; letter-spacing: 0.34em; color: var(--fg-2); line-height: 1; padding: 1cqi 0; }
-  .gig__line--mid { font-size: 10cqi; font-weight: 500; letter-spacing: 0.06em; line-height: 0.92; }
-  /* explicit leading + gap so the two shouts never collide */
-  .gig__line--shout { font-size: 27cqi; font-weight: 700; letter-spacing: 0; line-height: 0.96; }
-  .gig__line--accent { color: var(--accent); }
-  .gig__line--shout[data-shout] { font-variation-settings: 'wght' 700; }
-  .gig__foot { display: flex; justify-content: space-between; align-items: baseline; font-size: 2.4cqi; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); border-top: 1px solid var(--line); padding-top: 1.6cqi; }
-  .gig__price { font-size: 3.6cqi; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; }
+  /* ============================================================
+     02 — TABLOID FRONT · newsprint, red ears, the hammer
+     ============================================================ */
+  .tb {
+    --paper: #f5f1e4;
+    --tink: #17130d;
+    --tred: #d4271e;
+    background: var(--paper); color: var(--tink);
+    padding: clamp(0.9rem, 2.6cqi, 2.2rem) clamp(0.9rem, 3cqi, 2.75rem) 0;
+    display: flex; flex-direction: column;
+  }
+  .tb ::selection { background: var(--tred); color: var(--paper); }
+  .tb__top {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: clamp(0.6rem, 2cqi, 1.5rem);
+    border-bottom: 4px solid var(--tink); padding-bottom: clamp(0.6rem, 1.5cqi, 1.1rem);
+  }
+  .tb__ear { display: flex; flex-direction: column; justify-content: center; gap: 0.25em; min-width: 0; }
+  .tb__ear--r { text-align: right; align-items: flex-end; }
+  .tb__ear b { font-size: clamp(10px, 1.3cqi, 14px); font-weight: 700; letter-spacing: 0.2em; }
+  .tb__ear span { font-size: clamp(10px, 1.25cqi, 14px); font-weight: 300; letter-spacing: 0.04em; color: #5c5443; }
+  .tb__flag { color: var(--tred); }
+  .tb__nameplate {
+    background: var(--tred); color: var(--paper);
+    font-size: clamp(1.9rem, 6.4cqi, 5rem); font-weight: 700; line-height: 1;
+    letter-spacing: 0.015em;
+    padding: 0.12em 0.34em 0.1em;
+  }
+  .tb__lede { padding: clamp(0.9rem, 2.4cqi, 2rem) 0 clamp(0.7rem, 1.8cqi, 1.4rem); }
+  .tb__kick { font-size: clamp(10px, 1.5cqi, 16px); font-weight: 600; letter-spacing: 0.26em; color: var(--tred); }
+  .tb__hammer { margin-top: 0.25em; }
+  .tb__hammer span { display: block; font-weight: 700; line-height: 0.9; letter-spacing: 0; }
+  .tb__h1 { font-size: clamp(2.9rem, 11.6cqi, 9.2rem); }
+  .tb__h2 { font-size: clamp(2.9rem, 11.6cqi, 9.2rem); }
+  .tb__deck {
+    font-size: clamp(14px, 2.2cqi, 24px); font-weight: 400; line-height: 1.3; letter-spacing: 0.01em;
+    margin-top: clamp(0.5rem, 1.4cqi, 1.1rem); max-width: 46ch; color: #2c2618;
+  }
+  .tb__split {
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: clamp(0.9rem, 2.6cqi, 2.2rem);
+    border-top: 1px solid #17130d33; padding-top: clamp(0.8rem, 2cqi, 1.6rem);
+  }
+  .tb__photo {
+    position: relative; overflow: hidden; min-height: clamp(170px, 30cqi, 320px);
+    background: linear-gradient(180deg, #3d4654 0%, #5a6573 42%, #7e8694 60%, #2e3540 100%);
+    transition: filter 0.4s var(--ease);
+  }
+  .tb[data-edition='late'] .tb__photo { background: linear-gradient(180deg, #7d6a52 0%, #a98d62 40%, #5a6573 62%, #2e3540 100%); }
+  .tb[data-edition='final'] .tb__photo { background: linear-gradient(180deg, #2c2733 0%, #574458 45%, #8a5a47 62%, #1d1a22 100%); }
+  .tb__photo-crane {
+    position: absolute; left: 12%; top: 8%; width: 3.5%; height: 56%;
+    background: #14110d;
+    box-shadow:
+      1.2em 0.4em 0 -0.45em #14110d,
+      -3em 3em 0 2em transparent;
+  }
+  .tb__photo-crane::before {
+    content: ''; position: absolute; left: -120%; top: 4%;
+    width: 900%; height: 7%; background: #14110d;
+  }
+  .tb__photo-crane::after {
+    content: ''; position: absolute; left: 540%; top: 11%;
+    width: 24%; height: 38%; background: #14110d;
+  }
+  .tb[data-edition='final'] .tb__photo-crane { transform: rotate(7deg) translateY(6%); transform-origin: bottom; }
+  .tb__photo-water {
+    position: absolute; inset: auto 0 0 0; height: 34%;
+    background:
+      repeating-linear-gradient(0deg, #ffffff14 0 2px, transparent 2px 9px),
+      linear-gradient(180deg, #232a34, #11151c);
+  }
+  .tb__capt {
+    position: absolute; inset: auto 0 0 0;
+    background: #14110de6; color: #f5f1e4;
+    font-size: clamp(10px, 1.35cqi, 14px); font-weight: 400; letter-spacing: 0.05em;
+    padding: 0.5em 0.9em; text-align: left;
+  }
+  .tb__copy, .tb__copy p { font-family: var(--serif); }
+  .tb__copy { font-size: clamp(12px, 1.5cqi, 16px); line-height: 1.55; color: #2c2618; }
+  .tb__copy p + p { margin-top: 0.8em; }
+  .tb__byline {
+    font-family: var(--fam) !important; font-size: clamp(10px, 1.3cqi, 14px);
+    font-weight: 300; letter-spacing: 0.14em; color: #5c5443;
+    border-bottom: 1px solid #17130d33; padding-bottom: 0.7em; margin-bottom: 0.9em;
+  }
+  .tb__byline b { font-weight: 700; color: var(--tink); font-family: var(--fam); }
+  .tb__drop {
+    float: left; font-family: var(--fam); font-size: 3.1em; line-height: 0.8;
+    font-weight: 700; padding: 0.04em 0.14em 0 0; color: var(--tred);
+  }
+  .tb__jump { font-family: var(--fam) !important; font-size: clamp(10px, 1.25cqi, 13px); font-weight: 600; letter-spacing: 0.12em; color: #5c5443; }
+  .tb__replate {
+    display: flex; align-items: center; gap: clamp(0.5rem, 1.4cqi, 1rem); flex-wrap: wrap;
+    border-top: 1px solid #17130d33; margin-top: clamp(0.8rem, 2cqi, 1.6rem);
+    padding: clamp(0.55rem, 1.4cqi, 1rem) 0;
+  }
+  .tb__replate-k { font-size: clamp(10px, 1.3cqi, 14px); font-weight: 700; letter-spacing: 0.22em; color: #5c5443; }
+  .tb__slug {
+    font-size: clamp(10px, 1.35cqi, 14px); font-weight: 600; letter-spacing: 0.12em;
+    padding: 0.45em 1em; border: 1px solid #17130d55;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .tb__slug:hover { border-color: var(--tink); }
+  .tb__slug.is-on { background: var(--tink); color: var(--paper); border-color: var(--tink); }
+  .tb__replate-n { margin-left: auto; font-size: clamp(9px, 1.2cqi, 12px); font-weight: 300; letter-spacing: 0.14em; color: #5c5443; }
+  .tb__derby {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+    background: var(--tred); color: var(--paper);
+    margin: 0 calc(-1 * clamp(0.9rem, 3cqi, 2.75rem));
+    padding: clamp(0.55rem, 1.5cqi, 1.05rem) clamp(0.9rem, 3cqi, 2.75rem);
+  }
+  .tb__derby-l { font-size: clamp(13px, 2cqi, 22px); font-weight: 400; letter-spacing: 0.06em; }
+  .tb__derby-l b { font-weight: 700; }
+  .tb__derby-r { font-size: clamp(11px, 1.5cqi, 16px); font-weight: 700; letter-spacing: 0.2em; white-space: nowrap; }
+  @container (max-width: 640px) {
+    .tb__top { grid-template-columns: 1fr; gap: 0.4rem; }
+    .tb__nameplate { order: -1; text-align: center; }
+    .tb__ear { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 0.8rem; }
+    .tb__ear--r { text-align: left; }
+    .tb__split { grid-template-columns: 1fr; }
+    .tb__h1, .tb__h2 { font-size: clamp(2.4rem, 14.5cqi, 4.6rem); }
+    .tb__replate-n { display: none; }
+  }
 
+  /* ============================================================
+     03 — MATCH CENTRE · floodlit field, phone at real px
+     ============================================================ */
+  .mc {
+    position: relative;
+    background:
+      radial-gradient(120% 90% at 50% -10%, #1c2733 0%, #121922 52%, #0c1118 100%);
+    display: grid; place-items: center;
+    padding: clamp(1.75rem, 4.5cqi, 4rem) clamp(0.9rem, 3cqi, 3rem);
+    overflow: clip;
+  }
+  .mc__ghost {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-size: clamp(6rem, 16cqi, 15rem); font-weight: 200; line-height: 0.9;
+    letter-spacing: 0.04em; color: transparent;
+    -webkit-text-stroke: 1px #ffffff1c;
+    pointer-events: none; user-select: none;
+  }
+  .mc__ghost--l { left: clamp(0.5rem, 3cqi, 3.5rem); }
+  .mc__ghost--r { right: clamp(0.5rem, 3cqi, 3.5rem); }
+  @container (max-width: 1000px) { .mc__ghost { display: none; } }
+
+  .mc__phone {
+    position: relative; width: 348px; max-width: 100%; height: 634px;
+    display: flex; flex-direction: column;
+    background: #141a21; color: #eef1f4;
+    border-radius: 30px; border: 1px solid #ffffff24;
+    box-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.85);
+    overflow: hidden;
+    --red: #e8482c; --away: #6f8cb0;
+    --pline: #ffffff1f; --pline-soft: #ffffff10;
+    --pdim: #97a1ac; --pfaint: #66707b;
+    font-size: 13px;
+  }
+  .mc__chrome {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
+    padding: 0.6rem 1.1rem 0.5rem; border-bottom: 1px solid var(--pline);
+    background: #0f141a; flex: none;
+  }
+  .mc__time { font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+  .mc__brand { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: var(--red); }
+  .mc__sig { display: inline-flex; align-items: center; gap: 6px; color: var(--pdim); }
+  .mc__sig svg { display: block; }
+  .mc__sig svg:first-child { width: 15px; height: 11px; }
+  .mc__sig svg:first-child rect { fill: currentColor; }
+  .mc__sig svg:last-child { width: 22px; height: 10px; }
+
+  .mc__tabs { display: flex; border-bottom: 1px solid var(--pline); flex: none; }
+  .mc__tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 10px 6px; border-right: 1px solid var(--pline-soft);
+    border-bottom: 2px solid transparent; min-width: 0;
+    transition: background 0.15s var(--ease);
+  }
+  .mc__tab:last-child { border-right: 0; }
+  .mc__tab:hover { background: #ffffff0a; }
+  .mc__tab.is-on { border-bottom-color: var(--red); background: #e8482c14; }
+  .mc__tab-score { display: flex; align-items: baseline; gap: 5px; }
+  .mc__tab-score em { font-size: 11px; font-weight: 600; color: var(--pdim); letter-spacing: 0.05em; }
+  .mc__tab-score b { font-size: 17px; font-weight: 700; letter-spacing: 0.01em; }
+  .mc__tab-min { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--pfaint); }
+  .mc__tab-min.is-live { color: var(--red); }
+
+  .mc__hero {
+    flex: none; padding: 14px 18px 13px; text-align: center;
+    border-bottom: 1px solid var(--pline);
+    background: linear-gradient(180deg, #e8482c14, transparent 78%);
+  }
+  .mc__badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.16em;
+    color: var(--pfaint); margin-bottom: 9px;
+    padding: 2px 9px; border-radius: 100px; border: 1px solid var(--pline);
+  }
+  .mc__badge.is-live { color: var(--red); border-color: #e8482c66; }
+  .mc__pulse { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.4; }
+  .mc__badge.is-live .mc__pulse { opacity: 1; }
   @media (prefers-reduced-motion: no-preference) {
-    .gig__line--shout[data-shout] {
-      animation: gig-weight 5s var(--ease-out, ease-in-out) infinite alternate;
-      animation-delay: var(--d, 0s);
-    }
-    @keyframes gig-weight {
-      from { font-variation-settings: 'wght' 230; letter-spacing: 0.05em; }
-      to   { font-variation-settings: 'wght' 700; letter-spacing: -0.01em; }
-    }
+    .mc__badge.is-live .mc__pulse { animation: mc-pulse 1.4s var(--ease, ease-in-out) infinite; }
+    @keyframes mc-pulse { 0%, 100% { box-shadow: 0 0 0 0 #e8482cb0; } 70% { box-shadow: 0 0 0 5px transparent; } }
+  }
+  /* the broadcast scorebug, set in the device: solid team blocks, a numeral
+     plate, the running minute — straight off the top-left of a match feed */
+  .mc__bug {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+    align-items: stretch; border-radius: 7px; overflow: hidden;
+    border: 1px solid var(--pline); text-align: center;
+  }
+  .mc__bug-side {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600; letter-spacing: 0.05em; line-height: 1;
+    padding: 0 8px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .mc__bug-side--h { background: var(--red); color: #16110f; }
+  .mc__bug-side--a { background: var(--away); color: #0d1218; }
+  .mc__bug-score {
+    display: flex; align-items: baseline; gap: 7px;
+    padding: 9px 13px 7px; background: #0f141a;
+  }
+  .mc__bug-score b { font-size: 32px; font-weight: 700; line-height: 0.85; }
+  .mc__bug-a { color: var(--pdim); }
+  .mc__bug-score i { font-style: normal; font-size: 18px; font-weight: 300; color: var(--pfaint); }
+  .mc__bug-min {
+    display: flex; align-items: center; justify-content: center;
+    min-width: 42px; padding: 0 9px; background: #ffffff0d; border-left: 1px solid var(--pline);
+  }
+  .mc__bug-min b { font-size: 14px; font-weight: 700; letter-spacing: 0.04em; color: var(--red); }
+  @media (prefers-reduced-motion: no-preference) {
+    .mc__bug-score b, .mc__bug-min b { transition: font-variation-settings 0.5s var(--ease-out); }
+  }
+  .mc__venue { display: block; margin-top: 9px; font-size: 10px; letter-spacing: 0.16em; color: var(--pfaint); }
+
+  /* tablet fixtures rail — 768 gets its own composition beside the phone */
+  .mc__rail { display: none; }
+  .mc__rail-ghost {
+    font-size: clamp(4rem, 11cqi, 6.5rem); font-weight: 200; line-height: 0.92;
+    letter-spacing: 0.04em; color: transparent; -webkit-text-stroke: 1px #ffffff26;
+    user-select: none; margin-bottom: 18px;
+  }
+  .mc__rail-k {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.22em; color: var(--pfaint, #66707b);
+    border-bottom: 1px solid #ffffff1f; padding-bottom: 8px; margin-bottom: 4px;
+  }
+  .mc__rail-row {
+    display: grid; grid-template-columns: 1fr auto 1fr auto; align-items: baseline; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid #ffffff10; color: #eef1f4;
+  }
+  .mc__rail-team { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .mc__rail-team--a { text-align: left; color: #97a1ac; }
+  .mc__rail-score { font-size: 26px; font-weight: 700; line-height: 0.9; }
+  .mc__rail-min { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: #66707b; min-width: 26px; text-align: right; }
+  .mc__rail-min.is-live { color: #e8482c; }
+  .mc__rail-note { font-size: 11px; font-weight: 300; letter-spacing: 0.06em; color: #66707b; margin-top: 12px; }
+  @container (min-width: 641px) and (max-width: 1000px) {
+    .mc { grid-template-columns: minmax(0, 1fr) auto; justify-items: stretch; align-items: center; gap: clamp(1.5rem, 4cqi, 3rem); }
+    .mc__rail { display: block; max-width: 340px; justify-self: center; width: 100%; }
+    .mc__phone { justify-self: center; }
   }
 
-  @container (max-width: 520px) {
-    .gig { padding: 4cqi 3cqi; }
-    .gig__line--shout { font-size: 21cqi; letter-spacing: -0.005em; line-height: 0.98; }
-    .gig__line--mid { font-size: 11cqi; }
-    .gig__rail { display: none; }
+  .mc__stats { flex: none; padding: 12px 18px; display: flex; flex-direction: column; gap: 9px; border-bottom: 1px solid var(--pline); }
+  .mc__stat { display: grid; grid-template-columns: auto 28px 1fr 28px; align-items: center; gap: 10px; }
+  .mc__stat-k { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pfaint); white-space: nowrap; }
+  .mc__stat-v { font-size: 12.5px; font-weight: 700; }
+  .mc__stat-v--h { text-align: right; }
+  .mc__stat-v--a { text-align: left; color: var(--away); }
+  .mc__stat-track { display: flex; height: 5px; gap: 2px; }
+  .mc__stat-fill { display: block; height: 100%; transition: width 0.5s var(--ease); }
+  .mc__stat-fill--h { background: var(--red); border-radius: 3px 0 0 3px; margin-left: auto; }
+  .mc__stat-fill--a { background: var(--away); border-radius: 0 3px 3px 0; }
+  @media (prefers-reduced-motion: reduce) { .mc__stat-fill { transition: none; } }
+
+  .mc__feed-h { flex: none; padding: 11px 18px 4px; display: flex; align-items: baseline; justify-content: space-between; }
+  .mc__feed-h > span:first-child { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--pfaint); }
+  .mc__feed-key { display: inline-flex; align-items: center; gap: 5px; font-size: 8.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pfaint); }
+  .mc__key { width: 7px; height: 7px; border-radius: 2px; }
+  .mc__key--h { background: var(--red); }
+  .mc__key--a { background: var(--away); margin-left: 7px; }
+  .mc__feed { flex: 1; overflow: auto; margin: 0; padding: 2px 18px 12px; list-style: none; display: flex; flex-direction: column; }
+  .mc__ev { display: flex; align-items: center; gap: 11px; padding: 6px 0; border-bottom: 1px solid var(--pline-soft); }
+  .mc__ev:last-child { border-bottom: 0; }
+  .mc__ev-min { font-size: 12px; font-weight: 600; color: var(--pfaint); min-width: 24px; }
+  .mc__ev-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 6px; border-radius: 3px; line-height: 1.2; min-width: 32px; text-align: center; }
+  .mc__ev-tag--goal { background: var(--red); color: #16110f; }
+  .mc__ev-tag--yel { background: #d8a200; color: #1a1500; }
+  .mc__ev-tag--sub { background: #6f8cb038; color: var(--away); }
+  .mc__ev-name { font-size: 14px; font-weight: 500; letter-spacing: 0.01em; }
+  .mc__ev--away { flex-direction: row-reverse; }
+  .mc__ev--away .mc__ev-name { text-align: right; color: var(--pdim); }
+
+  @container (max-width: 420px) {
+    .mc { padding-inline: 0.5rem; }
+    .mc__bug-side { font-size: 13px; letter-spacing: 0.03em; }
+    .mc__bug-score b { font-size: 28px; }
+  }
+
+  /* ============================================================
+     04 — CRESCENT RECORDS · Reid Miles duotone sleeve system
+     ============================================================ */
+  .rv {
+    --board: #f1e9d4;
+    --rink: #16130e;
+    background: #0f0d0a;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.25rem, 3.5cqi, 3.5rem);
+    padding: clamp(1.5rem, 4.5cqi, 4.5rem) clamp(1rem, 5cqi, 5.5rem);
+    align-items: center;
+  }
+  /* duotone press variants — each ink pair registers a little differently,
+     the way a two-pass litho run actually lands */
+  .rv[data-ink='0'] { --hue: #e8581c; --mx: 0.032em; --my: 0.024em; }
+  .rv[data-ink='1'] { --hue: #2257a8; --mx: -0.045em; --my: 0.028em; }
+  .rv[data-ink='2'] { --hue: #1e6e46; --mx: 0.02em; --my: -0.038em; }
+  .rv__front {
+    position: relative; aspect-ratio: 1; width: min(100%, 560px); justify-self: end;
+    background: var(--board); color: var(--rink);
+    padding: clamp(1rem, 3.2cqi, 2.6rem);
+    display: flex; flex-direction: column;
+    overflow: hidden; cursor: pointer; user-select: none;
+    transition: box-shadow 0.25s var(--ease);
+    box-shadow: 0 26px 60px -30px rgba(0, 0, 0, 0.9);
+  }
+  .rv__front:focus-visible { outline: 2px solid var(--hue); outline-offset: 4px; }
+  .rv__label-row {
+    display: flex; align-items: center; gap: 0.7em;
+    border-bottom: 2px solid var(--rink); padding-bottom: clamp(0.5rem, 1.4cqi, 1rem);
+  }
+  .rv__mark {
+    width: clamp(20px, 3.4cqi, 30px); height: clamp(20px, 3.4cqi, 30px); border-radius: 50%;
+    background: var(--hue); color: var(--board);
+    display: grid; place-items: center;
+    font-size: clamp(12px, 2cqi, 18px); font-weight: 700;
+    transition: background 0.35s var(--ease);
+  }
+  .rv__label-t { font-size: clamp(9px, 1.45cqi, 13px); font-weight: 500; letter-spacing: 0.24em; }
+  .rv__cat { margin-left: auto; font-size: clamp(10px, 1.6cqi, 15px); font-weight: 700; letter-spacing: 0.08em; }
+  .rv__title { flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 0 calc(-1 * clamp(1rem, 3.2cqi, 2.6rem)); }
+  .rv__t1, .rv__t2 { font-weight: 700; line-height: 0.84; letter-spacing: -0.005em; white-space: nowrap; }
+  /* Miles crop: the title runs off the board on both sides */
+  /* the color plate carries UPTOWN; the black pass sits a hair off-register
+     beneath it, and the offset jumps with every ink proof */
+  .rv__t1 {
+    font-size: clamp(4.6rem, 17cqi, 13rem); color: var(--hue); margin-left: -0.03em;
+    text-shadow: var(--mx) var(--my) 0 var(--rink);
+    transition: color 0.35s var(--ease), text-shadow 0.35s var(--ease);
+  }
+  .rv__t2 {
+    font-size: clamp(4.6rem, 17cqi, 13rem); align-self: flex-end; margin-right: -0.04em;
+    margin-top: -0.1em; mix-blend-mode: multiply; /* LOCAL overprints the color pass */
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rv.is-pressing .rv__t1 { animation: rv-kick 0.45s var(--ease-out); }
+    @keyframes rv-kick {
+      0% { transform: translate(-0.05em, 0.015em); }
+      55% { transform: translate(0.02em, -0.008em); }
+      100% { transform: none; }
+    }
+    .rv.is-pressing .rv__spine.is-now .rv__spine-title { animation: rv-wpulse 0.7s var(--ease-out); }
+    @keyframes rv-wpulse {
+      from { font-variation-settings: 'wght' 200; }
+      to { font-variation-settings: 'wght' 700; }
+    }
+  }
+  .rv__artist { border-top: 2px solid var(--rink); padding-top: clamp(0.5rem, 1.4cqi, 1rem); }
+  .rv__a1 { font-size: clamp(1rem, 3cqi, 2.1rem); font-weight: 600; letter-spacing: 0.06em; }
+  .rv__a2 { font-size: clamp(8.5px, 1.4cqi, 13px); font-weight: 300; letter-spacing: 0.1em; margin-top: 0.5em; color: #4d4332; }
+  .rv__fid {
+    position: absolute; top: clamp(1rem, 3.2cqi, 2.6rem); right: 0;
+    writing-mode: vertical-rl;
+    font-size: clamp(8px, 1.2cqi, 11px); font-weight: 500; letter-spacing: 0.34em;
+    color: var(--hue); padding-right: 0.35em;
+    transition: color 0.35s var(--ease);
+  }
+  .rv__side { display: flex; flex-direction: column; gap: clamp(1.25rem, 3cqi, 2.5rem); min-width: 0; max-width: 620px; }
+  .rv__spines-k { font-size: clamp(9px, 1.25cqi, 12px); font-weight: 600; letter-spacing: 0.26em; color: #8a8273; margin-bottom: 0.9em; }
+  .rv__spine {
+    display: flex; align-items: baseline; gap: 1em;
+    background: #1c1813; color: #d8d0bd;
+    padding: 0.55em 0.9em; margin-top: 6px;
+    font-size: clamp(10px, 1.5cqi, 15px);
+    white-space: nowrap; overflow: hidden;
+  }
+  .rv__spine.is-now { background: var(--hue); color: #0f0d0a; transition: background 0.35s var(--ease); }
+  .rv__spine-cat { font-weight: 700; letter-spacing: 0.06em; }
+  .rv__spine-artist { font-weight: 300; letter-spacing: 0.12em; overflow: hidden; text-overflow: ellipsis; }
+  .rv__spine-title { letter-spacing: 0.06em; } /* weight comes per-row: the graded system */
+  .rv__spine-w { font-family: var(--font-mono); font-size: 0.68em; font-weight: 400; letter-spacing: 0.1em; color: #8a8273; }
+  .rv__spine.is-now .rv__spine-w { color: #0f0d0ab8; }
+  .rv__spine-lbl { margin-left: auto; font-weight: 500; letter-spacing: 0.3em; font-size: 0.82em; }
+  .rv__back {
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.9rem, 2.4cqi, 2rem);
+    border-top: 1px solid #ffffff22; padding-top: clamp(0.9rem, 2.4cqi, 2rem);
+    color: #d8d0bd;
+  }
+  .rv__side-k { font-size: clamp(9px, 1.25cqi, 12px); font-weight: 700; letter-spacing: 0.3em; color: var(--hue); margin-bottom: 0.8em; transition: color 0.35s var(--ease); }
+  .rv__track { display: flex; align-items: baseline; gap: 0.6em; font-size: clamp(11px, 1.6cqi, 16px); font-weight: 400; letter-spacing: 0.04em; margin-top: 0.45em; }
+  .rv__track i { flex: 1; border-bottom: 1px dotted #d8d0bd44; transform: translateY(-0.22em); min-width: 1em; }
+  .rv__track span:last-child { font-weight: 600; }
+  .rv__micro {
+    grid-column: 1 / -1;
+    font-size: clamp(8.5px, 1.2cqi, 12px); font-weight: 300; letter-spacing: 0.16em;
+    color: #8a8273; border-top: 1px solid #ffffff14; padding-top: 1em;
+  }
+  .rv__frac { font-feature-settings: 'frac'; font-weight: 600; color: #d8d0bd; }
+  @container (max-width: 880px) {
+    .rv { grid-template-columns: 1fr; }
+    .rv__front { justify-self: center; }
+    .rv__side { max-width: 560px; margin-inline: auto; width: 100%; }
+  }
+  @container (max-width: 460px) {
+    .rv__back { grid-template-columns: 1fr; }
+    .rv__spine-artist { display: none; }
+  }
+
+  /* ============================================================
+     05 — COUNTING HEADS · composing-room instrument
+     ============================================================ */
+  .cf {
+    --cfk: #131110;
+    --cfp: #efece6;
+    --cfa: #e8482c;
+    background: var(--cfk); color: var(--cfp);
+    padding: clamp(1.5rem, 4cqi, 4rem) clamp(1rem, 5cqi, 5.5rem) clamp(1.5rem, 3.5cqi, 3.5rem);
+    display: flex; flex-direction: column; gap: clamp(1.25rem, 3cqi, 2.75rem);
+  }
+  .cf__head-row { display: grid; grid-template-columns: auto minmax(0, 56ch); gap: clamp(1rem, 4cqi, 4rem); align-items: end; }
+  .cf__name { font-size: clamp(2rem, 6cqi, 4.6rem); font-weight: 700; line-height: 0.9; letter-spacing: 0.005em; }
+  .cf__sub { font-family: var(--font-ui); font-size: clamp(11px, 1.35cqi, 14px); line-height: 1.5; color: #9a948a; }
+  .cf__stage {
+    display: grid; grid-template-columns: 1fr var(--colw) 1fr;
+    align-items: stretch; min-height: clamp(7rem, 18cqi, 15rem);
+    border-block: 1px solid #efece622;
+  }
+  .cf__dead {
+    background: repeating-linear-gradient(135deg, transparent 0 7px, #efece60c 7px 8px);
+  }
+  .cf__col {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; padding-block: clamp(1rem, 3cqi, 2.5rem);
+  }
+  .cf__colrule { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--cfa); }
+  .cf__colrule--l { left: 0; }
+  .cf__colrule--r { right: 0; }
+  .cf__headline {
+    display: inline-block; white-space: nowrap;
+    font-size: clamp(1.5rem, 6.2cqi, 5.8rem); font-weight: 500; line-height: 0.95;
+    letter-spacing: 0.005em;
+  }
+  /* the galley slug: edition, page, columns — the composing room's receipt */
+  .cf__slug {
+    display: flex; align-items: baseline; gap: 0.85em 1.6em; flex-wrap: wrap;
+    font-size: clamp(9px, 1.2cqi, 12px); letter-spacing: 0.2em; color: #79736a;
+    margin-top: calc(-1 * clamp(0.5rem, 1.5cqi, 1.5rem));
+  }
+  .cf__slug b { font-weight: 700; color: #b9b3a8; }
+  .cf__slug span { font-weight: 300; white-space: nowrap; }
+  .cf__read { display: flex; align-items: baseline; gap: clamp(1.25rem, 4cqi, 3.5rem); flex-wrap: wrap; }
+  .cf__r { display: inline-flex; align-items: baseline; gap: 0.5em; }
+  .cf__r b { font-size: clamp(1.5rem, 3.6cqi, 2.8rem); font-weight: 700; line-height: 1; }
+  .cf__r i { font-size: clamp(10px, 1.3cqi, 13px); font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: #79736a; }
+  .cf__verdict {
+    margin-left: auto;
+    font-size: clamp(12px, 1.7cqi, 17px); font-weight: 700; letter-spacing: 0.14em;
+    padding: 0.4em 1em;
+    background: #2c4a33; color: #9fe0b0;
+  }
+  .cf__verdict[data-state='bust'] { background: var(--cfa); color: #16110f; }
+  .cf__verdict[data-state='pads'] { background: #4a4330; color: #e3d28a; }
+  .cf__ctrl {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(1rem, 3cqi, 2.5rem);
+    border-top: 1px solid #efece622; padding-top: clamp(1rem, 2.5cqi, 2rem);
+    align-items: end;
+  }
+  .cf__measure, .cf__write { display: flex; flex-direction: column; gap: 0.6em; min-width: 0; }
+  .cf__measure span, .cf__write span, .cf__presets::before {
+    font-size: clamp(9px, 1.2cqi, 12px); font-weight: 600; letter-spacing: 0.26em; color: #79736a;
+  }
+  .cf__measure input[type='range'] { width: 100%; accent-color: var(--cfa); }
+  .cf__write input[type='text'] {
+    font-family: var(--fam); font-size: clamp(15px, 2.2cqi, 22px); font-weight: 500;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    background: #efece60d; color: var(--cfp);
+    border: 1px solid #efece62e; padding: 0.4em 0.7em;
+  }
+  .cf__write input[type='text']:focus { outline: 2px solid var(--cfa); outline-offset: -1px; }
+  .cf__presets { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+  .cf__presets::before { content: 'THE SCHEDULE ☞'; }
+  .cf__preset {
+    font-size: clamp(11px, 1.45cqi, 15px); font-weight: 600; letter-spacing: 0.1em;
+    padding: 0.5em 1em; border: 1px solid #efece63a;
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .cf__preset:hover { border-color: var(--cfa); background: #e8482c1c; }
+  @container (max-width: 720px) {
+    .cf__head-row { grid-template-columns: 1fr; align-items: start; gap: 0.8rem; }
+    .cf__ctrl { grid-template-columns: 1fr; }
+    .cf__verdict { margin-left: 0; }
   }
 </style>
