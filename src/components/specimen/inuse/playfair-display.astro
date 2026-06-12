@@ -4,423 +4,829 @@ export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
 
-// Boutique storefront data (scene 05, interactive). Prices tuned to align in a
-// tabular column (right-set, onum off so lining figures keep an even rhythm).
-const pieces = [
-  { id: '01', name: 'Mirabelle', cat: 'gowns',  price: '2,480', detail: 'Silk-crepe bias gown',     swatch: '#7c2233', tone: '#b9485c' },
-  { id: '02', name: 'Cassis',    cat: 'gowns',  price: '1,950', detail: 'Velvet column dress',      swatch: '#3a2740', tone: '#6e4d78' },
-  { id: '03', name: 'Verveine',  cat: 'coats',  price: '3,200', detail: 'Wool opera coat',          swatch: '#2f4036', tone: '#5d7a63' },
-  { id: '04', name: 'Aubépine',  cat: 'coats',  price: '2,140', detail: 'Belted cashmere trench',   swatch: '#7a5a2e', tone: '#b08a4d' },
-  { id: '05', name: 'Pivoine',   cat: 'jewels', price: '880',   detail: 'Freshwater pearl drops',   swatch: '#6d3550', tone: '#a35c80' },
-  { id: '06', name: 'Giroflée',  cat: 'jewels', price: '1,460', detail: 'Hammered gold signet',     swatch: '#5a4a2c', tone: '#8c7440' },
-];
+// Act 04 — seat map, rendered server-side so every node carries scoped styles.
+const ROWS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const COLS = 12;
+const priceFor = (ri: number) => (ri < 2 ? 65 : ri < 4 ? 48 : 34);
 ---
 <div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — FASHION COVER (full-bleed art object) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Magazine — the fashion cover</span></figcaption>
-    <div class="iu__scene scene-cover">
-      <div class="iu__poster cover" data-weigh>
-        <div class="cover__top">
-          <span class="cover__logo">MAVEN</span>
-          <span class="cover__meta"><span class="cover__no">N&deg;&#8202;09</span> &middot; Automne</span>
-        </div>
-        <div class="cover__stage">
-          <span class="cover__over">The contrast issue</span>
-          <h3 class="cover__hl">
-            <span class="cover__hl-a" data-weigh-word>Hair</span><span class="cover__hl-b">line</span>
-          </h3>
-          <p class="cover__deck">Couture cut to the thinnest possible stroke &mdash; and the quiet luxury of the new restraint.</p>
-        </div>
-        <div class="cover__foot">
-          <span class="cover__cred">Paris, at midnight</span>
-          <span class="cover__price">&euro;&#8202;14</span>
-        </div>
+  <!-- ============================================================
+       01 — EDITORIAL
+       A fashion feature spread after Alexey Brodovitch's art direction
+       of Harper's Bazaar (1934–58): Didone display at monumental scale,
+       whitespace as material, the text a narrow ribbon at the edge.
+       ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Editorial &mdash; a fashion feature, after Brodovitch&rsquo;s <em>Harper&rsquo;s Bazaar</em></span></figcaption>
+    <div class="iu__scene ed">
+      <div class="ed__in">
+      <div class="ed__mast">
+        <span>&Eacute;toffe &middot; The Paris Openings</span>
+        <span>October 1948 &middot; N&ordm; 47</span>
       </div>
-    </div>
-    <p class="iu__hint label">A cover built on Playfair&rsquo;s thick-to-thin drama; hover the title and the weight axis swells from hairline Regular to Black.</p>
-  </figure>
-
-  <!-- 02 — WEDDING INVITATION (asymmetric, oldstyle figures, true italic) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Invitation — an engraved wedding suite</span></figcaption>
-    <div class="iu__scene scene-invite">
-      <div class="iu__poster invite" data-draw>
-        <span class="invite__over">Together with their families</span>
-        <div class="invite__names">
-          <span class="invite__n">Élodie</span>
-          <span class="invite__amp">
-            <svg class="invite__amp-rule" viewBox="0 0 40 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <path class="invite__draw" d="M20 4 V24" /><path class="invite__draw" d="M20 36 V56" />
-            </svg>
-            <em>and</em>
-          </span>
-          <span class="invite__n">Laurent</span>
-        </div>
-        <p class="invite__req">request the pleasure of your company at the celebration of their marriage</p>
-        <div class="invite__when">
-          <span class="invite__day">Saturday</span>
-          <span class="invite__date"><span class="onum">12</span> September <span class="onum">2026</span></span>
-          <span class="invite__time">half past four o&rsquo;clock in the afternoon</span>
-        </div>
-        <span class="invite__where">Château de Vauluisant &middot; Bourgogne</span>
+      <div class="ed__hl">
+        <span class="ed__hl-a" data-reveal>La Ligne</span>
+        <span class="ed__hl-b" data-reveal style="--reveal-delay:140ms">S&eacute;v&egrave;re</span>
       </div>
-    </div>
-    <p class="iu__hint label">Set in true italics with old-style figures (<code class="iu__ot">onum</code>) on the date; the hairline divider draws in on view.</p>
-  </figure>
-
-  <!-- 03 — LITERARY BOOK COVER (own palette, real small caps spacing, no wght-bloom) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Book — a literary cover</span></figcaption>
-    <div class="iu__scene scene-book">
-      <div class="iu__poster book">
-        <div class="book__frame">
-          <span class="book__pub">Pellier &amp; Wren &middot; London</span>
-          <div class="book__center">
-            <h3 class="book__title">The<br/><em>Hours</em><br/>Between</h3>
-            <span class="book__rule" aria-hidden="true"></span>
-            <span class="book__author">Marguerite Vail</span>
+      <div class="ed__low">
+        <div class="ed__void" aria-hidden="true"></div>
+        <div class="ed__text">
+          <p class="ed__deck">Autumn is cut to the bone &mdash; one seam, no ornament, black wool to the wrist. The severe line is the season&rsquo;s entire argument.</p>
+          <div class="ed__cols">
+            <p><span class="ed__drop">T</span>he openings began in a hush. At Maison Solane the mannequins came out in single file, in black barathea cut so close the seams read like pen-strokes; the house showed forty-one looks and permitted itself exactly one bow.</p>
+            <p>It is a typography of clothes. The width of a lapel has become the width of a hairline; the shoulder is a vertical stem, the waist a thin stroke under tension. After a decade of sugar, severity is the new luxury &mdash; and Paris, as ever, states it in the highest possible contrast.</p>
           </div>
-          <p class="book__blurb">&ldquo;A vertiginous, hairline-fine debut.&rdquo; <span class="book__src">The Paris Review</span></p>
+          <p class="ed__cred">By Genevi&egrave;ve Arnaud &middot; drawn from the collections &middot; page 47</p>
         </div>
       </div>
+      </div>
     </div>
-    <p class="iu__hint label">A jacket built from Playfair&rsquo;s upright/italic contrast on a deep editorial ground &mdash; the kind of restraint the face was drawn for.</p>
+    <p class="iu__hint label">Black against the 400 italic&rsquo;s hairlines: one severe idea stated at two weights, Brodovitch&rsquo;s way. Select the text &mdash; even the selection runs house madder.</p>
   </figure>
 
-  <!-- 04 — EDITORIAL FEATURE OPENER (kept; tightened) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — the feature opener</span></figcaption>
-    <div class="iu__scene scene-spread">
-      <div class="iu__poster spread" data-weigh>
-        <div class="spread__rail">
-          <span class="spread__folio">Feature &middot; <span class="onum">072</span></span>
-          <span class="spread__sec">Letters</span>
+  <!-- ============================================================
+       02 — BRANDING & IDENTITY
+       A champagne house: wordmark, label, vintage band, crate stencil —
+       in the tradition of Second Empire wine-label lithography, where
+       Didone capitals and copperplate italics were the law of the label.
+       ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Branding &mdash; a champagne house, in the tradition of Second Empire label lithography</span></figcaption>
+    <div class="iu__scene ch">
+      <div class="ch__in">
+      <div class="ch__head">
+        <p class="ch__mark">M&eacute;ridienne</p>
+        <p class="ch__law">Champagne &middot; Reims &middot; maison fond&eacute;e en 1822</p>
+      </div>
+      <div class="ch__compose">
+        <div class="ch__label" tabindex="0">
+          <p class="ch__l-kind">Champagne</p>
+          <span class="ch__l-rule" aria-hidden="true"></span>
+          <p class="ch__l-name">M&Eacute;RIDIENNE</p>
+          <p class="ch__l-cuvee">Grande R&eacute;serve</p>
+          <p class="ch__l-brut">Brut</p>
+          <span class="ch__l-rule ch__l-rule--dia" aria-hidden="true"><i></i></span>
+          <p class="ch__l-place">&Eacute;labor&eacute; &agrave; Reims &middot; 75 cl</p>
+          <p class="ch__l-no">N&ordm; 047 de 1 200</p>
         </div>
-        <div class="spread__main">
-          <span class="spread__kicker">On Type</span>
-          <h3 class="spread__head" data-weigh-word>A Life in <em>Letters</em></h3>
-          <p class="spread__deck">She drew by candlelight, and printed by reason.</p>
-          <div class="spread__body">
-            <p><span class="spread__drop">B</span>y the seventeen-nineties the press had finally caught the eye: paper smoother, ink blacker, the burin sharper. The contrast ran riot &mdash; heavy vertical stems beside hairlines fine enough to vanish, finished with crisp round ball terminals that Sørensen would revive two centuries later.</p>
-            <p>The same drama now reads as one thing only: quiet, expensive restraint, set large on an editorial page. The thinner the stroke, the louder the elegance &mdash; which is exactly why a hairline serif belongs to the title and never to the footnote.</p>
-            <p>Use it the wrong way and it tells you. At small sizes the contrast that makes it beautiful begins to fight the reader, and the page sparkles uncomfortably underfoot.</p>
+        <div class="ch__cap" aria-hidden="true"><em>M</em></div>
+        <div class="ch__side">
+          <div class="ch__band">
+            <span class="ch__band-word">Mill&eacute;sime</span>
+            <span class="ch__band-year">2012</span>
+          </div>
+          <div class="ch__crate">
+            <p class="ch__c-big"><span class="ch__sten">MAISON</span><span class="ch__sten">M&Eacute;RIDIENNE</span></p>
+            <p class="ch__c-place"><span class="ch__sten ch__sten--gold">REIMS</span></p>
+            <span class="ch__c-rule" aria-hidden="true"></span>
+            <p class="ch__c-small">12 bouteilles &mdash; cuv&eacute;e 047</p>
+            <p class="ch__c-up">&#9650; ce c&ocirc;t&eacute; en haut</p>
           </div>
         </div>
       </div>
+      <p class="ch__foot"><span class="ch__fig">Fig. 1</span> &Eacute;tiquette, capsule dor&eacute;e, bague mill&eacute;sime &amp; marquage de caisse &mdash; une seule famille&nbsp;: l&rsquo;italique pour le nom, les capitales espac&eacute;es pour la loi, les chiffres elz&eacute;viriens pour l&rsquo;ann&eacute;e.</p>
+      </div>
     </div>
-    <p class="iu__hint label">Hover the headline &mdash; the weight blooms to Black while the italic word stays a fine flourish.</p>
+    <p class="iu__hint label">The wordmark is the italic at <code class="iu__ot">wght</code> 560, tracked tight &mdash; the ball terminals of the <em>e</em> and <em>n</em> do the work of a flourish. Hover the label and a foil sheen passes; the crate caps are cut as a true stencil, bridges and all, on a panel a degree off-axis. The figures are oldstyle by default &mdash; exactly what a lithographer of 1822 would have set.</p>
   </figure>
 
-  <!-- 05 — INTERACTIVE: boutique storefront UI (true scale; filter + sort + bag) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Product UI — boutique storefront (real scale, interactive)</span></figcaption>
+  <!-- ============================================================
+       03 — ILLUSTRATION & COMMERCIAL
+       A Theatre Royal broadside, London 1820 — the playbill genre,
+       set line by line from the compositor's cases; a bill "by desire"
+       earned a second working in red for the tragedy's lines.
+       ============================================================ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Illustration &amp; commercial &mdash; a Theatre Royal broadside, London 1820</span></figcaption>
+    <div class="iu__scene pb">
+      <div class="pb__sheet">
+        <p class="pb__house" data-reveal>THEATRE ROYAL,</p>
+        <p class="pb__street" data-reveal style="--reveal-delay:60ms">MERIDIAN-STREET.</p>
+        <span class="pb__rule pb__rule--dbl" aria-hidden="true"></span>
+        <p class="pb__it" data-reveal style="--reveal-delay:120ms">By Desire of Several Persons of Quality.</p>
+        <p class="pb__when" data-reveal style="--reveal-delay:180ms"><em>On</em> THURSDAY <em>Evening, October</em> 12, 1820,</p>
+        <p class="pb__it pb__it--sm" data-reveal style="--reveal-delay:240ms">will be presented (for the first time these ten years) the celebrated Tragedy of</p>
+        <p class="pb__title" data-reveal style="--reveal-delay:300ms">MATHILDE.</p>
+        <p class="pb__sub" data-reveal style="--reveal-delay:380ms">Queen of the North.</p>
+        <p class="pb__cast" data-reveal style="--reveal-delay:440ms"><em>The principal Characters by</em> Mr. PELL, Mrs. AINSWORTH, <em>and</em> Mr. CROSSE.</p>
+        <p class="pb__line" data-reveal style="--reveal-delay:500ms">With entirely new Scenery, Dresses, and Decorations.</p>
+        <span class="pb__rule" aria-hidden="true"></span>
+        <p class="pb__it pb__it--sm" data-reveal style="--reveal-delay:560ms">To which will be added a FARCE, called</p>
+        <p class="pb__farce" data-reveal style="--reveal-delay:620ms">THE PRINTER&rsquo;S DEVIL.</p>
+        <span class="pb__rule" aria-hidden="true"></span>
+        <p class="pb__prices" data-reveal style="--reveal-delay:680ms">Boxes 4<em>s.</em> &mdash; Pit 2<em>s.</em> &mdash; Gallery 1<em>s.</em></p>
+        <p class="pb__doors" data-reveal style="--reveal-delay:740ms">Doors opened at <span class="frac">1/2</span> past Five &mdash; to begin at <span class="frac">1/2</span> past Six precisely.</p>
+        <p class="pb__rex" data-reveal style="--reveal-delay:800ms">VIVANT REX ET REGINA.</p>
+        <p class="pb__imprint">T. Romney, Printer, Paternoster-Row, London.</p>
+      </div>
+    </div>
+    <p class="iu__hint label">A bill <em>by desire</em> earned a second working in red &mdash; the tragedy&rsquo;s lines went through the press twice. What the compositor reached across three cases for, one family now carries; the &frac12; is a live <code class="iu__ot">frac</code> fraction.</p>
+  </figure>
+
+  <!-- ============================================================
+       04 — WEB & APP UI
+       The same house, two centuries on: a box-office seat picker in the
+       contemporary performing-arts web current (Royal Opera House,
+       Park Avenue Armory). Real px, fully user-driven.
+       ============================================================ -->
+  <figure class="iu__item" data-shoot-click='[data-seat="C6"]'>
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Web &amp; app UI &mdash; the same house&rsquo;s box office, two centuries on (real px, interactive)</span></figcaption>
     <div class="iu__scene">
-      <div class="iu__device shop" data-shop>
+      <div class="iu__device bo" data-bo>
         <div class="iu__chrome">
           <div class="iu__dots"><i></i><i></i><i></i></div>
-          <span class="iu__addr">maison-vail.com/automne</span>
+          <span class="iu__addr">theatreroyal-meridianstreet.co.uk/whats-on/mathilde/seats</span>
         </div>
-        <header class="shop__head">
-          <span class="shop__logo">Vail</span>
-          <nav class="shop__filters" aria-label="Filter collection">
-            <button class="is-on" data-filter="all">All</button>
-            <button data-filter="gowns">Gowns</button>
-            <button data-filter="coats">Coats</button>
-            <button data-filter="jewels">Jewels</button>
-          </nav>
-          <span class="shop__bag" data-bag-label>Bag &middot; <span class="onum" data-bag>0</span></span>
+        <header class="bo__head">
+          <div class="bo__brand">
+            <span class="bo__name">Theatre Royal</span>
+            <span class="bo__street">Meridian Street &middot; est. 1791</span>
+          </div>
+          <span class="bo__crumb">What&rsquo;s on &middot; Mathilde &middot; <b>Seats</b></span>
         </header>
-
-        <div class="shop__hero">
-          <div class="shop__hero-text">
-            <span class="shop__hero-kicker">Automne / Hiver &middot; Collection privée</span>
-            <h4 class="shop__hero-word">Maison<br/><em>Vail</em></h4>
-            <p class="shop__hero-sub">Hand-finished in the seventh arrondissement, delivered worldwide.</p>
+        <div class="bo__show">
+          <div class="bo__show-t">
+            <h4 class="bo__title"><em>Mathilde</em> <span class="bo__title-sub">Queen of the North</span><span class="bo__wght" data-wght>wght 400</span></h4>
+            <p class="bo__meta">The 1820 tragedy, restaged &middot; 2 hrs 20 min, one interval &middot; Stalls</p>
           </div>
-          <div class="shop__hero-sort">
-            <span class="shop__sort-lbl">Sort</span>
-            <button data-sort="curated" class="is-on">Curated</button>
-            <button data-sort="low">Price ↑</button>
-            <button data-sort="high">Price ↓</button>
+          <div class="bo__perfs" role="group" aria-label="Choose a performance">
+            <button class="is-on" data-perf="0" aria-pressed="true">Thu 12 Oct &middot; 19.30</button>
+            <button data-perf="1" aria-pressed="false">Fri 13 Oct &middot; 19.30</button>
+            <button class="is-out" data-perf="2" disabled aria-disabled="true">Sat 14 Oct &middot; 14.30 <i>Sold out</i></button>
           </div>
         </div>
-
-        <div class="shop__grid" data-grid>
-          {pieces.map((p) => (
-            <article class="card" data-cat={p.cat} data-price={p.price.replace(',', '')}>
-              <div class="card__img" style={`--swatch:${p.swatch};--tone:${p.tone}`} aria-hidden="true">
-                <span class="card__plate">{p.id}</span>
-                <span class="card__big">{p.name}</span>
-              </div>
-              <div class="card__meta">
-                <div class="card__line">
-                  <h5 class="card__name">{p.name}</h5>
-                  <span class="card__price"><span class="card__cur">€</span><span class="onum">{p.price}</span></span>
+        <div class="bo__main">
+          <div class="bo__hall">
+            <div class="bo__stage"><span>Stage</span></div>
+            <div class="bo__map">
+              {ROWS.map((r, ri) => (
+                <div class="bo__row">
+                  <span class="bo__rl">{r}</span>
+                  <div class="bo__seats">
+                    {Array.from({ length: COLS }, (_, c) => (
+                      <button
+                        class="bo__seat"
+                        data-seat={`${r}${c + 1}`}
+                        data-ri={ri}
+                        data-ci={c + 1}
+                        data-price={priceFor(ri)}
+                        aria-pressed="false"
+                        aria-label={`Stalls ${r}${c + 1}, £${priceFor(ri)}`}
+                      ></button>
+                    ))}
+                  </div>
+                  <span class="bo__rl">{r}</span>
                 </div>
-                <div class="card__line card__line--sub">
-                  <span class="card__detail">{p.detail}</span>
-                  <button class="card__add" type="button" data-add aria-label={`Add ${p.name} to bag`}>Add</button>
-                </div>
-              </div>
-            </article>
-          ))}
+              ))}
+            </div>
+            <p class="bo__legend">
+              <span class="bo__lg"><i class="bo__sw"></i> Available</span>
+              <span class="bo__lg"><i class="bo__sw bo__sw--sel"></i> Yours</span>
+              <span class="bo__lg"><i class="bo__sw bo__sw--tk"></i> Sold</span>
+              <span class="bo__lg bo__lg--p lnum">Stalls A&ndash;B &pound;65 &middot; C&ndash;D &pound;48 &middot; E&ndash;F &pound;34</span>
+            </p>
+          </div>
+          <aside class="bo__rail">
+            <p class="bo__rail-h">Your seats</p>
+            <p class="bo__perf-now" data-perf-now>Thu 12 Oct &middot; 19.30</p>
+            <ul class="bo__list" data-list></ul>
+            <div class="bo__empty" data-empty>
+              <p>The plan is yours &mdash; the stalls hold seventy-two, and the house never oversells a tragedy.</p>
+              <button class="bo__best" data-best>Suggest the best pair</button>
+            </div>
+            <div class="bo__total">
+              <span>Total</span>
+              <span class="lnum" data-total>&pound;0</span>
+            </div>
+            <button class="bo__go" data-go disabled>Select seats to continue</button>
+            <p class="bo__fine">Booking fee waived for members of the 1791 Circle.</p>
+          </aside>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Filter the collection and sort by price &mdash; the tabular figure column stays optically aligned. Add a piece and the bag count ticks up.</p>
+    <p class="iu__hint label">Pick a performance and your seats &mdash; the bill totals in lining figures (<code class="iu__ot">lnum</code>). The furniture really is the site&rsquo;s quiet sans; Playfair keeps only the display register, and the <em>Mathilde</em> italic gains weight on the variable axis &mdash; <code class="iu__ot">wght</code> 400 &rarr; 880 &mdash; as your party grows.</p>
+  </figure>
+
+  <!-- ============================================================
+       05 — INTERACTIVE & EXPERIMENTAL
+       The size ladder, after the showings of the ATF Specimen Book &
+       Catalogue (1923): one face at every body, until it breaks. The
+       hairline readout is measured from the font itself (0.02 em).
+       ============================================================ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click='[data-px="12"]'>
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Interactive &mdash; the size ladder, after the <em>ATF Specimen Book</em> (1923)</span></figcaption>
+    <div class="iu__scene ld" data-ld style="--px:96">
+      <div class="ld__in">
+      <div class="ld__inst">
+        <p class="ld__k">Set it large &mdash; a live size test</p>
+        <div class="ld__stage"><span class="ld__word" data-word>&Eacute;lan</span></div>
+        <div class="ld__read">
+          <span class="ld__px"><b data-pxout>96</b> px</span>
+          <span class="ld__hair" data-hair>hairline &asymp; 1.92 px</span>
+        </div>
+        <p class="ld__verdict" data-verdict>Display. The hairlines sing &mdash; this is the size the face was drawn for.</p>
+        <input class="ld__range" data-range type="range" min="9" max="120" step="1" value="96" aria-label="Type size in pixels" />
+        <div class="ld__presets" role="group" aria-label="Preset sizes">
+          <button data-px="96">96</button>
+          <button data-px="56">56</button>
+          <button data-px="32">32</button>
+          <button data-px="16">16</button>
+          <button data-px="12">12</button>
+        </div>
+      </div>
+      <div class="ld__ladder">
+        <p class="ld__k">The showings, 96 down to 10</p>
+        <button class="ld__rung" data-rung="96"><span class="ld__rl">96</span><span class="ld__rt" style="font-size:96px">&Eacute;lan</span></button>
+        <button class="ld__rung" data-rung="56"><span class="ld__rl">56</span><span class="ld__rt" style="font-size:56px">&Eacute;lan &amp; Taste</span></button>
+        <button class="ld__rung" data-rung="32"><span class="ld__rl">32</span><span class="ld__rt" style="font-size:32px">A Treatise on Taste</span></button>
+        <button class="ld__rung" data-rung="21"><span class="ld__rl">21</span><span class="ld__rt" style="font-size:21px">A Treatise on Taste &amp; Letters</span></button>
+        <button class="ld__rung" data-rung="15"><span class="ld__rl">15</span><span class="ld__rt" style="font-size:15px">A Treatise on Taste, Letters &amp; the Hairline</span></button>
+        <button class="ld__rung" data-rung="10"><span class="ld__rl">10</span><span class="ld__rt" style="font-size:10px">A Treatise on Taste, Letters &amp; the Fashionable Hairline of the Age.</span></button>
+      </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the size down. The readout tracks the hairline &mdash; 0.02&#8202;em, measured from the font file &mdash; until it slips under a device pixel and the face tells you, politely, to stop.</p>
   </figure>
 
 </div>
 
 <script>
-  // ---- Scene 05: filter + sort + add-to-bag ----
-  document.querySelectorAll<HTMLElement>('[data-shop]').forEach((shop) => {
-    const grid = shop.querySelector('[data-grid]') as HTMLElement;
-    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.card'));
-    const order = cards.slice();
+  // ---- 04 box office: performances, seat picking, live bill ----
+  document.querySelectorAll<HTMLElement>('[data-bo]').forEach((bo) => {
+    const seats = Array.from(bo.querySelectorAll<HTMLButtonElement>('.bo__seat'));
+    const list = bo.querySelector('[data-list]') as HTMLElement;
+    const empty = bo.querySelector('[data-empty]') as HTMLElement;
+    const total = bo.querySelector('[data-total]') as HTMLElement;
+    const go = bo.querySelector('[data-go]') as HTMLButtonElement;
+    const tpl = document.querySelector('[data-seat-tpl]') as HTMLTemplateElement;
+    let perf = 0;
 
-    shop.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) =>
+    const isTaken = (ri: number, ci: number, p: number) =>
+      (ri * 31 + ci * 17 + (p + 1) * 47) % 9 < 3;
+
+    const applyPerf = () => {
+      seats.forEach((s) => {
+        const taken = isTaken(+s.dataset.ri!, +s.dataset.ci!, perf);
+        s.classList.toggle('is-taken', taken);
+        s.classList.remove('is-on');
+        s.setAttribute('aria-pressed', 'false');
+        s.disabled = taken;
+      });
+      render();
+    };
+
+    const render = () => {
+      const sel = seats.filter((s) => s.classList.contains('is-on'));
+      while (list.firstChild) list.removeChild(list.firstChild);
+      let sum = 0;
+      sel.forEach((s) => {
+        sum += +s.dataset.price!;
+        const li = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+        li.querySelector('.bo__sel-name')!.textContent = 'Stalls ' + s.dataset.seat;
+        li.querySelector('.bo__sel-price')!.textContent = '£' + s.dataset.price;
+        list.appendChild(li);
+      });
+      empty.style.display = sel.length ? 'none' : '';
+      total.textContent = '£' + sum;
+      const w = 400 + sel.length * 80; // 6 seats max → wght 880, inside the 400–900 axis
+      bo.style.setProperty('--tw', String(w));
+      const wout = bo.querySelector('[data-wght]');
+      if (wout) wout.textContent = 'wght ' + w;
+      go.disabled = sel.length === 0;
+      go.textContent = sel.length
+        ? `Continue — ${sel.length} seat${sel.length > 1 ? 's' : ''}`
+        : 'Select seats to continue';
+    };
+
+    seats.forEach((s) =>
+      s.addEventListener('click', () => {
+        if (s.disabled) return;
+        const sel = seats.filter((x) => x.classList.contains('is-on'));
+        const on = s.classList.contains('is-on');
+        if (!on && sel.length >= 6) return;
+        s.classList.toggle('is-on', !on);
+        s.setAttribute('aria-pressed', String(!on));
+        render();
+      })
+    );
+
+    // "Suggest the best pair": the most central available adjacent pair,
+    // preferring the middle of the stalls; never bridges the centre aisle.
+    bo.querySelector<HTMLButtonElement>('[data-best]')?.addEventListener('click', () => {
+      let bestPair: HTMLButtonElement[] | null = null;
+      let bestScore = Infinity;
+      for (let i = 0; i < seats.length - 1; i++) {
+        const a = seats[i], b = seats[i + 1];
+        if (a.dataset.ri !== b.dataset.ri) continue;
+        const ca = +a.dataset.ci!, cb = +b.dataset.ci!;
+        if (cb !== ca + 1 || ca === 6) continue; // not adjacent, or across the aisle
+        if (a.disabled || b.disabled) continue;
+        const ri = +a.dataset.ri!;
+        const score = Math.abs(ri - 2) * 100 + Math.abs((ca + cb) / 2 - 6.5);
+        if (score < bestScore) { bestScore = score; bestPair = [a, b]; }
+      }
+      bestPair?.forEach((s) => {
+        s.classList.add('is-on');
+        s.setAttribute('aria-pressed', 'true');
+      });
+      if (bestPair) render();
+    });
+
+    bo.querySelectorAll<HTMLButtonElement>('[data-perf]').forEach((b) =>
       b.addEventListener('click', () => {
-        shop.querySelectorAll('[data-filter]').forEach((x) => x.classList.remove('is-on'));
+        bo.querySelectorAll('[data-perf]').forEach((x) => {
+          x.classList.remove('is-on');
+          x.setAttribute('aria-pressed', 'false');
+        });
         b.classList.add('is-on');
-        const f = b.dataset.filter!;
-        cards.forEach((c) => c.classList.toggle('is-hidden', !(f === 'all' || c.dataset.cat === f)));
+        b.setAttribute('aria-pressed', 'true');
+        perf = +b.dataset.perf!;
+        applyPerf();
       })
     );
 
-    shop.querySelectorAll<HTMLButtonElement>('[data-sort]').forEach((b) =>
-      b.addEventListener('click', () => {
-        shop.querySelectorAll('[data-sort]').forEach((x) => x.classList.remove('is-on'));
-        b.classList.add('is-on');
-        const mode = b.dataset.sort!;
-        let arr = order.slice();
-        if (mode === 'low') arr.sort((a, z) => +a.dataset.price! - +z.dataset.price!);
-        else if (mode === 'high') arr.sort((a, z) => +z.dataset.price! - +a.dataset.price!);
-        arr.forEach((c) => grid.appendChild(c));
-      })
-    );
-
-    let count = 0;
-    const bag = shop.querySelector('[data-bag]') as HTMLElement;
-    const bagLabel = shop.querySelector('[data-bag-label]') as HTMLElement;
-    shop.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((b) =>
-      b.addEventListener('click', () => {
-        count += 1;
-        bag.textContent = String(count);
-        bagLabel.classList.add('is-bumped');
-        b.classList.add('is-added');
-        b.textContent = 'Added';
-        setTimeout(() => bagLabel.classList.remove('is-bumped'), 320);
-        setTimeout(() => { b.classList.remove('is-added'); b.textContent = 'Add'; }, 1100);
-      })
-    );
+    applyPerf();
   });
 
-  // ---- Scenes 01/04: pointer-driven weight bloom on a display word ----
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce) {
-    document.querySelectorAll<HTMLElement>('[data-weigh]').forEach((scene) => {
-      const word = scene.querySelector<HTMLElement>('[data-weigh-word]');
-      if (!word) return;
-      const rest = getComputedStyle(word).getPropertyValue('--wght').trim() || '400';
-      scene.addEventListener('pointerenter', () => word.style.setProperty('--wght', '900'));
-      scene.addEventListener('pointerleave', () => word.style.setProperty('--wght', rest));
-    });
-  }
+  // ---- 05 ladder: live size, measured-hairline readout, verdict ----
+  document.querySelectorAll<HTMLElement>('[data-ld]').forEach((ld) => {
+    const word = ld.querySelector('[data-word]') as HTMLElement;
+    const pxout = ld.querySelector('[data-pxout]') as HTMLElement;
+    const hair = ld.querySelector('[data-hair]') as HTMLElement;
+    const verdict = ld.querySelector('[data-verdict]') as HTMLElement;
+    const range = ld.querySelector('[data-range]') as HTMLInputElement;
+    const rungs = Array.from(ld.querySelectorAll<HTMLButtonElement>('[data-rung]'));
+
+    const VERDICTS: Array<[number, string]> = [
+      [64, 'Display. The hairlines sing — this is the size the face was drawn for.'],
+      [40, 'Headline. The contrast still reads as luxury.'],
+      [22, 'Crosshead. The thins are thinning; give the tracking some air.'],
+      [13, 'Body. The page begins to sparkle — bring a workhorse serif for the text.'],
+      [0,  'Caption. The hairline is gone. It told you: set it large.'],
+    ];
+
+    const set = (px: number) => {
+      px = Math.max(9, Math.min(120, px));
+      word.style.fontSize = px + 'px';
+      pxout.textContent = String(px);
+      const h = px * 0.02;
+      hair.textContent =
+        'hairline ≈ ' + h.toFixed(2) + ' px' + (h < 0.5 ? ' — under a device pixel' : '');
+      ld.classList.toggle('is-gone', h < 0.5);
+      verdict.textContent = VERDICTS.find(([min]) => px >= min)![1];
+      range.value = String(px);
+      let best = rungs[0];
+      rungs.forEach((r) => {
+        if (Math.abs(+r.dataset.rung! - px) < Math.abs(+best.dataset.rung! - px)) best = r;
+      });
+      rungs.forEach((r) => r.classList.toggle('is-near', r === best));
+    };
+
+    range.addEventListener('input', () => set(+range.value));
+    ld.querySelectorAll<HTMLButtonElement>('[data-px]').forEach((b) =>
+      b.addEventListener('click', () => set(+b.dataset.px!))
+    );
+    rungs.forEach((r) => r.addEventListener('click', () => set(+r.dataset.rung!)));
+    set(96);
+  });
 </script>
 
+<template data-seat-tpl>
+  <li class="bo__sel"><span class="bo__sel-name"></span><span class="bo__sel-price lnum"></span></li>
+</template>
+
 <style>
+  /* ---- sequence pacing: cream spread → madder house → playbill paper →
+     box-office page → ink-black ladder; one madder thread runs the scroll ---- */
+  .iu { gap: clamp(3.25rem, 8vh, 5.5rem); }
   .iu__item { margin: 0; }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu__scene * { font-family: var(--fam); }
+  .iu__scene ::selection { background: var(--accent); color: var(--accent-contrast); }
   .iu__ot { font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); letter-spacing: 0.02em; }
-  .onum { font-feature-settings: 'onum' 1; }
-
-  /* Print scenes fill the mat as a single art-directed object (no floating card). */
-  .scene-cover > .iu__poster,
-  .scene-invite > .iu__poster,
-  .scene-book > .iu__poster,
-  .scene-spread > .iu__poster { position: relative; inset: auto; }
+  .lnum { font-feature-settings: 'lnum' 1; }
+  .frac { font-feature-settings: 'frac' 1; }
 
   /* ============================================================
-     01 — FASHION COVER  (full-bleed, accent ground)
+     01 — EDITORIAL (Brodovitch spread)
      ============================================================ */
-  .scene-cover { background: var(--accent); border-color: var(--accent); }
-  .cover {
-    aspect-ratio: 4 / 5; background: var(--accent); color: var(--accent-contrast);
-    display: grid; grid-template-rows: auto 1fr auto; padding: 5cqi 5cqi 4.5cqi;
+  .ed { background: var(--bg-2); color: var(--fg); }
+  .ed__in { padding: 4.5cqi 6cqi 5cqi; display: flex; flex-direction: column; }
+  .ed__mast {
+    display: flex; justify-content: space-between; gap: 1rem;
+    font-size: clamp(11px, 1.05cqi, 15px); letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--fg-3); padding-bottom: 1.6cqi; border-bottom: 1px solid var(--line);
   }
-  .cover__top { display: flex; justify-content: space-between; align-items: baseline; }
-  .cover__logo { font-size: 3.4cqi; font-weight: 700; letter-spacing: 0.42em; padding-left: 0.42em; }
-  .cover__meta { font-size: 2.6cqi; font-style: italic; color: color-mix(in srgb, var(--accent-contrast) 78%, transparent); letter-spacing: 0.02em; }
-  .cover__meta .cover__no { font-style: normal; font-feature-settings: 'onum' 1; letter-spacing: 0.08em; }
-  .cover__stage { align-self: center; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .cover__over { font-size: 3cqi; font-style: italic; letter-spacing: 0.04em; color: color-mix(in srgb, var(--accent-contrast) 80%, transparent); margin-bottom: 1cqi; }
-  .cover__hl { --wght: 400; font-size: 25cqi; line-height: 0.86; letter-spacing: -0.015em; margin: 0; display: flex; justify-content: center; }
-  .cover__hl-a { font-variation-settings: 'wght' var(--wght); transition: font-variation-settings 0.55s var(--ease); }
-  .cover__hl-b { font-style: italic; font-weight: 400; }
-  .cover__deck { font-size: 3.1cqi; line-height: 1.32; font-style: italic; color: color-mix(in srgb, var(--accent-contrast) 86%, transparent); max-width: 34ch; margin: 2.6cqi auto 0; }
-  .cover__foot { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid color-mix(in srgb, var(--accent-contrast) 30%, transparent); padding-top: 2.4cqi; }
-  .cover__cred { font-size: 2.5cqi; font-style: italic; color: color-mix(in srgb, var(--accent-contrast) 82%, transparent); }
-  .cover__price { font-size: 2.8cqi; font-feature-settings: 'onum' 1; letter-spacing: 0.04em; }
+  .ed__hl { margin-top: 3.5cqi; line-height: 0.84; }
+  .ed__hl-a {
+    display: block; font-weight: 900; font-size: 15.5cqi; letter-spacing: -0.02em; color: var(--fg);
+  }
+  .ed__hl-b {
+    display: block; font-style: italic; font-weight: 400; font-size: 17.5cqi;
+    letter-spacing: -0.01em; color: var(--accent); margin: -3.2cqi 0 0 24%;
+  }
+  .ed__low { display: grid; grid-template-columns: 1fr minmax(0, 46%); margin-top: 4cqi; }
+  .ed__text { display: flex; flex-direction: column; }
+  .ed__deck {
+    font-style: italic; font-size: clamp(16px, 1.85cqi, 27px); line-height: 1.35;
+    color: var(--fg-2); max-width: 36ch; margin-bottom: 2.2cqi;
+  }
+  .ed__cols {
+    columns: 2; column-gap: 2.6cqi;
+    font-size: clamp(12px, 1.12cqi, 16px); line-height: 1.55; color: var(--fg-2);
+  }
+  .ed__cols p { margin: 0 0 0.85em; }
+  .ed__drop {
+    float: left; font-weight: 800; font-size: 3.1em; line-height: 0.72;
+    margin: 0.06em 0.12em 0 0; color: var(--accent);
+  }
+  .ed__cred {
+    margin-top: 2.2cqi; font-size: clamp(10px, 0.95cqi, 13px);
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-3);
+  }
+  /* Brodovitch slide: the two halves arrive from opposite wings */
+  .ed__hl-a[data-reveal] { transform: translateX(-36px); }
+  .ed__hl-b[data-reveal] { transform: translateX(36px); }
+  .ed__hl-a[data-reveal].is-visible, .ed__hl-b[data-reveal].is-visible { transform: none; }
 
   /* ============================================================
-     02 — WEDDING INVITATION  (asymmetric, engraved, onum)
+     02 — BRANDING (champagne house, madder field)
      ============================================================ */
-  .invite {
-    background: var(--bg); color: var(--fg); aspect-ratio: 5 / 6;
-    display: flex; flex-direction: column; justify-content: center; gap: 3.4cqi;
-    text-align: center; padding: 7cqi 7cqi;
-    box-shadow: inset 0 0 0 1px var(--line), inset 0 0 0 5cqi var(--bg);
-    border: 1px solid var(--line);
+  .ch { background: var(--accent); color: var(--accent-contrast); --gold: #c9a24f; }
+  .ch__in { padding: 5cqi 6cqi 4.5cqi; }
+  .ch__head { text-align: center; }
+  .ch__mark {
+    font-style: italic; font-variation-settings: 'wght' 560;
+    font-size: clamp(48px, 10cqi, 150px); line-height: 1; letter-spacing: -0.01em;
   }
-  .invite__over { font-size: 2.5cqi; font-style: italic; letter-spacing: 0.06em; color: var(--fg-3); }
-  .invite__names { display: flex; flex-direction: column; align-items: center; gap: 1cqi; }
-  .invite__n { font-size: 15cqi; line-height: 0.9; font-style: italic; font-weight: 400; color: var(--fg); }
-  .invite__amp { display: flex; flex-direction: column; align-items: center; gap: 0.4cqi; }
-  .invite__amp em { font-size: 4.2cqi; font-style: italic; color: var(--accent); letter-spacing: 0.02em; }
-  .invite__amp-rule { width: 4cqi; height: 6cqi; }
-  .invite__draw { stroke: var(--line); stroke-width: 1; fill: none; }
-  .invite__req { font-size: 3cqi; line-height: 1.55; font-style: italic; color: var(--fg-2); max-width: 26ch; margin: 0.6cqi auto 0; }
-  .invite__when { display: flex; flex-direction: column; gap: 1cqi; }
-  .invite__day { font-size: 2.6cqi; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fg-3); }
-  .invite__date { font-size: 6.4cqi; font-weight: 600; color: var(--fg); line-height: 1; letter-spacing: 0.005em; }
-  .invite__time { font-size: 2.7cqi; font-style: italic; color: var(--fg-2); }
-  .invite__where { font-size: 2.5cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .ch__law {
+    margin-top: 1.4cqi; font-size: clamp(10px, 1.05cqi, 15px);
+    letter-spacing: 0.34em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent-contrast) 78%, transparent);
+  }
+  /* an asymmetric plate: the label dominates off-centre; the millésime band
+     rides over its edge; the gold capsule sits embossed on the seam; the
+     crate end leans a degree off-axis with true stencil-cut caps */
+  .ch__compose {
+    position: relative; display: grid;
+    grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+    align-items: start; margin-top: 4.5cqi;
+  }
+  /* the label */
+  .ch__label {
+    position: relative; z-index: 1; overflow: hidden;
+    background: var(--accent-contrast); color: #241b12; min-height: 42cqi;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.1cqi; text-align: center; padding: 4cqi 2.5cqi;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 65%, transparent),
+                inset 0 0 0 0.5cqi var(--accent-contrast),
+                inset 0 0 0 calc(0.5cqi + 1px) color-mix(in srgb, #241b12 35%, transparent);
+  }
+  .ch__l-kind { font-size: clamp(9px, 0.9cqi, 13px); letter-spacing: 0.4em; text-transform: uppercase; color: #7c6c5d; }
+  .ch__l-rule { width: 5cqi; height: 1px; background: color-mix(in srgb, var(--gold) 80%, transparent); }
+  .ch__l-rule--dia { position: relative; }
+  .ch__l-rule--dia i { position: absolute; left: 50%; top: 50%; width: 0.55cqi; height: 0.55cqi; background: var(--gold); transform: translate(-50%, -50%) rotate(45deg); }
+  .ch__l-name { font-weight: 800; font-size: clamp(17px, 2.5cqi, 38px); letter-spacing: 0.18em; padding-left: 0.18em; color: var(--accent); }
+  .ch__l-cuvee { font-style: italic; font-size: clamp(13px, 1.7cqi, 26px); color: #241b12; }
+  .ch__l-brut { font-size: clamp(10px, 1.1cqi, 16px); letter-spacing: 0.32em; text-transform: uppercase; }
+  .ch__l-place { font-size: clamp(10px, 1cqi, 14px); font-style: italic; color: #5d5042; }
+  .ch__l-no { font-size: clamp(9px, 0.95cqi, 13px); color: #7c6c5d; letter-spacing: 0.06em; }
   @media (prefers-reduced-motion: no-preference) {
-    .invite__draw { stroke-dasharray: 22; stroke-dashoffset: 22; }
-    .invite[data-draw] .invite__draw { animation: pf-draw 1s var(--ease) 0.3s both; }
-    .invite[data-draw]:hover .invite__draw { animation: pf-draw 0.8s var(--ease); }
-    @keyframes pf-draw { to { stroke-dashoffset: 0; } }
+    .ch__label::after {
+      content: ''; position: absolute; inset: -40% -60%;
+      background: linear-gradient(105deg, transparent 42%, rgba(255, 244, 214, 0.5) 50%, transparent 58%);
+      transform: translateX(-120%); pointer-events: none;
+    }
+    .ch__label:hover::after, .ch__label:focus-visible::after { transform: translateX(120%); transition: transform 1.1s var(--ease); }
+  }
+  /* the gold capsule — embossed foil, riding the seam over the label corner */
+  .ch__cap {
+    position: absolute; z-index: 3; top: -2.5cqi; left: 58%; transform: translateX(-50%);
+    width: clamp(70px, 9cqi, 132px); aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle at 32% 26%, #f3df9e 0%, var(--gold) 46%, #92702a 80%, #6f5420 100%);
+    box-shadow: inset 0 0.15cqi 0.3cqi rgba(255, 248, 220, 0.75),
+                inset 0 -0.35cqi 0.7cqi rgba(58, 38, 4, 0.5),
+                0 0.3cqi 1cqi rgba(0, 0, 0, 0.3);
+    display: grid; place-items: center;
+  }
+  .ch__cap::before { content: ''; position: absolute; inset: 11%; border-radius: 50%; border: 1px solid rgba(110, 82, 26, 0.6); }
+  .ch__cap em {
+    font-style: italic; font-size: clamp(36px, 4.6cqi, 70px); color: #553e14;
+    text-shadow: 0 1px 0 rgba(255, 247, 214, 0.55); transform: translateY(-0.04em);
+  }
+  /* right column: the band breaks the seam; the crate end leans off-axis */
+  .ch__side { display: flex; flex-direction: column; min-width: 0; padding-top: 6.5cqi; }
+  .ch__band {
+    position: relative; z-index: 2; margin-left: -9cqi;
+    display: flex; align-items: baseline; justify-content: center; gap: 0.8cqi;
+    border-block: 1px solid var(--gold); padding: 1.1cqi 2cqi;
+    background: color-mix(in srgb, #000 14%, var(--accent));
+    box-shadow: 0 0.25cqi 0.9cqi rgba(0, 0, 0, 0.28);
+  }
+  .ch__band-word { font-style: italic; font-size: clamp(12px, 1.5cqi, 22px); color: var(--gold); }
+  .ch__band-year { font-weight: 700; font-size: clamp(14px, 1.9cqi, 28px); letter-spacing: 0.12em; }
+  /* crate end — stencilled caps, a degree off-axis */
+  .ch__crate {
+    background: color-mix(in srgb, #000 22%, var(--accent));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-contrast) 25%, transparent);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.2cqi; padding: 3.4cqi 2cqi; text-align: center;
+    width: 94%; align-self: flex-end; margin-top: 3cqi;
+    transform: rotate(-1.6deg); transform-origin: 50% 40%;
+  }
+  /* the stencil: transparent bridge-gaps cut clean across the stems,
+     revealing the crate board behind — background-clip:text */
+  .ch__sten {
+    display: block; color: transparent;
+    padding: 0.08em 0.12em; margin: -0.08em -0.12em;
+    background-image: linear-gradient(to bottom,
+      var(--accent-contrast) 0 34%, transparent 34% 41%,
+      var(--accent-contrast) 41% 60%, transparent 60% 67%,
+      var(--accent-contrast) 67% 100%);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  .ch__sten--gold {
+    background-image: linear-gradient(to bottom,
+      var(--gold) 0 45%, transparent 45% 54%, var(--gold) 54% 100%);
+  }
+  .ch__c-big { font-weight: 900; font-size: clamp(20px, 3cqi, 46px); line-height: 1.06; letter-spacing: 0.07em; }
+  .ch__c-place { font-weight: 900; font-size: clamp(13px, 1.8cqi, 27px); letter-spacing: 0.5em; padding-left: 0.5em; }
+  .ch__c-rule { width: 6cqi; height: 1px; background: color-mix(in srgb, var(--accent-contrast) 40%, transparent); }
+  .ch__c-small { font-size: clamp(10px, 1.05cqi, 15px); letter-spacing: 0.2em; text-transform: uppercase; color: color-mix(in srgb, var(--accent-contrast) 80%, transparent); }
+  .ch__c-up { font-size: clamp(9px, 0.9cqi, 12px); letter-spacing: 0.22em; text-transform: uppercase; color: color-mix(in srgb, var(--accent-contrast) 55%, transparent); }
+  /* brand-book caption: keyline + figure number, set left like a plate note */
+  .ch__foot {
+    margin-top: 4.5cqi; padding-top: 1.6cqi; border-top: 1px solid color-mix(in srgb, var(--accent-contrast) 28%, transparent);
+    font-style: italic; font-size: clamp(12px, 1.2cqi, 17px); max-width: 66ch;
+    color: color-mix(in srgb, var(--accent-contrast) 82%, transparent);
+  }
+  .ch__fig {
+    font-style: normal; font-weight: 700; font-size: 0.78em;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-right: 1em;
   }
 
   /* ============================================================
-     03 — LITERARY BOOK COVER  (own deep ground, upright/italic contrast)
+     03 — ILLUSTRATION (fat-face playbill)
      ============================================================ */
-  .scene-book { --ink: #14110d; --paper: #ece3d1; --gilt: #b08a4d; }
-  .book { aspect-ratio: 3 / 4; background: var(--ink); display: grid; place-items: stretch; padding: 4cqi; }
-  .book__frame {
-    border: 1px solid color-mix(in srgb, var(--gilt) 55%, transparent);
-    display: grid; grid-template-rows: auto 1fr auto; padding: 6cqi 5cqi 5cqi; text-align: center;
+  .pb { background: #efe4cb; --ink: #241b10; --red: #8f2030; }
+  .pb__sheet {
+    max-width: 44rem; margin: 0 auto; padding: 5cqi 1.25rem 4cqi; text-align: center; color: var(--ink);
+    display: flex; flex-direction: column; align-items: center; gap: clamp(8px, 1.1cqi, 16px);
   }
-  .book__pub { font-size: 2.4cqi; letter-spacing: 0.26em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 60%, transparent); }
-  .book__center { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .book__title { font-size: 21cqi; line-height: 0.94; color: var(--paper); letter-spacing: -0.005em; margin: 0; }
-  .book__title em { font-style: italic; font-weight: 400; color: var(--gilt); }
-  .book__rule { display: block; width: 14cqi; height: 1px; background: color-mix(in srgb, var(--gilt) 70%, transparent); margin: 3.4cqi auto; }
-  .book__author { font-size: 3.6cqi; font-style: italic; color: color-mix(in srgb, var(--paper) 88%, transparent); }
-  .book__blurb { font-size: 2.6cqi; line-height: 1.5; font-style: italic; color: color-mix(in srgb, var(--paper) 64%, transparent); max-width: 30ch; margin: 0 auto; }
-  .book__src { display: block; font-style: normal; font-size: 2.1cqi; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gilt); margin-top: 0.8cqi; }
+  .pb__rule { width: 100%; height: 1px; background: var(--ink); }
+  .pb__rule--dbl { border-block: 1px solid var(--ink); height: 4px; background: none; }
+  .pb__house { font-weight: 900; font-size: clamp(27px, 4.7cqi, 68px); line-height: 0.95; letter-spacing: 0.02em; white-space: nowrap; }
+  .pb__street { font-weight: 700; font-size: clamp(17px, 2.1cqi, 30px); letter-spacing: 0.3em; padding-left: 0.3em; }
+  .pb__it { font-style: italic; font-size: clamp(15px, 1.7cqi, 24px); color: var(--ink); }
+  .pb__it--sm { font-size: clamp(13px, 1.45cqi, 20px); max-width: 44ch; }
+  .pb__when { font-size: clamp(16px, 1.9cqi, 27px); font-weight: 700; letter-spacing: 0.02em; }
+  .pb__when em { font-weight: 400; font-style: italic; letter-spacing: 0; }
+  .pb__title { font-weight: 900; font-size: clamp(56px, 9.2cqi, 118px); line-height: 0.9; letter-spacing: -0.02em; color: var(--red); }
+  .pb__sub { font-style: italic; font-weight: 500; font-size: clamp(20px, 2.6cqi, 38px); color: var(--red); margin-top: -0.4cqi; }
+  .pb__cast { font-size: clamp(13px, 1.5cqi, 21px); font-weight: 600; letter-spacing: 0.04em; max-width: 46ch; }
+  .pb__cast em { font-weight: 400; font-style: italic; letter-spacing: 0; }
+  .pb__line { font-weight: 600; font-size: clamp(14px, 1.6cqi, 23px); }
+  .pb__farce { font-weight: 800; font-size: clamp(26px, 3.6cqi, 52px); letter-spacing: 0.04em; }
+  .pb__prices { font-weight: 700; font-size: clamp(16px, 1.9cqi, 27px); letter-spacing: 0.06em; }
+  .pb__prices em { font-style: italic; font-weight: 400; letter-spacing: 0; }
+  .pb__doors { font-style: italic; font-size: clamp(13px, 1.5cqi, 21px); }
+  .pb__rex { font-weight: 600; font-size: clamp(11px, 1.2cqi, 16px); letter-spacing: 0.34em; padding-left: 0.34em; margin-top: 0.6cqi; }
+  .pb__imprint {
+    margin-top: 1.8cqi; padding-top: 1cqi; border-top: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+    font-style: italic; font-size: clamp(10px, 1.05cqi, 14px); color: color-mix(in srgb, var(--ink) 64%, transparent);
+  }
+  .pb ::selection { background: var(--ink); color: #efe4cb; }
+  /* letterpress press-in instead of the global fade-up */
+  .pb [data-reveal] { transform: scale(1.045); }
+  .pb [data-reveal].is-visible { transform: none; }
 
   /* ============================================================
-     04 — EDITORIAL FEATURE OPENER  (kept; minor fixes)
+     04 — WEB UI (box office)
      ============================================================ */
-  .scene-spread { aspect-ratio: 4 / 3; }
-  .spread { background: var(--bg); color: var(--fg); display: grid; grid-template-columns: 11% 1fr; padding: 4.5cqi; gap: 3.5cqi; }
-  .spread__rail { display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); padding-right: 2.5cqi; }
-  .spread__folio { font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-  .spread__folio .onum { letter-spacing: 0.1em; }
-  .spread__sec { font-size: 1.9cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); writing-mode: vertical-rl; }
-  .spread__main { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
-  .spread__kicker { font-size: 2.2cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-  .spread__head {
-    --wght: 500;
-    font-size: 12.5cqi; line-height: 0.9; letter-spacing: -0.015em; color: var(--fg); margin-top: 1.4cqi;
-    font-variation-settings: 'wght' var(--wght);
-    transition: font-variation-settings 0.55s var(--ease);
+  .bo { max-width: 980px; width: 100%; margin: 0 auto; font-size: 13px; line-height: 1.45; border: 0; }
+  /* the furniture is genuinely the site's sans; Playfair holds ONLY the
+     display register — brand line, the Mathilde italic, "Your seats", the total */
+  .bo :not(.iu__chrome, .iu__chrome *) { font-family: var(--font-ui); }
+  .bo .bo__name, .bo .bo__title, .bo .bo__title em, .bo .bo__title-sub,
+  .bo .bo__rail-h, .bo .bo__total .lnum { font-family: var(--fam); }
+  .bo .bo__wght { font-family: var(--font-mono); }
+  .bo__head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--line);
   }
-  .spread__head em { font-weight: 400; font-style: italic; color: var(--fg); font-variation-settings: 'wght' 400; }
-  .spread__deck { font-size: 2.9cqi; line-height: 1.2; font-style: italic; color: var(--fg-2); max-width: 72%; margin-top: 2cqi; }
-  .spread__body { columns: 2; column-gap: 3.5cqi; font-size: clamp(11px, 2cqi, 15px); line-height: 1.52; color: var(--fg-2); margin-top: 2.8cqi; text-align: justify; hyphens: auto; }
-  .spread__body p { margin: 0 0 0.8em; }
-  .spread__body p:first-child { text-indent: 0; }
-  .spread__drop {
-    float: left; font-size: 8.2cqi; line-height: 0.66; font-weight: 700;
-    margin: 0.08em 0.12em -0.04em 0; color: var(--fg); hyphens: none;
+  .bo__brand { display: flex; align-items: baseline; gap: 0.7rem; }
+  .bo__name { font-weight: 800; font-size: 21px; letter-spacing: 0.005em; color: var(--fg); }
+  .bo__street { font-style: italic; font-size: 12px; color: var(--fg-3); }
+  .bo__crumb { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .bo__crumb b { color: var(--accent); font-weight: 600; }
+  .bo__show {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 1.25rem; flex-wrap: wrap;
+    padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--line); background: var(--bg-2);
   }
+  .bo__title { font-weight: 700; font-size: 26px; line-height: 1.05; color: var(--fg); margin: 0; }
+  .bo__title em {
+    font-style: italic; color: var(--accent); margin-right: 0.18em;
+    font-variation-settings: 'wght' var(--tw, 400);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bo__title em { transition: font-variation-settings 0.45s var(--ease); }
+  }
+  .bo__wght {
+    display: inline-block; vertical-align: 0.25em; margin-left: 0.7rem;
+    font-size: 10px; letter-spacing: 0.06em; color: var(--fg-3);
+    border: 1px solid var(--line); border-radius: 3px; padding: 0.1rem 0.35rem;
+  }
+  .bo__meta { font-size: 12.5px; font-style: italic; color: var(--fg-2); margin-top: 0.25rem; }
+  .bo__perfs { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .bo__perfs button {
+    font-size: 12px; padding: 0.32rem 0.7rem; color: var(--fg-2); cursor: pointer;
+    border: 1px solid var(--line); border-radius: 100px; background: var(--bg);
+    transition: color 0.15s var(--ease), background 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .bo__perfs button:hover { border-color: var(--fg-3); color: var(--fg); }
+  .bo__perfs button.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .bo__main { display: grid; grid-template-columns: minmax(0, 1fr) 232px; }
+  .bo__hall { padding: 1.1rem 1.25rem 1.2rem; border-right: 1px solid var(--line); }
+  .bo__stage {
+    margin: 0 auto 1rem; width: 64%; padding: 0.32rem 0;
+    border: 1px solid var(--line); border-radius: 0 0 60% 60% / 0 0 100% 100%; border-top: 0;
+    text-align: center; font-size: 10.5px; letter-spacing: 0.42em; padding-left: 0.42em;
+    text-transform: uppercase; color: var(--fg-3);
+  }
+  .bo__map { display: flex; flex-direction: column; gap: 6px; }
+  .bo__row { display: flex; align-items: center; gap: 0.6rem; justify-content: center; }
+  .bo__rl { width: 0.9em; font-style: italic; font-size: 12px; color: var(--fg-3); text-align: center; }
+  .bo__seats { display: flex; gap: 5px; }
+  .bo__seat {
+    width: 22px; height: 19px; border-radius: 5px 5px 2px 2px; cursor: pointer;
+    border: 1px solid var(--fg-3); background: transparent;
+    transition: background 0.12s var(--ease), border-color 0.12s var(--ease), transform 0.12s var(--ease);
+  }
+  .bo__seat:nth-child(7) { margin-left: 14px; }
+  .bo__seat:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-1px); }
+  .bo__seat.is-on { background: var(--accent); border-color: var(--accent); }
+  .bo__seat.is-taken { border-color: var(--line); background: var(--line-soft); cursor: default; }
+  .bo__seat:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .bo__legend { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; font-size: 11.5px; color: var(--fg-3); }
+  .bo__lg { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .bo__sw { width: 13px; height: 11px; border-radius: 3px 3px 1px 1px; border: 1px solid var(--fg-3); display: inline-block; }
+  .bo__sw--sel { background: var(--accent); border-color: var(--accent); }
+  .bo__sw--tk { border-color: var(--line); background: var(--line-soft); }
+  .bo__lg--p { margin-left: auto; font-style: italic; color: var(--fg-2); }
+  .bo__rail { padding: 1.1rem 1.15rem 1.2rem; display: flex; flex-direction: column; background: var(--bg); }
+  .bo__rail-h { font-style: italic; font-size: 18px; font-weight: 500; color: var(--fg); margin-bottom: 0.55rem; }
+  .bo__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+  .bo__sel { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; color: var(--fg); border-bottom: 1px solid var(--line-soft); padding-bottom: 0.3rem; }
+  .bo__sel-price { color: var(--fg-2); }
+  .bo__empty { font-size: 12.5px; font-style: italic; color: var(--fg-3); }
+  .bo__best {
+    margin-top: 0.55rem; padding: 0.3rem 0.65rem; cursor: pointer;
+    font-size: 12px; font-style: italic; color: var(--accent);
+    background: transparent; border: 1px solid var(--accent); border-radius: 100px;
+    transition: background 0.15s var(--ease), color 0.15s var(--ease);
+  }
+  .bo__best:hover { background: var(--accent); color: var(--accent-contrast); }
+  .bo__best:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bo__total {
+    display: flex; justify-content: space-between; align-items: baseline; margin-top: auto;
+    padding-top: 0.8rem; border-top: 1px solid var(--line);
+    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2);
+  }
+  .bo__total .lnum { font-size: 22px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--fg); }
+  .bo__go {
+    margin-top: 0.8rem; padding: 0.6rem 0.9rem; cursor: pointer;
+    background: var(--accent); color: var(--accent-contrast); border: 0;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    transition: opacity 0.15s var(--ease);
+  }
+  .bo__go:disabled { opacity: 0.35; cursor: default; }
+  .bo__go:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bo__fine { margin-top: 0.55rem; font-size: 11px; font-style: italic; color: var(--fg-3); }
 
   /* ============================================================
-     05 — BOUTIQUE STOREFRONT UI  (real px; filter + sort + bag)
+     05 — INTERACTIVE (the size ladder, ink-black)
      ============================================================ */
-  .shop { font-size: 13px; line-height: 1.4; background: var(--bg); }
-  .shop__head { display: flex; align-items: center; gap: 1.2rem; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--line); }
-  .shop__logo { font-size: 24px; font-weight: 700; letter-spacing: 0.01em; color: var(--fg); }
-  .shop__filters { display: flex; gap: 0.25rem; margin-left: 0.6rem; }
-  .shop__filters button { font-size: 13px; color: var(--fg-3); padding: 0.3rem 0.7rem; border-radius: 100px; letter-spacing: 0.02em; transition: color .15s var(--ease), background .15s var(--ease); }
-  .shop__filters button:hover { color: var(--fg); }
-  .shop__filters button.is-on { color: var(--accent-contrast); background: var(--accent); font-weight: 600; }
-  .shop__bag { margin-left: auto; font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); transition: transform .3s var(--ease); }
-  .shop__bag.is-bumped { transform: scale(1.16); color: var(--accent); }
+  .ld { background: #18120e; color: #f1e6d2; --dim: #9b8a74; --rose: #d4596a; }
+  .ld__in {
+    padding: 5cqi 6cqi;
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 5cqi;
+  }
+  .ld ::selection { background: #f1e6d2; color: #18120e; }
+  .ld__k { font-size: clamp(10px, 1cqi, 14px); letter-spacing: 0.28em; text-transform: uppercase; color: var(--dim); }
+  .ld__inst { display: flex; flex-direction: column; min-width: 0; }
+  .ld__stage { min-height: clamp(120px, 12cqi, 180px); display: flex; align-items: flex-end; }
+  .ld__word { font-weight: 400; line-height: 0.9; letter-spacing: -0.01em; white-space: nowrap; }
+  .ld__read { display: flex; align-items: baseline; gap: 1.4rem; margin-top: 2cqi; flex-wrap: wrap; }
+  .ld__px { font-size: clamp(15px, 1.5cqi, 21px); color: var(--dim); }
+  .ld__px b { font-weight: 700; font-size: 2.1em; color: #f1e6d2; }
+  .ld__hair { font-family: var(--font-mono); font-size: clamp(11px, 1.05cqi, 14px); color: var(--dim); transition: color 0.2s var(--ease); }
+  .ld.is-gone .ld__hair { color: var(--rose); }
+  .ld__verdict { font-style: italic; font-size: clamp(15px, 1.6cqi, 23px); line-height: 1.35; color: #f1e6d2; min-height: 2.8em; max-width: 34ch; margin-top: 0.6cqi; }
+  .ld__range { width: 100%; max-width: 30rem; margin-top: 1.4cqi; accent-color: var(--rose); cursor: pointer; }
+  .ld__presets { display: flex; gap: 0.4rem; margin-top: 1cqi; }
+  .ld__presets button {
+    font-size: 13px; padding: 0.3rem 0.75rem; cursor: pointer;
+    color: var(--dim); background: transparent; border: 1px solid #3c3128; border-radius: 100px;
+    transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
+  }
+  .ld__presets button:hover { color: #f1e6d2; border-color: var(--dim); }
+  .ld__presets button:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
+  .ld__ladder { display: flex; flex-direction: column; min-width: 0; }
+  .ld__rung {
+    display: flex; align-items: baseline; gap: 1rem; text-align: left; cursor: pointer;
+    background: none; border: 0; border-top: 1px solid #3c3128; padding: 0.55rem 0;
+    color: #f1e6d2; min-width: 0; transition: color 0.15s var(--ease);
+  }
+  .ld__rung:first-of-type { margin-top: 1.2cqi; }
+  .ld__rung:last-of-type { border-bottom: 1px solid #3c3128; }
+  .ld__rl { font-family: var(--font-mono); font-size: 11px; color: var(--dim); width: 2.2em; flex: none; }
+  .ld__rt { line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; letter-spacing: -0.005em; }
+  .ld__rung.is-near, .ld__rung.is-near .ld__rl { color: var(--rose); }
+  .ld__rung:hover { color: var(--rose); }
+  .ld__rung:focus-visible { outline: 2px solid var(--rose); outline-offset: 2px; }
 
-  .shop__hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; padding: 1.9rem 1.4rem 1.5rem; border-bottom: 1px solid var(--line); background: var(--bg-2); }
-  .shop__hero-text { min-width: 0; }
-  .shop__hero-kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); }
-  .shop__hero-word { font-size: clamp(40px, 8vw, 64px); line-height: 0.92; color: var(--fg); margin: 0.25rem 0 0.45rem; letter-spacing: -0.01em; }
-  .shop__hero-word em { font-style: italic; font-weight: 400; color: var(--accent); }
-  .shop__hero-sub { font-size: 13.5px; font-style: italic; color: var(--fg-2); }
-  .shop__hero-sort { display: flex; align-items: baseline; gap: 0.4rem; white-space: nowrap; flex: none; }
-  .shop__sort-lbl { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); margin-right: 0.2rem; }
-  .shop__hero-sort button { font-size: 12px; color: var(--fg-3); padding: 0.2rem 0.5rem; border-radius: 100px; transition: color .15s var(--ease), background .15s var(--ease); }
-  .shop__hero-sort button:hover { color: var(--fg); }
-  .shop__hero-sort button.is-on { color: var(--fg); background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  /* ============================================================
+     RESPONSIVE — three compositions, not one squished
+     ============================================================ */
 
-  .shop__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); padding: 1px; }
-  .card { background: var(--bg); display: flex; flex-direction: column; min-height: 0; }
-  .card.is-hidden { display: none; }
-  .card__img {
-    position: relative; aspect-ratio: 4 / 5; overflow: hidden; container-type: inline-size;
-    background:
-      radial-gradient(120% 100% at 50% 0%, color-mix(in srgb, var(--tone) 60%, transparent), transparent 70%),
-      linear-gradient(150deg, var(--swatch), color-mix(in srgb, var(--swatch) 62%, #000));
+  /* --- tablet: 768 is a first-class layout --- */
+  @container (max-width: 920px) {
+    .ed__low { grid-template-columns: 1fr minmax(0, 62%); }
+    .ch__compose { grid-template-columns: minmax(0, 54fr) minmax(0, 46fr); }
+    .ch__label { min-height: 48cqi; }
+    .ch__cap { left: 54%; top: -3cqi; width: clamp(64px, 11cqi, 110px); }
+    .ch__cap em { font-size: clamp(32px, 5.6cqi, 58px); }
+    .ch__side { padding-top: 7.5cqi; }
+    .ch__band { margin-left: -7cqi; }
+    .ch__crate { margin-top: 4cqi; }
+    .ld__in { grid-template-columns: 1fr; gap: 4cqi; }
+    .ld__stage { min-height: clamp(110px, 18cqi, 160px); }
   }
-  .card__plate { position: absolute; top: 0.7rem; left: 0.7rem; font-size: 11px; letter-spacing: 0.06em; color: #fff; opacity: 0.62; font-feature-settings: 'onum' 1; }
-  .card__big {
-    position: absolute; left: 0.9rem; bottom: 0.75rem; right: 0.9rem;
-    font-size: clamp(22px, 18cqi, 34px); line-height: 0.94; color: #fff; font-style: italic; font-weight: 500;
-    text-shadow: 0 1px 18px rgba(0,0,0,0.28);
+  @container (max-width: 860px) {
+    .bo__main { grid-template-columns: 1fr; }
+    .bo__hall { border-right: 0; border-bottom: 1px solid var(--line); }
   }
-  .card__meta { padding: 0.7rem 0.85rem 0.85rem; }
-  .card__line { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-  .card__name { font-size: 17px; font-weight: 600; color: var(--fg); }
-  .card__price { font-size: 14px; color: var(--fg); font-variation-settings: 'wght' 500; white-space: nowrap; font-feature-settings: 'onum' 1, 'tnum' 1; }
-  .card__cur { color: var(--fg-3); font-size: 12px; margin-right: 0.05em; }
-  .card__line--sub { margin-top: 0.2rem; }
-  .card__detail { font-size: 12px; font-style: italic; color: var(--fg-3); }
-  .card__add {
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2);
-    border: 1px solid var(--line); border-radius: 100px; padding: 0.22rem 0.7rem; cursor: pointer; flex: none;
-    transition: color .15s var(--ease), background .15s var(--ease), border-color .15s var(--ease);
-  }
-  .card__add:hover { color: var(--fg); border-color: var(--fg-3); }
-  .card__add.is-added { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
-  .card__add:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  /* ---- responsive ---- */
-  @container (max-width: 640px) {
-    .shop__grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @container (max-width: 520px) {
-    .shop__head { flex-wrap: wrap; }
-    .shop__filters { margin-left: 0; order: 3; width: 100%; }
-    .shop__bag { margin-left: 0; }
-    .shop__hero { flex-direction: column; align-items: flex-start; gap: 0.9rem; }
-    .shop__grid { grid-template-columns: 1fr; }
-    .card__img { aspect-ratio: 16 / 9; }
-  }
+  /* --- phone: stack, enlarge, re-rag --- */
   @container (max-width: 560px) {
-    .scene-spread { aspect-ratio: auto; }
-    .spread { grid-template-columns: 1fr; }
-    .spread__rail { flex-direction: row; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 2cqi; }
-    .spread__sec { writing-mode: horizontal-tb; }
-    .spread__main { grid-column: 1; }
-    .spread__body { columns: 1; font-size: 3.4cqi; }
-    .spread__deck { max-width: 100%; font-size: 4cqi; }
-    .spread__drop { font-size: 13cqi; }
+    .ed__in { padding: 7cqi 6cqi 8cqi; }
+    .ed__mast { font-size: 10px; letter-spacing: 0.16em; }
+    .ed__hl { margin-top: 7cqi; }
+    .ed__hl-a { font-size: 21cqi; }
+    .ed__hl-b { font-size: 23cqi; margin: -1.5cqi 0 0 10%; }
+    .ed__low { grid-template-columns: 1fr; margin-top: 8cqi; }
+    .ed__void { display: none; }
+    .ed__deck { font-size: 4.6cqi; margin-bottom: 5cqi; }
+    .ed__cols { columns: 1; font-size: 3.6cqi; }
+    .ed__cred { margin-top: 5cqi; font-size: 2.8cqi; }
+
+    .ch__in { padding: 9cqi 6cqi 7cqi; }
+    .ch__mark { font-size: 15cqi; }
+    .ch__law { font-size: 2.8cqi; letter-spacing: 0.26em; margin-top: 3cqi; }
+    /* phone: label, capsule riding its foot, band, leaning crate — one column */
+    .ch__compose { grid-template-columns: 1fr; margin-top: 8cqi; }
+    .ch__label { min-height: 0; padding: 9cqi 5cqi 14cqi; gap: 2.6cqi; }
+    .ch__l-kind { font-size: 2.6cqi; }
+    .ch__l-name { font-size: 6.4cqi; }
+    .ch__l-cuvee { font-size: 4.6cqi; }
+    .ch__l-brut { font-size: 3cqi; }
+    .ch__l-place, .ch__l-no { font-size: 2.8cqi; }
+    .ch__l-rule { width: 12cqi; }
+    .ch__cap { position: relative; top: auto; left: auto; transform: none; z-index: 3; width: 20cqi; margin: -10cqi auto 0; }
+    .ch__cap em { font-size: 10cqi; }
+    .ch__side { padding-top: 6cqi; }
+    .ch__band { margin-left: 6%; margin-right: -2%; padding: 2.2cqi 4cqi; }
+    .ch__band-word { font-size: 4cqi; }
+    .ch__band-year { font-size: 5cqi; }
+    .ch__crate { width: 100%; align-self: stretch; margin-top: 7cqi; padding: 8cqi 5cqi; gap: 3cqi; transform: rotate(-1.2deg); }
+    .ch__c-big { font-size: 7.2cqi; }
+    .ch__c-place { font-size: 4.4cqi; }
+    .ch__c-small { font-size: 2.9cqi; }
+    .ch__c-up { font-size: 2.6cqi; }
+    .ch__foot { font-size: 3.4cqi; margin-top: 8cqi; padding-top: 4cqi; }
+
+    .pb__sheet { padding: 9cqi 7cqi; gap: 2.6cqi; }
+
+    .bo__head { flex-wrap: wrap; }
+    .bo__crumb { display: none; }
+    .bo__hall { padding: 0.9rem 0.7rem 1rem; }
+    .bo__rl { display: none; }
+    .bo__seats { gap: 4px; }
+    .bo__seat { width: 20px; height: 17px; }
+    .bo__seat:nth-child(7) { margin-left: 10px; }
+    .bo__lg--p { margin-left: 0; width: 100%; }
+
+    .ld__in { padding: 9cqi 6cqi; }
+    .ld__stage { min-height: 36cqi; }
+    .ld__verdict { font-size: 4.2cqi; }
+    .ld__px { font-size: 4cqi; }
+    .ld__hair { font-size: 3cqi; }
+    .ld__k { font-size: 2.8cqi; letter-spacing: 0.2em; }
+    .ld__rt { white-space: normal; overflow: visible; text-overflow: clip; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cover__hl-a, .spread__head, .shop__bag { transition: none; }
+    .bo__seat, .bo__perfs button, .ld__hair, .ld__rung { transition: none; }
   }
 </style>
