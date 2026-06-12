@@ -3,905 +3,1020 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+// Serif text companion (loaded site-wide in Layout.astro).
+const serif = "'Libre Baskerville', Georgia, serif";
 
-// --- 01 · Financial news dashboard (interactive, real device scale) ----------
-const marketRows = [
-  { sym: 'AAPL',  name: 'Apple Inc.',          px: '182.63', ch: '+1.42', pct: '+0.78%', vol: '62.4M', up: true  },
-  { sym: 'NVDA',  name: 'NVIDIA Corp.',         px: '875.40', ch: '+22.10', pct: '+2.59%', vol: '41.8M', up: true  },
-  { sym: 'MSFT',  name: 'Microsoft Corp.',      px: '420.17', ch: '-3.88', pct: '-0.91%', vol: '18.2M', up: false },
-  { sym: 'TSLA',  name: 'Tesla Inc.',           px: '194.05', ch: '+6.27', pct: '+3.34%', vol: '88.1M', up: true  },
-  { sym: 'META',  name: 'Meta Platforms',       px: '489.92', ch: '-1.14', pct: '-0.23%', vol: '12.7M', up: false },
-  { sym: 'AMZN',  name: 'Amazon.com Inc.',      px: '191.78', ch: '+0.33', pct: '+0.17%', vol: '29.3M', up: true  },
-] as { sym: string; name: string; px: string; ch: string; pct: string; vol: string; up: boolean }[];
+// VERIFIED against node_modules/@fontsource-variable/archivo (standard subset,
+// the one Layout.astro loads): axes wght 100–900 AND wdth 62–125 (upright +
+// italic); GSUB carries liga / tnum / pnum / frac (with numr+dnom). Every act
+// below performs the two-dimensional wght×wdth space; the tabular and fraction
+// features are exercised only where those tags exist.
 
-const portfolioRows = [
-  { sym: 'AAPL',  name: 'Apple Inc.',           value: '12,840.60', gain: '+2,840.60', gainPct: '+28.4%', shares: '70.3', up: true  },
-  { sym: 'MSFT',  name: 'Microsoft Corp.',      value: '8,403.40',  gain: '+1,403.40', gainPct: '+20.0%', shares: '20.0', up: true  },
-  { sym: 'NVDA',  name: 'NVIDIA Corp.',         value: '8,754.00',  gain: '+5,254.00', gainPct: '+150.2%', shares: '10.0', up: true },
-  { sym: 'TSLA',  name: 'Tesla Inc.',           value: '3,881.00',  gain: '-1,619.00', gainPct: '-29.4%', shares: '20.0', up: false },
-  { sym: 'META',  name: 'Meta Platforms',       value: '4,899.20',  gain: '+899.20',   gainPct: '+22.5%', shares: '10.0', up: true  },
-] as { sym: string; name: string; value: string; gain: string; gainPct: string; shares: string; up: boolean }[];
+// --- 01 · Season poster ----------------------------------------------------
+const plays = [
+  { title: 'JULIUS CAESAR', dates: 'June 18 — July 12', dir: 'dir. Renata Okafor' },
+  { title: 'TWELFTH NIGHT', dates: 'July 16 — August 9', dir: 'dir. Sam Brennan' },
+  { title: 'THE TEMPEST',   dates: 'August 13 — 30',     dir: 'dir. Lucía Páez' },
+];
 
-const kpis = {
-  markets:   { a: '4,217.40', b: '+12.4%', c: '2.4T',   d: '18.7' },
-  portfolio: { a: '$38,777',  b: '+18.2%', c: '5 pos',  d: '1.14x' },
-  watchlist: { a: '34 items', b: '21 up',  c: '13 dn',  d: '8 new' },
-};
+// --- 02 · Magazine chart ----------------------------------------------------
+const rates = [
+  { yr: '’19', v: 1.9 }, { yr: '’20', v: 0.6 }, { yr: '’21', v: 0.5 },
+  { yr: '’22', v: 2.4 }, { yr: '’23', v: 4.6 }, { yr: '’24', v: 4.9 },
+  { yr: '’25', v: 4.2 }, { yr: '’26', v: 3.8 },
+];
+const rateMax = 5;
+
+// --- 03 · Terminal monitor ---------------------------------------------------
+const eq = [
+  { sym: 'AAPL',  name: 'APPLE INC',      last: '198.42', chg: '+1.86', pct: '+0.95', vol: '41.2M',  volN: 41.2,  cap: '2.98T', capN: 2.98, pe: '31.4', ytd: '+12.4' },
+  { sym: 'MSFT',  name: 'MICROSOFT',      last: '441.07', chg: '-2.31', pct: '-0.52', vol: '18.7M',  volN: 18.7,  cap: '3.28T', capN: 3.28, pe: '36.2', ytd: '+9.8'  },
+  { sym: 'NVDA',  name: 'NVIDIA CORP',    last: '132.88', chg: '+4.02', pct: '+3.12', vol: '287.4M', volN: 287.4, cap: '3.27T', capN: 3.27, pe: '62.8', ytd: '+28.1' },
+  { sym: 'AMZN',  name: 'AMAZON.COM',     last: '219.55', chg: '+0.74', pct: '+0.34', vol: '33.0M',  volN: 33.0,  cap: '2.28T', capN: 2.28, pe: '41.7', ytd: '+6.2'  },
+  { sym: 'GOOGL', name: 'ALPHABET A',     last: '186.30', chg: '-1.12', pct: '-0.60', vol: '21.4M',  volN: 21.4,  cap: '2.29T', capN: 2.29, pe: '24.9', ytd: '+3.5'  },
+  { sym: 'META',  name: 'META PLATFORMS', last: '612.74', chg: '+8.91', pct: '+1.48', vol: '12.9M',  volN: 12.9,  cap: '1.55T', capN: 1.55, pe: '28.3', ytd: '+18.9' },
+  { sym: 'TSLA',  name: 'TESLA INC',      last: '247.19', chg: '-6.45', pct: '-2.54', vol: '96.3M',  volN: 96.3,  cap: '0.79T', capN: 0.79, pe: '88.6', ytd: '-11.2' },
+  { sym: 'JPM',   name: 'JPMORGAN CHASE', last: '234.60', chg: '+0.95', pct: '+0.41', vol: '8.1M',   volN: 8.1,   cap: '0.67T', capN: 0.67, pe: '12.6', ytd: '+14.0' },
+];
+const govt = [
+  { t: 'US 2YR',  px: '99',  fr: '21/32', yld: '4.18', up: false },
+  { t: 'US 5YR',  px: '99',  fr: '9/32',  yld: '4.07', up: true  },
+  { t: 'US 10YR', px: '98',  fr: '17/32', yld: '4.31', up: false },
+  { t: 'US 30YR', px: '95',  fr: '11/32', yld: '4.52', up: false },
+];
+const fx = [
+  { p: 'EUR/USD', v: '1.0842',   up: false },
+  { p: 'GBP/USD', v: '1.2918',   up: true  },
+  { p: 'USD/JPY', v: '152.40',   up: true  },
+  { p: 'USD/ARS', v: '1,187.50', up: false },
+];
+
+// --- 04 · Subte signage -----------------------------------------------------
+const stations = [
+  { id: 'alem',   name: 'LEANDRO N. ALEM',                      sub: 'Salida: Av. Corrientes y L. N. Alem' },
+  { id: 'pelle',  name: 'CARLOS PELLEGRINI',                    sub: 'Combinación: Líneas C y D' },
+  { id: 'malabia',name: 'MALABIA — OSVALDO PUGLIESE',           sub: 'Salida: Av. Corrientes y Malabia' },
+  { id: 'rosas',  name: 'JUAN MANUEL DE ROSAS — VILLA URQUIZA', sub: 'Terminal · Trenes a L. N. Alem' },
+];
+
+// --- 05 · Broadside ----------------------------------------------------------
+const bill = [
+  { txt: 'OMNIBUS·TYPE OF BUENOS AIRES',              basis: 0.060, wght: 700, acc: false },
+  { txt: 'ANNOUNCES TO THE TRADE',                    basis: 0.052, wght: 400, acc: false },
+  { txt: 'ARCHIVO',                                   basis: 0.200, wght: 900, acc: true  },
+  { txt: 'A HIGH-PERFORMANCE GROTESQUE',              basis: 0.060, wght: 600, acc: false },
+  { txt: 'NINE WEIGHTS · SIXTY-TWO TO ONE TWENTY-FIVE', basis: 0.038, wght: 500, acc: false },
+  { txt: 'EVERY LINE FILLS THE MEASURE',              basis: 0.056, wght: 800, acc: false },
+];
 ---
+<div class="iu" style={`--fam:${fam}; --serif:${serif}`}>
 
-<div class="iu" style={`--fam:${fam}`}>
-
-  <!-- 01 — INTERACTIVE financial news dashboard (real device scale) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — financial news dashboard, real device scale</span></figcaption>
+  <!-- ============ 01 — ILLUSTRATION & COMMERCIAL ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Illustration &amp; commercial — a free-theater season bill, after Paula Scher’s Public Theater identity (Pentagram, 1994–) and its colliding wood-type gothic widths</span>
+    </figcaption>
     <div class="iu__scene">
-      <div class="fin" data-fin>
-        <div class="fin__chrome">
-          <div class="fin__dots"><i></i><i></i><i></i></div>
-          <span class="fin__addr">markets.meridian.io</span>
-          <span class="fin__badge">LIVE</span>
+      <div class="cp" data-cp>
+        <div class="cp__edge cp__edge--l" aria-hidden="true"><span>FREE FOR ALL</span></div>
+        <div class="cp__main">
+          <div class="cp__top">
+            <span class="cp__brand">THE CIVIC</span>
+            <span class="cp__season">SUMMER SEASON · NEW YORK · 2026</span>
+          </div>
+          <div class="cp__stack">
+            <p class="cp__l cp__l--1"><span class="cp__clip"><span class="cp__in" data-reveal>SHAKESPEARE</span></span></p>
+            <p class="cp__l cp__l--2">
+              <span class="cp__clip"><span class="cp__in cp__in--thin" data-reveal style="--reveal-delay:90ms">IN THE</span></span>
+              <span class="cp__clip"><span class="cp__in" data-reveal style="--reveal-delay:180ms">SQUARE</span></span>
+            </p>
+            <p class="cp__band" data-reveal style="--reveal-delay:280ms">JUNE 18 — AUGUST 30 · EVERY NIGHT · FREE</p>
+          </div>
+          <div class="cp__list">
+            {plays.map((p) => (
+              <div class="cp__play">
+                <b>{p.title}</b>
+                <span>{p.dates}</span>
+                <i>{p.dir}</i>
+              </div>
+            ))}
+          </div>
+          <p class="cp__imprint">THE CIVIC THEATER OF NEW YORK · POSTER No. 7 OF THE 2026 SEASON · PRINTED IN TWO COLORS BY LONG ACRE LITHO, BROOKLYN · POST NO BILLS</p>
         </div>
-        <div class="fin__bar">
-          <span class="fin__logo"><i class="fin__logo-mark">M</i>Meridian</span>
-          <nav class="fin__tabs" role="tablist">
-            <button class="is-on" data-tab="markets" role="tab" aria-selected="true">Markets</button>
-            <button data-tab="portfolio" role="tab" aria-selected="false">Portfolio</button>
-            <button data-tab="watchlist" role="tab" aria-selected="false">Watchlist</button>
-          </nav>
-          <span class="fin__time" data-clock>09:41 ET</span>
-        </div>
+        <div class="cp__edge cp__edge--r" aria-hidden="true"><span>NO TICKETS · NO VELVET ROPE · CURTAIN 8 PM</span></div>
+      </div>
+    </div>
+    <p class="iu__hint label">One family does the wood-type case: “IN THE” at width 125 / weight 200 jammed against “SQUARE” at width 62 / weight 900 — Scher’s collision, drawn from a single axis. Lines set themselves as the bill scrolls in.</p>
+  </figure>
 
-        <div class="fin__kpis" data-kpis>
-          <div class="fin__kpi">
-            <span class="fin__kl">S&amp;P 500</span>
-            <b data-kpi-a>{kpis.markets.a}</b>
-            <i class="up" data-kpi-b>{kpis.markets.b}</i>
+  <!-- ============ 02 — EDITORIAL ============ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Editorial — a business-weekly feature opener, after <em>Bloomberg Businessweek</em> under Richard Turley (2010–14): blunt grotesque headlines over serif text and hard data</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="lg">
+        <div class="lg__spine" aria-hidden="true"><span>THE LEDGER — JUNE 15–21, 2026 — MARKETS</span></div>
+        <div class="lg__page">
+          <header class="lg__head">
+            <span class="lg__sec">MARKETS</span>
+            <span class="lg__rule" aria-hidden="true"></span>
+            <span class="lg__folio">THE LEDGER · 47</span>
+          </header>
+          <h3 class="lg__hed">Cheap money is gone. Markets are still pretending.</h3>
+          <p class="lg__deck">Three years after the great repricing, equity multiples have crept back to their 2021 highs — while the cost of capital hasn’t moved an inch. Something has to give.</p>
+          <p class="lg__byline">BY ANA FERREYRA · GRAPHICS BY THE LEDGER DESK</p>
+          <div class="lg__grid">
+            <div class="lg__body">
+              <p>The most expensive sentence in finance is back. In trading rooms from London to Singapore, the argument for paying thirty-six times earnings is once again that <em>this time is different</em> — that artificial-intelligence capex will grow into any multiple, that the consumer is unbreakable, that central banks will blink first.</p>
+              <p>The data desk’s reading is colder. The average policy rate across advanced economies now sits near four percent, roughly where it was before the 2008 crisis and a full three points above the decade that taught a generation of investors that money was free.</p>
+              <h4 class="lg__cross">The repricing that wasn’t</h4>
+              <p>Duration-heavy portfolios took the 2022 hit and never truly de-risked; they waited. And waiting has so far been rewarded — which is precisely what worries the people who model these things for a living.</p>
+            </div>
+            <aside class="lg__panel">
+              <p class="lg__panel-t">THE NEW NEUTRAL</p>
+              <p class="lg__panel-s">Average policy rate, advanced economies, %</p>
+              <div class="lg__chart" role="img" aria-label="Bar chart of average policy rates, 2019 to 2026, rising from under two percent to nearly four percent">
+                {rates.map((r, i) => (
+                  <div class="lg__col">
+                    <span class="lg__val">{r.v.toFixed(1)}</span>
+                    <span class="lg__bar" data-reveal style={`--h:${(r.v / rateMax) * 100}%; --reveal-delay:${60 * i}ms`}></span>
+                    <span class="lg__yr">{r.yr}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="lg__src">DATA: BANK FOR INTERNATIONAL SETTLEMENTS; LEDGER CALCULATIONS</p>
+              <div class="lg__stat" data-reveal style="--reveal-delay:480ms">
+                <b>3.8%</b>
+                <span>the “new neutral” — a full 300&nbsp;bp above the average of the 2010s</span>
+              </div>
+            </aside>
           </div>
-          <div class="fin__kpi">
-            <span class="fin__kl">Mkt Cap</span>
-            <b data-kpi-c>{kpis.markets.c}</b>
-            <i class="up">▲ today</i>
-          </div>
-          <div class="fin__kpi">
-            <span class="fin__kl">P/E (avg)</span>
-            <b data-kpi-d>{kpis.markets.d}</b>
-            <i class="flat">index avg</i>
-          </div>
-          <div class="fin__kpi fin__kpi--accent">
-            <span class="fin__kl">Yield 10Y</span>
-            <b>4<span class="fin__frac">13/32</span>%</b>
-            <i class="dn">▼ 2bp</i>
+          <div class="lg__ticker">
+            <span><b>S&amp;P 500</b> 6,214.40 <i class="up">+0.8%</i></span>
+            <span><b>10-YR</b> 98&hairsp;<em class="fr">17/32</em> <i class="dn">-0.2</i></span>
+            <span><b>BRENT</b> 81.07 <i class="up">+1.1%</i></span>
+            <span class="lg__tick-x"><b>EUR</b> 1.0842 <i class="dn">-0.3%</i></span>
+            <span class="lg__tick-x"><b>GOLD</b> 2,648.20 <i class="up">+0.4%</i></span>
           </div>
         </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Archivo plays the Businessweek role end to end: width-78 headline, condensed folios and chart furniture, tabular figures down the bars, a typographic fraction in the ticker — over a Libre Baskerville text block. Hover the bars.</p>
+  </figure>
 
-        <div class="fin__body">
-          <div class="fin__table-wrap" data-table-wrap>
-            <table class="fin__table" data-ftable>
+  <!-- ============ 03 — WEB & APP UI ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-tm-density]">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Web &amp; app UI — an equities monitor at real device scale, after the Bloomberg Terminal’s dense keyed-and-coloured screens (interactive)</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="tm" data-tm>
+        <div class="tm__cmd">
+          <span class="tm__app">ARCV 4.2</span>
+          <span class="tm__path">EQUITY ▸ MONITOR ▸ US LARGE CAP</span>
+          <span class="tm__clock" data-tm-clock>12-JUN-2026 14:32:08 ET</span>
+          <button class="tm__density" data-tm-density type="button" aria-pressed="false">DENS ▸ <b data-tm-denslabel>COMFORT</b></button>
+        </div>
+        <div class="tm__grid">
+          <div class="tm__main">
+            <table class="tm__table" data-tm-table>
               <thead>
                 <tr>
-                  <th data-sort="sym">Ticker</th>
-                  <th data-sort="name" class="fin__tname">Company</th>
-                  <th data-sort="px" class="fin__num" data-active="desc">Price</th>
-                  <th data-sort="ch" class="fin__num">Change</th>
-                  <th data-sort="vol" class="fin__num fin__hide-sm">Volume</th>
+                  <th class="tm__th-l">TICKER</th>
+                  <th class="tm__th-l tm__name">NAME</th>
+                  <th data-sort="last" data-active="desc">LAST <i></i></th>
+                  <th data-sort="pct">CHG% <i></i></th>
+                  <th data-sort="vol">VOLUME <i></i></th>
+                  <th data-sort="cap" class="tm__xcol">MKT CAP <i></i></th>
+                  <th class="tm__xcol">P/E</th>
+                  <th class="tm__xcol">YTD%</th>
                 </tr>
               </thead>
-              <tbody data-tbody>
-                {marketRows.map((r) => (
-                  <tr data-sym={r.sym} data-px={r.px.replace(/,/g,'')} data-chval={r.ch.replace(/[+,]/g,'')} data-vol={r.vol}>
-                    <td><b class="fin__sym">{r.sym}</b></td>
-                    <td class="fin__tname fin__muted">{r.name}</td>
-                    <td class="fin__num"><b class="fin__px">{r.px}</b></td>
-                    <td class={`fin__num fin__ch ${r.up ? 'fin__up' : 'fin__dn'}`}>
-                      {r.ch}<br/><span class="fin__pct">{r.pct}</span>
-                    </td>
-                    <td class="fin__num fin__muted fin__hide-sm">{r.vol}</td>
+              <tbody data-tm-body>
+                {eq.map((r) => (
+                  <tr data-last={r.last} data-pct={r.pct} data-vol={r.volN} data-cap={r.capN}>
+                    <td class="tm__th-l"><b class="tm__sym">{r.sym}</b></td>
+                    <td class="tm__th-l tm__name tm__dim">{r.name}</td>
+                    <td class="tm__num" data-cell="last">{r.last}</td>
+                    <td class={`tm__num ${r.pct.startsWith('+') ? 'tm__up' : 'tm__dn'}`} data-cell="pct">{r.pct}</td>
+                    <td class="tm__num tm__dim">{r.vol}</td>
+                    <td class="tm__num tm__xcol">{r.cap}</td>
+                    <td class="tm__num tm__dim tm__xcol">{r.pe}</td>
+                    <td class={`tm__num tm__xcol ${r.ytd.startsWith('+') ? 'tm__up' : 'tm__dn'}`}>{r.ytd}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          <div class="fin__side">
-            <div class="fin__movers-h">Top movers</div>
-            <div class="fin__movers" data-movers>
-              {marketRows.filter(r=>r.up).slice(0,3).map(r => (
-                <div class={`fin__mover fin__mover--up`}>
-                  <span class="fin__mover-sym">{r.sym}</span>
-                  <span class="fin__mover-pct">{r.pct}</span>
-                </div>
-              ))}
-              {marketRows.filter(r=>!r.up).slice(0,2).map(r => (
-                <div class={`fin__mover fin__mover--dn`}>
-                  <span class="fin__mover-sym">{r.sym}</span>
-                  <span class="fin__mover-pct">{r.pct}</span>
-                </div>
+          <aside class="tm__side">
+            <div class="tm__panel">
+              <p class="tm__panel-h">GOVT — US TREASURY · 32NDS</p>
+              {govt.map((g) => (
+                <p class="tm__row">
+                  <span class="tm__sym">{g.t}</span>
+                  <span class="tm__num">{g.px}&hairsp;<em class="fr">{g.fr}</em></span>
+                  <span class={`tm__num ${g.up ? 'tm__up' : 'tm__dn'}`}>{g.yld}</span>
+                </p>
               ))}
             </div>
-            <div class="fin__gauge-h">Sentiment</div>
-            <div class="fin__gauge">
-              <div class="fin__gauge-bar">
-                <span class="fin__gauge-fill" data-gfill style="width:64%"></span>
-                <span class="fin__gauge-needle" data-gneedle style="left:64%"></span>
-              </div>
-              <div class="fin__gauge-labels"><span>Fear</span><span>Greed</span></div>
-              <b class="fin__gauge-val" data-gval>64 — Greed</b>
+            <div class="tm__panel">
+              <p class="tm__panel-h">FX — MAJORS + ARS</p>
+              {fx.map((f) => (
+                <p class="tm__row">
+                  <span class="tm__sym">{f.p}</span>
+                  <span class={`tm__num ${f.up ? 'tm__up' : 'tm__dn'}`}>{f.v}</span>
+                </p>
+              ))}
             </div>
-          </div>
+          </aside>
+        </div>
+        <div class="tm__keys" aria-hidden="true">
+          <span class="tm__key tm__key--acc">F1 HELP</span>
+          <span class="tm__key">F2 EQ</span>
+          <span class="tm__key">F3 FX</span>
+          <span class="tm__key">F4 GOVT</span>
+          <span class="tm__key tm__key--ghost">F8 NEWS</span>
+          <span class="tm__key tm__key--ghost">F9 MSG</span>
+          <span class="tm__hintline">SORT: CLICK A COLUMN HEAD · DENS COMPACT SETS THE GRID AT WIDTH 80 AND SEATS THREE MORE COLUMNS</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Click column headers to sort; switch tabs — portfolio and watchlist views reload with fresh data. Tabular figures keep every price column flush. The 10Y yield uses a typographic fraction (frac).</p>
+    <p class="iu__hint label">Genuinely driven: sort any numeric column, and flip DENS to COMPACT — the whole grid re-sets at wdth 80, the row module tightens, and Mkt&nbsp;Cap / P&#47;E / YTD take the reclaimed inches. Treasury prices run in true 32nd fractions (frac); every figure is tabular (tnum).</p>
   </figure>
 
-  <!-- 02 — Width-axis kinetic poster: condensed → expanded breathe -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Kinetic — wdth axis condensed&#8596;expanded poster</span></figcaption>
-    <div class="iu__scene scene-poster">
-      <div class="poster" data-poster>
-        <div class="poster__bg-grid" aria-hidden="true"></div>
-        <div class="poster__top">
-          <span class="poster__label">OMNIBUS&middot;TYPE&middot;ARCHIVO&middot;VARIABLE</span>
-          <span class="poster__year">2017</span>
+  <!-- ============ 04 — BRANDING & IDENTITY ============ -->
+  <figure class="iu__item" data-shoot-click="[data-station='rosas']">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Branding &amp; identity — a signage programme for the Subte de Buenos Aires, after Massimo Vignelli &amp; Bob Noorda’s NYC Transit Authority Graphics Standards Manual (1970)</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="sg" data-sg>
+        <div class="sg__sheethead">
+          <span class="sg__man">PROGRAMA DE SEÑALIZACIÓN — SUBTERRÁNEOS DE BUENOS AIRES</span>
+          <span class="sg__sheet">SHEET 7 · PLATFORM SIGN, TYPE B</span>
         </div>
-        <div class="poster__stage">
-          <div class="poster__word-wrap">
-            <span class="poster__word" data-wdth-word>BROADCAST</span>
-          </div>
-          <div class="poster__axis-track">
-            <span class="poster__axis-l">Condensed <em>62</em></span>
-            <div class="poster__axis-bar"><span class="poster__axis-cursor" data-axis-cursor></span></div>
-            <span class="poster__axis-r"><em>125</em> Expanded</span>
-          </div>
+        <div class="sg__band">
+          <span class="sg__roundel" aria-hidden="true">B</span>
+          <span class="sg__msg">
+            <span class="sg__name-wrap"><span class="sg__name" data-sg-name>LEANDRO N. ALEM</span></span>
+            <span class="sg__sub" data-sg-sub>Salida: Av. Corrientes y L. N. Alem</span>
+          </span>
+          <svg class="sg__arrow" viewBox="0 0 48 32" aria-hidden="true"><path d="M30 2l14 14-14 14m13-14H2" fill="none" stroke="currentColor" stroke-width="5"/></svg>
         </div>
-        <div class="poster__stack">
-          <span class="poster__stack-word" data-stack-a style="--w:62;--wt:900">BOLD CONDENSED</span>
-          <span class="poster__stack-word" data-stack-b style="--w:100;--wt:400">NORMAL REGULAR</span>
-          <span class="poster__stack-word" data-stack-c style="--w:125;--wt:100">EXPANDED THIN</span>
+        <div class="sg__controls" role="group" aria-label="Station message">
+          <span class="sg__ctrl-k">MESSAGE ▸</span>
+          {stations.map((s, i) => (
+            <button class={`sg__btn ${i === 0 ? 'is-on' : ''}`} data-station={s.id} data-name={s.name} data-sub={s.sub} type="button">{s.name}</button>
+          ))}
+          <span class="sg__readout" data-sg-readout>wdth 100.0 · scale 100%</span>
         </div>
-        <div class="poster__foot">
-          <span class="poster__desc">Weight 100–900 &times; Width 62–125 &middot; Two axes, one file</span>
-          <button class="poster__btn" data-poster-btn type="button">PAUSE</button>
+        <div class="sg__notes">
+          <span>ONE MASTER, EVERY PLATE — the message condenses along the width axis before it is ever scaled. Floor: wdth 62.</span>
+          <span>White out of process black · cap height 87.5&nbsp;mm · Archivo Variable wght 600 · line roundel PMS 485 (Línea B)</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">The word breathes across the full wdth axis (62 condensed &#8594; 125 expanded) while cycling through weights. Toggle PAUSE to freeze the demonstration.</p>
+    <p class="iu__hint label">The standards-manual problem, solved by an axis: pick a station and the plate copy-fits itself — “Juan Manuel de Rosas” rides the width axis to its 62 floor before any reduction. Vignelli needed cut Helvetica plates; Archivo needs one file.</p>
   </figure>
 
-  <!-- 03 — Editorial news spread -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — news magazine feature spread</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="news">
-        <div class="news__masthead">
-          <span class="news__issue">THE MERIDIAN REPORT</span>
-          <span class="news__rule" aria-hidden="true"></span>
-          <span class="news__tagline">ECONOMICS &middot; MARKETS &middot; POLICY</span>
+  <!-- ============ 05 — INTERACTIVE & EXPERIMENTAL ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-measure='0.55']">
+    <figcaption class="iu__cap">
+      <span class="index-num">05</span>
+      <span class="label">Interactive &amp; experimental — a foundry broadside justified by the width axis alone, after the Hamilton wood-type playbill and DIA Studio’s kinetic-type practice</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="bs" data-bs>
+        <div class="bs__bar">
+          <span class="bs__bar-t">A BROADSIDE SET LIVE IN THE BROWSER</span>
+          <span class="bs__presets" role="group" aria-label="Measure">
+            <span class="bs__ctrl-k">MEASURE ▸</span>
+            <button data-measure="0.55" type="button">NARROW</button>
+            <button data-measure="0.8" type="button" class="is-on">BILL</button>
+            <button data-measure="0.94" type="button">FULL</button>
+          </span>
         </div>
-        <div class="news__date-line">
-          <span>Vol. XLII &middot; No. 24 &middot; June 2026</span>
-        </div>
-        <div class="news__body">
-          <div class="news__col news__col--main">
-            <span class="news__kicker">Global Markets</span>
-            <h3 class="news__hed">Central banks signal coordinated pause as inflation cools</h3>
-            <p class="news__deck">After eighteen months of consecutive hikes, the Federal Reserve, ECB and Bank of England all held rates steady this week, sparking the largest single-day equity rally of 2024.</p>
-            <p class="news__byline">BY STAFF ECONOMISTS &middot; <time>4 hours ago</time></p>
-            <p class="news__body-text">The decision marks a sharp pivot from the hawkish posture that defined central bank rhetoric since late 2022. Fed Chair signalled confidence that the disinflationary trend was "durable and broad-based," citing twelve consecutive months of core PCE at or below target. Bond markets repriced immediately, pushing the 10-year Treasury yield down by 14 basis points in less than an hour — a move that rippled through every major equity index before the close.</p>
-            <p class="news__body-text news__body-text--cont">Analysts were quick to note that the pause is not a pivot; the median dot for year-end still shows rates on hold rather than cuts. But the psychological shift — from "higher for longer" to "steady and watching" — was enough to lift sentiment.</p>
+        <div class="bs__stage" data-bs-stage>
+          <div class="bs__inner" data-bs-inner>
+            {bill.map((l) => (
+              <div class="bs__row">
+                <p class={`bs__line ${l.acc ? 'bs__line--acc' : ''}`} data-basis={l.basis} data-wght={l.wght}>{l.txt}</p>
+                <span class="bs__tag" data-tag aria-hidden="true">wdth —</span>
+              </div>
+            ))}
           </div>
-          <div class="news__col news__col--side">
-            <div class="news__callout">
-              <span class="news__callout-num">+2.4%</span>
-              <span class="news__callout-cap">S&amp;P 500 single-session gain — largest since November 2023</span>
-            </div>
-            <div class="news__second">
-              <span class="news__kicker">Technology</span>
-              <h4 class="news__hed-sm">Open-source AI surpasses proprietary benchmarks for the first time</h4>
-              <p class="news__deck-sm">A coalition of European universities released a 70-billion parameter model under a permissive licence, outperforming closed systems on seven standard reasoning tests.</p>
-              <p class="news__byline">6 hours ago</p>
-            </div>
+          <div class="bs__rule" data-bs-rule role="slider" aria-label="Measure" aria-valuemin="42" aria-valuemax="96" aria-valuenow="80" tabindex="0">
+            <span class="bs__rule-grip" aria-hidden="true"></span>
+            <span class="bs__rule-tag" aria-hidden="true">MEASURE</span>
           </div>
         </div>
+        <p class="bs__colophon">EACH LINE IS SOLVED TO THE MEASURE — WIDTH FIRST, SIZE TO TRIM · DRAG THE RULE OR PICK A PRESET · BUENOS AIRES, MMXXVI</p>
       </div>
     </div>
-    <p class="iu__hint label">Archivo's American grotesque authority: condensed kickers (wdth 72) frame open-measure body copy. The pull-quote stat reveals on scroll-into-view; hover the secondary story to slide in its deck. Tabular figures (tnum) keep the stat flush; kickers use wdth 72 condensed.</p>
-  </figure>
-
-  <!-- 04 — Media brand identity: masthead / wordmark with wdth-axis lock-up -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Brand — editorial media identity, width-axis wordmark system</span></figcaption>
-    <div class="iu__scene scene-brand">
-      <div class="brand" data-brand>
-        <div class="brand__bg" aria-hidden="true"></div>
-        <div class="brand__inner">
-          <div class="brand__system">
-            <span class="brand__eyebrow">Wordmark system &middot; Archivo Variable</span>
-            <div class="brand__lockups">
-              <div class="brand__lockup">
-                <span class="brand__lockup-label">Condensed Black — display</span>
-                <div class="brand__name brand__name--cond">MERIDIAN</div>
-              </div>
-              <div class="brand__divider" aria-hidden="true"></div>
-              <div class="brand__lockup">
-                <span class="brand__lockup-label">Regular Bold — masthead</span>
-                <div class="brand__name brand__name--reg">MERIDIAN</div>
-              </div>
-              <div class="brand__divider" aria-hidden="true"></div>
-              <div class="brand__lockup">
-                <span class="brand__lockup-label">Expanded Thin — motto</span>
-                <div class="brand__name brand__name--exp">MERIDIAN</div>
-              </div>
-            </div>
-          </div>
-          <div class="brand__tag">
-            <div class="brand__full-lockup">
-              <span class="brand__full-masthead" data-brand-hover>MERIDIAN</span>
-              <span class="brand__full-sub">FINANCIAL INTELLIGENCE</span>
-            </div>
-            <div class="brand__meta">
-              <div class="brand__axis-demo">
-                <span class="brand__axis-key">wdth</span>
-                <div class="brand__axis-slots">
-                  <span class="brand__slot brand__slot--cond">62</span>
-                  <span class="brand__slot brand__slot--mid">100</span>
-                  <span class="brand__slot brand__slot--exp">125</span>
-                </div>
-              </div>
-              <div class="brand__axis-demo">
-                <span class="brand__axis-key">wght</span>
-                <div class="brand__axis-slots">
-                  <span class="brand__slot brand__slot--thin">100</span>
-                  <span class="brand__slot brand__slot--reg-w">400</span>
-                  <span class="brand__slot brand__slot--blk">900</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">Hover the large masthead to cycle through the full width range (62 condensed &#8594; 125 expanded). Three lockups show how one typeface serves condensed display, standard brand, and expanded editorial cuts.</p>
+    <p class="iu__hint label">The playbill’s old law — every line full measure — enforced by wdth instead of a case of different gothics. Drag the measure rule (or arrow keys) and watch each line re-solve: short lines swell toward 125, long lines crush toward 62, the solved value annotated beside every row.</p>
   </figure>
 
 </div>
 
-<script id="archivo-fin-data" type="application/json" set:html={JSON.stringify({ marketRows, portfolioRows, kpis })} is:inline></script>
-
 <script>
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ===== 01 · Financial dashboard — tab switching + column sort =====
-  type Row = { sym: string; name: string; px: string; ch: string; pct: string; vol: string; up: boolean };
-  type PortRow = { sym: string; name: string; value: string; gain: string; gainPct: string; shares: string; up: boolean };
-  type Kpis = Record<string, { a: string; b: string; c: string; d: string }>;
-  const finIsland = document.getElementById('archivo-fin-data');
-  let finData: { marketRows: Row[]; portfolioRows: PortRow[]; kpis: Kpis } =
-    { marketRows: [], portfolioRows: [], kpis: {} };
-  try { finData = finIsland ? JSON.parse(finIsland.textContent || '{}') : finData; } catch {}
+  // NOTE: scroll reveals ride the site-wide [data-reveal] system (Layout adds
+  // .is-visible; the shoot harness strips the attribute) — no local observer.
 
-  function makeCell(cls: string, text: string): HTMLTableCellElement {
-    const td = document.createElement('td');
-    if (cls) td.className = cls;
-    td.textContent = text;
-    return td;
-  }
-
-  function makeBoldCell(outerCls: string, boldCls: string, text: string): HTMLTableCellElement {
-    const td = document.createElement('td');
-    if (outerCls) td.className = outerCls;
-    const b = document.createElement('b');
-    b.className = boldCls;
-    b.textContent = text;
-    td.appendChild(b);
-    return td;
-  }
-
-  function makeChangeCell(ch: string, pct: string, up: boolean): HTMLTableCellElement {
-    const td = document.createElement('td');
-    td.className = 'fin__num fin__ch ' + (up ? 'fin__up' : 'fin__dn');
-    td.textContent = ch;
-    const br = document.createElement('br');
-    const span = document.createElement('span');
-    span.className = 'fin__pct';
-    span.textContent = pct;
-    td.appendChild(br);
-    td.appendChild(span);
-    return td;
-  }
-
-  function buildMarketRow(r: Row): HTMLTableRowElement {
-    const tr = document.createElement('tr');
-    tr.dataset.sym = r.sym;
-    tr.dataset.px = r.px.replace(/,/g, '');
-    tr.dataset.chval = r.ch.replace(/[+,]/g, '');
-    tr.dataset.vol = r.vol;
-    tr.appendChild(makeBoldCell('', 'fin__sym', r.sym));
-    tr.appendChild(makeCell('fin__tname fin__muted', r.name));
-    tr.appendChild(makeBoldCell('fin__num', 'fin__px', r.px));
-    tr.appendChild(makeChangeCell(r.ch, r.pct, r.up));
-    tr.appendChild(makeCell('fin__num fin__muted fin__hide-sm', r.vol));
-    return tr;
-  }
-
-  function buildPortRow(r: PortRow): HTMLTableRowElement {
-    const tr = document.createElement('tr');
-    tr.appendChild(makeBoldCell('', 'fin__sym', r.sym));
-    tr.appendChild(makeCell('fin__tname fin__muted', r.name));
-    tr.appendChild(makeBoldCell('fin__num', 'fin__px', r.value));
-    tr.appendChild(makeChangeCell(r.gain, r.gainPct, r.up));
-    tr.appendChild(makeCell('fin__num fin__muted fin__hide-sm', r.shares + ' sh'));
-    return tr;
-  }
-
-  const watchItems = [
-    { sym: 'GOOG', name: 'Alphabet Inc.',  px: '169.30', ch: '+0.44%', up: true  },
-    { sym: 'AMD',  name: 'AMD Inc.',       px: '158.40', ch: '+1.82%', up: true  },
-    { sym: 'INTC', name: 'Intel Corp.',    px: '31.22',  ch: '-2.14%', up: false },
-    { sym: 'SPOT', name: 'Spotify',        px: '302.88', ch: '+3.61%', up: true  },
-    { sym: 'SNAP', name: 'Snap Inc.',      px: '11.04',  ch: '-0.72%', up: false },
-  ] as Row[];
-
-  document.querySelectorAll<HTMLElement>('[data-fin]').forEach((fin) => {
-    if (!finData.marketRows.length) return;
-    const q = (s: string) => fin.querySelector(s) as HTMLElement | null;
-    const tbody = q('[data-tbody]')!;
-    const table = q('[data-ftable]') as HTMLTableElement | null;
-    const kpiA = q('[data-kpi-a]'), kpiB = q('[data-kpi-b]');
-    const kpiC = q('[data-kpi-c]'), kpiD = q('[data-kpi-d]');
-    const gfill = q('[data-gfill]'), gneedle = q('[data-gneedle]'), gval = q('[data-gval]');
-    let sortKey = 'px';
-    let sortAsc = false;
-
-    function setKpis(tab: string) {
-      const k = finData.kpis[tab] || finData.kpis['markets'];
-      if (kpiA) kpiA.textContent = k.a;
-      if (kpiB) kpiB.textContent = k.b;
-      if (kpiC) kpiC.textContent = k.c;
-      if (kpiD) kpiD.textContent = k.d;
-    }
-
-    function render(tab: string) {
-      fin.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => {
-        const on = b.dataset.tab === tab;
-        b.classList.toggle('is-on', on);
-        b.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-      setKpis(tab);
-      tbody.replaceChildren();
-      const rows: HTMLTableRowElement[] = [];
-      if (tab === 'markets') {
-        finData.marketRows.forEach((r) => rows.push(buildMarketRow(r)));
-      } else if (tab === 'portfolio') {
-        finData.portfolioRows.forEach((r) => rows.push(buildPortRow(r)));
-      } else {
-        watchItems.forEach((r) => rows.push(buildMarketRow(r)));
+  // ===== shared copy-fit solver (wdth 62–125, then a size trim) =============
+  function fitWidth(el: HTMLElement, target: number, wght: number, fsPx: number, opts?: { fill?: boolean }) {
+    el.style.fontSize = fsPx + 'px';
+    const set = (w: number) => { el.style.fontVariationSettings = `'wdth' ${w}, 'wght' ${wght}`; };
+    const wOf = () => el.getBoundingClientRect().width;
+    set(125);
+    if (wOf() < target) {
+      if (opts?.fill) { // grow size at full expansion to land exactly
+        el.style.fontSize = (fsPx * target / Math.max(wOf(), 1)) + 'px';
+        return 125;
       }
-      rows.forEach((r) => tbody.appendChild(r));
+      return 125;
     }
-
-    fin.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((btn) =>
-      btn.addEventListener('click', () => render(btn.dataset.tab!))
-    );
-
-    if (table) {
-      table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) =>
-        th.addEventListener('click', () => {
-          const k = th.dataset.sort!;
-          if (k === sortKey) sortAsc = !sortAsc;
-          else { sortKey = k; sortAsc = false; }
-          table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
-          th.setAttribute('data-active', sortAsc ? 'asc' : 'desc');
-          const rows = Array.from(tbody.querySelectorAll('tr'));
-          rows.sort((ra, rb) => {
-            const av = k === 'sym' ? (ra.querySelector('.fin__sym')?.textContent || '')
-              : k === 'name' ? (ra.querySelector('.fin__tname')?.textContent || '')
-              : parseFloat(ra.dataset[k === 'ch' ? 'chval' : k] || '0');
-            const bv = k === 'sym' ? (rb.querySelector('.fin__sym')?.textContent || '')
-              : k === 'name' ? (rb.querySelector('.fin__tname')?.textContent || '')
-              : parseFloat(rb.dataset[k === 'ch' ? 'chval' : k] || '0');
-            return (av < bv ? -1 : av > bv ? 1 : 0) * (sortAsc ? 1 : -1);
-          });
-          rows.forEach((r) => tbody.appendChild(r));
-        })
-      );
+    set(62);
+    if (wOf() > target) { // even fully condensed it overflows: scale down
+      el.style.fontSize = (fsPx * target / Math.max(wOf(), 1)) + 'px';
+      return 62;
     }
-
-    // gentle sentiment gauge animation (reduced-motion: static)
-    if (!reduce && gfill && gneedle && gval) {
-      let dir = 1;
-      let val = 64;
-      setInterval(() => {
-        val += (Math.random() - 0.5) * 3 * dir;
-        if (val > 80) dir = -1;
-        if (val < 45) dir = 1;
-        val = Math.max(30, Math.min(85, val));
-        const pct = Math.round(val);
-        gfill.style.width = pct + '%';
-        gneedle.style.left = pct + '%';
-        gval.textContent = pct + (pct >= 60 ? ' — Greed' : pct >= 45 ? ' — Neutral' : ' — Fear');
-      }, 2400);
+    let lo = 62, hi = 125;
+    for (let i = 0; i < 8; i++) {
+      const mid = (lo + hi) / 2;
+      set(mid);
+      if (wOf() > target) hi = mid; else lo = mid;
     }
-  });
-
-  // ===== 02 · Width-axis poster animation =====
-  document.querySelectorAll<HTMLElement>('[data-poster]').forEach((poster) => {
-    const word = poster.querySelector('[data-wdth-word]') as HTMLElement | null;
-    const cursor = poster.querySelector('[data-axis-cursor]') as HTMLElement | null;
-    const btn = poster.querySelector('[data-poster-btn]') as HTMLButtonElement | null;
-    if (!word || !cursor) return;
-
-    const keyframes = [
-      { wdth: 62,  wght: 900 },
-      { wdth: 62,  wght: 100 },
-      { wdth: 100, wght: 400 },
-      { wdth: 125, wght: 700 },
-      { wdth: 125, wght: 100 },
-      { wdth: 80,  wght: 600 },
-    ];
-
-    let frame = 0;
-    let playing = !reduce;
-    let intervalId: ReturnType<typeof setInterval> | null = null;
-
-    function applyFrame(f: { wdth: number; wght: number }) {
-      const fvs = `'wdth' ${f.wdth}, 'wght' ${f.wght}`;
-      if (!reduce) {
-        word.style.transition = 'font-variation-settings 0.8s cubic-bezier(0.4,0,0.2,1)';
-        cursor.style.transition = 'left 0.8s cubic-bezier(0.4,0,0.2,1)';
-      }
-      word.style.fontVariationSettings = fvs;
-      cursor.style.left = ((f.wdth - 62) / (125 - 62) * 100).toFixed(1) + '%';
+    set(lo);
+    if (opts?.fill) {
+      el.style.fontSize = (parseFloat(el.style.fontSize) * target / Math.max(wOf(), 1)) + 'px';
     }
+    return lo;
+  }
 
-    function step() {
-      applyFrame(keyframes[frame]);
-      frame = (frame + 1) % keyframes.length;
-    }
+  // ===== 03 · Terminal: sort, density, live ticks ============================
+  document.querySelectorAll<HTMLElement>('[data-tm]').forEach((tm) => {
+    const tbody = tm.querySelector('[data-tm-body]') as HTMLElement;
+    const table = tm.querySelector('[data-tm-table]') as HTMLTableElement;
+    let sortKey = 'last', sortAsc = false;
 
-    function startLoop() {
-      if (intervalId) clearInterval(intervalId);
-      step();
-      intervalId = setInterval(step, 1600);
-    }
-
-    if (btn) {
-      btn.addEventListener('click', () => {
-        playing = !playing;
-        btn.textContent = playing ? 'PAUSE' : 'ANIMATE';
-        if (playing) startLoop();
-        else { if (intervalId) { clearInterval(intervalId); intervalId = null; } }
-      });
-    }
-
-    if (!reduce) {
-      startLoop();
-    } else {
-      applyFrame(keyframes[0]);
-    }
-  });
-
-  // ===== 03 · Editorial — scroll-into-view reveal on pull-quote stat =====
-  if (!reduce) {
-    const callouts = document.querySelectorAll<HTMLElement>('.news__callout');
-    if (callouts.length) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-visible');
-            io.unobserve(e.target);
-          }
+    table.querySelectorAll<HTMLElement>('[data-sort]').forEach((th) => {
+      th.addEventListener('click', () => {
+        const k = th.dataset.sort!;
+        if (k === sortKey) sortAsc = !sortAsc;
+        else { sortKey = k; sortAsc = false; }
+        table.querySelectorAll('th').forEach((x) => x.removeAttribute('data-active'));
+        th.setAttribute('data-active', sortAsc ? 'asc' : 'desc');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const av = parseFloat(a.dataset[k] || '0');
+          const bv = parseFloat(b.dataset[k] || '0');
+          return (av - bv) * (sortAsc ? 1 : -1);
         });
-      }, { threshold: 0.25 });
-      callouts.forEach((el) => io.observe(el));
-    }
-  }
+        rows.forEach((r) => tbody.appendChild(r));
+      });
+    });
 
-  // ===== 04 · Brand — hover cycles wdth on masthead =====
-  document.querySelectorAll<HTMLElement>('[data-brand-hover]').forEach((el) => {
-    const steps = [62, 72, 85, 100, 112, 125];
-    let i = 0;
-    function cycle() {
-      i = (i + 1) % steps.length;
-      if (!reduce) {
-        el.style.transition = 'font-variation-settings 0.35s cubic-bezier(0.4,0,0.2,1)';
-      }
-      el.style.fontVariationSettings = `'wdth' ${steps[i]}, 'wght' 700`;
-    }
+    const dens = tm.querySelector('[data-tm-density]') as HTMLButtonElement | null;
+    const densLabel = tm.querySelector('[data-tm-denslabel]') as HTMLElement | null;
+    dens?.addEventListener('click', () => {
+      const on = tm.classList.toggle('is-compact');
+      dens.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (densLabel) densLabel.textContent = on ? 'COMPACT' : 'COMFORT';
+    });
+
     if (!reduce) {
-      el.addEventListener('mouseenter', cycle);
+      // live price drift + clock
+      const clock = tm.querySelector('[data-tm-clock]') as HTMLElement | null;
+      let sec = 8;
+      setInterval(() => {
+        sec = (sec + 1) % 60;
+        if (clock) clock.textContent = `12-JUN-2026 14:32:${String(sec).padStart(2, '0')} ET`;
+      }, 1000);
+      setInterval(() => {
+        const rows = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr'));
+        const r = rows[Math.floor(Math.random() * rows.length)];
+        const last = parseFloat(r.dataset.last || '100');
+        const drift = last * (Math.random() - 0.48) * 0.004;
+        const next = last + drift;
+        r.dataset.last = next.toFixed(2);
+        const pct = parseFloat(r.dataset.pct || '0') + (drift / last) * 100;
+        r.dataset.pct = pct.toFixed(2);
+        const lastCell = r.querySelector('[data-cell="last"]') as HTMLElement;
+        const pctCell = r.querySelector('[data-cell="pct"]') as HTMLElement;
+        lastCell.textContent = next.toFixed(2);
+        pctCell.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2);
+        pctCell.classList.toggle('tm__up', pct >= 0);
+        pctCell.classList.toggle('tm__dn', pct < 0);
+        lastCell.classList.remove('is-flash');
+        void lastCell.offsetWidth;
+        lastCell.classList.add('is-flash');
+      }, 1800);
     }
-    el.addEventListener('click', cycle);
+  });
+
+  // ===== 04 · Subte sign: copy-fit via wdth ==================================
+  document.querySelectorAll<HTMLElement>('[data-sg]').forEach((sg) => {
+    const name = sg.querySelector('[data-sg-name]') as HTMLElement;
+    const sub = sg.querySelector('[data-sg-sub]') as HTMLElement;
+    const wrap = name.parentElement as HTMLElement;
+    const readout = sg.querySelector('[data-sg-readout]') as HTMLElement | null;
+
+    function solveSign() {
+      const target = wrap.getBoundingClientRect().width;
+      if (target < 10) return;
+      const base = Math.max(22, Math.min(72, target * 0.105));
+      // signage system: never expand past 100 — condense first, then scale
+      name.style.fontSize = base + 'px';
+      name.style.fontVariationSettings = `'wdth' 100, 'wght' 600`;
+      let w = 100;
+      if (name.getBoundingClientRect().width > target) {
+        w = fitWidth(name, target, 600, base);
+      }
+      const scale = Math.round((parseFloat(name.style.fontSize) / base) * 100);
+      if (readout) readout.textContent = `wdth ${w.toFixed(1)} · scale ${scale}%`;
+    }
+
+    sg.querySelectorAll<HTMLButtonElement>('[data-station]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sg.querySelectorAll('[data-station]').forEach((b) => b.classList.toggle('is-on', b === btn));
+        name.textContent = btn.dataset.name || '';
+        sub.textContent = btn.dataset.sub || '';
+        solveSign();
+      });
+    });
+
+    const ro = new ResizeObserver(() => solveSign());
+    ro.observe(wrap);
+    if ((document as any).fonts?.ready) (document as any).fonts.ready.then(solveSign);
+    solveSign();
+  });
+
+  // ===== 05 · Broadside: every line justified by wdth ========================
+  document.querySelectorAll<HTMLElement>('[data-bs]').forEach((bs) => {
+    const stage = bs.querySelector('[data-bs-stage]') as HTMLElement;
+    const inner = bs.querySelector('[data-bs-inner]') as HTMLElement;
+    const rule = bs.querySelector('[data-bs-rule]') as HTMLElement;
+    const rows = Array.from(bs.querySelectorAll<HTMLElement>('.bs__row'));
+    let measure = 0.8;
+
+    function solve() {
+      const stageW = stage.getBoundingClientRect().width;
+      if (stageW < 10) return;
+      const pad = parseFloat(getComputedStyle(inner).paddingLeft) || 0;
+      const avail = stageW - pad * 2;
+      const target = avail * measure;
+      rows.forEach((row) => {
+        const line = row.querySelector('.bs__line') as HTMLElement;
+        const tag = row.querySelector('[data-tag]') as HTMLElement | null;
+        const basis = parseFloat(line.dataset.basis || '0.06');
+        const wght = parseInt(line.dataset.wght || '600', 10);
+        const w = fitWidth(line, target, wght, Math.max(12, target * basis / 0.8), { fill: true });
+        if (tag) tag.textContent = 'wdth ' + Math.round(w);
+      });
+      rule.style.left = (pad + target) + 'px';
+      rule.setAttribute('aria-valuenow', String(Math.round(measure * 100)));
+      bs.classList.toggle('is-wide', measure > 0.88);
+    }
+
+    function setMeasure(m: number) {
+      measure = Math.max(0.42, Math.min(0.96, m));
+      bs.querySelectorAll<HTMLButtonElement>('[data-measure]').forEach((b) =>
+        b.classList.toggle('is-on', Math.abs(parseFloat(b.dataset.measure!) - measure) < 0.02));
+      solve();
+    }
+
+    bs.querySelectorAll<HTMLButtonElement>('[data-measure]').forEach((btn) =>
+      btn.addEventListener('click', () => setMeasure(parseFloat(btn.dataset.measure!))));
+
+    // drag the rule
+    let dragging = false;
+    let raf = 0;
+    rule.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      rule.setPointerCapture(e.pointerId);
+      bs.classList.add('is-dragging');
+    });
+    rule.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const r = stage.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(inner).paddingLeft) || 0;
+      const m = (e.clientX - r.left - pad) / Math.max(r.width - pad * 2, 1);
+      if (!raf) raf = requestAnimationFrame(() => { raf = 0; setMeasure(m); });
+    });
+    const stop = () => { dragging = false; bs.classList.remove('is-dragging'); };
+    rule.addEventListener('pointerup', stop);
+    rule.addEventListener('pointercancel', stop);
+    rule.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { setMeasure(measure - 0.04); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { setMeasure(measure + 0.04); e.preventDefault(); }
+    });
+
+    let roRaf = 0;
+    const ro = new ResizeObserver(() => {
+      if (!roRaf) roRaf = requestAnimationFrame(() => { roRaf = 0; solve(); });
+    });
+    ro.observe(stage);
+    if ((document as any).fonts?.ready) (document as any).fonts.ready.then(solve);
+    solve();
   });
 </script>
 
 <style>
+  /* the stack reads as one sequence: tighter global rhythm */
+  .iu { gap: clamp(3rem, 8vh, 5.5rem); }
   .iu__item { margin: 0; }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu * { font-family: var(--fam); }
+  .iu :is(svg, svg *) { font-family: inherit; }
 
-  /* shared scene framing */
-  .iu__scene {
-    container-type: inline-size;
-    position: relative;
-    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
-    outline: 1px solid var(--line);
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--bg-2);
-  }
-  .iu__scene * { font-family: var(--fam); }
-  .scene-poster { aspect-ratio: 16 / 9; }
-  .scene-tall   { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
-  .scene-brand  { aspect-ratio: 4 / 3; }
-  @container (min-width: 720px) { .scene-brand { aspect-ratio: 16 / 9; } }
+  .iu__scene { container-type: inline-size; overflow: clip; }
+
+  /* shared bits */
+  .fr { font-style: normal; font-feature-settings: 'frac' 1; }
 
   /* ============================================================
-     01 · FINANCIAL DASHBOARD  (real px, interactive)
+     01 · SEASON POSTER — Scher / Public Theater
+     paper + ink + vermillion; self-declared print surface
      ============================================================ */
-  .fin {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    background: var(--bg); font-size: 13px; color: var(--fg);
-    --fin-up: #1a8a4a; --fin-dn: #c8410b;
-    --fin-line: color-mix(in srgb, var(--fg) 10%, transparent);
+  .cp {
+    --p-paper: #f1ebdf;
+    --p-ink: #161412;
+    --p-verm: #c8410b;
+    background: var(--p-paper);
+    color: var(--p-ink);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
   }
-  .fin__chrome {
-    display: flex; align-items: center; gap: 0.7rem; padding: 0.45rem 0.9rem;
-    border-bottom: 1px solid var(--fin-line); background: var(--bg-2); flex: none;
+  .cp__edge {
+    writing-mode: vertical-rl;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.4cqi 0.9cqi;
+    border-inline: 1px solid var(--p-ink);
+    font-size: clamp(11px, 1.25cqi, 19px); font-weight: 800; letter-spacing: 0.34em;
+    font-variation-settings: 'wdth' 70, 'wght' 800;
+    white-space: nowrap;
   }
-  .fin__dots { display: flex; gap: 5px; }
-  .fin__dots i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 18%, transparent); }
-  .fin__addr {
-    font-size: 11px; color: var(--fg-3);
-    background: color-mix(in srgb, var(--fg) 5%, transparent);
-    border-radius: 6px; padding: 2px 10px; margin: 0 auto; font-feature-settings: 'tnum';
+  .cp__edge--l { rotate: 180deg; border-left: none; }
+  .cp__edge--r { border-right: none; }
+  .cp__main { padding: 2.6cqi 4cqi 2.2cqi; display: flex; flex-direction: column; min-width: 0; }
+  .cp__top {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi;
+    padding-bottom: 1.2cqi; border-bottom: 3px solid var(--p-ink);
   }
-  .fin__badge {
-    font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
-    color: var(--fin-up); padding: 2px 6px; border: 1px solid var(--fin-up); border-radius: 4px;
+  .cp__brand { font-size: clamp(14px, 1.9cqi, 30px); font-variation-settings: 'wdth' 62, 'wght' 900; letter-spacing: 0.02em; }
+  .cp__season { font-size: clamp(10px, 1.25cqi, 19px); font-variation-settings: 'wdth' 72, 'wght' 600; letter-spacing: 0.22em; color: var(--p-verm); }
+  .cp__stack { padding: 2.2cqi 0 1.2cqi; rotate: -2deg; transform-origin: 18% 50%; }
+  .cp__l { margin: 0; line-height: 0.82; white-space: nowrap; }
+  .cp__clip { display: inline-block; overflow: hidden; vertical-align: bottom; }
+  .cp__in { display: inline-block; }
+  .cp__l--1 .cp__in { font-size: 13.4cqi; font-variation-settings: 'wdth' 62, 'wght' 900; letter-spacing: -0.012em; }
+  .cp__l--2 { display: flex; align-items: baseline; gap: 2.2cqi; }
+  .cp__l--2 .cp__in { font-size: 12cqi; font-variation-settings: 'wdth' 62, 'wght' 900; letter-spacing: -0.012em; }
+  .cp__in--thin { font-size: 5.4cqi !important; font-variation-settings: 'wdth' 125, 'wght' 200 !important; letter-spacing: 0.1em !important; }
+  .cp__band {
+    display: inline-block; width: fit-content; margin: 1.6cqi 0 0; rotate: 1.4deg;
+    background: var(--p-verm); color: var(--p-paper);
+    font-size: clamp(12px, 2cqi, 31px); font-variation-settings: 'wdth' 72, 'wght' 700; letter-spacing: 0.14em;
+    padding: 0.7cqi 1.6cqi;
   }
-
-  .fin__bar {
-    display: flex; align-items: center; gap: 1rem; padding: 0.55rem 1rem;
-    border-bottom: 1px solid var(--fin-line); flex: none;
-  }
-  .fin__logo {
-    font-size: 15px; font-weight: 800; letter-spacing: -0.02em; color: var(--fg);
-    display: flex; align-items: center; gap: 6px;
-    font-variation-settings: 'wdth' 100, 'wght' 800;
-  }
-  .fin__logo-mark {
-    width: 22px; height: 22px; border-radius: 5px;
-    background: var(--accent); color: var(--accent-contrast);
-    display: grid; place-items: center;
-    font-size: 13px; font-weight: 900; font-variation-settings: 'wdth' 90, 'wght' 900;
-  }
-  .fin__tabs { display: flex; gap: 0.2rem; margin-left: 0.5rem; }
-  .fin__tabs button {
-    font-size: 12.5px; color: var(--fg-3); padding: 0.3rem 0.65rem; border-radius: 6px;
-    cursor: pointer; background: transparent; transition: color 0.15s, background 0.15s;
-    font-family: var(--fam); font-variation-settings: 'wdth' 100, 'wght' 400;
-  }
-  .fin__tabs button:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 5%, transparent); }
-  .fin__tabs button.is-on {
-    color: var(--fg); font-weight: 600;
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    font-variation-settings: 'wdth' 100, 'wght' 600;
-  }
-  .fin__time { margin-left: auto; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; color: var(--fg-3); font-feature-settings: 'tnum'; }
-
-  .fin__kpis {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
-    border-bottom: 1px solid var(--fin-line); flex: none; background: var(--fin-line);
-  }
-  .fin__kpi { padding: 0.45rem 0.9rem; background: var(--bg); display: flex; flex-direction: column; gap: 0; }
-  .fin__kpi--accent { background: color-mix(in srgb, var(--accent) 4%, var(--bg)); }
-  .fin__kl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
-  .fin__kpi b {
-    font-size: 18px; font-weight: 700; letter-spacing: -0.02em; font-feature-settings: 'tnum';
-    font-variation-settings: 'wdth' 100, 'wght' 700;
-  }
-  .fin__frac { font-feature-settings: 'frac'; font-size: 0.9em; }
-  .fin__kpi i { font-size: 11px; font-style: normal; font-weight: 500; font-feature-settings: 'tnum'; }
-  .fin__kpi .up { color: var(--fin-up); }
-  .fin__kpi .dn { color: var(--fin-dn); }
-  .fin__kpi .flat { color: var(--fg-3); }
-
-  .fin__body { flex: 1; display: grid; grid-template-columns: 1fr minmax(148px, 180px); min-height: 0; }
-  .fin__table-wrap { overflow: auto; }
-  .fin__table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  .fin__table th {
-    text-align: left; color: var(--fg-3); font-weight: 500; padding: 0.5rem 0.7rem;
-    border-bottom: 2px solid var(--fin-line); cursor: pointer; user-select: none;
-    white-space: nowrap; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
-    font-variation-settings: 'wdth' 72, 'wght' 500; transition: color 0.15s;
-  }
-  .fin__table th:hover { color: var(--fg); }
-  .fin__table th[data-active]::after { content: ' \2193'; color: var(--accent); }
-  .fin__table th[data-active='asc']::after { content: ' \2191'; }
-  .fin__table td { padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--fin-line); vertical-align: middle; }
-  .fin__table tbody tr { transition: background 0.12s; }
-  .fin__table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
-  .fin__sym { font-size: 13px; font-weight: 700; letter-spacing: 0.03em; font-variation-settings: 'wdth' 100, 'wght' 700; }
-  .fin__tname { font-size: 11.5px; }
-  .fin__num { text-align: right; font-feature-settings: 'tnum'; }
-  .fin__px { font-size: 13px; font-weight: 600; font-feature-settings: 'tnum'; font-variation-settings: 'wdth' 100, 'wght' 600; }
-  .fin__ch { font-size: 11.5px; font-weight: 600; font-feature-settings: 'tnum'; line-height: 1.3; }
-  .fin__pct { font-size: 10.5px; font-weight: 500; opacity: 0.85; }
-  .fin__up { color: var(--fin-up); }
-  .fin__dn { color: var(--fin-dn); }
-  .fin__muted { color: var(--fg-3); }
-
-  .fin__side {
-    padding: 0.8rem 0.85rem; border-left: 1px solid var(--fin-line);
-    display: flex; flex-direction: column; gap: 0.6rem; overflow: hidden;
-  }
-  .fin__movers-h, .fin__gauge-h {
-    font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--fg-3); font-variation-settings: 'wdth' 72, 'wght' 700;
-  }
-  .fin__movers { display: flex; flex-direction: column; gap: 4px; }
-  .fin__mover {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 3px 6px; border-radius: 4px;
-  }
-  .fin__mover--up { background: color-mix(in srgb, var(--fin-up) 10%, transparent); }
-  .fin__mover--dn { background: color-mix(in srgb, var(--fin-dn) 10%, transparent); }
-  .fin__mover-sym { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; font-variation-settings: 'wdth' 100, 'wght' 700; }
-  .fin__mover--up .fin__mover-sym { color: var(--fin-up); }
-  .fin__mover--dn .fin__mover-sym { color: var(--fin-dn); }
-  .fin__mover-pct { font-size: 10.5px; font-weight: 600; font-feature-settings: 'tnum'; }
-  .fin__mover--up .fin__mover-pct { color: var(--fin-up); }
-  .fin__mover--dn .fin__mover-pct { color: var(--fin-dn); }
-
-  .fin__gauge { display: flex; flex-direction: column; gap: 4px; }
-  .fin__gauge-bar {
-    position: relative; height: 6px;
-    background: color-mix(in srgb, var(--fg) 10%, transparent); border-radius: 3px; overflow: hidden; margin: 2px 0;
-  }
-  .fin__gauge-fill {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    background: linear-gradient(90deg, var(--fin-up), #f9c800, var(--fin-dn));
-    border-radius: 3px; transition: width 0.5s ease;
-  }
-  .fin__gauge-needle {
-    position: absolute; top: -2px; width: 2px; height: 10px;
-    background: var(--fg); transform: translateX(-50%); border-radius: 1px;
-    transition: left 0.5s ease;
-  }
-  .fin__gauge-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--fg-3); letter-spacing: 0.08em; }
-  .fin__gauge-val { font-size: 11px; font-weight: 700; font-feature-settings: 'tnum'; color: var(--fg); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fin__gauge-fill, .fin__gauge-needle { transition: none; }
-  }
-
-  @container (max-width: 580px) {
-    .fin__kpis { grid-template-columns: repeat(2, 1fr); }
-    .fin__body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
-    .fin__side {
-      border-left: none; border-top: 1px solid var(--fin-line);
-      flex-direction: row; flex-wrap: wrap; gap: 0.6rem;
-      padding: 0.55rem 0.9rem;
-    }
-    .fin__movers-h, .fin__gauge-h { width: 100%; margin-bottom: 0; }
-    .fin__movers { flex-direction: row; flex-wrap: wrap; gap: 4px; }
-    .fin__gauge { flex: 1; min-width: 120px; }
-    .fin__hide-sm { display: none; }
-    .fin__tname { display: none; }
-  }
-  @container (max-width: 380px) {
-    .fin__tabs button { font-size: 11px; padding: 0.25rem 0.45rem; }
-    .fin__logo { font-size: 13px; }
-    .fin__kpis { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* ============================================================
-     02 · WIDTH-AXIS KINETIC POSTER
-     ============================================================ */
-  .poster {
-    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
-    padding: 3.5cqi 5cqi; display: flex; flex-direction: column; overflow: hidden;
-    container-type: inline-size;
-  }
-  .poster__bg-grid {
-    position: absolute; inset: 0; pointer-events: none; opacity: 0.35;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 6cqi 6cqi;
-    mask-image: radial-gradient(ellipse 100% 60% at 50% 100%, transparent 40%, #000 100%);
-  }
-  .poster__top {
-    display: flex; justify-content: space-between; align-items: baseline; flex: none;
-    font-size: 1.8cqi; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--fg-3); position: relative;
-    font-variation-settings: 'wdth' 72, 'wght' 600;
-  }
-  .poster__stage {
-    flex: 1; display: flex; flex-direction: column; justify-content: center;
-    position: relative; gap: 2cqi;
-  }
-  .poster__word-wrap { overflow: hidden; line-height: 0.85; }
-  .poster__word {
-    display: block; font-size: 14cqi; font-weight: 900; letter-spacing: -0.02em;
-    text-transform: uppercase; color: var(--fg);
-    font-variation-settings: 'wdth' 62, 'wght' 900;
-  }
-  .poster__axis-track {
-    display: flex; align-items: center; gap: 2cqi;
-    font-size: 1.5cqi; color: var(--fg-3);
-    font-variation-settings: 'wdth' 100, 'wght' 400;
-  }
-  .poster__axis-l, .poster__axis-r { white-space: nowrap; }
-  .poster__axis-l em, .poster__axis-r em {
-    font-style: normal; color: var(--accent); font-feature-settings: 'tnum';
-  }
-  .poster__axis-bar {
-    flex: 1; height: 3px; background: var(--line); border-radius: 2px; position: relative;
-  }
-  .poster__axis-cursor {
-    position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
-    width: 2.4cqi; height: 2.4cqi; border-radius: 50%;
-    background: var(--accent); border: 2px solid var(--bg);
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-  .poster__stack { display: flex; flex-direction: column; gap: 0.4cqi; position: relative; }
-  .poster__stack-word {
-    font-size: 3.4cqi; text-transform: uppercase; letter-spacing: 0.01em; color: var(--fg-2);
-    font-variation-settings: 'wdth' var(--w, 100), 'wght' var(--wt, 400); line-height: 1.1;
-  }
-  .poster__foot {
-    display: flex; justify-content: space-between; align-items: center; gap: 3cqi;
-    flex: none; padding-top: 2.2cqi; border-top: 1px solid var(--line);
-    font-size: 1.7cqi; font-variation-settings: 'wdth' 100, 'wght' 400;
-  }
-  .poster__desc { color: var(--fg-3); font-feature-settings: 'tnum'; letter-spacing: 0.06em; }
-  .poster__btn {
-    font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.18em;
-    padding: 1.2cqi 3cqi; border-radius: 100px;
-    background: var(--accent); color: var(--accent-contrast);
-    cursor: pointer; border: 0; font-family: var(--fam);
-    font-variation-settings: 'wdth' 72, 'wght' 700;
-    transition: filter 0.15s, opacity 0.15s;
-  }
-  .poster__btn:hover { filter: brightness(1.08); }
-
-  @container (max-width: 500px) {
-    .poster__word { font-size: 17cqi; }
-    .poster__stack-word { font-size: 4.5cqi; }
-    .poster__top { font-size: 2.4cqi; }
-    .poster__foot { font-size: 2.4cqi; }
-  }
-
-  /* ============================================================
-     03 · EDITORIAL NEWS SPREAD
-     ============================================================ */
-  .news {
-    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
-    padding: 4.5cqi 5.5cqi; display: flex; flex-direction: column; overflow: hidden;
-    container-type: inline-size;
-  }
-  .news__masthead {
-    flex: none; display: flex; align-items: center; gap: 2cqi; padding-bottom: 0.6cqi;
-  }
-  .news__rule { flex: 1; height: 2px; background: var(--fg); position: relative; top: 0; }
-  .news__issue { font-size: 2.2cqi; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; font-variation-settings: 'wdth' 100, 'wght' 900; white-space: nowrap; }
-  .news__tagline { font-size: 1.6cqi; font-weight: 600; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; font-variation-settings: 'wdth' 72, 'wght' 600; white-space: nowrap; }
-  .news__date-line { font-size: 1.5cqi; letter-spacing: 0.1em; color: var(--fg-3); padding-bottom: 2cqi; border-bottom: 1px solid var(--line); margin-bottom: 2cqi; font-variation-settings: 'wdth' 100, 'wght' 400; }
-
-  .news__body { flex: 1; display: grid; grid-template-columns: 1fr 34%; gap: 4cqi; min-height: 0; overflow: hidden; }
-  .news__col--main { display: flex; flex-direction: column; gap: 1.2cqi; overflow: hidden; }
-  .news__kicker { font-size: 1.8cqi; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-variation-settings: 'wdth' 72, 'wght' 700; }
-  .news__hed { font-size: 5.8cqi; font-weight: 800; line-height: 1.0; letter-spacing: -0.02em; margin: 0; font-variation-settings: 'wdth' 100, 'wght' 800; }
-  .news__deck { font-size: 2.1cqi; line-height: 1.44; color: var(--fg-2); font-variation-settings: 'wdth' 100, 'wght' 400; }
-  .news__byline { font-size: 1.6cqi; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding-bottom: 1.6cqi; border-bottom: 1px solid var(--line); font-variation-settings: 'wdth' 72, 'wght' 600; }
-  .news__body-text {
-    font-size: 2cqi; line-height: 1.55; color: var(--fg-2);
-    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
-    font-variation-settings: 'wdth' 100, 'wght' 400;
-  }
-  .news__body-text--cont { -webkit-line-clamp: 4; color: var(--fg-3); }
-
-  .news__col--side { display: flex; flex-direction: column; gap: 2.8cqi; }
-  .news__callout {
-    background: var(--accent); color: var(--accent-contrast);
-    padding: 2.5cqi 2.2cqi; display: flex; flex-direction: column; gap: 1cqi;
-  }
-  .news__callout-num { font-size: 11cqi; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; font-feature-settings: 'tnum'; font-variation-settings: 'wdth' 100, 'wght' 900; }
-  .news__callout-cap { font-size: 1.9cqi; line-height: 1.35; font-weight: 500; font-variation-settings: 'wdth' 100, 'wght' 500; }
-  .news__second { display: flex; flex-direction: column; gap: 1cqi; padding-top: 2cqi; border-top: 1px solid var(--line); }
-  .news__hed-sm { font-size: 2.9cqi; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin: 0; font-variation-settings: 'wdth' 100, 'wght' 700; }
-  .news__deck-sm { font-size: 1.8cqi; line-height: 1.42; color: var(--fg-2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-
-  /* S03 motion — scroll-reveal on callout stat + hover-reveal on secondary deck */
+  /* custom hidden poses on the site-wide reveal system */
   @media (prefers-reduced-motion: no-preference) {
-    .news__callout { transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1); }
-    .news__callout:not(.is-visible) { opacity: 0; transform: translateY(1.2cqi); }
-    .news__callout.is-visible { opacity: 1; transform: translateY(0); }
-    .news__deck-sm {
-      max-height: 0; opacity: 0; overflow: hidden;
-      transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.32s ease;
-      display: block; -webkit-line-clamp: unset;
-    }
-    .news__second:hover .news__deck-sm,
-    .news__second:focus-within .news__deck-sm {
-      max-height: 12cqi; opacity: 1;
-    }
+    .cp__in[data-reveal]:not(.is-visible) { transform: translateY(108%); }
+    .cp__band[data-reveal]:not(.is-visible) { transform: translateX(-2.5cqi); }
   }
-
-  @container (max-width: 520px) {
-    .news__body { grid-template-columns: 1fr; }
-    .news__col--side { display: none; }
-    .news__hed { font-size: 8cqi; }
-    .news__tagline { display: none; }
-    .news__body-text { -webkit-line-clamp: 3; }
+  .cp__list {
+    margin-top: 2.4cqi; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4cqi;
+    border-top: 1px solid var(--p-ink); padding-top: 1.6cqi;
+  }
+  .cp__play { display: flex; flex-direction: column; gap: 0.35cqi; min-width: 0; }
+  .cp__play b { font-size: clamp(14px, 2.5cqi, 40px); font-variation-settings: 'wdth' 62, 'wght' 900; letter-spacing: 0.01em; white-space: nowrap; }
+  .cp__play span { font-size: clamp(10px, 1.35cqi, 21px); font-variation-settings: 'wdth' 85, 'wght' 600; color: var(--p-verm); letter-spacing: 0.06em; }
+  .cp__play i { font-style: normal; font-size: clamp(9px, 1.15cqi, 18px); font-variation-settings: 'wdth' 95, 'wght' 400; color: color-mix(in srgb, var(--p-ink) 62%, var(--p-paper)); }
+  .cp__imprint {
+    margin: 2cqi 0 0; font-size: clamp(8px, 0.95cqi, 14px); letter-spacing: 0.12em;
+    font-variation-settings: 'wdth' 80, 'wght' 500;
+    color: color-mix(in srgb, var(--p-ink) 55%, var(--p-paper));
+  }
+  @container (max-width: 700px) {
+    .cp { grid-template-columns: 1fr; }
+    .cp__edge { writing-mode: horizontal-tb; rotate: none; border-inline: none; padding: 1.6cqi 4cqi; letter-spacing: 0.26em; }
+    .cp__edge--l { border-bottom: 1px solid var(--p-ink); }
+    .cp__edge--r { border-top: 1px solid var(--p-ink); }
+    /* +14px right: classic scrollbars steal from 100vw bleed acts */
+    .cp__main { padding: 3.4cqi calc(5cqi + 14px) 3cqi 5cqi; }
+    .cp__stack { padding: 3.4cqi 0 1.8cqi; }
+    .cp__l--1 .cp__in { font-size: 15.5cqi; }
+    .cp__l--2 .cp__in { font-size: 13.8cqi; }
+    .cp__in--thin { font-size: 6.2cqi !important; }
+    .cp__list { grid-template-columns: 1fr; gap: 3.2cqi; }
+    .cp__play b { font-size: 6cqi; }
+    .cp__play span { font-size: 3cqi; }
+    .cp__play i { font-size: 2.7cqi; }
+    .cp__band { font-size: 3cqi; padding: 1.2cqi 2.4cqi; }
+    .cp__imprint { font-size: 2.1cqi; margin-top: 3cqi; }
   }
 
   /* ============================================================
-     04 · BRAND IDENTITY — width-axis wordmark system
+     02 · THE LEDGER — Turley-era Businessweek opener
+     printed page: self-declared white-stock surface
      ============================================================ */
-  .brand {
-    position: absolute; inset: 0; background: var(--bg-2); color: var(--fg);
-    display: flex; align-items: stretch; overflow: hidden;
-    container-type: inline-size;
+  .lg {
+    --m-page: #fcfbf6;
+    --m-ink: #141210;
+    --m-mid: #5d574f;
+    --m-verm: #c8410b;
+    display: grid; grid-template-columns: auto 1fr;
+    background: var(--m-page); color: var(--m-ink);
   }
-  .brand__bg {
-    position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(60% 80% at 80% 20%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 70%);
+  .lg__spine {
+    background: var(--m-verm); color: var(--m-page);
+    writing-mode: vertical-rl; rotate: 180deg;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5cqi 0.7cqi;
+    font-size: clamp(10px, 1.05cqi, 15px); font-variation-settings: 'wdth' 75, 'wght' 700; letter-spacing: 0.3em;
+    white-space: nowrap;
   }
-  .brand__inner {
-    position: relative; flex: 1; display: grid; grid-template-rows: 1fr auto;
-    padding: 4cqi 5cqi; gap: 3cqi;
+  .lg__page { padding: 3.2cqi 4cqi 0; display: flex; flex-direction: column; min-width: 0; }
+  .lg__head { display: flex; align-items: baseline; gap: 1.6cqi; }
+  .lg__sec {
+    background: var(--m-ink); color: var(--m-page);
+    font-size: clamp(10px, 1.2cqi, 17px); font-variation-settings: 'wdth' 70, 'wght' 800; letter-spacing: 0.2em;
+    padding: 0.35cqi 1cqi;
   }
-  .brand__system { display: flex; flex-direction: column; gap: 2.4cqi; }
-  .brand__eyebrow { font-size: 1.6cqi; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-3); font-variation-settings: 'wdth' 72, 'wght' 600; }
-  .brand__lockups { display: flex; flex-direction: column; gap: 0; }
-  .brand__divider { height: 1px; background: var(--line); margin: 1.2cqi 0; }
-  .brand__lockup { display: flex; align-items: baseline; gap: 3cqi; }
-  .brand__lockup-label { font-size: 1.5cqi; color: var(--fg-3); white-space: nowrap; min-width: 26cqi; font-variation-settings: 'wdth' 100, 'wght' 400; }
-  .brand__name { text-transform: uppercase; letter-spacing: -0.01em; }
-  .brand__name--cond { font-size: 7cqi; font-variation-settings: 'wdth' 62,  'wght' 900; line-height: 1; }
-  .brand__name--reg  { font-size: 6cqi; font-variation-settings: 'wdth' 100, 'wght' 700; line-height: 1; }
-  .brand__name--exp  { font-size: 5cqi; font-variation-settings: 'wdth' 125, 'wght' 100; line-height: 1; color: var(--fg-2); letter-spacing: 0.04em; }
+  .lg__rule { flex: 1; height: 2px; background: var(--m-ink); align-self: center; }
+  .lg__folio { font-size: clamp(9px, 1.1cqi, 16px); font-variation-settings: 'wdth' 80, 'wght' 600; letter-spacing: 0.14em; color: var(--m-mid); font-feature-settings: 'tnum' 1; }
+  .lg__hed {
+    margin: 2.2cqi 0 0; max-width: 88%;
+    font-size: clamp(26px, 6cqi, 92px); line-height: 0.98; letter-spacing: -0.022em;
+    font-variation-settings: 'wdth' 78, 'wght' 850; font-weight: normal;
+  }
+  .lg__deck {
+    margin: 1.6cqi 0 0; max-width: 62ch;
+    font-size: clamp(13px, 1.85cqi, 27px); line-height: 1.4;
+    font-variation-settings: 'wdth' 96, 'wght' 500; color: var(--m-mid);
+  }
+  .lg__byline {
+    margin: 1.4cqi 0 0; font-size: clamp(9px, 1.05cqi, 15px); letter-spacing: 0.18em;
+    font-variation-settings: 'wdth' 72, 'wght' 700; color: var(--m-verm);
+  }
+  .lg__grid {
+    margin-top: 2.2cqi; padding-top: 2cqi; border-top: 1px solid color-mix(in srgb, var(--m-ink) 22%, transparent);
+    display: grid; grid-template-columns: 1.25fr 1fr; gap: 4cqi;
+  }
+  .lg__body { columns: 2; column-gap: 3cqi; min-width: 0; }
+  .lg__body p {
+    font-family: var(--serif); font-size: clamp(11px, 1.45cqi, 19px); line-height: 1.62;
+    margin: 0 0 1em; color: color-mix(in srgb, var(--m-ink) 88%, var(--m-page));
+  }
+  .lg__body p em { font-family: var(--serif); font-style: italic; }
+  .lg__body > p:first-child::first-letter {
+    font-family: var(--fam); font-variation-settings: 'wdth' 70, 'wght' 900;
+    float: left; font-size: 3.1em; line-height: 0.82; padding: 0.06em 0.12em 0 0;
+    color: var(--m-verm);
+  }
+  .lg__cross {
+    margin: 0.4em 0 0.5em; font-size: clamp(11px, 1.4cqi, 19px); letter-spacing: 0.06em;
+    font-variation-settings: 'wdth' 72, 'wght' 800; text-transform: uppercase; font-weight: normal;
+  }
+  .lg__panel { border-left: 3px solid var(--m-ink); padding-left: 2cqi; display: flex; flex-direction: column; min-width: 0; }
+  .lg__panel-t { margin: 0; font-size: clamp(11px, 1.45cqi, 20px); font-variation-settings: 'wdth' 65, 'wght' 900; letter-spacing: 0.06em; }
+  .lg__panel-s { margin: 0.3cqi 0 1.4cqi; font-size: clamp(9px, 1.15cqi, 16px); font-variation-settings: 'wdth' 90, 'wght' 500; color: var(--m-mid); }
+  .lg__chart { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.9cqi; align-items: end; height: 13cqi; min-height: 84px; }
+  .lg__col { display: grid; grid-template-rows: auto 1fr auto; height: 100%; min-width: 0; text-align: center; }
+  .lg__val {
+    font-size: clamp(8px, 1cqi, 14px); font-variation-settings: 'wdth' 80, 'wght' 700;
+    font-feature-settings: 'tnum' 1; color: var(--m-verm);
+    opacity: 0; transition: opacity 0.2s ease; align-self: end; padding-bottom: 0.3cqi;
+  }
+  .lg__col:hover .lg__val, .lg__col:last-child .lg__val { opacity: 1; }
+  .lg__bar {
+    align-self: end; height: var(--h); width: 100%;
+    background: var(--m-ink); transform-origin: bottom;
+  }
+  .lg__col:hover .lg__bar { background: var(--m-verm); }
+  .lg__col:last-child .lg__bar { background: var(--m-verm); }
+  @media (prefers-reduced-motion: no-preference) {
+    .lg__bar[data-reveal]:not(.is-visible) { transform: scaleY(0); }
+    .lg__stat[data-reveal]:not(.is-visible) { transform: translateY(0.8cqi); }
+  }
+  .lg__yr { font-size: clamp(8px, 1cqi, 14px); font-variation-settings: 'wdth' 75, 'wght' 600; color: var(--m-mid); padding-top: 0.4cqi; font-feature-settings: 'tnum' 1; }
+  .lg__src { margin: 1cqi 0 0; font-size: clamp(7px, 0.85cqi, 12px); letter-spacing: 0.08em; font-variation-settings: 'wdth' 78, 'wght' 500; color: var(--m-mid); }
+  .lg__stat {
+    margin-top: 1.8cqi; background: var(--m-verm); color: var(--m-page);
+    padding: 1.4cqi 1.6cqi; display: flex; flex-direction: column; gap: 0.4cqi;
+  }
+  .lg__stat b { font-size: clamp(24px, 4.6cqi, 70px); line-height: 0.9; font-variation-settings: 'wdth' 70, 'wght' 900; font-feature-settings: 'tnum' 1; letter-spacing: -0.02em; }
+  .lg__stat span { font-size: clamp(10px, 1.25cqi, 18px); line-height: 1.35; font-variation-settings: 'wdth' 92, 'wght' 500; }
+  .lg__ticker {
+    margin: 2.6cqi -4cqi 0; padding: 0.9cqi 4cqi;
+    background: var(--m-verm); color: var(--m-page);
+    display: flex; gap: 3cqi; flex-wrap: nowrap; overflow: hidden; white-space: nowrap;
+    font-size: clamp(10px, 1.2cqi, 17px); font-feature-settings: 'tnum' 1;
+    font-variation-settings: 'wdth' 85, 'wght' 500; letter-spacing: 0.04em;
+  }
+  .lg__ticker b { font-variation-settings: 'wdth' 70, 'wght' 800; letter-spacing: 0.08em; }
+  .lg__ticker i { font-style: normal; font-variation-settings: 'wdth' 85, 'wght' 700; }
+  .lg__ticker .up { color: #ffd9c4; }
+  .lg__ticker .dn { color: #3d1102; }
+  @container (max-width: 880px) {
+    .lg__grid { grid-template-columns: 1fr; gap: 2.6cqi; }
+    .lg__panel { border-left: none; border-top: 3px solid var(--m-ink); padding-left: 0; padding-top: 1.8cqi; }
+    .lg__hed { max-width: 100%; }
+    .lg__chart { height: 16cqi; }
+  }
+  @container (max-width: 560px) {
+    .lg { grid-template-columns: 1fr; }
+    .lg__spine { writing-mode: horizontal-tb; rotate: none; padding: 1.6cqi 4cqi; justify-content: flex-start; letter-spacing: 0.22em; font-size: 2.4cqi; }
+    .lg__page { padding: 4.5cqi 5cqi 0; }
+    .lg__body { columns: 1; }
+    .lg__hed { font-size: 9.4cqi; }
+    .lg__deck { font-size: 3.4cqi; }
+    .lg__byline { font-size: 2.4cqi; }
+    .lg__sec, .lg__folio { font-size: 2.5cqi; }
+    .lg__body p { font-size: 3.2cqi; }
+    .lg__cross { font-size: 3.2cqi; }
+    .lg__panel-t { font-size: 3.6cqi; }
+    .lg__panel-s, .lg__stat span { font-size: 2.8cqi; }
+    .lg__chart { height: 26cqi; }
+    .lg__val, .lg__yr { font-size: 2.2cqi; }
+    .lg__src { font-size: 1.9cqi; }
+    .lg__stat b { font-size: 11cqi; }
+    .lg__ticker { margin: 5cqi -5cqi 0; padding: 1.6cqi 5cqi; font-size: 2.6cqi; gap: 4cqi; }
+    .lg__tick-x { display: none; }
+  }
 
-  .brand__tag {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    gap: 3cqi; padding-top: 2.6cqi; border-top: 2px solid var(--fg);
+  /* ============================================================
+     03 · ARCV TERMINAL — Bloomberg-style monitor, real px
+     intentional dark surface, fully self-declared
+     ============================================================ */
+  .tm {
+    --t-bg: #0b0b0d;
+    --t-panel: #121215;
+    --t-fg: #e9e4da;
+    --t-dim: #8f897f;
+    --t-line: #ffffff1a;
+    --t-acc: #ff5a1f;
+    --t-up: #4cc272;
+    --t-dn: #ff6a52;
+    background: var(--t-bg); color: var(--t-fg);
+    font-size: 12.5px; line-height: 1.35;
+    font-feature-settings: 'tnum' 1;
+    display: flex; flex-direction: column;
+    /* bleed act: classic scrollbars steal ~15px of 100vw on the right */
+    padding-right: 14px;
   }
-  .brand__full-lockup { display: flex; flex-direction: column; gap: 0.4cqi; }
-  .brand__full-masthead {
-    font-size: 9cqi; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase;
-    color: var(--fg); cursor: pointer; user-select: none;
-    font-variation-settings: 'wdth' 100, 'wght' 700;
+  .tm__cmd {
+    display: flex; align-items: center; gap: 14px;
+    padding: 9px 18px; border-bottom: 1px solid var(--t-line);
+    background: var(--t-panel);
   }
-  .brand__full-sub { font-size: 1.9cqi; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); font-variation-settings: 'wdth' 72, 'wght' 600; }
+  .tm__app { font-variation-settings: 'wdth' 70, 'wght' 900; letter-spacing: 0.08em; color: var(--t-acc); font-size: 13px; }
+  .tm__path { font-variation-settings: 'wdth' 80, 'wght' 600; letter-spacing: 0.1em; font-size: 11.5px; color: var(--t-dim); }
+  .tm__clock { margin-left: auto; font-size: 11.5px; color: var(--t-dim); letter-spacing: 0.06em; font-variation-settings: 'wdth' 90, 'wght' 500; }
+  .tm__density {
+    font-family: var(--fam); font-size: 11px; letter-spacing: 0.1em;
+    font-variation-settings: 'wdth' 80, 'wght' 600;
+    color: var(--t-fg); background: transparent;
+    border: 1px solid var(--t-acc); border-radius: 2px;
+    padding: 3px 10px; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .tm__density b { font-variation-settings: 'wdth' 80, 'wght' 800; color: var(--t-acc); }
+  .tm__density:hover { background: #ff5a1f22; }
+  .is-compact .tm__density { background: var(--t-acc); }
+  .is-compact .tm__density, .is-compact .tm__density b { color: #140700; }
 
-  .brand__meta { display: flex; flex-direction: column; gap: 1.4cqi; align-items: flex-end; }
-  .brand__axis-demo { display: flex; align-items: center; gap: 1.6cqi; }
-  .brand__axis-key { font-size: 1.4cqi; font-weight: 700; letter-spacing: 0.1em; color: var(--fg-3); font-variation-settings: 'wdth' 72, 'wght' 700; min-width: 6cqi; text-align: right; font-feature-settings: 'tnum'; }
-  .brand__axis-slots { display: flex; gap: 0.6cqi; }
-  .brand__slot {
-    font-size: 1.5cqi; font-weight: 600; padding: 0.4cqi 0.9cqi;
-    border: 1px solid var(--line); border-radius: 4px; color: var(--fg-2);
-    font-feature-settings: 'tnum'; letter-spacing: 0.05em;
+  .tm__grid { display: grid; grid-template-columns: 1fr 304px; min-height: 0; }
+  .tm__main { min-width: 0; overflow: hidden; }
+  .tm__table { width: 100%; border-collapse: collapse; }
+  .tm__table th {
+    text-align: right; font-size: 10.5px; letter-spacing: 0.1em; color: var(--t-dim);
+    font-variation-settings: 'wdth' 72, 'wght' 700; font-weight: normal;
+    padding: 9px 14px; border-bottom: 1px solid var(--t-line);
+    white-space: nowrap; user-select: none;
   }
-  .brand__slot--cond  { font-variation-settings: 'wdth' 62,  'wght' 600; }
-  .brand__slot--mid   { font-variation-settings: 'wdth' 100, 'wght' 600; background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--fg); border-color: var(--accent); }
-  .brand__slot--exp   { font-variation-settings: 'wdth' 125, 'wght' 600; }
-  .brand__slot--thin  { font-variation-settings: 'wdth' 100, 'wght' 100; }
-  .brand__slot--reg-w { font-variation-settings: 'wdth' 100, 'wght' 400; background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--fg); border-color: var(--accent); }
-  .brand__slot--blk   { font-variation-settings: 'wdth' 100, 'wght' 900; }
+  .tm__table th[data-sort] { cursor: pointer; transition: color 0.15s ease; }
+  .tm__table th[data-sort]:hover { color: var(--t-fg); }
+  .tm__table th[data-active] { color: var(--t-acc); }
+  .tm__table th[data-active='desc'] i::after { content: '▾'; }
+  .tm__table th[data-active='asc'] i::after { content: '▴'; }
+  .tm__table th i { font-style: normal; }
+  .tm__th-l { text-align: left !important; }
+  .tm__table td {
+    padding: 8px 14px; border-bottom: 1px solid #ffffff0d; white-space: nowrap;
+    font-variation-settings: 'wdth' 100, 'wght' 450;
+    transition: font-variation-settings 0.25s ease;
+  }
+  .tm__table tbody tr { transition: background 0.12s ease; }
+  .tm__table tbody tr:hover { background: #ffffff08; }
+  .tm__sym { font-variation-settings: 'wdth' 80, 'wght' 800; letter-spacing: 0.05em; font-weight: normal; }
+  .tm__name { font-size: 11px; }
+  .tm__num { text-align: right; }
+  .tm__dim { color: var(--t-dim); }
+  .tm__up { color: var(--t-up); }
+  .tm__dn { color: var(--t-dn); }
+  .tm__xcol { display: none; }
+  .tm__num.is-flash { animation: tmflash 0.9s ease-out; }
+  @keyframes tmflash { from { background: #ff5a1f3d; } to { background: transparent; } }
+  @media (prefers-reduced-motion: reduce) { .tm__num.is-flash { animation: none; } }
 
-  @container (max-width: 520px) {
-    .brand__inner { padding: 4cqi 4cqi; }
-    .brand__lockup-label { font-size: 2cqi; min-width: 0; }
-    .brand__tag { flex-direction: column; align-items: flex-start; gap: 2cqi; }
-    .brand__meta { flex-direction: row; align-items: center; }
-    .brand__name--cond { font-size: 9cqi; }
-    .brand__name--reg  { font-size: 7.5cqi; }
-    .brand__name--exp  { font-size: 6cqi; }
-    .brand__full-masthead { font-size: 10cqi; }
+  /* COMPACT: the width axis reclaims the inches, three more columns seat */
+  .is-compact { font-size: 11.5px; }
+  .is-compact .tm__table td { padding: 5px 10px; font-variation-settings: 'wdth' 80, 'wght' 500; }
+  .is-compact .tm__table th { padding: 7px 10px; font-variation-settings: 'wdth' 65, 'wght' 700; }
+  .is-compact .tm__xcol { display: table-cell; }
+  .is-compact .tm__row { padding-block: 4px; }
+
+  .tm__side { border-left: 1px solid var(--t-line); display: flex; flex-direction: column; min-width: 0; }
+  .tm__panel { padding: 12px 16px; border-bottom: 1px solid var(--t-line); }
+  .tm__panel-h {
+    margin: 0 0 8px; font-size: 10.5px; letter-spacing: 0.12em; color: var(--t-acc);
+    font-variation-settings: 'wdth' 70, 'wght' 800;
+  }
+  .tm__row {
+    margin: 0; display: grid; grid-template-columns: 1fr auto auto; gap: 14px;
+    padding-block: 5px; border-bottom: 1px solid #ffffff0a; font-size: 12px;
+  }
+  .tm__row:last-child { border-bottom: none; }
+  .tm__row .tm__sym { font-variation-settings: 'wdth' 85, 'wght' 700; color: var(--t-fg); }
+
+  .tm__keys {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 18px; border-top: 1px solid var(--t-line); background: var(--t-panel);
+    overflow: hidden;
+  }
+  .tm__key {
+    font-size: 10.5px; letter-spacing: 0.08em;
+    font-variation-settings: 'wdth' 75, 'wght' 700;
+    background: #26262b; color: var(--t-fg);
+    padding: 3px 9px; border-radius: 2px; white-space: nowrap;
+  }
+  .tm__key--acc { background: var(--t-acc); color: #140700; }
+  .tm__key--ghost { background: transparent; color: var(--t-dim); border: 1px solid var(--t-line); }
+  .tm__hintline {
+    margin-left: auto; font-size: 10px; letter-spacing: 0.08em; color: var(--t-dim);
+    font-variation-settings: 'wdth' 78, 'wght' 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  @container (max-width: 980px) {
+    .tm__grid { grid-template-columns: 1fr; }
+    .tm__side { border-left: none; border-top: 1px solid var(--t-line); display: grid; grid-template-columns: 1fr 1fr; }
+    .tm__panel { border-bottom: none; }
+    .tm__panel + .tm__panel { border-left: 1px solid var(--t-line); }
+    .tm__hintline { display: none; }
+  }
+  @container (max-width: 620px) {
+    .tm__name { display: none; }
+    .tm__cmd { gap: 10px; padding-inline: 12px; }
+    .tm__clock { display: none; }
+    .tm__panel { padding: 10px 12px; }
+    .tm__row { gap: 10px; }
+    .tm__keys { padding-inline: 12px; }
+    .tm__table th, .tm__table td { padding-inline: 9px; }
+    .tm__side { grid-template-columns: 1fr; }
+    .tm__panel + .tm__panel { border-left: none; border-top: 1px solid var(--t-line); }
+    .tm__path { display: none; }
+    .tm__key--ghost { display: none; }
+    .is-compact .tm__xcol { display: none; } /* no inches to reclaim on a phone */
+  }
+
+  /* ============================================================
+     04 · SUBTE SIGNAGE — Vignelli/Noorda standards sheet
+     spec sheet on theme tokens; the sign band self-declared
+     ============================================================ */
+  .sg {
+    background: var(--bg-2); color: var(--fg);
+    padding: clamp(18px, 3cqi, 44px) clamp(18px, 3.5cqi, 56px);
+    display: flex; flex-direction: column; gap: clamp(14px, 1.8cqi, 26px);
+  }
+  .sg__sheethead {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi; flex-wrap: wrap;
+    border-bottom: 1px solid var(--line); padding-bottom: 1.2cqi;
+  }
+  .sg__man, .sg__sheet { font-family: var(--font-mono); font-size: clamp(9px, 1.05cqi, 12px); letter-spacing: 0.1em; color: var(--fg-3); }
+  .sg__sheet { color: var(--accent); }
+  .sg__band {
+    --s-ink: #101012;
+    background: var(--s-ink); color: #f4f1ea;
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+    gap: clamp(14px, 2.4cqi, 40px);
+    padding: clamp(16px, 2.6cqi, 44px) clamp(16px, 3cqi, 52px);
+    min-height: 18cqi;
+  }
+  .sg__roundel {
+    width: clamp(34px, 6.4cqi, 96px); height: clamp(34px, 6.4cqi, 96px); border-radius: 50%;
+    background: #c8410b; color: #fff;
+    display: grid; place-items: center;
+    font-size: clamp(20px, 3.9cqi, 58px); font-variation-settings: 'wdth' 90, 'wght' 800;
+  }
+  .sg__msg { display: flex; flex-direction: column; gap: clamp(4px, 0.7cqi, 12px); min-width: 0; }
+  .sg__name-wrap { display: block; min-width: 0; }
+  .sg__name { display: inline-block; white-space: nowrap; line-height: 1; letter-spacing: 0.005em; font-variation-settings: 'wdth' 100, 'wght' 600; }
+  .sg__sub { font-size: clamp(11px, 1.55cqi, 23px); font-variation-settings: 'wdth' 88, 'wght' 400; color: #b9b3a8; }
+  .sg__arrow { width: clamp(28px, 4.4cqi, 64px); color: #f4f1ea; flex: none; }
+  .sg__controls { display: flex; align-items: center; gap: 0.9cqi; flex-wrap: wrap; }
+  .sg__ctrl-k { font-family: var(--font-mono); font-size: clamp(9px, 1cqi, 12px); letter-spacing: 0.12em; color: var(--fg-3); margin-right: 0.4cqi; }
+  .sg__btn {
+    font-family: var(--fam); font-size: clamp(10px, 1.2cqi, 14px);
+    font-variation-settings: 'wdth' 78, 'wght' 600; letter-spacing: 0.05em;
+    color: var(--fg-2); background: transparent;
+    border: 1px solid var(--line); border-radius: 100px;
+    padding: 0.5em 1.1em; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sg__btn:hover { border-color: var(--fg-2); color: var(--fg); }
+  .sg__btn.is-on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .sg__readout {
+    margin-left: auto; font-family: var(--font-mono); font-size: clamp(9px, 1.05cqi, 13px);
+    color: var(--accent); letter-spacing: 0.06em; white-space: nowrap;
+  }
+  .sg__notes {
+    display: flex; justify-content: space-between; gap: 3cqi; flex-wrap: wrap;
+    border-top: 1px solid var(--line); padding-top: 1.2cqi;
+  }
+  .sg__notes span { font-family: var(--font-mono); font-size: clamp(8.5px, 1cqi, 12px); line-height: 1.6; color: var(--fg-3); max-width: 52ch; }
+  @container (max-width: 640px) {
+    .sg__band { grid-template-columns: auto 1fr; }
+    .sg__arrow { display: none; }
+    .sg__readout { margin-left: 0; width: 100%; }
+    .sg__notes { flex-direction: column; gap: 1cqi; }
+  }
+
+  /* ============================================================
+     05 · THE BROADSIDE — justified by the axis
+     intentional ink surface, self-declared
+     ============================================================ */
+  .bs {
+    --b-ink: #161310;
+    --b-paper: #f1ebdf;
+    --b-verm: #ff5a1f;
+    background: var(--b-ink); color: var(--b-paper);
+    display: flex; flex-direction: column;
+  }
+  .bs ::selection { background: var(--b-verm); color: var(--b-ink); }
+  .bs__bar {
+    display: flex; justify-content: space-between; align-items: center; gap: 2cqi; flex-wrap: wrap;
+    padding: clamp(12px, 1.6cqi, 24px) clamp(18px, 4cqi, 80px);
+    border-bottom: 1px solid #f1ebdf26;
+  }
+  .bs__bar-t { font-size: clamp(10px, 1.1cqi, 15px); letter-spacing: 0.26em; font-variation-settings: 'wdth' 72, 'wght' 700; color: #b3aca0; }
+  .bs__presets { display: flex; align-items: center; gap: 8px; }
+  .bs__ctrl-k { font-family: var(--font-mono); font-size: clamp(9px, 1cqi, 12px); letter-spacing: 0.12em; color: #8f887c; }
+  .bs__presets button {
+    font-family: var(--fam); font-size: clamp(10px, 1.05cqi, 13px); letter-spacing: 0.1em;
+    font-variation-settings: 'wdth' 80, 'wght' 700;
+    color: var(--b-paper); background: transparent;
+    border: 1px solid #f1ebdf40; border-radius: 2px;
+    padding: 4px 12px; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .bs__presets button:hover { border-color: var(--b-paper); }
+  .bs__presets button.is-on { background: var(--b-verm); border-color: var(--b-verm); color: var(--b-ink); }
+  .bs__stage { position: relative; }
+  .bs__inner { padding: clamp(28px, 4.5cqi, 96px) clamp(18px, 4cqi, 80px); display: flex; flex-direction: column; gap: 0.6cqi; }
+  .bs__row { display: flex; align-items: baseline; gap: 16px; min-width: 0; }
+  .bs__line {
+    margin: 0; display: inline-block; white-space: nowrap; line-height: 0.92;
+    letter-spacing: 0; flex: none;
+  }
+  /* no transition on font-variation-settings here: the solver measures the
+     rendered width mid-search, so the axis must apply synchronously */
+  .bs__line--acc { color: var(--b-verm); }
+  .bs__tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: #8f887c; white-space: nowrap; }
+  .is-wide .bs__tag { visibility: hidden; }
+  .bs__rule {
+    position: absolute; top: 0; bottom: 0; width: 2px; left: 80%;
+    background: #f1ebdf4d; cursor: ew-resize; touch-action: none;
+  }
+  .bs__rule:hover, .bs__rule:focus-visible { background: var(--b-verm); outline: none; }
+  .bs__rule-grip {
+    position: absolute; top: 50%; left: 50%; translate: -50% -50%;
+    width: 14px; height: 36px; border-radius: 7px;
+    background: var(--b-verm); border: 2px solid var(--b-ink);
+  }
+  .bs__rule-tag {
+    position: absolute; top: clamp(8px, 1.4cqi, 20px); left: 10px;
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em; color: var(--b-verm);
+    writing-mode: vertical-rl;
+  }
+  .bs__colophon {
+    margin: 0; padding: clamp(10px, 1.4cqi, 22px) clamp(18px, 4cqi, 80px);
+    border-top: 1px solid #f1ebdf26;
+    font-size: clamp(8.5px, 0.95cqi, 12px); letter-spacing: 0.18em;
+    font-variation-settings: 'wdth' 78, 'wght' 500; color: #8f887c;
+  }
+  @container (max-width: 700px) {
+    .bs__tag { display: none; }
+    .bs__rule-tag { display: none; }
+    .bs__bar-t { letter-spacing: 0.16em; }
+    .bs__bar { padding-right: calc(clamp(18px, 4cqi, 80px) + 14px); }
+    .bs__inner { padding-right: calc(clamp(18px, 4cqi, 80px) + 14px); }
   }
 </style>
