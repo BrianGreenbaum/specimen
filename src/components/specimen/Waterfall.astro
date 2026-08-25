@@ -1,4 +1,10 @@
 ---
+// The Waterfall — one line of text stepped through the sizes, as in the old
+// type books. Upgraded into a true optical proof:
+//   · every row is editable (click any line to retype it),
+//   · baseline + x-height guides overlay all rows at once,
+//   · faces with an opsz axis apply their REAL optical size per row, so the
+//     proof shows why the axis exists — text cuts at 16px, display cuts at 120px.
 import type { CollectionEntry } from 'astro:content';
 export interface Props {
   font: CollectionEntry<'fonts'>['data'];
@@ -6,44 +12,177 @@ export interface Props {
 const { font } = Astro.props;
 const sizes = [120, 80, 56, 40, 28, 21, 16, 13];
 const text = font.pangram;
+const opsz = font.axes.find((a) => a.tag === 'opsz');
+const hasItalic = font.hasItalic;
 ---
-<div class="waterfall" style={`--fam:${font.fontFamily}`}>
-  {sizes.map((px) => (
-    <div class="waterfall__row" data-reveal>
-      <span class="waterfall__size">{px}<span class="waterfall__unit">px</span></span>
-      <p class="waterfall__line" style={`font-size:${px}px`}>{text}</p>
+<div class="wf" style={`--fam:${font.fontFamily}`} data-wf data-opsz={opsz ? 'true' : 'false'} data-italic={hasItalic ? 'true' : 'false'}>
+  <div class="wf__bar">
+    <span class="label">{opsz ? 'Optical proof' : 'Size waterfall'}</span>
+    <div class="wf__toggles">
+      {hasItalic && (
+        <button class="wf__tgl" type="button" data-wf-italic aria-pressed="false"><em>Italic</em></button>
+      )}
+      <button class="wf__tgl" type="button" data-wf-guides aria-pressed="false">Guides</button>
+      {opsz && (
+        <button class="wf__tgl is-on" type="button" data-wf-opsz aria-pressed="true">True optical size</button>
+      )}
+      <button class="wf__tgl tgl--action" type="button" data-wf-edit aria-pressed="false">Edit lines</button>
     </div>
-  ))}
+  </div>
+
+  <div class="wf__rows" data-wf-rows>
+    {sizes.map((px) => (
+      <div class="wf__row" style={`--px:${px}; ${opsz ? `--opz:${Math.round(Math.min(opsz.max, Math.max(opsz.min, px)))};` : ''}`} data-reveal>
+        <span class="wf__size">{px}<span class="wf__unit">px</span>
+          {opsz && <span class="wf__unit wf__unit--opsz">opsz {Math.round(Math.min(opsz.max, Math.max(opsz.min, px)))}</span>}
+        </span>
+        <p
+          class="wf__line"
+          style={`font-size:${px}px; ${opsz ? `font-variation-settings:'opsz' ${Math.min(opsz.max, Math.max(opsz.min, px))};` : ''}`}
+          contenteditable="false"
+          spellcheck="false"
+        >{text}</p>
+      </div>
+    ))}
+  </div>
 </div>
 
 <style>
-  .waterfall { display: flex; flex-direction: column; }
-  .waterfall__row {
+  .wf { border-top: 1px solid var(--line); }
+  .wf__bar {
+    display: flex; align-items: baseline; gap: var(--sp-4);
+    padding-block: var(--sp-3);
+    border-bottom: 1px solid var(--line);
+  }
+  .wf__bar > .label { color: var(--accent); }
+  .wf__toggles { margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .wf__tgl {
+    font-family: var(--font-mono); font-size: var(--step--1);
+    letter-spacing: 0.04em; color: var(--fg-2);
+    padding: 0.35rem 0.7rem; border: 1px solid var(--line); border-radius: 100px;
+    transition: all 0.2s var(--ease);
+  }
+  .wf__tgl:hover { border-color: var(--fg); color: var(--fg); }
+  .wf__tgl.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+
+  .wf__row {
     display: grid;
-    grid-template-columns: 5rem 1fr;
+    grid-template-columns: 9rem 1fr;
     align-items: baseline;
     gap: var(--sp-4);
     padding-block: clamp(0.5rem, 1.4vh, 1.1rem);
-    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
   }
-  .waterfall__row:first-child { border-top: 0; }
-  .waterfall__size {
+  .wf__size {
     font-family: var(--font-mono);
     font-size: var(--step--1);
     color: var(--accent);
     font-weight: 600;
+    white-space: nowrap;
   }
-  .waterfall__unit { color: var(--fg-3); font-weight: 400; margin-left: 1px; }
-  .waterfall__line {
+  .wf__unit { color: var(--fg-3); font-weight: 400; margin-left: 1px; }
+  .wf__unit--opsz { display: block; color: var(--fg-3); font-weight: 400; letter-spacing: 0.02em; }
+
+  .wf__line {
     font-family: var(--fam);
-    line-height: 1.1;
+    line-height: 1.12;
     letter-spacing: -0.005em;
     color: var(--fg);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    outline: none;
+    position: relative;
   }
+  /* guide overlay: baseline (solid) + x-height (dashed) drawn across each row */
+  .wf[data-guides='on'] .wf__line::before,
+  .wf[data-guides='on'] .wf__line::after {
+    content: '';
+    position: absolute; left: -0.5vw; right: -0.25vw;
+    pointer-events: none;
+  }
+  .wf[data-guides='on'] .wf__line::before {
+    bottom: calc(0.112em * 1em / 1.12em * 1em); /* baseline sits at descender gap of line box */
+    bottom: 0.06em;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  .wf[data-guides='on'] .wf__line::after {
+    bottom: 0.52em; /* approximate x-height for the guide; true measure varies by face */
+    border-bottom: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .wf__row.is-editing .wf__line {
+    white-space: normal;
+    overflow: visible;
+    outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+    outline-offset: 6px;
+  }
+
   @media (max-width: 640px) {
-    .waterfall__row { grid-template-columns: 3.2rem 1fr; gap: var(--sp-2); }
+    .wf__row { grid-template-columns: 4.6rem 1fr; gap: var(--sp-2); }
+    .wf__unit--opsz { display: none; }
   }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-wf]').forEach((root) => {
+    const rows = root.querySelector('[data-wf-rows]')!;
+    const lines = Array.from(root.querySelectorAll<HTMLElement>('.wf__line'));
+    const defaults = lines.map((l) => l.textContent || '');
+
+    const setPressed = (btn: HTMLElement, on: boolean) => {
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', String(on));
+    };
+
+    root.querySelector('[data-wf-guides]')?.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const on = !root.hasAttribute('data-guides');
+      if (on) root.setAttribute('data-guides', 'on'); else root.removeAttribute('data-guides');
+      setPressed(btn, on);
+    });
+
+    root.querySelector('[data-wf-italic]')?.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const on = btn.getAttribute('aria-pressed') !== 'true';
+      setPressed(btn, on);
+      lines.forEach((l) => (l.style.fontStyle = on ? 'italic' : ''));
+    });
+
+    // True-optical toggle: restore each row's own size-derived opsz…
+    const opszOn = () => {
+      if (!root.dataset.opsz) return false;
+      return root.querySelector<HTMLButtonElement>('[data-wf-opsz]')?.getAttribute('aria-pressed') === 'true';
+    };
+    root.querySelector('[data-wf-opsz]')?.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const on = !opszOn();
+      setPressed(btn, on);
+      lines.forEach((l, i) => {
+        const px = parseFloat(getComputedStyle(l).fontSize);
+        void i;
+        if (!root.dataset.opsz) return;
+        const row = l.closest('.wf__row') as HTMLElement | null;
+        if (!row) return;
+        const target = row.style.getPropertyValue('--opz');
+        if (on && target) {
+          l.style.setProperty('font-variation-settings', `'opsz' ${target}`);
+        } else {
+          l.style.removeProperty('font-variation-settings');
+        }
+      });
+    });
+
+    // Edit mode: flip every row contenteditable and let people retype.
+    root.querySelector('[data-wf-edit]')?.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const on = btn.getAttribute('aria-pressed') !== 'true';
+      setPressed(btn, on);
+      lines.forEach((l, i) => {
+        l.setAttribute('contenteditable', on ? 'true' : 'false');
+        if (!on) l.textContent = defaults[i];
+      });
+      if (on) lines[lines.length - 1]?.focus();
+    });
+  });
+</script>

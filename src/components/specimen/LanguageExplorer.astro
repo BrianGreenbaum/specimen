@@ -1,0 +1,128 @@
+---
+// The language explorer. A typeface is only as wide as the alphabet it can
+// carry — this section sets a native sentence in each declared language and
+// lets you light up every diacritic the face has to draw. Sample strings live
+// in one place (lib/languages.ts) so new faces inherit them for free.
+import type { CollectionEntry } from 'astro:content';
+import { SAMPLES } from '../../lib/languages';
+
+export interface Props {
+  font: CollectionEntry<'fonts'>['data'];
+}
+const { font } = Astro.props;
+// Match declared languages ("Latin", "Latin Extended", "Vietnamese"…) to
+// sample sentences; fall back to the extended-Latin sampler.
+const rows = font.languages
+  .map((l) => {
+    const key = Object.keys(SAMPLES).find((k) => l.toLowerCase().includes(k.toLowerCase()));
+    return key ? { lang: l, ...SAMPLES[key] } : null;
+  })
+  .filter(Boolean) as { lang: string; name: string; text: string; note?: string }[];
+
+const hasDiacritics = rows.some((r) => /[^\u0000-\u007F]/.test(r.text));
+---
+<div class="lang" style={`--fam:${font.fontFamily}`} data-lang data-diacritics={hasDiacritics ? 'true' : 'false'}>
+  <div class="lang__bar">
+    <span class="label">Accent bar</span>
+    <button class="tgl" type="button" data-lang-hilite aria-pressed="false">Highlight diacritics</button>
+    {rows.length > 1 && <p class="label lang__count">{rows.length} of {font.languages.join(' · ')}</p>}
+  </div>
+
+  <ul class="lang__list">
+    {rows.map((r) => (
+      <li class="lang__row" data-reveal>
+        <div class="lang__meta">
+          <span class="lang__name label">{r.name}</span>
+          <span class="lang__native" aria-hidden="true">{r.lang}</span>
+          {r.note && <span class="lang__note">{r.note}</span>}
+        </div>
+        <p class="lang__text" dir={/arabic|hebrew/.test(r.lang.toLowerCase()) ? 'rtl' : 'ltr'}>{r.text}</p>
+      </li>
+    ))}
+  </ul>
+
+  <div class="lang__accents" aria-hidden="true">
+    {'À Â Ç É È Ê Ë Î Ï Ô Œ Ù Û Ü Ÿ Ń Ñ Ó Ø Ş Ž Ā Ă Ạ ẞ Đ Ę Ǧ Ģ Ħ İ ı Ł Ľ Ő Ŕ Ř Š Ś Ş Ș Ŧ Ů Ű Ŵ Ý Ŷ Ž Ż Ạ Ả Ệ Ễ Ộ Ớ Ờ Ử Ữ'.split(' ')
+      .map((g) => <span class="lang__glyph">{g}</span>)}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-lang]').forEach((root) => {
+    const btn = root.querySelector<HTMLButtonElement>('[data-lang-hilite]');
+    btn?.addEventListener('click', () => {
+      const on = btn.getAttribute('aria-pressed') !== 'true';
+      btn.setAttribute('aria-pressed', String(on));
+      btn.classList.toggle('is-on', on);
+      root.classList.toggle('is-hilited', on);
+    });
+  });
+</script>
+
+<style>
+  .lang { border-top: 1px solid var(--line); padding-top: var(--sp-4); }
+  .lang__bar {
+    display: flex; align-items: center; gap: var(--sp-4);
+    margin-bottom: var(--sp-3);
+  }
+  .lang__bar > .label:first-child { color: var(--accent); }
+  .lang__count { margin-left: auto; }
+  .tgl {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em;
+    text-transform: uppercase; padding: 0.45rem 0.8rem;
+    border: 1px solid var(--line); border-radius: 100px; color: var(--fg-2);
+    transition: all 0.2s var(--ease);
+  }
+  .tgl:hover { border-color: var(--fg); color: var(--fg); }
+  .tgl.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+
+  .lang__list { display: flex; flex-direction: column; }
+  .lang__row {
+    display: grid;
+    grid-template-columns: clamp(10rem, 22vw, 15rem) 1fr;
+    gap: var(--sp-5);
+    align-items: baseline;
+    padding-block: clamp(1rem, 2.6vh, 1.9rem);
+    border-top: 1px solid var(--line-soft);
+  }
+  .lang__row:first-child { border-top: 0; }
+  .lang__meta { display: flex; flex-direction: column; gap: 0.25rem; }
+  .lang__name { color: var(--accent); }
+  .lang__native { color: var(--fg-3); font-size: var(--step--1); }
+  .lang__note { font-size: var(--step--1); font-style: italic; color: var(--fg-3); }
+
+  .lang__text {
+    font-family: var(--fam);
+    font-size: clamp(1.35rem, 2.8vw, 2rem);
+    line-height: 1.35;
+    color: var(--fg);
+  }
+
+  /* the accent strip — a wall of marks the face must draw well */
+  .lang__accents {
+    display: flex; flex-wrap: wrap;
+    gap: 0.1em 0.32em;
+    margin-top: var(--sp-4);
+    padding: var(--sp-3) var(--sp-4);
+    border-top: 1px dashed var(--line);
+    font-family: var(--fam);
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+    line-height: 1.25;
+    color: var(--fg-2);
+  }
+  .lang.is-hilited .lang__glyph {
+    background: color-mix(in srgb, var(--accent) 26%, transparent);
+    border-radius: 2px;
+  }
+  .lang.is-hilited .lang__text {
+    --hl: color-mix(in srgb, var(--accent) 30%, transparent);
+    text-decoration-line: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: from-font;
+    text-underline-offset: 0.18em;
+  }
+
+  @media (max-width: 700px) {
+    .lang__row { grid-template-columns: 1fr; gap: var(--sp-2); }
+  }
+</style>

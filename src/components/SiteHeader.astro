@@ -61,7 +61,15 @@ const lexSections = [
 
       <a href="/compare" class="header-link label">Compare</a>
 
+      <a href="/pair" class="header-link label">Pair</a>
+
+      <a href="/moods" class="header-link label">Moods</a>
+
       <a href="/gallery" class="header-link label">Gallery</a>
+
+      <button class="header-link label cp-trigger" type="button" data-cp-open aria-label="Open the command palette (Command K)">
+        <span aria-hidden="true">⌘K</span>
+      </button>
 
       <div class="navitem">
         <a href="/glossary" class="header-link label">Lexicon</a>
@@ -127,6 +135,16 @@ const lexSections = [
       <div class="mnav__block">
         <a class="mnav__primary" href="/gallery">Gallery</a>
         <span class="mnav__hint">Letterforms hung as art</span>
+      </div>
+
+      <div class="mnav__block">
+        <a class="mnav__primary" href="/pair">Pairing Workbench</a>
+        <span class="mnav__hint">Two faces, tuned live</span>
+      </div>
+
+      <div class="mnav__block">
+        <a class="mnav__primary" href="/moods">Moods</a>
+        <span class="mnav__hint">Browse by personality</span>
       </div>
 
       <div class="mnav__block">
@@ -210,6 +228,14 @@ const lexSections = [
   .glyph-edit-btn { cursor: pointer; }
   .glyph-edit-btn[aria-pressed='true'] { color: var(--accent); }
   .glyph-edit-btn[aria-pressed='true']::before { content: '● '; }
+
+  /* ⌘K palette trigger */
+  .cp-trigger {
+    cursor: pointer;
+    border: 1px solid var(--line); border-radius: 100px;
+    padding: 0.3em 0.75em;
+    font-feature-settings: 'tnum';
+  }
 
   /* --- Hover/focus dropdown menus --- */
   .navitem { position: relative; display: flex; align-items: center; }

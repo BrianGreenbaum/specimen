@@ -1,0 +1,255 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// ── The sequence ─────────────────────────────────────────────────────────────
+// ALEGREYA IS THE CALLIGRAPHIC LITERARY SERIF FROM BUENOS AIRES. Five acts
+// stage one small poetry press and its season: the feria poster that sells
+// the event (01, ink on cream, bleeding) → the journal spread where an
+// Argentine poem meets its English self (02) → the lettering-practice sheet
+// behind the calligraphic voice (03, ruled paper) → the ticket/invitation
+// for the reading (04) → the publisher's reader app in real px (05).
+//
+// Honesty ledger (verified via fontTools against wght binaries):
+// · VARIABLE: wght 400–900; true italic same range. NO other axes.
+// · GSUB: ccmp dnom frac liga lnum locl numr pnum rvrn tnum — no onum/sups.
+//   frac = precomposed ½ ¼ ¾ only.
+
+const couplets = [
+  { es: 'Todo en el aire es letra', en: 'everything in the air is a letter' },
+  { es: 'que todavía nadie lee,', en: 'that no one has read yet,' },
+  { es: 'y la ciudad la pronuncia', en: 'and the city speaks it' },
+  { es: 'caminando por la tarde.', en: 'walking home at dusk.' },
+];
+
+const tickets = [
+  { id: 'general', name: 'General', price: '$2.400', note: 'one evening, all readers' },
+  { id: 'socio', name: 'Socio + libro', price: '$5.800', note: 'entry plus the anthology' },
+  { id: 'estudiante', name: 'Estudiante', price: '$1.200', note: 'with student ID at the door' },
+];
+---
+<div class="iu al" style={`--fam:${fam}`}>
+
+  <!-- ════════ 01 · ILLUSTRATION — the feria poster ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Illustration — the poetry-fair poster</span></figcaption>
+    <div class="iu__scene fp">
+      <div class="fp__poster">
+        <p class="fp__kicker">Feria del Poema · decimosexta edición</p>
+        <h3 class="fp__title">La ciudad<br /><em>pronuncia</em></h3>
+        <p class="fp__dates">12–14 de septiembre · Galería del Molino, Rosario</p>
+        <div class="fp__couplets">
+          {couplets.map((c) => (
+            <div class="fp__couplet">
+              <span class="fp__es">{c.es}</span>
+              <span class="fp__en">{c.en}</span>
+            </div>
+          ))}
+        </div>
+        <p class="fp__foot">Entrada libre y gratuita · lecturas cada noche a las 20</p>
+      </div>
+    </div>
+    <p class="iu__hint label">Type as the whole picture: the italic does the pointing, the roman does the telling — Alegreya’s two voices in one breath.</p>
+  </figure>
+
+  <!-- ════════ 02 · EDITORIAL — the facing-page translation ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — facing-page translation, revista trimestral</span></figcaption>
+    <div class="iu__scene fx">
+      <div class="fx__spread">
+        <section class="fx__page" aria-label="Original">
+          <span class="fx__lang">original</span>
+          {couplets.map((c) => <p class="fx__es">{c.es}</p>)}
+          <span class="fx__credit">— Cuaderno de campo, 1961</span>
+        </section>
+        <section class="fx__page fx__page--en" aria-label="Translation">
+          <span class="fx__lang fx__lang--en">translation</span>
+          {couplets.map((c) => <p class="fx__en">{c.en}</p>)}
+          <span class="fx__credit">translated by the editors</span>
+        </section>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 03 · INTERACTIVE — the calligrapher’s practice sheet ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Experimental — the practice sheet, weight as pressure</span></figcaption>
+    <div class="iu__scene pr">
+      <div class="pr__sheet">
+        <div class="pr__rules" aria-hidden="true"></div>
+        <label class="pr__ctl" for="al-wght">
+          <span>pen pressure</span>
+          <output data-al-out>400</output>
+        </label>
+        <input id="al-wght" class="pr__range" type="range" min="400" max="900" step="1" value="400" data-al-range />
+        <p class="pr__line" data-al-line style="font-variation-settings:'wght' 400">la mano recuerda lo que la mente olvida</p>
+        <p class="pr__trace" data-al-trace>the hand remembers what the mind forgets</p>
+      </div>
+    </div>
+    <p class="iu__hint label">Drag the slider to bear down on the nib — the weight axis is your hand pressure, from resting pen to full stroke.</p>
+  </figure>
+
+  <!-- ════════ 04 · BRANDING — the reading-night ticket ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Branding — the ticket for the reading night</span></figcaption>
+    <div class="iu__scene tk">
+      <div class="tk__grid">
+        {tickets.map((t, i) => (
+          <div class:list={['tk__ticket', { 'tk__ticket--hero': i === 1 }]} data-al-ticket>
+            <span class="tk__name">{t.name}</span>
+            <span class="tk__price">{t.price}</span>
+            <span class="tk__note">{t.note}</span>
+            <i class="tk__stub" aria-hidden="true"></i>
+          </div>
+        ))}
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 05 · WEB UI — the publisher's reader, real px ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Web UI — the publisher’s reader, real device scale</span></figcaption>
+    <div class="iu__scene rd">
+      <div class="rd__phone">
+        <header class="rd__top">
+          <span class="rd__pub">Huerta Digital</span>
+          <span class="rd__pct" data-al-pct>0%</span>
+        </header>
+        <article class="rd__text" data-al-reader tabindex="0" aria-label="Reader sample, scroll to track progress">
+          <h6 class="rd__chapter">Capítulo primero</h6>
+          <p>Era la clase de tarde en que el barrio entero parecía escribirse solo: un letrero nuevo en la verdulería, la pizarra del cine cambiando de título, alguien practicando cartas en el balcón.</p>
+          <p>Duarte caminaba leyendo todo eso, y también los carteles pegados en la pared del club, donde anunciaban la feria del poema con una tipografía que parecía hecha a mano.</p>
+          <p>Se detuvo frente al cartel. La palabra <em>pronuncia</em>, en cursiva, sostenía la frase como sostiene una voz lo que importa. Anotó la fecha en la mano, con lápiz, como se anotan las cosas que uno no quiere perderse.</p>
+          <p>Después siguió caminando, y la ciudad siguió escribiéndose — porque siempre se sigue escribiendo, aunque nadie la lea entera.</p>
+        </article>
+        <footer class="rd__bar">
+          <button class="rd__btn" type="button" data-al-serif aria-pressed="false">Serif body</button>
+          <span class="rd__meta">Alegreya · texto corrido</span>
+        </footer>
+      </div>
+    </div>
+  </figure>
+
+</div>
+
+<script>
+  // 03 — pressure slider drives the variable weight
+  document.querySelectorAll<HTMLElement>('.al .pr').forEach((root) => {
+    const range = root.querySelector<HTMLInputElement>('[data-al-range]');
+    const out = root.querySelector<HTMLElement>('[data-al-out]');
+    const line = root.querySelector<HTMLElement>('[data-al-line]');
+    range?.addEventListener('input', () => {
+      line!.style.fontVariationSettings = `'wght' ${range.value}`;
+      if (out) out.textContent = range.value;
+    });
+  });
+
+  // 05 — scroll progress inside the reader pane
+  document.querySelectorAll<HTMLElement>('.al .rd').forEach((root) => {
+    const reader = root.querySelector<HTMLElement>('[data-al-reader]');
+    const pct = root.querySelector<HTMLElement>('[data-al-pct]');
+    reader?.addEventListener('scroll', () => {
+      const max = reader.scrollHeight - reader.clientHeight;
+      const v = max > 0 ? Math.round((reader.scrollTop / max) * 100) : 0;
+      if (pct) pct.textContent = v + '%';
+    });
+  });
+</script>
+
+<style>
+  .al .iu__scene * { font-family: var(--fam); }
+
+  /* ── 01 poster ── */
+  .fp {
+    background: #f4efe4; color: #26211a;
+    display: grid; place-items: center;
+    padding: clamp(2rem, 8cqi, 6rem);
+  }
+  .fp__poster { width: min(100%, 36rem); display: flex; flex-direction: column; gap: clamp(1rem, 3.4cqi, 1.8rem); }
+  .fp__kicker { font-size: clamp(0.68rem, 1.9cqi, 0.85rem); letter-spacing: 0.16em; text-transform: uppercase; color: #8c6b2f; border-bottom: 1px solid #26211a33; padding-bottom: 0.7rem; }
+  .fp__title { font-weight: 700; font-size: clamp(3rem, 15cqi, 6.4rem); line-height: 0.98; letter-spacing: -0.02em; }
+  .fp__title em { font-weight: 500; }
+  .fp__dates { color: #544a39; font-size: clamp(0.95rem, 2.8cqi, 1.15rem); }
+  .fp__couplets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem 2rem; border-top: 1px solid #26211a26; padding-top: 1.2rem; }
+  .fp__es { display: block; font-size: clamp(1.05rem, 3cqi, 1.35rem); line-height: 1.4; }
+  .fp__en { display: block; font-style: italic; color: #82735c; font-size: clamp(0.82rem, 2.2cqi, 1rem); margin-top: 0.25rem; }
+  .fp__foot { font-size: clamp(0.72rem, 2cqi, 0.85rem); letter-spacing: 0.08em; text-transform: uppercase; color: #82735c; }
+
+  /* ── 02 facing pages ── */
+  .fx { background: var(--bg); padding: clamp(1.5rem, 5cqi, 3.5rem); }
+  .fx__spread {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--bg-2);
+    box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.35);
+  }
+  .fx__page { padding: clamp(1.4rem, 5cqi, 3rem); display: flex; flex-direction: column; gap: 1rem; }
+  .fx__page--en { background: var(--bg); border-left: 1px solid var(--line); }
+  .fx__lang { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: #8c6b2f; }
+  .fx__lang--en { color: var(--fg-3); }
+  .fx__es { font-size: clamp(1.15rem, 3.4cqi, 1.55rem); line-height: 1.45; }
+  .fx__en { font-style: italic; font-size: clamp(1rem, 3cqi, 1.3rem); line-height: 1.5; color: var(--fg-2); }
+  .fx__credit { margin-top: auto; font-size: 0.78rem; color: var(--fg-3); }
+
+  /* ── 03 practice sheet ── */
+  .pr { background: #fbf7ec; color: #26211a; display: grid; place-items: center; padding: clamp(2rem, 7cqi, 4.5rem); }
+  .pr__sheet {
+    position: relative; width: min(100%, 32rem);
+    padding: clamp(1.6rem, 5cqi, 2.6rem);
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 calc(2.2em - 1px), #26211a22 calc(2.2em - 1px) 2.2em),
+      #fbf7ec;
+    border: 1px solid #26211a1f;
+    box-shadow: 10px 10px 0 #26211a14;
+  }
+  .pr__ctl { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: #8c6b2f; margin-bottom: 0.4rem; }
+  .pr__range { width: 100%; accent-color: #8c6b2f; margin-bottom: 1.4rem; cursor: ew-resize; }
+  .pr__line { font-size: clamp(1.5rem, 5.4cqi, 2.2rem); line-height: 2.2em; transition: font-variation-settings 0.08s linear; }
+  .pr__trace { font-style: italic; color: #82735c; margin-top: 0.8rem; }
+
+  /* ── 04 tickets ── */
+  .tk { background: var(--bg); padding: clamp(1.5rem, 6cqi, 4rem); }
+  .tk__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr)); gap: 1rem; max-width: 44rem; margin-inline: auto; }
+  .tk__ticket {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 0.35rem;
+    background: var(--bg-2); border: 1px dashed var(--fg-3);
+    padding: 1.3rem 1.2rem 2rem;
+  }
+  .tk__ticket--hero { background: var(--accent); color: var(--accent-contrast); border-style: solid; }
+  .tk__ticket--hero .tk__note { color: color-mix(in srgb, currentColor 75%, transparent); }
+  .tk__name { font-weight: 600; font-size: 1.15rem; }
+  .tk__price { font-size: clamp(1.7rem, 4.5cqi, 2.3rem); font-feature-settings: 'tnum'; }
+  .tk__note { font-size: 0.8rem; color: var(--fg-3); }
+  .tk__stub { position: absolute; right: 0.9rem; bottom: 0.9rem; width: 2rem; height: 1px; background: currentColor; opacity: 0.5; }
+
+  /* ── 05 reader (real px) ── */
+  .rd { display: grid; place-items: start center; background: var(--bg); }
+  .rd__phone {
+    width: min(100%, 21rem);
+    border: 1px solid var(--line);
+    background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column;
+  }
+  .rd__top { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 14px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 4%, var(--bg)); }
+  .rd__pub { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+  .rd__pct { font-size: 11px; color: #8c6b2f; font-feature-settings: 'tnum'; }
+  .rd__text { height: 300px; overflow-y: auto; padding: 16px 18px 22px; scroll-behavior: smooth; }
+  .rd__chapter { font-size: 17px; margin-bottom: 10px; font-weight: 700; }
+  .rd__text p { font-size: 15px; line-height: 1.62; margin-bottom: 12px; color: var(--fg-2); }
+  .rd__text em { color: inherit; }
+  .rd__bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); }
+  .rd__btn {
+    font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    border: 1px solid var(--line); padding: 5px 9px; border-radius: 3px; color: var(--fg-2);
+  }
+  .rd__btn[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .rd__meta { font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 640px) {
+    .fx__spread { grid-template-columns: 1fr; }
+    .fx__page--en { border-left: 0; border-top: 1px solid var(--line); }
+    .fp__couplets { grid-template-columns: 1fr; }
+  }
+</style>

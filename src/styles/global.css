@@ -314,3 +314,86 @@ p.iu__hint {
   fill: var(--fg); font-family: var(--font-mono);
   font-size: 24px; letter-spacing: 0.02em;
 }
+
+/* ------------------------------------------------------------
+   PRINT — the specimen sheet
+   Every page collapses into a printable proof: black ink on white,
+   interactive chrome removed, the type left to speak for itself.
+   Print a specimen page and you hold the classic type-book artifact.
+   ------------------------------------------------------------ */
+@media print {
+  @page {
+    margin: 14mm 12mm;
+  }
+
+  /* chrome that has no meaning on paper */
+  .site-header, .site-footer, .jumpnav, .cp,
+  [data-palette], .glossary-pop,
+  .hero__ghost,
+  .tester__bar, .tester__toast,
+  .wf__bar, .otf__stagehead, .otf__note,
+  .dsp__pad, .dsp__extras, .dsp__letters, .dsp__readout,
+  .lang__bar, .ov__picks, .ov__bar,
+  .story-era, .story-rail { display: none !important; }
+
+  /* ink & paper */
+  :root {
+    --paper: #fff !important;
+    --paper-2: #fff !important;
+    --ink: #000 !important;
+    --ink-2: #1a1a1a !important;
+    --ink-3: #444 !important;
+    --hairline: #0002 !important;
+    --hairline-2: #0001 !important;
+    --accent: #000 !important;
+    --accent-contrast: #fff !important;
+    color-scheme: light;
+  }
+  html[data-mode='dark'] {
+    --paper: #fff; --paper-2: #fff;
+    --ink: #000; --ink-2: #1a1a1a; --ink-3: #444;
+    --hairline: #0002; --hairline-2: #0001;
+    --accent: #000; --accent-contrast: #fff;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    overflow-x: visible !important;
+  }
+  body::after { display: none; } /* film grain off */
+  * { transition: none !important; animation: none !important; }
+
+  /* force any themed page onto plain paper */
+  [style] { background-color: transparent !important; }
+  .iu__item--bleed { width: auto !important; margin-left: 0 !important; }
+
+  /* reveal everything the scroll-reveal was hiding */
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+
+  /* sections flow as one continuous sheet with quiet rules */
+  .container { max-width: none; padding-inline: 0; }
+  section { break-inside: auto; padding-block: 4mm !important; }
+  .section-head { border-top: 1pt solid #000; break-after: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  figure, table, .tester__stage, .glyphs__grid, .od__stage { break-inside: avoid; }
+
+  /* the hero becomes the title block of the sheet */
+  .hero { min-height: auto !important; padding-block: 0 6mm !important; }
+  .hero__name { font-size: 42pt !important; line-height: 1 !important; letter-spacing: -0.02em; }
+  .hero__headline { font-size: 13pt; }
+  .hero__meta { font-size: 9.5pt; }
+
+  /* waterfall rows keep their size steps but fit the page */
+  .wf__line { white-space: normal !important; overflow: visible; }
+  .wf__row[style*='font-size:120'], .wf__row:first-child .wf__line { font-size: 34pt !important; }
+
+  /* glyph grid as a compact character set */
+  .glyphs__cell { border: 0.25pt solid #0003 !important; }
+
+  /* links show as plain text */
+  a { text-decoration: none !important; color: inherit !important; }
+
+  /* two columns where the design allows it (specs + story rails) */
+  .story { grid-template-columns: 1fr !important; gap: 4mm; }
+  .specs { grid-template-columns: 1fr !important; gap: 4mm; }
+}

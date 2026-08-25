@@ -79,6 +79,8 @@ const initialVar = font.isVariable
       )}
       <button class="tgl tgl--action" data-shuffle>⤮ Shuffle</button>
       <button class="tgl tgl--action" data-reset>↺ Reset</button>
+      <button class="tgl tgl--action" data-share title="Copy a link to this exact setting">⇪ Share</button>
+      <button class="tgl tgl--action" data-css title="Copy the CSS for this setting">{} CSS</button>
     </div>
   </div>
 
@@ -93,6 +95,8 @@ const initialVar = font.isVariable
       style={`font-size:96px; line-height:1.05; ${initialVar ? `font-variation-settings:${initialVar};` : ''}`}
     >{font.sampleText}</div>
   </div>
+
+  <p class="tester__toast label" data-toast role="status" aria-live="polite"></p>
 </div>
 
 <script>
@@ -101,11 +105,86 @@ const initialVar = font.isVariable
     const isVar = root.dataset.variable === 'true';
     const pool: string[] = JSON.parse(root.dataset.pool || '[]');
     const defaultText = preview.textContent || '';
+    const toast = root.querySelector<HTMLElement>('[data-toast]')!;
 
     const axisInputs = Array.from(root.querySelectorAll<HTMLInputElement>('[data-axis]'));
     const weightSel = root.querySelector<HTMLSelectElement>('[data-weight]');
 
-    const applyVariation = () => {
+    const say = (msg: string) => {
+      toast.textContent = msg;
+      toast.classList.add('is-on');
+      window.clearTimeout((say as any)._t);
+      (say as any)._t = window.setTimeout(() => toast.classList.remove('is-on'), 2200);
+    };
+
+    const axisState = () =>
+      Object.fromEntries(axisInputs.map((i) => [i.dataset.axis!, +i.value]));
+
+    const fullState = () => ({
+      t: preview.textContent || '',
+      s: parseFloat(getComputedStyle(preview).fontSize) || undefined,
+      l: preview.style.lineHeight || undefined,
+      tr: preview.style.letterSpacing || undefined,
+      al: preview.style.textAlign !== 'left' && preview.style.textAlign ? preview.style.textAlign : undefined,
+      it: preview.style.fontStyle === 'italic' || undefined,
+      ax: isVar && Object.keys(axisState()).length ? axisState() : undefined,
+      w: !isVar && weightSel ? +weightSel.value : undefined,
+    });
+
+    // --- share links -------------------------------------------------------
+    let pushTimer: number | undefined;
+    const schedulePush = () => {
+      window.clearTimeout(pushTimer);
+      pushTimer = window.setTimeout(() => {
+        const p = new URLSearchParams();
+        const st = fullState();
+        if (st.t && st.t !== defaultText) p.set('t', st.t);
+        if (st.s && Math.round(st.s) !== 96) p.set('s', String(Math.round(st.s)));
+        if (st.l && st.l !== '1.05') p.set('l', String(st.l));
+        if (st.tr) p.set('tr', st.tr);
+        if (st.al) p.set('al', st.al);
+        if (st.it) p.set('it', '1');
+        if (st.ax) p.set('ax', JSON.stringify(st.ax));
+        if (st.w) p.set('w', String(st.w));
+        const qs = p.toString();
+        history.replaceState(null, '', location.pathname + (qs ? '?' + qs : ''));
+      }, 400);
+    };
+
+    // Restore from ?t=… on load
+    try {
+      const q = new URLSearchParams(location.search);
+      if (q.has('t') || q.has('ax')) {
+        if (q.has('t')) preview.textContent = q.get('t')!;
+        if (q.get('it') === '1') {
+          preview.style.fontStyle = 'italic';
+          const ib = root.querySelector<HTMLButtonElement>('[data-italic]');
+          ib?.setAttribute('aria-pressed', 'true'); ib?.classList.add('is-on');
+        }
+        if (q.has('s')) { preview.style.fontSize = q.get('s') + 'px'; }
+        if (q.has('l')) preview.style.lineHeight = q.get('l')!;
+        if (q.has('tr')) preview.style.letterSpacing = q.get('tr')!;
+        if (q.has('al')) {
+          const al = q.get('al')!;
+          preview.style.textAlign = al;
+          root.querySelectorAll('[data-align]').forEach((x) => x.classList.toggle('is-on', (x as HTMLElement).dataset.align === al));
+        }
+        if (isVar && q.has('ax')) {
+          const saved = JSON.parse(q.get('ax')!);
+          axisInputs.forEach((inp) => {
+            if (saved[inp.dataset.axis!] != null) inp.value = saved[inp.dataset.axis!];
+          });
+          applyVariation();
+        } else if (!isVar && weightSel && q.has('w')) {
+          weightSel.value = q.get('w')!;
+          applyVariation();
+        }
+      }
+    } catch { /* bad params are simply ignored */ }
+
+    // Function declaration (not const) so the URL-restore block below —
+    // which runs before this line lexically — can call it safely.
+    function applyVariation() {
       if (isVar) {
         const v = axisInputs.map((i) => `'${i.dataset.axis}' ${i.value}`).join(', ');
         preview.style.fontVariationSettings = v;
@@ -116,10 +195,12 @@ const initialVar = font.isVariable
       } else if (weightSel) {
         preview.style.fontWeight = weightSel.value;
       }
-    };
+    }
 
-    axisInputs.forEach((i) => i.addEventListener('input', applyVariation));
-    weightSel?.addEventListener('change', applyVariation);
+    axisInputs.forEach((i) =>
+      i.addEventListener('input', () => { applyVariation(); schedulePush(); })
+    );
+    weightSel?.addEventListener('change', () => { applyVariation(); schedulePush(); });
 
     // Layout sliders
     const out = (k: string) => root.querySelector<HTMLElement>(`[data-out="${k}"]`);
@@ -129,6 +210,7 @@ const initialVar = font.isVariable
         if (i.dataset.ctl === 'size') { preview.style.fontSize = v + 'px'; out('size')!.textContent = v + 'px'; }
         if (i.dataset.ctl === 'leading') { preview.style.lineHeight = v; out('leading')!.textContent = v; }
         if (i.dataset.ctl === 'tracking') { preview.style.letterSpacing = v + 'em'; out('tracking')!.textContent = (+v).toFixed(3); }
+        schedulePush();
       });
     });
 
@@ -138,6 +220,7 @@ const initialVar = font.isVariable
         root.querySelectorAll('[data-align]').forEach((x) => x.classList.remove('is-on'));
         b.classList.add('is-on');
         preview.style.textAlign = b.dataset.align!;
+        schedulePush();
       });
     });
 
@@ -148,6 +231,7 @@ const initialVar = font.isVariable
       italicBtn.setAttribute('aria-pressed', String(!on));
       italicBtn.classList.toggle('is-on', !on);
       preview.style.fontStyle = on ? 'normal' : 'italic';
+      schedulePush();
     });
 
     // Shuffle + reset
@@ -155,9 +239,51 @@ const initialVar = font.isVariable
     root.querySelector('[data-shuffle]')?.addEventListener('click', () => {
       shuffleIdx = (shuffleIdx + 1 + Math.floor(Math.random() * (pool.length - 1))) % pool.length;
       preview.textContent = pool[shuffleIdx];
+      schedulePush();
     });
     root.querySelector('[data-reset]')?.addEventListener('click', () => {
       preview.textContent = defaultText;
+      schedulePush();
+    });
+
+    // --- Share: copy the current URL ---------------------------------------
+    const copy = async (text: string): Promise<boolean> => {
+      try { await navigator.clipboard.writeText(text); return true; } catch { /* fall through */ }
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+      ta.remove();
+      return ok;
+    };
+
+    root.querySelector('[data-share]')?.addEventListener('click', async () => {
+      schedulePush();
+      await new Promise((r) => setTimeout(r, 30)); // let replaceState land first
+      copy(location.href).then((ok) =>
+        say(ok ? 'Link copied — this exact setting travels with it.' : 'Could not reach the clipboard.')
+      );
+    });
+
+    // --- Copy CSS -----------------------------------------------------------
+    root.querySelector('[data-css]')?.addEventListener('click', async () => {
+      const fam = getComputedStyle(preview).getPropertyValue('--fam').trim() ||
+        getComputedStyle(preview).fontFamily;
+      const lines: string[] = [];
+      lines.push(`font-family: ${fam.includes("'") || fam.includes('"') ? fam : `'${fam}'`};`);
+      if (isVar) lines.push(`font-variation-settings: ${preview.style.fontVariationSettings || 'normal'};`);
+      else if (weightSel) lines.push(`font-weight: ${weightSel.value};`);
+      if (preview.style.fontStyle === 'italic') lines.push('font-style: italic;');
+      lines.push(`font-size: ${getComputedStyle(preview).fontSize};`);
+      if (preview.style.lineHeight) lines.push(`line-height: ${preview.style.lineHeight};`);
+      if (preview.style.letterSpacing) lines.push(`letter-spacing: ${preview.style.letterSpacing};`);
+      if (preview.style.textAlign && preview.style.textAlign !== 'start') lines.push(`text-align: ${preview.style.textAlign};`);
+      const css = lines.join('\n');
+      const ok = await copy(css);
+      say(ok ? 'CSS copied.' : 'Could not reach the clipboard.');
     });
   });
 </script>
@@ -234,6 +360,22 @@ const initialVar = font.isVariable
     transition: font-variation-settings 0.05s linear;
   }
   .tester__preview:focus { caret-color: var(--accent); }
+
+  /* quiet status line under the stage */
+  .tester__toast {
+    min-height: 1.4em;
+    margin: -0.6rem 0 0.6rem;
+    padding-inline: var(--sp-4);
+    opacity: 0;
+    transition: opacity 0.25s var(--ease);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--accent);
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+  }
+  .tester__toast.is-on { opacity: 1; }
 
   @media (max-width: 720px) {
     .tester__group--toggles { margin-left: 0; width: 100%; }

@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import TypeComparison from '../components/TypeComparison.astro';
+import GlyphOverlay from '../components/GlyphOverlay.astro';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 ---
@@ -26,6 +27,20 @@ const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.dat
     <TypeComparison fonts={fonts} />
   </section>
 
+  <section class="container cmp-overlay-sec" aria-labelledby="ov-head">
+    <div class="section-head" id="ov-head">
+      <span class="index-num">✳</span>
+      <h2>Ghosted glyphs</h2>
+      <span class="label">Two faces, one letter, shared metrics</span>
+    </div>
+    <p class="cmp-overlay-lede prose">
+      The scrubber shows faces one at a time; this shows two at once. Pick any pair and the same
+      letter lands on the same baseline — ink over accent — so you can read exactly where a
+      Garamond ends and a Grotesque begins. Thin both to outlines to compare pure construction.
+    </p>
+    <GlyphOverlay fonts={fonts} />
+  </section>
+
   <SiteFooter />
 </Layout>
 
@@ -37,5 +52,8 @@ const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.dat
   }
   .cmp-hero__title em { font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent); }
   .cmp-hero__lede { max-width: 60ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
-  .cmp-section { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
+  .cmp-section { padding-block: clamp(2rem, 5vh, 4rem) 0; }
+
+  .cmp-overlay-sec { padding-block: clamp(2rem, 6vh, 4.5rem) clamp(3rem, 8vh, 6rem); border-top: 1px solid var(--line); margin-top: clamp(2rem, 6vh, 4.5rem); }
+  .cmp-overlay-lede { margin-bottom: var(--sp-5); max-width: none; font-size: var(--step-0); }
 </style>

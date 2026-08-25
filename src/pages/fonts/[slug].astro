@@ -13,9 +13,15 @@ import InUse from '../../components/specimen/InUse.astro';
 import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
 import TechSpecs from '../../components/specimen/TechSpecs.astro';
 import Outlines from '../../components/specimen/Outlines.astro';
+import OpenTypeFeatures from '../../components/specimen/OpenTypeFeatures.astro';
+import Waterfall from '../../components/specimen/Waterfall.astro';
+import DesignSpacePad from '../../components/specimen/DesignSpacePad.astro';
+import LanguageExplorer from '../../components/specimen/LanguageExplorer.astro';
 import Glossary from '../../components/Glossary.astro';
 import { themeToStyle } from '../../lib/theme';
 import { getOutlines } from '../../lib/outlines';
+import { buildOgCard } from '../../lib/og';
+import { SAMPLES } from '../../lib/languages';
 
 export async function getStaticPaths() {
   const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
@@ -48,16 +54,28 @@ const outlines = await getOutlines({
   callouts: font.callouts,
 });
 
+// Social card drawn from the face's own palette + its true outlines.
+const ogCard = await buildOgCard(font, outlines);
+
+// Language rows the explorer can actually demonstrate.
+const languageRows = font.languages.filter((l) =>
+  Object.keys(SAMPLES).some((k) => l.toLowerCase().includes(k.toLowerCase()))
+);
+
 // Ordered for engagement: seduce (In Use), then play (Tester), then read
 // (Story), then go progressively deeper. Reference material closes the page.
 const sections = [
   { id: 'in-use', label: 'In Use' },
   { id: 'tester', label: 'Type Tester' },
+  ...(font.isVariable && font.axes.length >= 2 ? [{ id: 'space', label: 'Design Space' }] : []),
   { id: 'story', label: 'Story' },
   { id: 'weights', label: 'Weights' },
-  { id: 'anatomy', label: 'Anatomy' },
   ...(outlines ? [{ id: 'drawing', label: 'The Drawing' }] : []),
+  { id: 'anatomy', label: 'Anatomy' },
+  { id: 'waterfall', label: 'Waterfall' },
+  ...(font.openType.length > 0 ? [{ id: 'features', label: 'Features' }] : []),
   { id: 'glyphs', label: 'Glyphs' },
+  ...(languageRows.length > 0 ? [{ id: 'languages', label: 'Languages' }] : []),
   { id: 'specs', label: 'Specs' },
 ];
 // Section numbers follow the (possibly shorter) section list.
@@ -69,6 +87,7 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
   themeStyle={themeStyle}
   mode={font.theme.mode}
   fixedTheme
+  ogSvg={ogCard?.svg}
 >
   <SiteHeader current={font.name} showToggle={false} />
   <JumpNav sections={sections} />
@@ -84,6 +103,12 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
     <Section id="tester" num={num('tester')} title="Type tester" note="Edit the text. Drag the axes.">
       <TypeTester font={font} />
     </Section>
+
+    {font.isVariable && font.axes.length >= 2 && (
+      <Section id="space" num={num('space')} title="The design space" note="Steer the face through its own dimensions.">
+        <DesignSpacePad font={font} />
+      </Section>
+    )}
 
     <Section id="story" num={num('story')} title="The story">
       <div class="story">
@@ -112,6 +137,16 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
       <DetailCallouts callouts={font.callouts} family={font.fontFamily} editCollection="fonts" editId={entry.id} editField="callouts" />
     </Section>
 
+    <Section id="waterfall" num={num('waterfall')} title="The waterfall" note="One line, stepped through the sizes.">
+      <Waterfall font={font} />
+    </Section>
+
+    {font.openType.length > 0 && (
+      <Section id="features" num={num('features')} title="OpenType features" note="Toggle the tags; watch the proof change.">
+        <OpenTypeFeatures font={font} />
+      </Section>
+    )}
+
     {outlines && (
       <Section id="drawing" num={num('drawing')} title="The drawing" note="Real Bézier curves, decoded from the font file.">
         <Outlines font={font} data={outlines} />
@@ -121,6 +156,12 @@ const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).p
     <Section id="glyphs" num={num('glyphs')} title="Character set" note="Click any glyph to inspect.">
       <GlyphGrid font={font} />
     </Section>
+
+    {languageRows.length > 0 && (
+      <Section id="languages" num={num('languages')} title="Beyond the basics" note="The accents a face must also draw.">
+        <LanguageExplorer font={font} />
+      </Section>
+    )}
 
     <Section id="specs" num={num('specs')} title="Technical specifications">
       <TechSpecs font={font} />

@@ -1,0 +1,264 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// ── The sequence ─────────────────────────────────────────────────────────────
+// BITTER IS THE READING SLAB — born for e-ink, at home in documentation.
+// Five acts follow one field guide from manuscript to screen: the printed
+// dust jacket (01) → the book's specimen page of type sizes (02, a real
+// publisher's type spec) → the trail-signage system (03, stencil-cut slabs)
+// → the docs site where the genre now lives (04, real px UI with tabs) →
+// the variable-weight chapter picker (05, interactive).
+//
+// Honesty ledger (verified via fontTools against wght binaries):
+// · VARIABLE: wght 100–900; true italic same range. No other axes.
+// · GSUB: calt ccmp dnom frac liga lnum locl numr pnum rvrn tnum.
+//   frac = precomposed ½ ¼ ¾ only. tnum real.
+
+const chapters = [
+  { n: '01', t: 'The River Beneath the City', loc: 'km 0–14' },
+  { n: '02', t: 'Where the Herons Keep Time', loc: 'km 15–38' },
+  { n: '03', t: 'Old Locks, New Light', loc: 'km 39–52' },
+];
+const specs = [
+  { size: '42 / 44', use: 'Chapter openers' },
+  { size: '21 / 32', use: 'Body text' },
+  { size: '14 / 22', use: 'Captions & folios' },
+];
+const tabs = ['Overview', 'Specifications', 'Field notes'] as const;
+---
+<div class="iu bt" style={`--fam:${fam}`}>
+
+  <!-- ════════ 01 · ILLUSTRATION — the field-guide jacket ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Illustration — the field-guide jacket</span></figcaption>
+    <div class="iu__scene jk">
+      <div class="jk__cover">
+        <span class="jk__series">Canal Walks · Book Three</span>
+        <h3 class="jk__title">The Towpath</h3>
+        <p class="jk__sub"><em>A season on foot beside slow water</em></p>
+        <div class="jk__meta">
+          <span>with 46 maps &amp; 120 photographs</span>
+          <i aria-hidden="true"></i>
+          <span>Marrow Press</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A walking guide earns trust through sturdiness — Bitter’s even stroke and soft slabs promise a book that survives the rucksack.</p>
+  </figure>
+
+  <!-- ════════ 02 · EDITORIAL — the publisher’s type spec ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — the publisher’s type specification</span></figcaption>
+    <div class="iu__scene sp">
+      <div class="sp__page">
+        <header class="sp__head">
+          <span class="sp__doc">Type specification</span>
+          <span class="sp__book">The Towpath · Marrow Press</span>
+        </header>
+        {specs.map((s) => (
+          <div class="sp__row">
+            <span class="sp__size">{s.size}</span>
+            <span class="sp__use">{s.use}</span>
+            <span class="sp__sample">The canal keeps its own minutes, written in reed and rain.</span>
+          </div>
+        ))}
+        <footer class="sp__foot">Set throughout in Bitter Pro · roman, italic and semibold only</footer>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 03 · BRANDING — the trail signage ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Branding — towpath signage, cut to survive weather</span></figcaption>
+    <div class="iu__scene sg">
+      <div class="sg__board">
+        <span class="sg__code">CW&nbsp;·&nbsp;3</span>
+        <div class="sg__main">
+          <span class="sg__dest">Lock №&nbsp;12</span>
+          <span class="sg__dist">2½ miles</span>
+        </div>
+        <span class="sg__arrow" aria-hidden="true">→</span>
+      </div>
+    </div>
+    <p class="iu__hint label">Slab serifs began as signage; this board returns the favour. Distances set with tabular figures so every plate measures the same.</p>
+  </figure>
+
+  <!-- ════════ 04 · WEB UI — the documentation site, real px ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Web UI — documentation, the slab’s second career</span></figcaption>
+    <div class="iu__scene dc">
+      <div class="dc__app">
+        <aside class="dc__nav">
+          <span class="dc__brand">towpath.dev</span>
+          {['Guide', 'API', 'Maps CLI', 'Changelog'].map((x, i) => (
+            <span class:list={['dc__navitem', { 'is-on': i === 1 }]}>{x}</span>
+          ))}
+        </aside>
+        <main class="dc__body">
+          <div class="dc__tabs" role="tablist" aria-label="Sections">
+            {tabs.map((t, i) => (
+              <button class:list={['dc__tab', { 'is-on': i === 0 }]} role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-bt-tab={i}>{t}</button>
+            ))}
+          </div>
+          <section class="dc__panel" data-bt-panel="0">
+            <h6 class="dc__h">Route the whole canal in one call</h6>
+            <p class="dc__p">The maps client resolves waypoints to a walkable path, respecting lock schedules and towpath closures.</p>
+          </section>
+          <section class="dc__panel" data-bt-panel="1" hidden>
+            <h6 class="dc__h">GET /v2/route</h6>
+            <p class="dc__p">Returns an ordered list of segments. Segment ½ values are rounded toward the walker.</p>
+          </section>
+          <section class="dc__panel" data-bt-panel="2" hidden>
+            <h6 class="dc__h">Field note, Tuesday</h6>
+            <p class="dc__p">Heron count steady at three; the kingfisher has opinions about our staging server.</p>
+          </section>
+        </main>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 05 · INTERACTIVE — the chapter picker ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Interactive — the contents picker, weight as emphasis</span></figcaption>
+    <div class="iu__scene pk">
+      <ul class="pk__list">
+        {chapters.map((c) => (
+          <li>
+            <button type="button" class="pk__row" data-bt-chapter data-w="600">
+              <span class="pk__num">{c.n}</span>
+              <span class="pk__title" style="font-variation-settings:'wght' 400">{c.t}</span>
+              <span class="pk__loc">{c.loc}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p class="pk__hint label">Hover a row — the title leans on its weight axis toward the semibold the book uses for running heads.</p>
+    </div>
+  </figure>
+
+</div>
+
+<script>
+  // 04 — doc tabs
+  document.querySelectorAll<HTMLElement>('.bt .dc').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-bt-tab]'));
+    tabs.forEach((tab) =>
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => {
+          t.classList.toggle('is-on', t === tab);
+          t.setAttribute('aria-selected', String(t === tab));
+        });
+        root.querySelectorAll('[data-bt-panel]').forEach((p) => {
+          (p as HTMLElement).hidden = p.getAttribute('data-bt-panel') !== tab.dataset.btTab;
+        });
+      })
+    );
+  });
+
+  // 05 — hover drives weight along the variable axis
+  document.querySelectorAll<HTMLElement>('.bt .pk').forEach((root) => {
+    root.querySelectorAll<HTMLElement>('[data-bt-chapter]').forEach((row) => {
+      const title = row.querySelector<HTMLElement>('.pk__title');
+      row.addEventListener('mouseenter', () => title?.style.setProperty('font-variation-settings', `'wght' ${row.dataset.w}`));
+      row.addEventListener('mouseleave', () => title?.style.setProperty('font-variation-settings', "'wght' 400"));
+    });
+  });
+</script>
+
+<style>
+  .bt .iu__scene * { font-family: var(--fam); }
+
+  /* ── 01 jacket ── */
+  .jk { background: #22392e; color: #eef0e4; display: grid; place-items: center; padding: clamp(2rem, 9cqi, 7rem); }
+  .jk__cover {
+    width: min(100%, 30rem); aspect-ratio: 2/3;
+    background: linear-gradient(160deg, #2c4a3b, #22392e 55%, #1d3128);
+    border: 1px solid #eef0e41f;
+    padding: clamp(1.6rem, 6cqi, 3rem);
+    display: flex; flex-direction: column;
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.7);
+  }
+  .jk__series { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9fc3ad; }
+  .jk__title { margin-top: auto; font-weight: 800; font-size: clamp(3rem, 13cqi, 5.6rem); line-height: 0.95; letter-spacing: -0.015em; }
+  .jk__sub { color: #cfe0d2; font-size: clamp(1rem, 3cqi, 1.25rem); margin-top: 0.8rem; }
+  .jk__meta { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem; border-top: 1px solid #eef0e42e; padding-top: 0.9rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9fc3ad; }
+  .jk__meta i { flex: 1; height: 1px; background: #eef0e42e; }
+
+  /* ── 02 type spec ── */
+  .sp { background: var(--bg); padding: clamp(1.5rem, 5cqi, 3.5rem); }
+  .sp__page { background: var(--bg-2); padding: clamp(1.3rem, 4cqi, 2.6rem); border-top: 3px solid var(--accent); }
+  .sp__head { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
+  .sp__doc { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  .sp__book { font-style: italic; color: var(--fg-3); font-size: 0.85rem; }
+  .sp__row {
+    display: grid; grid-template-columns: 5.5rem 10rem 1fr;
+    gap: 1.2rem; align-items: baseline;
+    padding-block: 1rem; border-top: 1px solid var(--line);
+  }
+  .sp__size { font-feature-settings: 'tnum'; font-weight: 600; color: var(--fg-2); }
+  .sp__use { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
+  .sp__sample:nth-of-type(3) { font-size: inherit; }
+  .sp__row .sp__sample { display: block; line-height: 1.35; }
+  .sp__foot { margin-top: 1.2rem; font-size: 0.75rem; font-style: italic; color: var(--fg-3); }
+
+  /* ── 03 signage ── */
+  .sg { background: repeating-linear-gradient(-45deg, #26323a 0 18px, #222c33 18px 36px); display: grid; place-items: center; padding: clamp(2.5rem, 10cqi, 7rem); }
+  .sg__board {
+    width: min(100%, 34rem);
+    background: #eef0e4; color: #22392e;
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 1.2rem; align-items: center;
+    padding: clamp(1.2rem, 4.5cqi, 2.2rem) clamp(1.4rem, 5cqi, 2.6rem);
+    box-shadow: 0 24px 50px -25px rgb(0 0 0 / 0.65);
+    border-left: 10px solid #22392e;
+  }
+  .sg__code { font-weight: 700; font-size: clamp(0.9rem, 2.6cqi, 1.15rem); letter-spacing: 0.06em; border: 2px solid #22392e; padding: 0.3em 0.5em; }
+  .sg__main { display: flex; flex-direction: column; }
+  .sg__dest { font-weight: 700; font-size: clamp(1.6rem, 6.4cqi, 3rem); line-height: 1.05; }
+  .sg__dist { font-size: clamp(1rem, 3cqi, 1.3rem); color: #4a6053; font-feature-settings: 'tnum'; }
+  .sg__arrow { font-size: clamp(1.8rem, 7cqi, 3.2rem); }
+
+  /* ── 04 docs app (real px) ── */
+  .dc { display: grid; place-items: start center; background: var(--bg); }
+  .dc__app {
+    width: min(100%, 40rem);
+    display: grid; grid-template-columns: 150px 1fr;
+    border: 1px solid var(--line);
+    background: var(--bg); color: var(--fg);
+  }
+  .dc__nav { display: flex; flex-direction: column; gap: 2px; padding: 14px 10px; border-right: 1px solid var(--line); background: var(--bg-2); }
+  .dc__brand { font-size: 13px; font-weight: 700; padding: 4px 8px 12px; }
+  .dc__navitem { font-size: 12.5px; padding: 6px 8px; border-radius: 4px; color: var(--fg-2); }
+  .dc__navitem.is-on { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--fg); }
+  .dc__body { min-width: 0; }
+  .dc__tabs { display: flex; gap: 2px; padding: 10px 14px 0; border-bottom: 1px solid var(--line); }
+  .dc__tab { font-family: var(--font-ui); font-size: 12px; padding: 7px 10px; color: var(--fg-3); border-bottom: 2px solid transparent; }
+  .dc__tab.is-on { color: var(--fg); border-color: var(--accent); }
+  .dc__panel { padding: 16px; }
+  .dc__h { font-size: 17px; margin-bottom: 6px; }
+  .dc__p { font-size: 13.5px; line-height: 1.6; color: var(--fg-2); }
+
+  /* ── 05 chapter picker ── */
+  .pk { background: var(--bg-2); padding: clamp(1.5rem, 6cqi, 4rem); }
+  .pk__list { max-width: 36rem; margin-inline: auto; }
+  .pk__row {
+    width: 100%; display: grid;
+    grid-template-columns: 2.6rem 1fr auto;
+    gap: 1rem; align-items: baseline; text-align: left;
+    padding-block: 1.1rem; border-bottom: 1px solid var(--line);
+  }
+  .pk__num { color: var(--accent); font-feature-settings: 'tnum'; }
+  .pk__title { font-size: clamp(1.25rem, 3.6cqi, 1.7rem); transition: font-variation-settings 0.25s var(--ease); }
+  .pk__loc { font-size: 0.8rem; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .pk__hint { max-width: 36rem; margin: 1rem auto 0; display: block; }
+
+  @media (max-width: 700px) {
+    .dc__app { grid-template-columns: 1fr; }
+    .dc__nav { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--line); }
+    .sp__row { grid-template-columns: 4.5rem 1fr; }
+    .sp__row .sp__sample { grid-column: 1 / -1; }
+  }
+</style>

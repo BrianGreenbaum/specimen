@@ -1,0 +1,237 @@
+---
+// The command palette. ⌘K / Ctrl-K anywhere — jump to any face, era chapter,
+// section of the site, or glossary term. Results rank by fuzzy-ish subsequence
+// match, keyboard-first, and remember nothing (no state, no network).
+import { getCollection } from 'astro:content';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
+
+const items = [
+  ...fonts.map((f) => ({
+    group: 'Faces',
+    label: f.data.name,
+    hint: `${f.data.category} · ${f.data.designer}`,
+    href: `/fonts/${f.id}`,
+    fam: f.data.fontFamily,
+  })),
+  ...eras.map((e) => ({
+    group: 'History',
+    label: e.data.name,
+    hint: e.data.period,
+    href: `/history/${e.data.slug}`,
+    fam: e.data.specimenFont.family,
+  })),
+  { group: 'Places', label: 'Home', hint: 'The index', href: '/', fam: '' },
+  { group: 'Places', label: 'Compare', hint: 'Scrub one letter through every face', href: '/compare', fam: '' },
+  { group: 'Places', label: 'Gallery', hint: 'Glyphs hung as art', href: '/gallery', fam: '' },
+  { group: 'Places', label: 'Pairing Workbench', hint: 'Two faces, tuned live', href: '/pair', fam: '' },
+  { group: 'Places', label: 'Moods', hint: 'Browse by personality', href: '/moods', fam: '' },
+  { group: 'Places', label: 'Lexicon', hint: 'Every term, defined', href: '/glossary', fam: '' },
+];
+---
+<div class="cp" data-palette hidden>
+  <script type="application/json" data-cp-items set:html={JSON.stringify(items)} />
+  <div class="cp__backdrop" data-cp-close></div>
+  <div class="cp__panel" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cp__field">
+      <span class="cp__prompt" aria-hidden="true">⌘</span>
+      <input
+        class="cp__input"
+        data-cp-input
+        type="text"
+        placeholder="Jump to a face, era, or place…"
+        aria-label="Search the site"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="cp__esc" data-cp-close>esc</kbd>
+    </div>
+    <ul class="cp__results" data-cp-results role="listbox"></ul>
+    <div class="cp__foot label">
+      <span>↑↓ navigate</span><span>↵ open</span><span>{items.length} destinations</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  type Item = { group: string; label: string; hint: string; href: string; fam?: string };
+
+  const root = document.querySelector<HTMLElement>('[data-palette]');
+  if (root) {
+    const items: Item[] = JSON.parse(
+      (root.querySelector('[data-cp-items]') as HTMLScriptElement).textContent || '[]'
+    );
+    const input = root.querySelector<HTMLInputElement>('[data-cp-input]')!;
+    const listEl = root.querySelector<HTMLElement>('[data-cp-results]')!;
+
+    let filtered = items;
+    let sel = 0;
+
+    // subsequence match with a bonus for word starts / consecutive runs
+    const score = (q: string, s: string): number => {
+      if (!q) return 1;
+      const S = s.toLowerCase();
+      let i = 0, sc = 0, last = -2;
+      for (const ch of q.toLowerCase()) {
+        const idx = S.indexOf(ch, i);
+        if (idx < 0) return 0;
+        sc += idx === 0 || /\W/.test(S[idx - 1] ?? '') ? 3 : idx === last + 1 ? 2 : 1;
+        last = idx; i = idx + 1;
+      }
+      return sc / (S.length * 0.5 + q.length);
+    };
+
+    const render = () => {
+      listEl.innerHTML = '';
+      if (!filtered.length) {
+        const p = document.createElement('li');
+        p.className = 'cp__none';
+        p.textContent = 'Nothing matches — try a face or era name.';
+        listEl.appendChild(p);
+        return;
+      }
+      let lastGroup = '';
+      filtered.forEach((it, i) => {
+        if (it.group !== lastGroup) {
+          lastGroup = it.group;
+          const g = document.createElement('li');
+          g.className = 'cp__group';
+          g.innerHTML = `<span class="label">${it.group}</span>`;
+          listEl.appendChild(g);
+        }
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cp__opt' + (i === sel ? ' is-sel' : '');
+        btn.setAttribute('role', 'option');
+        btn.setAttribute('aria-selected', String(i === sel));
+        btn.innerHTML =
+          `<span class="cp__opt-name"${it.fam ? ` style="font-family:'${String(it.fam).replace(/'/g, '')}'"` : ''}>${it.label}</span>` +
+          `<span class="cp__opt-hint">${it.hint}</span>`;
+        btn.addEventListener('click', () => go(it.href));
+        li.appendChild(btn);
+        listEl.appendChild(li);
+      });
+    };
+
+    const go = (href: string) => { window.location.href = href; };
+
+    const refilter = () => {
+      const q = input.value.trim();
+      filtered = items
+        .map((it) => ({ it, s: Math.max(score(q, it.label), score(q, it.hint) * 0.6) }))
+        .filter((x) => x.s > 0)
+        .sort((a, b) => b.s - a.s)
+        .map((x) => x.it);
+      sel = 0;
+      render();
+    };
+
+    const open = () => {
+      root.hidden = false;
+      document.body.style.overflow = 'hidden';
+      input.value = '';
+      refilter();
+      input.focus();
+    };
+    const close = () => {
+      root.hidden = true;
+      document.body.style.overflow = '';
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        root.hidden ? open() : close();
+        return;
+      }
+      if (root.hidden) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(filtered.length - 1, sel + 1); render(); scrollSel(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(0, sel - 1); render(); scrollSel(); }
+      if (e.key === 'Enter' && filtered[sel]) { e.preventDefault(); go(filtered[sel].href); }
+    });
+
+    const scrollSel = () => {
+      listEl.querySelector('.is-sel')?.scrollIntoView({ block: 'nearest' });
+    };
+
+    root.querySelectorAll('[data-cp-close]').forEach((el) =>
+      el.addEventListener('click', close)
+    );
+    input.addEventListener('input', refilter);
+
+    // header trigger button(s) on any page
+    document.querySelectorAll('[data-cp-open]').forEach((btn) =>
+      btn.addEventListener('click', open)
+    );
+  }
+</script>
+
+<style>
+  .cp { position: fixed; inset: 0; z-index: 1000; }
+  .cp[hidden] { display: none; }
+  .cp__backdrop {
+    position: absolute; inset: 0;
+    background: color-mix(in srgb, var(--ink) 32%, transparent);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  .cp__panel {
+    position: relative;
+    width: min(620px, calc(100vw - 2rem));
+    margin: 12vh auto 0;
+    background: var(--bg);
+    border: 1px solid var(--fg);
+    border-radius: var(--radius);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.5);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .cp__field {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: var(--sp-3) var(--sp-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .cp__prompt { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
+  .cp__input {
+    flex: 1; background: transparent; border: 0; outline: none;
+    font-family: var(--font-ui); font-size: var(--step-1); color: var(--fg);
+  }
+  .cp__input::placeholder { color: var(--fg-3); }
+  .cp__esc {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    color: var(--fg-3); border: 1px solid var(--line);
+    border-radius: 3px; padding: 0.15em 0.45em;
+  }
+
+  .cp__results { max-height: 46vh; overflow-y: auto; overscroll-behavior: contain; list-style: none; margin: 0; padding: 0; }
+  .cp__group { padding: var(--sp-2) var(--sp-4) 0.25rem; border-top: 1px solid var(--line-soft); }
+  .cp__group:first-child { border-top: 0; }
+  .cp__group .label { font-size: 0.62rem; }
+  .cp__opt {
+    width: 100%; text-align: left;
+    display: flex; align-items: baseline; gap: 0.7rem;
+    padding: 0.55rem var(--sp-4);
+    transition: background 0.12s var(--ease), padding-left 0.15s var(--ease);
+  }
+  .cp__opt.is-sel {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    padding-left: calc(var(--sp-4) + 4px);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+  .cp__opt-name { font-size: 1.02rem; color: var(--fg); white-space: nowrap; }
+  .cp__opt-hint {
+    margin-left: auto; font-size: 0.75rem; color: var(--fg-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cp__none { padding: var(--sp-4); color: var(--fg-3); font-style: italic; }
+
+  .cp__foot {
+    display: flex; gap: var(--sp-4);
+    padding: var(--sp-2) var(--sp-4);
+    border-top: 1px solid var(--line);
+  }
+  .cp__foot span:last-child { margin-left: auto; }
+</style>

@@ -1,0 +1,224 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// ── The sequence ─────────────────────────────────────────────────────────────
+// DM SANS IS GEOMETRY SOFTENED FOR DAILY USE — Poppins disciplined by
+// Colophon. Five acts follow one consumer finance app: the launch campaign
+// poster (01) → the brand guidelines spread (02) → the app store feature
+// card (03) → the actual product UI in real px (04, working calculator)
+// → the opsz playground (05 — the axis that made the family grow up).
+//
+// Honesty ledger (verified via fontTools against standard/opsz binaries):
+// · VARIABLE: wght 100–1000 AND true opsz 9–40. True italic.
+// · GSUB: calt ccmp dnom frac liga locl numr. frac = ½ ¼ ¾ only.
+
+const steps = [
+  { k: '1', t: 'Name it', d: 'Give the goal a name you would say out loud.' },
+  { k: '2', t: 'Fund it', d: 'Set an amount and a Friday payday sweep.' },
+  { k: '3', t: 'Forget it', d: 'Round-ups do the saving while you live.' },
+];
+---
+<div class="iu dm" style={`--fam:${fam}`}>
+
+  <!-- ════════ 01 · ILLUSTRATION — the launch poster ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Illustration — product launch campaign</span></figcaption>
+    <div class="iu__scene lp">
+      <div class="lp__poster">
+        <span class="lp__brand">Pocket&nbsp;·&nbsp;savings, quietly</span>
+        <h3 class="lp__title">Save first.<br /><em>Notice never.</em></h3>
+        <p class="lp__sub">Automatic round-ups move spare change to goals that matter to you — from €2 coffee to a €2,000 cushion.</p>
+        <div class="lp__foot">
+          <span>App Store · Editor’s choice</span>
+          <i aria-hidden="true"></i>
+          <span>pocket.app</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">Consumer fintech wants warmth without whimsy: geometric circles for optimism, tightened apertures for trust.</p>
+  </figure>
+
+  <!-- ════════ 02 · BRANDING — the guidelines spread ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Branding — from the type guidelines</span></figcaption>
+    <div class="iu__scene gl">
+      <div class="gl__spread">
+        <section class="gl__page">
+          <span class="gl__sec">Section 3 · Typography</span>
+          <h4 class="gl__h">One family, every surface.</h4>
+          <p class="gl__p">DM Sans carries the entire product — onboarding to statements — with weight doing the hierarchy work size used to. Never mix another sans into product surfaces.</p>
+          <ul class="gl__rules">
+            <li><strong>400</strong> body &amp; inputs</li>
+            <li><strong>500</strong> labels &amp; buttons</li>
+            <li><strong>700</strong> headings &amp; amounts</li>
+          </ul>
+        </section>
+        <section class="gl__page gl__page--specimen" aria-label="Type specimen">
+          <p class="gl__big">Aa Bb Cc</p>
+          <p class="gl__mid">0123456789 ·€$%</p>
+          <p class="gl__small">The quick payments flow settles in three taps or fewer.</p>
+        </section>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 03 · EDITORIAL — the feature card ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — app-store feature card</span></figcaption>
+    <div class="iu__scene fc">
+      <div class="fc__card">
+        <span class="fc__kicker">APP OF THE DAY</span>
+        <h4 class="fc__title">The savings app for people who hate saving apps</h4>
+        <p class="fc__p"><em>“Pocket’s genius is silence: it saves while you sleep and never once congratulates itself.”</em></p>
+        <span class="fc__src">— Thursday’s featured review</span>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 04 · WEB UI — the product, real px ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Web UI — the goal builder, fully interactive</span></figcaption>
+    <div class="iu__scene gb">
+      <div class="gb__phone">
+        <header class="gb__top"><span>New goal</span><span class="gb__step">2 of 3</span></header>
+        <div class="gb__steps">
+          {steps.map((s, i) => (
+            <div class:list={['gb__stepcard', { 'is-on': i === 0 }]} data-dm-step={i}>
+              <span class="gb__k">{s.k}</span>
+              <span class="gb__t">{s.t}</span>
+              <span class="gb__d">{s.d}</span>
+            </div>
+          ))}
+        </div>
+        <div class="gb__calc" role="group" aria-label="Savings preview">
+          <label class="gb__field">weekly
+            <input type="range" min="5" max="100" step="5" value="25" data-dm-weekly />
+          </label>
+          <p class="gb__result"><output data-dm-out>1,300</output><span>in a year</span></p>
+          <button class="gb__cta" type="button" data-dm-cta>Create “Cushion”</button>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 05 · INTERACTIVE — the optical-size bench ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Interactive — one line at two optical sizes</span></figcaption>
+    <div class="iu__scene ob">
+      <div class="ob__pair">
+        <div class="ob__cell">
+          <span class="ob__tag">opsz 9 · captions &amp; UI</span>
+          <p class="ob__line" style="font-variation-settings:'opsz' 9, 'wght' 420">Payment sent to Vera’s Bakery — €4.60</p>
+        </div>
+        <div class="ob__cell ob__cell--display">
+          <span class="ob__tag">opsz 40 · display</span>
+          <p class="ob__line" style="font-variation-settings:'opsz' 40, 'wght' 700">Payment sent to Vera’s Bakery — €4.60</p>
+        </div>
+      </div>
+      <p class="ob__note">Same file. At caption sizes the letterforms open up for small screens; at display sizes they tighten and sharpen. Drag the tester above to feel the axis.</p>
+    </div>
+  </figure>
+
+</div>
+
+<script>
+  // 04 — steps + weekly→yearly math
+  document.querySelectorAll<HTMLElement>('.dm .gb').forEach((root) => {
+    root.querySelectorAll<HTMLElement>('[data-dm-step]').forEach((card) =>
+      card.addEventListener('click', () => {
+        root.querySelectorAll('[data-dm-step]').forEach((x) => x.classList.remove('is-on'));
+        card.classList.add('is-on');
+      })
+    );
+    const range = root.querySelector<HTMLInputElement>('[data-dm-weekly]');
+    const out = root.querySelector<HTMLElement>('[data-dm-out]');
+    range?.addEventListener('input', () => {
+      const yearly = (+range.value) * 52;
+      if (out) out.textContent = yearly.toLocaleString('en-US');
+    });
+  });
+</script>
+
+<style>
+  .dm .iu__scene * { font-family: var(--fam); }
+
+  /* ── 01 launch poster ── */
+  .lp { background: #f4f2ee; color: #1d1c1a; padding: clamp(2rem, 9cqi, 7rem); }
+  .lp__poster { max-width: 52rem; margin-inline: auto; display: flex; flex-direction: column; gap: clamp(1rem, 3.4cqi, 1.8rem); }
+  .lp__brand { font-weight: 700; letter-spacing: -0.01em; font-size: clamp(1rem, 2.8cqi, 1.3rem); }
+  .lp__title { font-weight: 700; font-size: clamp(3.2rem, 14cqi, 9rem); line-height: 0.96; letter-spacing: -0.028em; }
+  .lp__title em { color: #d95d39; }
+  .lp__sub { max-width: 44ch; color: #4c4a45; font-size: clamp(1rem, 3cqi, 1.3rem); line-height: 1.5; }
+  .lp__foot { display: flex; align-items: center; gap: 1rem; border-top: 1px solid #1d1c1a26; padding-top: 1.2rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7b786f; }
+  .lp__foot i { flex: 1; height: 1px; background: #1d1c1a26; }
+
+  /* ── 02 guidelines ── */
+  .gl { background: var(--bg); padding: clamp(1.5rem, 5cqi, 3.5rem); }
+  .gl__spread { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-2); box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.3); }
+  .gl__page { padding: clamp(1.4rem, 4.6cqi, 3rem); display: flex; flex-direction: column; gap: 0.9rem; }
+  .gl__page--specimen { border-left: 1px solid var(--line); justify-content: center; }
+  .gl__sec { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.16em; color: #d95d39; }
+  .gl__h { font-weight: 700; font-size: clamp(1.4rem, 4.4cqi, 2rem); letter-spacing: -0.015em; }
+  .gl__p { color: var(--fg-2); line-height: 1.6; font-size: clamp(0.92rem, 2.4cqi, 1.05rem); }
+  .gl__rules { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.4rem; font-size: 0.92rem; }
+  .gl__rules strong { color: var(--accent); font-feature-settings: 'tnum'; margin-right: 0.4rem; }
+  .gl__big { font-weight: 700; font-size: clamp(2.6rem, 8cqi, 4.4rem); line-height: 1; letter-spacing: -0.02em; }
+  .gl__mid { font-size: clamp(1.3rem, 3.8cqi, 1.9rem); font-feature-settings: 'tnum'; }
+  .gl__small { color: var(--fg-3); }
+
+  /* ── 03 feature card ── */
+  .fc { background: linear-gradient(150deg, #d95d39, #b23e22); color: #fdf6f1; display: grid; place-items: center; padding: clamp(2rem, 8cqi, 5rem); }
+  .fc__card { max-width: 34rem; display: flex; flex-direction: column; gap: 1rem; }
+  .fc__kicker { align-self: flex-start; background: #fdf6f1; color: #b23e22; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; padding: 0.35em 0.8em; border-radius: 100px; }
+  .fc__title { font-weight: 700; font-size: clamp(1.9rem, 6.4cqi, 3.2rem); line-height: 1.08; letter-spacing: -0.02em; }
+  .fc__p { font-size: clamp(1rem, 2.9cqi, 1.25rem); line-height: 1.55; opacity: 0.94; }
+  .fc__src { font-size: 0.85rem; opacity: 0.75; }
+
+  /* ── 04 goal builder (real px) ── */
+  .gb { display: grid; place-items: start center; background: var(--bg); }
+  .gb__phone {
+    width: min(100%, 22rem);
+    border: 1px solid var(--line);
+    background: var(--bg); color: var(--fg);
+    display: flex; flex-direction: column;
+  }
+  .gb__top { display: flex; justify-content: space-between; padding: 12px 16px; font-size: 13px; font-weight: 500; border-bottom: 1px solid var(--line); }
+  .gb__step { color: var(--fg-3); font-size: 11.5px; }
+  .gb__steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 12px; }
+  .gb__stepcard {
+    cursor: pointer; border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 8px;
+    display: flex; flex-direction: column; gap: 3px;
+    transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .gb__stepcard.is-on { border-color: #d95d39; background: color-mix(in srgb, #d95d39 8%, transparent); }
+  .gb__k { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: #d95d39; font-weight: 700; }
+  .gb__t { font-size: 12.5px; font-weight: 700; }
+  .gb__d { font-size: 10px; line-height: 1.35; color: var(--fg-3); }
+  .gb__calc { padding: 4px 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .gb__field { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); display: flex; flex-direction: column; gap: 6px; }
+  .gb__field input { accent-color: #d95d39; cursor: ew-resize; }
+  .gb__result { display: flex; align-items: baseline; gap: 8px; }
+  .gb__result output { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; font-feature-settings: 'tnum'; }
+  .gb__result span { font-size: 12px; color: var(--fg-3); }
+  .gb__cta { background: #d95d39; color: #fff; border-radius: 10px; padding: 11px; font-size: 13px; font-weight: 500; transition: filter 0.15s var(--ease); }
+  .gb__cta:hover { filter: brightness(1.06); }
+
+  /* ── 05 opsz bench ── */
+  .ob { background: var(--bg-2); padding: clamp(1.5rem, 6cqi, 4rem); display: flex; flex-direction: column; gap: 1.2rem; }
+  .ob__pair { max-width: 46rem; margin-inline: auto; width: 100%; display: grid; gap: 1px; background: var(--line); }
+  .ob__cell { background: var(--bg-2); padding: clamp(1rem, 3.4cqi, 1.8rem); }
+  .ob__cell--display { background: var(--bg); }
+  .ob__tag { display: block; font-family: var(--font-mono), monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: #d95d39; margin-bottom: 0.5rem; }
+  .ob__line { line-height: 1.3; letter-spacing: -0.005em; }
+  .ob__cell--display .ob__line { font-size: clamp(1.6rem, 5cqi, 2.6rem); }
+  .ob__note { max-width: 46rem; margin-inline: auto; font-size: 0.85rem; font-style: italic; color: var(--fg-3); }
+
+  @media (max-width: 640px) {
+    .gl__spread { grid-template-columns: 1fr; }
+    .gl__page--specimen { border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>

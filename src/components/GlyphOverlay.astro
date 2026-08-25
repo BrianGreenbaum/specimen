@@ -1,0 +1,207 @@
+---
+// Ghosted glyphs. The same letter from any two faces of the library,
+// superimposed on shared metrics — one face in ink, the other in accent.
+// A slider crossfades between them; "difference" mode thins both to outlines
+// so the construction itself is what you compare. This is the fastest way to
+// *see* what separates a garalde from a grotesque.
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  fonts: CollectionEntry<'fonts'>[];
+}
+const { fonts } = Astro.props;
+const data = fonts.map((f) => {
+  const wght = f.data.axes.find((a) => a.tag === 'wght');
+  return {
+    slug: f.id,
+    name: f.data.name,
+    family: f.data.fontFamily,
+    weight: wght ? Math.min(Math.max(500, wght.min), wght.max) : 400,
+  };
+});
+---
+<div class="ov" data-overlay data-fonts={JSON.stringify(data)}>
+  <div class="ov__picks">
+    <label class="ov__pick">
+      <span class="label">Face A</span>
+      <select data-ov-a aria-label="First face">
+        {fonts.map((f, i) => <option value={f.id} selected={f.id === 'eb-garamond' || (!fonts.some((x) => x.id === 'eb-garamond') && i === 0)}>{f.data.name}</option>)}
+      </select>
+    </label>
+    <span class="ov__vs label" aria-hidden="true">over</span>
+    <label class="ov__pick">
+      <span class="label">Face B</span>
+      <select data-ov-b aria-label="Second face">
+        {fonts.map((f, i) => <option value={f.id} selected={f.id === 'inter' || (!fonts.some((x) => x.id === 'inter') && i === 1)}>{f.data.name}</option>)}
+      </select>
+    </label>
+
+    <div class="ov__letters" role="group" aria-label="Choose a letter">
+      {['a', 'g', 'e', 'R', 'Q', '&'].map((l, i) => (
+        <button type="button" class:list={['ov__letter', { 'is-on': i === 0 }]} data-ov-letter={l}>{l}</button>
+      ))}
+    </div>
+  </div>
+
+  <figure class="ov__stagebox">
+    <svg class="ov__svg" data-ov-svg preserveAspectRatio="xMidYMid meet" role="img" aria-label="Two typefaces superimposed"></svg>
+    <figcaption class="label ov__cap" data-ov-cap></figcaption>
+  </figure>
+
+  <div class="ov__bar">
+    <label class="ov__blend">
+      <span class="label">Blend</span>
+      <input type="range" data-ov-blend min="0" max="100" step="1" value="50" />
+    </label>
+    <button class="tgl" type="button" data-ov-mode aria-pressed="false">Outlines only</button>
+    <button class="tgl tgl--action" type="button" data-ov-swap>⇄ Swap A/B</button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-overlay]').forEach(async (root) => {
+    const fonts = JSON.parse(root.dataset.fonts || '[]');
+    const byId = new Map(fonts.map((f: any) => [f.slug, f]));
+    const selA = root.querySelector<HTMLSelectElement>('[data-ov-a]')!;
+    const selB = root.querySelector<HTMLSelectElement>('[data-ov-b]')!;
+    const svg = root.querySelector<SVGElement>('[data-ov-svg]')!;
+    const cap = root.querySelector<HTMLElement>('[data-ov-cap]')!;
+    const blend = root.querySelector<HTMLInputElement>('[data-ov-blend]')!;
+    const modeBtn = root.querySelector<HTMLButtonElement>('[data-ov-mode]')!;
+
+    let glyph = 'a';
+    let outlineOnly = false;
+    let swapped = false;
+
+    await Promise.all(
+      ['400', '500'].flatMap((w) =>
+        fonts.map((f: any) =>
+          document.fonts.load(`${w} 100px "${String(f.family).replace(/['"]/g, '')}"`, 'ag').catch(() => {})
+        )
+      )
+    );
+
+    const draw = () => {
+      const A = byId.get(swapped ? selB.value : selA.value)!;
+      const B = byId.get(swapped ? selA.value : selB.value)!;
+      const mix = (+blend.value) / 100; // 0 = all A, 1 = all B
+
+      const NS = 'http://www.w3.org/2000/svg';
+      svg.setAttribute('viewBox', '0 0 800 800');
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+      const mkText = (fam: string, weight: number, opacity: number) => {
+        const t = document.createElementNS(NS, 'text');
+        t.setAttribute('x', '400');
+        t.setAttribute('y', '400');
+        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('dominant-baseline', 'alphabetic');
+        // optical size axes get a display-size value so hairlines behave
+        t.setAttribute('style', `font-family:'${String(fam).replace(/['"]/g, '')}';font-weight:${weight};font-size:520px;font-variation-settings:'opsz' 144`);
+        t.setAttribute('opacity', String(opacity));
+        if (outlineOnly) {
+          t.setAttribute('fill', 'none');
+          t.setAttribute('stroke', 'currentColor');
+          t.setAttribute('stroke-width', '1.6');
+        }
+        t.textContent = glyph;
+        return t;
+      };
+
+      // A in ink, B in accent — opacity follows the blend
+      const a = mkText(A.family, A.weight, outlineOnly ? 1 : 1 - mix * 0.85);
+      const b = mkText(B.family, B.weight, outlineOnly ? 1 : 0.15 + mix * 0.85);
+      (b as any).style.color = 'var(--accent)';
+      svg.appendChild(a);
+      svg.appendChild(b);
+
+      cap.textContent = `${A.name} × ${B.name} · “${glyph}” · ${outlineOnly ? 'outline comparison' : `${Math.round((1 - mix) * 100)}/${Math.round(mix * 100)}`}`;
+    };
+
+    selA.addEventListener('change', draw);
+    selB.addEventListener('change', draw);
+    blend.addEventListener('input', draw);
+    root.querySelectorAll<HTMLButtonElement>('[data-ov-letter]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        glyph = btn.dataset.ovLetter!;
+        root.querySelectorAll('.ov__letter').forEach((x) => x.classList.toggle('is-on', x === btn));
+        draw();
+      })
+    );
+    modeBtn.addEventListener('click', () => {
+      outlineOnly = !outlineOnly;
+      modeBtn.classList.toggle('is-on', outlineOnly);
+      modeBtn.setAttribute('aria-pressed', String(outlineOnly));
+      draw();
+    });
+    root.querySelector('[data-ov-swap]')?.addEventListener('click', () => {
+      swapped = !swapped;
+      draw();
+    });
+
+    draw();
+  });
+</script>
+
+<style>
+  .ov { display: flex; flex-direction: column; gap: var(--sp-4); }
+
+  .ov__picks { display: flex; align-items: end; gap: var(--sp-4); flex-wrap: wrap; }
+  .ov__pick { display: flex; flex-direction: column; gap: 0.35rem; }
+  .ov__pick select {
+    font-family: var(--font-mono); font-size: 0.85rem;
+    background: transparent; color: var(--fg);
+    border: 1px solid var(--line); border-radius: 2px;
+    padding: 0.45rem 0.55rem;
+  }
+  .ov__pick select option { color: #16130d; background: #f1ede3; }
+  .ov__vs { color: var(--fg-3); font-style: italic; padding-bottom: 0.7rem; }
+
+  .ov__letters { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
+  .ov__letter {
+    min-width: 2.3rem; padding: 0.4rem 0.5rem;
+    font-family: var(--font-ui); font-size: 1.05rem; line-height: 1;
+    border: 1px solid var(--line); border-radius: 2px; color: var(--fg-2);
+    transition: all 0.2s var(--ease);
+  }
+  .ov__letter:hover { border-color: var(--fg); color: var(--fg); }
+  .ov__letter.is-on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  .ov__stagebox {
+    border: 1px solid var(--fg);
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .ov__svg { width: 100%; aspect-ratio: 8 / 5; display: block; }
+  .ov__cap {
+    display: block;
+    padding: var(--sp-2) var(--sp-4);
+    border-top: 1px solid var(--line);
+    color: var(--fg-2);
+  }
+
+  .ov__bar { display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap; }
+  .ov__blend { display: flex; align-items: center; gap: 0.8rem; flex: 1; min-width: 12rem; }
+  .ov__blend input[type='range'] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 2px; background: var(--fg-3); cursor: pointer;
+  }
+  .ov__blend input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .ov__blend input[type='range']::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg);
+  }
+  .tgl {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em;
+    text-transform: uppercase; padding: 0.5rem 0.8rem;
+    border: 1px solid var(--line); border-radius: 2px; color: var(--fg-2);
+    transition: all 0.2s var(--ease);
+  }
+  .tgl:hover { border-color: var(--fg); color: var(--fg); }
+  .tgl.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .tgl--action:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+</style>

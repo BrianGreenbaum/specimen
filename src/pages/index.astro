@@ -70,11 +70,25 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
         <span class="label">{fonts.length} specimens · each its own chapter</span>
       </div>
 
-    <ul class="index-list">
+      <p class="index-search" data-reveal>
+        <input
+          type="search"
+          data-index-search
+          placeholder="Filter by name, designer, category…"
+          aria-label="Filter the typeface index"
+        />
+        <a class="label index-moods-link" href="/moods">Browse by mood →</a>
+      </p>
+
+    <ul class="index-list" data-index-list>
       {fonts.map((f) => (
         <li
           class="index-row"
           style={`--row-accent:${f.data.theme.accent}; --fam:${f.data.fontFamily}`}
+          data-row={f.id}
+          data-name={f.data.name}
+          data-designer={f.data.designer}
+          data-category={f.data.category}
         >
           <a href={`/fonts/${f.id}`} class="index-row__link" data-reveal>
             <span class="index-row__num index-num">{String(f.data.order).padStart(2, '0')}</span>
@@ -89,11 +103,35 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
         </li>
       ))}
     </ul>
+    <p class="index-empty label" data-index-empty hidden>No face matches — try a designer's name.</p>
     </section>
   </main>
 
   <SiteFooter />
 </Layout>
+
+<script>
+  // Lightweight client-side filter over the index rows.
+  const search = document.querySelector<HTMLInputElement>('[data-index-search]');
+  if (search) {
+    const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-row]'));
+    const empty = document.querySelector<HTMLElement>('[data-index-empty]')!;
+    search.addEventListener('input', () => {
+      const q = search.value.trim().toLowerCase();
+      let n = 0;
+      for (const row of rows) {
+        const hit =
+          !q ||
+          row.dataset.name!.toLowerCase().includes(q) ||
+          row.dataset.designer!.toLowerCase().includes(q) ||
+          row.dataset.category!.toLowerCase().includes(q);
+        row.hidden = !hit;
+        if (hit) n++;
+      }
+      empty.hidden = n > 0;
+    });
+  }
+</script>
 
 <style>
   .home-hero {
@@ -176,9 +214,30 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
   .home-fonts { padding-block: clamp(2rem, 5vh, 4rem) 0; }
   .home-fonts .section-head { scroll-margin-top: 80px; }
 
+  /* Index search row */
+  .index-search {
+    display: flex; align-items: center; gap: var(--sp-4);
+    margin-bottom: var(--sp-3);
+  }
+  .index-search input {
+    flex: 1; max-width: 26rem;
+    font-family: var(--font-mono); font-size: var(--step--1);
+    color: var(--fg); background: transparent;
+    border: 0; border-bottom: 1px solid var(--line);
+    padding: 0.5rem 0.1rem;
+    outline: none;
+    transition: border-color 0.2s var(--ease);
+  }
+  .index-search input:focus { border-color: var(--accent); }
+  .index-search input::placeholder { color: var(--fg-3); }
+  .index-moods-link { margin-left: auto; color: var(--accent); white-space: nowrap; transition: opacity 0.2s var(--ease); }
+  .index-moods-link:hover { opacity: 0.7; }
+  .index-empty { padding-block: var(--sp-4); }
+
   /* Index list */
   .index-list { border-bottom: 1px solid var(--line); }
   .index-row { border-top: 1px solid var(--line); }
+  .index-row[hidden] { display: none; }
   .index-row__link {
     display: grid;
     grid-template-columns: 3.5rem 1fr auto 2rem;

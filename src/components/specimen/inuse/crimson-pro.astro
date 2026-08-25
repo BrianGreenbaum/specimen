@@ -1,0 +1,284 @@
+---
+import type { CollectionEntry } from 'astro:content';
+export interface Props { font: CollectionEntry<'fonts'>['data']; }
+const { font } = Astro.props;
+const fam = font.fontFamily;
+
+// ── The sequence ─────────────────────────────────────────────────────────────
+// CRIMSON PRO IS A READER'S GARALOND: warm, quiet, cut for long hours.
+// Five acts follow one poem through the small-press ecosystem that keeps
+// such work alive: the broadside that sells it (01, night ink) → the letter-
+// pressed cover of the journal that published it (02, paper) → the colophon
+// page where the press describes itself (03, cream) → the subscription card
+// tucked into the envelope (04, theme tokens) → the reading-room catalogue
+// screen where a patron finds it (05, real px UI).
+//
+// Honesty ledger (verified against fontsource wght binaries via fontTools):
+// · VARIABLE: wght 200–900 only; TRUE italic at same range.
+// · GSUB: ccmp dnom frac liga locl numr pnum rvrn tnum. NO onum/dlig/sups —
+//   never claimed or shown. frac = precomposed ½ ¼ ¾ only.
+
+const verse = [
+  'The letter waits as letters do —',
+  'patient in its leaden bed,',
+  'while presses groan the night shift through',
+  'and morning finds it read.',
+];
+
+const poems = [
+  { n: '42', t: 'Night Shift at the Foundry', p: 'M. Aldana', pg: '12' },
+  { n: '43', t: 'Letter to a Typesetter', p: 'R. Okonkwo', pg: '18' },
+  { n: '44', t: 'The Compositor’s Garden', p: 'E. Lindqvist', pg: '25' },
+];
+---
+<div class="iu cp" style={`--fam:${fam}`}>
+
+  <!-- ════════ 01 · ILLUSTRATION — the letterpress broadside ════════ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Illustration — the poetry broadside</span></figcaption>
+    <div class="iu__scene bs">
+      <div class="bs__sheet">
+        <p class="bs__press">Thornfield Press · Broadside Series No.&nbsp;9</p>
+        <h3 class="bs__title">Night&nbsp;Shift</h3>
+        <div class="bs__verse">
+          {verse.map((line) => <p class="bs__line">{line}</p>)}
+        </div>
+        <p class="bs__sig"><em>M. Aldana</em></p>
+        <div class="bs__foot">
+          <span>Set in Crimson Pro · of an edition of 120</span>
+          <i class="bs__rule" aria-hidden="true"></i>
+          <span>Two dollars, folded once</span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">A single poem on a single sheet — the smallest unit of publishing. The roman carries the verse; the italic signs it.</p>
+  </figure>
+
+  <!-- ════════ 02 · EDITORIAL — the journal contents spread ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Editorial — quarterly journal, table of contents</span></figcaption>
+    <div class="iu__scene jr">
+      <header class="jr__head">
+        <span class="jr__mast">The Thornfield Quarterly</span>
+        <span class="jr__issue">Vol. XII · Autumn</span>
+      </header>
+      <ul class="jr__toc">
+        {poems.map((poem) => (
+          <li class="jr__row">
+            <span class="jr__num">{poem.n}</span>
+            <span class="jr__title">{poem.t}</span>
+            <span class="jr__dots" aria-hidden="true"></span>
+            <span class="jr__author">{poem.p}</span>
+            <span class="jr__pg">{poem.pg}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="jr__note"><em>Cover printed letterpress from hand-set polymer; text pages offset in two colours.</em></p>
+    </div>
+  </figure>
+
+  <!-- ════════ 03 · BRANDING — the colophon page ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Branding — the press colophon</span></figcaption>
+    <div class="iu__scene cl">
+      <div class="cl__page">
+        <i class="cl__mark" aria-hidden="true">t</i>
+        <h4 class="cl__name">Thornfield Press</h4>
+        <p class="cl__body">
+          Founded over a rented Heidelberg in a draughty mill town, Thornfield prints
+          poems the slow way: short runs, honest materials, and typefaces chosen for
+          endurance rather than novelty. This issue is set in <strong>Crimson Pro</strong>,
+          a Garamond for the present tense.
+        </p>
+        <dl class="cl__facts">
+          <div><dt>Printed</dt><dd>In an edition of 400 copies</dd></div>
+          <div><dt>Type</dt><dd>Crimson Pro, throughout</dd></div>
+          <div><dt>Paper</dt><dd>Munken Kristall, 100&nbsp;gsm</dd></div>
+        </dl>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 04 · PRINT — the subscription card ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Print — the subscription card</span></figcaption>
+    <div class="iu__scene sub">
+      <div class="sub__card">
+        <p class="sub__kicker">Subscribe</p>
+        <h5 class="sub__head">Four issues, one quiet year.</h5>
+        <form class="sub__form" aria-label="Subscription form mock">
+          <label class="sub__opt"><input type="radio" name="tier" checked /><span>Individual — $28 <em>a year, four issues</em></span></label>
+          <label class="sub__opt"><input type="radio" name="tier" /><span>Patron — $60 <em>a year, and our gratitude</em></span></label>
+          <div class="sub__frac">Renew before ½ way through the year and save ¾ of the newsstand price.</div>
+          <button type="button" class="sub__btn" data-cp-sub>Join the list</button>
+        </form>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ════════ 05 · WEB UI — the library catalogue, real px ════════ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Web UI — reading-room catalogue, keyboard-driven</span></figcaption>
+    <div class="iu__scene cat">
+      <div class="cat__app">
+        <div class="cat__bar">
+          <span class="cat__brand">thornfield·cat</span>
+          <input class="cat__search" data-cp-filter type="text" placeholder="Filter titles…" aria-label="Filter titles" />
+        </div>
+        <table class="cat__table">
+          <thead><tr><th>No.</th><th>Title</th><th>Poet</th><th>Edition</th></tr></thead>
+          <tbody data-cp-rows>
+            <tr><td>09</td><td>Night Shift</td><td>M. Aldana</td><td>120</td></tr>
+            <tr><td>08</td><td>The Millrace</td><td>R. Okonkwo</td><td>150</td></tr>
+            <tr><td>07</td><td>Glossary of Rain</td><td>E. Lindqvist</td><td>90</td></tr>
+            <tr><td>06</td><td>Winter Colophon</td><td>A. Marsh</td><td>200</td></tr>
+          </tbody>
+        </table>
+        <p class="cat__status" data-cp-status aria-live="polite">4 records · type to filter</p>
+      </div>
+    </div>
+  </figure>
+
+</div>
+
+<script>
+  // 05 — live filter over the catalogue rows
+  document.querySelectorAll<HTMLElement>('.cp .cat').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('[data-cp-filter]');
+    const rows = Array.from(root.querySelectorAll('[data-cp-rows] tr'));
+    const status = root.querySelector<HTMLElement>('[data-cp-status]');
+    input?.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let n = 0;
+      rows.forEach((r) => {
+        const hit = !q || r.textContent!.toLowerCase().includes(q);
+        r.hidden = !hit; if (hit) n++;
+      });
+      if (status) status.textContent = `${n} record${n === 1 ? '' : 's'}${q ? ` · matching “${q}”` : ''}`;
+    });
+  });
+</script>
+
+<style>
+  /* shared surface rules */
+  .cp .iu__scene * { font-family: var(--fam); }
+
+  /* ── 01 broadside ── */
+  .bs {
+    background: #14100b; color: #efe6d2;
+    display: grid; place-items: center;
+    padding: clamp(2rem, 8cqi, 6rem);
+  }
+  .bs__sheet {
+    width: min(100%, 34rem);
+    background: #efe6d2; color: #241d16;
+    padding: clamp(1.6rem, 7cqi, 4rem);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+    display: flex; flex-direction: column; gap: clamp(0.9rem, 3cqi, 1.6rem);
+  }
+  .bs__press { font-size: clamp(0.62rem, 1.6cqi, 0.75rem); letter-spacing: 0.14em; text-transform: uppercase; color: #867663; }
+  .bs__title { font-weight: 800; font-size: clamp(2.6rem, 13cqi, 5.2rem); line-height: 0.95; letter-spacing: -0.02em; }
+  .bs__verse { border-top: 1px solid #241d1633; border-bottom: 1px solid #241d1633; padding-block: clamp(0.8rem, 3cqi, 1.4rem); }
+  .bs__line { font-size: clamp(1.05rem, 3.6cqi, 1.5rem); line-height: 1.55; }
+  .bs__sig { color: #a34a2a; }
+  .bs__foot { display: flex; align-items: center; gap: 0.8rem; font-size: 0.72rem; color: #867663; letter-spacing: 0.06em; text-transform: uppercase; }
+  .bs__rule { flex: 1; height: 1px; background: #241d1633; }
+
+  /* ── 02 journal TOC ── */
+  .jr {
+    background: var(--bg-2); color: var(--fg);
+    padding: clamp(1.5rem, 6cqi, 4rem);
+  }
+  .jr__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; border-bottom: 2px solid var(--fg); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+  .jr__mast { font-weight: 700; font-size: clamp(1.4rem, 5cqi, 2.4rem); letter-spacing: -0.01em; }
+  .jr__issue { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .jr__row {
+    display: grid; grid-template-columns: 2.2rem 1fr auto auto 2.5rem;
+    gap: 0.8rem; align-items: baseline;
+    padding-block: 0.85rem; border-bottom: 1px solid var(--line);
+  }
+  .jr__num { color: var(--accent); font-size: 0.8rem; }
+  .jr__title { font-size: clamp(1.15rem, 3.4cqi, 1.55rem); }
+  .jr__dots { flex: none; min-width: 2rem; border-bottom: 1.5px dotted var(--fg-3); transform: translateY(-0.28em); }
+  .jr__author { color: var(--fg-2); font-style: italic; }
+  .jr__pg { text-align: right; font-size: 0.85rem; color: var(--fg-3); font-feature-settings: 'tnum'; }
+  .jr__note { margin-top: 1rem; color: var(--fg-3); font-size: 0.82rem; }
+
+  /* ── 03 colophon ── */
+  .cl {
+    background: #efe8da; color: #26211a;
+    display: grid; place-items: center;
+    padding: clamp(2rem, 8cqi, 5rem);
+  }
+  .cl__page { max-width: 30rem; display: flex; flex-direction: column; gap: 1rem; }
+  .cl__mark {
+    width: 3.4rem; height: 3.4rem; border-radius: 50%;
+    background: #a34a2a; color: #efe8da;
+    display: grid; place-items: center;
+    font-size: 2rem; font-style: normal; font-weight: 700;
+  }
+  .cl__name { font-size: clamp(1.6rem, 5.4cqi, 2.3rem); font-weight: 600; letter-spacing: -0.01em; }
+  .cl__body { line-height: 1.65; font-size: clamp(1rem, 2.8cqi, 1.15rem); color: #57493c; }
+  .cl__facts { display: grid; grid-template-columns: repeat(3, auto); gap: 1.5rem; border-top: 1px solid #26211a33; padding-top: 1rem; }
+  .cl__facts dt { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em; color: #a34a2a; margin-bottom: 0.25rem; }
+  .cl__facts dd { font-size: 0.88rem; color: #57493c; }
+
+  /* ── 04 subscription card ── */
+  .sub {
+    background: var(--bg); color: var(--fg);
+    display: grid; place-items: center;
+    padding: clamp(1.5rem, 7cqi, 4.5rem);
+  }
+  .sub__card {
+    width: min(100%, 26rem);
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    padding: clamp(1.4rem, 5cqi, 2.4rem);
+    box-shadow: 8px 8px 0 color-mix(in srgb, var(--accent) 22%, transparent);
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .sub__kicker { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .sub__head { font-size: clamp(1.5rem, 5cqi, 2rem); font-weight: 600; line-height: 1.15; }
+  .sub__form { display: flex; flex-direction: column; gap: 0.7rem; }
+  .sub__opt { display: flex; gap: 0.6rem; align-items: baseline; cursor: pointer; font-size: 0.95rem; }
+  .sub__opt input { accent-color: var(--accent); }
+  .sub__opt em { display: block; color: var(--fg-3); font-size: 0.78rem; }
+  .sub__frac { font-size: 0.85rem; color: var(--fg-2); border-left: 2px solid var(--accent); padding-left: 0.7rem; }
+  .sub__btn {
+    margin-top: 0.4rem;
+    background: var(--accent); color: var(--accent-contrast);
+    border: 1px solid var(--accent);
+    padding: 0.7em 1em; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: filter 0.2s var(--ease);
+  }
+  .sub__btn:hover { filter: brightness(1.08); }
+
+  /* ── 05 catalogue (real px) ── */
+  .cat { display: grid; place-items: start center; background: var(--bg); }
+  .cat__app {
+    width: min(100%, 34rem);
+    background: var(--bg); color: var(--fg);
+    border: 1px solid var(--line);
+    font-family: var(--fam);
+  }
+  .cat__bar { display: flex; align-items: center; gap: 0.8rem; padding: 10px 14px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 4%, var(--bg)); }
+  .cat__brand { font-size: 13px; font-weight: 600; color: var(--accent); }
+  .cat__search {
+    flex: 1; font: inherit; font-size: 13px;
+    background: transparent; color: inherit;
+    border: 1px solid var(--line); border-radius: 3px;
+    padding: 5px 9px; outline: none;
+  }
+  .cat__search:focus { border-color: var(--accent); }
+  .cat__table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .cat__table th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-3); padding: 9px 14px; border-bottom: 1px solid var(--line); font-weight: 500; }
+  .cat__table td { padding: 10px 14px; border-bottom: 1px solid var(--line-soft); }
+  .cat__table td:first-child { color: var(--accent); font-feature-settings: 'tnum'; width: 3.2rem; }
+  .cat__status { padding: 9px 14px; font-size: 11.5px; color: var(--fg-3); }
+
+  @media (max-width: 640px) {
+    .jr__row { grid-template-columns: 1.8rem 1fr auto 2rem; }
+    .jr__author { display: none; }
+    .cl__facts { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  }
+</style>

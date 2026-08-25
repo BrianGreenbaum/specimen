@@ -1,0 +1,217 @@
+---
+// Find your voice. Every specimen declares five "feelings" — Warm, Wonky,
+// Industrial, Glamorous — and this page turns that vocabulary into a way in.
+// Stack mood chips, filter by category, and the matching faces present
+// themselves at display size, each in its own theme palette.
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+
+const moodCount = new Map<string, number>();
+fonts.forEach((f) => f.data.feelings.forEach((m) => moodCount.set(m, (moodCount.get(m) ?? 0) + 1)));
+const moods = Array.from(moodCount.entries())
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const categories = Array.from(new Set(fonts.map((f) => f.data.category)));
+
+const data = fonts.map((f) => ({
+  slug: f.id,
+  name: f.data.name,
+  family: f.data.fontFamily,
+  category: f.data.category,
+  feelings: f.data.feelings,
+  designer: f.data.designer,
+  blurb: f.data.blurb,
+  themeStyle: [
+    `--paper:${f.data.theme.bg}`, `--paper-2:${f.data.theme.bg2}`,
+    `--ink:${f.data.theme.fg}`, `--ink-2:${f.data.theme.fg2}`, `--ink-3:${f.data.theme.fg3}`,
+    `--hairline:${f.data.theme.line}`, `--hairline-2:${f.data.theme.lineSoft}`,
+    `--accent:${f.data.theme.accent}`, `--accent-contrast:${f.data.theme.accentContrast}`,
+    `color-scheme:${f.data.theme.mode}`,
+  ].join('; '),
+}));
+---
+<Layout title="Find Your Voice — Specimen" description="Search the library by personality. Stack the feelings a project needs — warm, wonky, industrial, calm — and meet the open-source faces that carry them.">
+  <SiteHeader current="Moods" />
+
+  <header class="mood-hero">
+    <div class="container">
+      <p class="label" data-reveal>Moods · {fonts.length} faces · {moods.length} feelings</p>
+      <h1 class="mood-hero__title" data-reveal style="--reveal-delay:80ms">Find your<br /><em>voice</em></h1>
+      <p class="mood-hero__lede" data-reveal style="--reveal-delay:160ms">
+        You don't pick a typeface by filename — you pick it by how it should feel. Choose the
+        temperament the work calls for and the library answers with faces that have it.
+      </p>
+    </div>
+  </header>
+
+  <section class="container mood-main" data-moods data-fonts={JSON.stringify(data)}>
+    <div class="mood-controls">
+      <div class="mood-chips" role="group" aria-label="Feelings">
+        {moods.map(([m]) => (
+          <button type="button" class="mood-chip" data-mood={m} aria-pressed="false">{m}</button>
+        ))}
+      </div>
+      <div class="mood-sub">
+        <div class="mood-cats" role="group" aria-label="Category">
+          {categories.map((c, i) => (
+            <button type="button" class:list={['mood-cat', { 'is-on': i === 0 }]} data-cat={c} aria-pressed={i === 0 ? 'true' : 'false'}>{c}</button>
+          ))}
+          <button type="button" class="mood-clear" data-mood-clear>Clear all</button>
+        </div>
+        <p class="label mood-count"><output data-mood-count>{fonts.length}</output> faces match</p>
+      </div>
+    </div>
+
+    <ul class="mood-grid">
+      {fonts.map((f) => (
+        <li
+          class="mood-card"
+          style={`--fam:'${f.data.fontFamily}'; ${data.find((d) => d.slug === f.id)!.themeStyle}`}
+          data-card={f.id}
+        >
+          <a href={`/fonts/${f.id}`} class="mood-card__link">
+            <span class="mood-card__name">{f.data.name}</span>
+            <span class="mood-card__blurb">{f.data.blurb}</span>
+            <span class="mood-card__meta label">{f.data.designer}</span>
+            <span class="mood-card__tags">
+              {f.data.feelings.map((m) => <i class="mood-tag">{m}</i>)}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mood-empty label" data-mood-empty hidden>No face carries that whole combination — yet.</p>
+  </section>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-moods]').forEach((root) => {
+    const fonts = JSON.parse(root.dataset.fonts || '[]');
+    const cards = new Map<string, HTMLElement>();
+    root.querySelectorAll<HTMLElement>('[data-card]').forEach((el) => cards.set(el.dataset.card!, el));
+    const countEl = root.querySelector<HTMLElement>('[data-mood-count]')!;
+    const emptyEl = root.querySelector<HTMLElement>('[data-mood-empty]')!;
+
+    const active = new Set<string>();
+    let cat = 'All';
+
+    const apply = () => {
+      let n = 0;
+      for (const f of fonts) {
+        const moodOk = active.size === 0 || [...active].every((m) => f.feelings.includes(m));
+        const catOk = cat === 'All' || f.category === cat;
+        const show = moodOk && catOk;
+        const card = cards.get(f.slug);
+        if (!card) continue;
+        card.hidden = !show;
+        if (show) n++;
+      }
+      countEl.textContent = String(n);
+      emptyEl.hidden = n > 0;
+    };
+
+    root.querySelectorAll<HTMLButtonElement>('[data-mood]').forEach((chip) =>
+      chip.addEventListener('click', () => {
+        const m = chip.dataset.mood!;
+        if (active.has(m)) active.delete(m); else active.add(m);
+        chip.setAttribute('aria-pressed', String(active.has(m)));
+        apply();
+      })
+    );
+    root.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach((b) =>
+      b.addEventListener('click', () => {
+        cat = b.dataset.cat!;
+        root.querySelectorAll('.mood-cat').forEach((x) => {
+          x.classList.toggle('is-on', x === b);
+          (x as HTMLElement).setAttribute('aria-pressed', String(x === b));
+        });
+        apply();
+      })
+    );
+    root.querySelector('[data-mood-clear]')?.addEventListener('click', () => {
+      active.clear();
+      root.querySelectorAll('[data-mood]').forEach((c) => c.setAttribute('aria-pressed', 'false'));
+      apply();
+    });
+  });
+</script>
+
+<style>
+  .mood-hero { padding-block: clamp(3rem, 10vh, 6rem) clamp(2rem, 5vh, 3.5rem); border-bottom: 1px solid var(--line); }
+  .mood-hero__title {
+    font-family: var(--font-ui); font-weight: 680;
+    font-size: clamp(3rem, 12vw, 8.5rem);
+    line-height: 0.9; letter-spacing: -0.03em; margin: var(--sp-3) 0 var(--sp-4);
+  }
+  /* the word itself set in a voice that matches it */
+  .mood-hero__title em { font-family: 'Fraunces Variable'; font-style: italic; font-weight: 560; color: var(--accent); }
+  .mood-hero__lede { max-width: 58ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
+
+  .mood-main { padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem); }
+
+  .mood-controls { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .mood-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .mood-chip {
+    font-size: var(--step--1); letter-spacing: 0.02em;
+    padding: 0.45em 0.9em; border-radius: 100px;
+    border: 1px solid var(--line); color: var(--fg-2);
+    transition: all 0.2s var(--ease);
+  }
+  .mood-chip:hover { border-color: var(--fg); color: var(--fg); }
+  .mood-chip[aria-pressed='true'] {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-contrast);
+  }
+
+  .mood-sub {
+    display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding-block: var(--sp-2);
+  }
+  .mood-cats { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; }
+  .mood-cat, .mood-clear {
+    font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--fg-3);
+    padding: 0.35em 0.7em; border-radius: 2px; border: 1px solid transparent;
+    transition: all 0.2s var(--ease);
+  }
+  .mood-cat:hover { color: var(--fg); }
+  .mood-cat.is-on { background: var(--fg); color: var(--bg); }
+  .mood-clear { margin-left: auto; }
+  .mood-clear:hover { color: var(--accent); }
+  .mood-count { margin-left: auto; }
+  .mood-count output { color: var(--accent); font-weight: 600; }
+  .mood-cat + .mood-count { margin-left: 0; }
+
+  .mood-grid {
+    margin-top: var(--sp-5);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: var(--sp-3);
+  }
+  /* each card is its own themed room */
+  .mood-card {
+    background: var(--paper); color: var(--ink);
+    border-radius: var(--radius);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), opacity 0.3s var(--ease);
+  }
+  .mood-card[hidden] { display: none; }
+  .mood-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.45); z-index: 1; }
+  .mood-card__link { display: flex; flex-direction: column; gap: 0.6rem; height: 100%; padding: var(--sp-4); }
+  .mood-card__name {
+    font-family: var(--fam);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    line-height: 1; letter-spacing: -0.01em;
+  }
+  .mood-card__blurb { font-size: var(--step--1); line-height: 1.5; color: var(--ink-2); max-width: 34ch; }
+  .mood-card__meta { color: var(--ink-3); margin-top: auto; }
+  .mood-card__tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .mood-tag {
+    font-style: normal; font-family: var(--font-ui);
+    font-size: 0.68rem; letter-spacing: 0.03em;
+    padding: 0.2em 0.6em; border-radius: 100px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--ink-2);
+  }
+</style>

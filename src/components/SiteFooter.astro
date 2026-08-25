@@ -11,7 +11,7 @@ const { prev, next } = Astro.props;
     <div class="container footer-nav">
       <div class="footer-nav__cell">
         {prev && (
-          <a href={`/fonts/${prev.id}`} class="footer-nav__link">
+          <a href={`/fonts/${prev.id}`} class="footer-nav__link" data-prev-href={prev.id}>
             <span class="label">← Previous</span>
             <span class="footer-nav__name" style={`font-family:${prev.data.fontFamily}`}>{prev.data.name}</span>
           </a>
@@ -19,7 +19,7 @@ const { prev, next } = Astro.props;
       </div>
       <div class="footer-nav__cell footer-nav__cell--right">
         {next && (
-          <a href={`/fonts/${next.id}`} class="footer-nav__link footer-nav__link--right">
+          <a href={`/fonts/${next.id}`} class="footer-nav__link footer-nav__link--right" data-next-href={next.id}>
             <span class="label">Next →</span>
             <span class="footer-nav__name" style={`font-family:${next.data.fontFamily}`}>{next.data.name}</span>
           </a>
@@ -33,9 +33,29 @@ const { prev, next } = Astro.props;
       <span class="wordmark__mark">Specimen</span>
       <span class="label">A living library of type</span>
     </div>
+    {prev && next && (
+      <span class="label footer-base__keys" aria-hidden="true">J / K to move through the collection</span>
+    )}
     <a href="/#index" class="label footer-base__top">Back to index ↑</a>
   </div>
 </footer>
+
+<script>
+  // j / k walks the collection in index order (skips when typing anywhere).
+  const prevEl = document.querySelector('[data-prev-href]');
+  const nextEl = document.querySelector('[data-next-href]');
+  if (prevEl || nextEl) {
+    document.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || t?.isContentEditable) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      if (k === 'k' && prevEl) window.location.href = (prevEl as HTMLElement).dataset.prevHref!;
+      if (k === 'j' && nextEl) window.location.href = (nextEl as HTMLElement).dataset.nextHref!;
+    });
+  }
+</script>
 
 <style>
   .site-footer { border-top: 1px solid var(--fg); margin-top: var(--sp-7); }
@@ -51,17 +71,19 @@ const { prev, next } = Astro.props;
 
   .footer-base {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     gap: var(--sp-5);
     align-items: center;
     padding-block: var(--sp-5);
   }
   .footer-base__brand { display: flex; flex-direction: column; gap: 2px; }
   .footer-base__brand .wordmark__mark { font-family: var(--font-ui); font-weight: 650; font-size: 1.1rem; letter-spacing: -0.02em; }
+  .footer-base__keys { color: var(--fg-3); white-space: nowrap; }
   .footer-base__top { white-space: nowrap; }
   .footer-base__top:hover { color: var(--fg); }
 
   @media (max-width: 720px) {
     .footer-base { grid-template-columns: 1fr; gap: var(--sp-3); }
+    .footer-base__keys { display: none; }
   }
 </style>

@@ -3,6 +3,10 @@
 // Loads global styles + all seven self-hosted specimen typefaces.
 import '../styles/global.css';
 
+// The ⌘K command palette — one instance, mounted in the shell so it exists on
+// every page. It renders nothing until summoned.
+import CommandPalette from '../components/CommandPalette.astro';
+
 // --- Variable specimen fonts (full axis sets) ---
 import '@fontsource-variable/inter/opsz.css';
 import '@fontsource-variable/inter/opsz-italic.css';
@@ -73,6 +77,20 @@ import '@fontsource-variable/fredoka/standard.css';        // wght + wdth (no it
 import '@fontsource-variable/unbounded/wght.css';
 import '@fontsource/pinyon-script/400.css';
 
+// --- The six-face expansion (full specimens, every section) ---
+import '@fontsource-variable/crimson-pro/wght.css';
+import '@fontsource-variable/crimson-pro/wght-italic.css';
+import '@fontsource-variable/alegreya/wght.css';
+import '@fontsource-variable/alegreya/wght-italic.css';
+import '@fontsource-variable/bitter/wght.css';
+import '@fontsource-variable/bitter/wght-italic.css';
+import '@fontsource-variable/work-sans/wght.css';
+import '@fontsource-variable/work-sans/wght-italic.css';
+import '@fontsource-variable/dm-sans/opsz.css';            // wght + opsz
+import '@fontsource-variable/dm-sans/opsz-italic.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght-italic.css';
+
 // --- Timeline-only faces (shown in History chapters; no specimen page) ---
 import '@fontsource/marcellus/400.css';
 import '@fontsource-variable/oswald/wght.css';
@@ -91,6 +109,8 @@ export interface Props {
   mode?: 'light' | 'dark';
   /** Fixed-art-direction pages (font/era specimens) ignore the global toggle. */
   fixedTheme?: boolean;
+  /** Inline SVG social card (per-font OG image). */
+  ogSvg?: string;
 }
 
 const {
@@ -99,6 +119,7 @@ const {
   themeStyle,
   mode = 'light',
   fixedTheme = false,
+  ogSvg,
 } = Astro.props;
 ---
 
@@ -111,9 +132,17 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {ogSvg && (
+      <meta property="og:image" content={`data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(ogSvg)))}`} />
+    )}
   </head>
   <body style={themeStyle}>
     <slot />
+    <CommandPalette />
 
     <script>
       // Dev-only visual feedback overlay (agentation). The `import.meta.env.DEV`

@@ -1,0 +1,297 @@
+---
+// The Pairing Workbench. Set any two faces from the library against each
+// other — display over body, or body over body — and tune the relationship
+// live. Curated recipes are generated from every font's own `pairsWith`
+// roles, so the presets are always true to how the library describes itself.
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+
+const data = fonts.map((f) => ({
+  slug: f.id,
+  name: f.data.name,
+  family: f.data.fontFamily,
+  isVariable: f.data.isVariable,
+  wght: (() => {
+    const a = f.data.axes.find((x) => x.tag === 'wght');
+    return { min: a?.min ?? 400, max: a?.max ?? 400, def: a?.default ?? 400 };
+  })(),
+}));
+
+const recipes = fonts.flatMap((f) =>
+  (f.data.pairsWith ?? [])
+    .filter((p: any) => p.name !== f.data.name)
+    .map((p: any) => ({
+      a: f.id, bSlug: fonts.find((x) => x.data.name === p.name)?.id ?? null,
+      role: p.role,
+    }))
+).filter((r) => r.bSlug);
+---
+<Layout title="Pairing Workbench — Specimen" description="Set any two faces of the library against each other and tune the relationship live — headline over body, with curated recipes drawn from each specimen's own pairing notes.">
+  <SiteHeader current="Pair" />
+
+  <header class="pair-hero">
+    <div class="container">
+      <p class="label" data-reveal>Pair · {data.length} faces · {recipes.length} recipes</p>
+      <h1 class="pair-hero__title" data-reveal style="--reveal-delay:80ms">The pairing<br />work<em>bench</em></h1>
+      <p class="pair-hero__lede" data-reveal style="--reveal-delay:160ms">
+        Two faces, one page. Choose a headline voice and a workhorse body, then tune size,
+        weight and measure until the conversation sounds right — or start from a recipe
+        suggested by the specimens themselves.
+      </p>
+    </div>
+  </header>
+
+  <section class="container pair-main" data-pair data-fonts={JSON.stringify(data)}>
+    <!-- Recipe rail -->
+    <aside class="pair-rail">
+      <div class="label pair-rail__head">Recipes</div>
+      <ul class="pair-recipes" data-pair-recipes>
+        {recipes.map((r, i) => {
+          const A = fonts.find((f) => f.id === r.a)!;
+          const B = fonts.find((f) => f.id === r.bSlug)!;
+          return (
+            <li>
+              <button type="button" class:list={['pair-recipe', { 'is-on': i === 0 }]} data-recipe={`${r.a}+${r.bSlug}`}>
+                <span class="pair-recipe__a" style={`font-family:${A.data.fontFamily}`}>{A.data.name}</span>
+                <span class="pair-recipe__sep" aria-hidden="true">+</span>
+                <span class="pair-recipe__b" style={`font-family:${B.data.fontFamily}`}>{B.data.name}</span>
+                <span class="pair-recipe__role label">{r.role}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </aside>
+
+    <!-- The bench -->
+    <div class="pair-bench">
+      <div class="pair-selects">
+        <label class="pair-sel">
+          <span class="label">Headline</span>
+          <select data-pair-a aria-label="Headline face">
+            {fonts.map((f) => <option value={f.id} selected={f.id === 'fraunces'}>{f.data.name}</option>)}
+          </select>
+        </label>
+        <button class="pair-swap" type="button" data-pair-swap title="Swap roles" aria-label="Swap headline and body">⇅</button>
+        <label class="pair-sel">
+          <span class="label">Body</span>
+          <select data-pair-b aria-label="Body face">
+            {fonts.map((f) => <option value={f.id} selected={f.id === 'inter'}>{f.data.name}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <div class="pair-tuners">
+        <label class="ctl"><span class="label">Head size <output data-out="asize">44</output>px</span>
+          <input type="range" data-tune="asize" min="24" max="120" step="1" value="44" /></label>
+        <label class="ctl"><span class="label">Head weight <output data-out="awght">600</output></span>
+          <input type="range" data-tune="awght" min="100" max="900" step="1" value="600" /></label>
+        <label class="ctl"><span class="label">Body size <output data-out="bsize">17</output>px</span>
+          <input type="range" data-tune="bsize" min="12" max="28" step="0.5" value="17" /></label>
+        <label class="ctl"><span class="label">Measure <output data-out="measure">62</output>ch</span>
+          <input type="range" data-tune="measure" min="34" max="90" step="1" value="62" /></label>
+        <label class="ctl"><span class="label">Leading <output data-out="lead">1.55</output></span>
+          <input type="range" data-tune="lead" min="1.2" max="2" step="0.01" value="1.55" /></label>
+      </div>
+
+      <div class="pair-stage">
+        <h3 class="pair-h" data-pair-h style={`font-family:'Fraunces Variable'`}>A quiet voice for loud ideas</h3>
+        <p class="pair-b" data-pair-b style={`font-family:'Inter Variable'`}>
+          Typography is the craft of endowing human language with a durable visual form. A well-made
+          typeface is at once invisible and unforgettable: it disappears into the act of reading, yet it
+          shapes the tone of every word it carries. Set two faces side by side and you are really asking
+          one question — do these voices belong in the same room? Watch the edges: where the headline ends,
+          does the body begin without a stumble?
+        </p>
+      </div>
+
+      <div class="pair-foot">
+        <a class="btn" href="/fonts/fraunces" data-pair-link-a>Open Fraunces →</a>
+        <a class="btn btn--accent" href="/fonts/inter" data-pair-link-b>Open Inter →</a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pair]').forEach(async (root) => {
+    const fonts = JSON.parse(root.dataset.fonts || '[]');
+    const byId = new Map(fonts.map((f: any) => [f.slug ?? f.id, f]));
+    const selA = root.querySelector<HTMLSelectElement>('[data-pair-a]')!;
+    const selB = root.querySelector<HTMLSelectElement>('[data-pair-b]')!;
+    const h = root.querySelector<HTMLElement>('[data-pair-h]')!;
+    const b = root.querySelector<HTMLElement>('[data-pair-b]')!;
+    const linkA = root.querySelector<HTMLAnchorElement>('[data-pair-link-a]')!;
+    const linkB = root.querySelector<HTMLAnchorElement>('[data-pair-link-b]')!;
+    const out = (k: string) => root.querySelector<HTMLElement>(`[data-out="${k}"]`)!;
+
+    const tune: Record<string, any> = {
+      asize: 44, awght: 600, bsize: 17, measure: 62, lead: 1.55,
+    };
+    let swap = false;
+
+    // load both families before first paint of the bench
+    await Promise.all(
+      ['400', '700'].flatMap((w) =>
+        Array.from(byId.values()).map((f: any) =>
+          document.fonts.load(`${w} 16px "${String(f.family).replace(/['"]/g, '')}"`, 'Aa').catch(() => {})
+        )
+      )
+    );
+
+    const applyTune = () => {
+      h.style.fontSize = tune.asize + 'px';
+      h.style.fontVariationSettings = `'wght' ${tune.awght}`;
+      b.style.fontSize = tune.bsize + 'px';
+      b.style.lineHeight = String(tune.lead);
+      b.style.maxWidth = tune.measure + 'ch';
+      out('asize').textContent = String(Math.round(tune.asize));
+      out('awght').textContent = String(tune.awght);
+      out('bsize').textContent = String(tune.bsize);
+      out('measure').textContent = String(tune.measure);
+      out('lead').textContent = Number(tune.lead).toFixed(2);
+    };
+
+    const applyFaces = () => {
+      const A = byId.get(swap ? selB.value : selA.value)!;
+      const B = byId.get(swap ? selA.value : selB.value)!;
+      h.style.fontFamily = A.family;
+      h.style.fontVariationSettings =
+        `'wght' ${Math.min(Math.max(tune.awght, A.wght.min), A.wght.max)}`;
+      b.style.fontFamily = B.family;
+      linkA.href = `/fonts/${A.slug}`;
+      linkB.href = `/fonts/${B.slug}`;
+      linkA.textContent = `Open ${A.name} →`;
+      linkB.textContent = `Open ${B.name} →`;
+    };
+
+    selA.addEventListener('change', applyFaces);
+    selB.addEventListener('change', applyFaces);
+    root.querySelector('[data-pair-swap]')?.addEventListener('click', () => {
+      swap = !swap;
+      applyFaces();
+    });
+    root.querySelectorAll<HTMLInputElement>('[data-tune]').forEach((inp) =>
+      inp.addEventListener('input', () => {
+        const v = inp.dataset.tune!;
+        tune[v === 'awght' ? 'awght' : v] = +inp.value;
+        if (v === 'awght') applyFaces();
+        applyTune();
+      })
+    );
+    root.querySelectorAll<HTMLButtonElement>('[data-recipe]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const [a, bslug] = (btn.getAttribute('data-recipe') || '').split('+');
+        selA.value = a; selB.value = bslug!; swap = false;
+        root.querySelectorAll('.pair-recipe').forEach((x) => x.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        applyFaces();
+        document.querySelector('.pair-tuners')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      })
+    );
+
+    applyTune();
+    applyFaces();
+  });
+</script>
+
+<style>
+  .pair-hero { padding-block: clamp(3rem, 10vh, 6rem) clamp(2rem, 5vh, 3.5rem); border-bottom: 1px solid var(--line); }
+  .pair-hero__title {
+    font-family: var(--font-ui); font-weight: 680;
+    font-size: clamp(3rem, 12vw, 8.5rem);
+    line-height: 0.9; letter-spacing: -0.03em; margin: var(--sp-3) 0 var(--sp-4);
+  }
+  .pair-hero__title em { font-family: 'Playfair Display Variable'; font-style: italic; font-weight: 600; color: var(--accent); }
+  .pair-hero__lede { max-width: 60ch; font-size: var(--step-1); line-height: 1.55; color: var(--fg-2); }
+
+  .pair-main {
+    display: grid;
+    grid-template-columns: clamp(15rem, 22vw, 20rem) 1fr;
+    gap: var(--sp-6);
+    padding-block: clamp(2rem, 5vh, 4rem) clamp(3rem, 8vh, 6rem);
+    align-items: start;
+  }
+
+  /* Recipe rail */
+  .pair-rail { position: sticky; top: 96px; }
+  .pair-rail__head { padding-bottom: var(--sp-2); border-bottom: 1px solid var(--fg); margin-bottom: var(--sp-2); }
+  .pair-recipes { max-height: 62vh; overflow-y: auto; scrollbar-width: thin; }
+  .pair-recipe {
+    width: 100%; text-align: left;
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.5rem;
+    padding: 0.65rem 0.5rem;
+    border-bottom: 1px solid var(--line-soft);
+    transition: background 0.2s var(--ease), padding-left 0.25s var(--ease);
+  }
+  .pair-recipe:hover { background: var(--bg-2); padding-left: 0.75rem; }
+  .pair-recipe.is-on { box-shadow: inset 3px 0 0 var(--accent); background: var(--bg-2); }
+  .pair-recipe__a { font-size: 1.02rem; }
+  .pair-recipe__sep { color: var(--fg-3); font-family: var(--font-mono); font-size: 0.8rem; }
+  .pair-recipe__b { font-size: 1.02rem; color: var(--fg-2); }
+  .pair-recipe__role { flex-basis: 100%; }
+
+  /* The bench */
+  .pair-bench { display: flex; flex-direction: column; gap: var(--sp-5); min-width: 0; }
+  .pair-selects { display: flex; align-items: end; gap: var(--sp-3); flex-wrap: wrap; }
+  .pair-sel { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 12rem; }
+  .pair-sel select {
+    font-family: var(--font-mono); font-size: 0.85rem;
+    background: var(--bg); color: var(--fg);
+    border: 1px solid var(--fg-3); border-radius: var(--radius);
+    padding: 0.5rem 0.6rem;
+  }
+  .pair-swap {
+    font-family: var(--font-mono); font-size: 1.1rem;
+    padding: 0.55rem 0.8rem; border: 1px solid var(--line); border-radius: var(--radius);
+    color: var(--fg-2); transition: all 0.2s var(--ease);
+  }
+  .pair-swap:hover { border-color: var(--fg); color: var(--fg); transform: rotate(180deg); }
+
+  .pair-tuners {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--sp-3) var(--sp-4);
+    border: 1px solid var(--line);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--bg-2);
+  }
+  .ctl { display: flex; flex-direction: column; gap: 0.35rem; }
+  .ctl output { color: var(--accent); }
+  .ctl input[type='range'] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 2px; background: var(--fg-3); cursor: pointer;
+  }
+  .ctl input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+  .ctl input[type='range']::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+
+  .pair-stage { border-top: 1px solid var(--fg); padding-top: var(--sp-5); min-width: 0; }
+  .pair-h { line-height: 1.05; letter-spacing: -0.015em; margin-bottom: var(--sp-4); overflow-wrap: break-word; }
+  .pair-b { color: var(--fg-2); line-height: 1.55; }
+
+  .pair-foot { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .pair-main { grid-template-columns: 1fr; }
+    .pair-rail { position: static; order: 2; }
+    .pair-bench { order: 1; }
+    .pair-recipes { max-height: none; columns: 2; column-gap: var(--sp-4); }
+    .pair-recipes li { break-inside: avoid; }
+  }
+  @media (max-width: 640px) {
+    .pair-recipes { columns: 1; }
+  }
+</style>
