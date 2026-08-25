@@ -3,114 +3,241 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
+// Companions loaded site-wide in Layout.astro (and both are the mdx-sanctioned pairings):
+const mono = "'IBM Plex Mono', ui-monospace, monospace";
+const serif = "'Libre Baskerville', Georgia, serif";
 
-// --- 01 · Mission-control telemetry console (interactive, real device scale) --
-// Three flight phases the operator can switch; tabular telemetry re-streams,
-// subsystem toggles flip state, gauges re-arm. The canonical Space Grotesk use.
+// VERIFIED against node_modules/@fontsource-variable/space-grotesk (the file
+// Layout.astro loads): one axis, wght 300–700; GSUB carries liga / tnum / pnum /
+// frac (numr+dnom); NO stylistic sets, NO italic. Every act below performs the
+// weight axis, the countdown-clock tabular figures, the cut terminals and the
+// single-storey g — and claims nothing else.
+
+// --- 01 · Standards-manual sheet --------------------------------------------
+const grades = [300, 400, 500, 600, 700];
+const glyphCells = [
+  { ch: 'a', note: 'terminal cut at the angle of the stroke — never rounded' },
+  { ch: 'g', note: 'single-storey loop, inherited from the monospace master' },
+  { ch: '7', note: 'figures run narrow and tall: the countdown grade' },
+];
+
+// --- 02 · JPL-style travel poster --------------------------------------------
+const poStats = [
+  ['DISTANCE', '39.46', 'LIGHT-YEARS'],
+  ['RADIUS', '0.92', 'EARTH = 1'],
+  ['ONE YEAR', '6.10', 'EARTH DAYS'],
+];
+
+// --- 03 · Magazine feature opener --------------------------------------------
+const edStats = [
+  { k: 'ACTIVE SATELLITES', v: '11,580', u: '' },
+  { k: 'TRACKED FRAGMENTS', v: '43,920', u: '>10 cm' },
+  { k: 'CONJUNCTION ALERTS', v: '1,470', u: 'per day' },
+  { k: 'LAUNCHED SINCE 2019', v: '2/3', u: 'of the fleet', frac: true },
+];
+
+// --- 04 · Launch-webcast telemetry console -----------------------------------
 const phases = [
   {
-    id: 'ascent', name: 'ASCENT', met: '+00:02:41', live: true,
-    vehicle: 'ARTEMIS-VII', stage: 'STAGE I BURN',
+    id: 'prelaunch', name: 'PRELAUNCH', t: -47, stage: 'TERMINAL COUNT',
     telem: [
-      ['ALT', '38.42', 'km'],
-      ['VEL', '1.94', 'km/s'],
-      ['DYN.Q', '34.1', 'kPa'],
-      ['THR', '98.6', '%'],
-      ['PITCH', '74.2', '°'],
-      ['LOX', '71.3', '%'],
-    ] as [string, string, string][],
+      ['ALT', '0.00', 'km'], ['VEL', '0.00', 'km/s'], ['THR', '0.0', '%'],
+      ['LOX', '100.0', '%'], ['CH4', '100.0', '%'], ['WIND', '4.2', 'm/s'],
+    ],
     subs: [
-      ['GUIDANCE', 'NOMINAL', 'ok'],
-      ['PROPULSION', 'NOMINAL', 'ok'],
-      ['TELEMETRY', 'LOCKED', 'ok'],
-      ['RANGE SAFE', 'ARMED', 'warn'],
-    ] as [string, string, string][],
-    gauges: [['CHAMBER', 78], ['TURBO', 64], ['HYDRAULIC', 91]] as [string, number][],
+      ['GUIDANCE', 'NOMINAL', 'ok'], ['PROPULSION', 'CHILLED', 'ok'],
+      ['RANGE', 'GREEN', 'ok'], ['STRONGBACK', 'RETRACT', 'warn'],
+    ],
+    gauges: [['TANK PRESS', 92], ['HYDRAULIC', 100], ['POWER', 100]],
   },
   {
-    id: 'meco', name: 'MECO', met: '+00:08:52', live: true,
-    vehicle: 'ARTEMIS-VII', stage: 'STAGE SEP',
+    id: 'ascent', name: 'ASCENT', t: 164, stage: 'STAGE ONE BURN',
     telem: [
-      ['ALT', '188.07', 'km'],
-      ['VEL', '7.61', 'km/s'],
-      ['DYN.Q', '00.0', 'kPa'],
-      ['THR', '00.0', '%'],
-      ['PITCH', '02.8', '°'],
-      ['LOX', '04.2', '%'],
-    ] as [string, string, string][],
+      ['ALT', '38.42', 'km'], ['VEL', '1.94', 'km/s'], ['THR', '98.6', '%'],
+      ['LOX', '61.3', '%'], ['CH4', '58.9', '%'], ['DYN.Q', '34.1', 'kPa'],
+    ],
     subs: [
-      ['GUIDANCE', 'NOMINAL', 'ok'],
-      ['PROPULSION', 'CUTOFF', 'warn'],
-      ['TELEMETRY', 'LOCKED', 'ok'],
-      ['RANGE SAFE', 'SAFED', 'ok'],
-    ] as [string, string, string][],
-    gauges: [['CHAMBER', 4], ['TURBO', 0], ['HYDRAULIC', 88]] as [string, number][],
+      ['GUIDANCE', 'NOMINAL', 'ok'], ['PROPULSION', 'NOMINAL', 'ok'],
+      ['RANGE', 'GREEN', 'ok'], ['ABORT', 'ARMED', 'warn'],
+    ],
+    gauges: [['CHAMBER', 78], ['TURBOPUMP', 64], ['HYDRAULIC', 91]],
   },
   {
-    id: 'orbit', name: 'ORBIT', met: '+01:24:17', live: true,
-    vehicle: 'ARTEMIS-VII', stage: 'LEO INSERTION',
+    id: 'orbit', name: 'ORBIT', t: 5057, stage: 'LEO INSERTION',
     telem: [
-      ['ALT', '412.80', 'km'],
-      ['VEL', '7.66', 'km/s'],
-      ['DYN.Q', '00.0', 'kPa'],
-      ['THR', '00.0', '%'],
-      ['INC', '51.64', '°'],
-      ['PWR', '99.1', '%'],
-    ] as [string, string, string][],
+      ['ALT', '412.80', 'km'], ['VEL', '7.66', 'km/s'], ['INC', '51.64', '°'],
+      ['APO', '418.2', 'km'], ['PER', '408.1', 'km'], ['PWR', '99.1', '%'],
+    ],
     subs: [
-      ['GUIDANCE', 'NOMINAL', 'ok'],
-      ['SOLAR ARRAY', 'DEPLOYED', 'ok'],
-      ['TELEMETRY', 'LOCKED', 'ok'],
-      ['THERMAL', 'NOMINAL', 'ok'],
-    ] as [string, string, string][],
-    gauges: [['BATTERY', 99], ['COMMS', 96], ['ATTITUDE', 100]] as [string, number][],
+      ['GUIDANCE', 'NOMINAL', 'ok'], ['SOLAR ARRAY', 'DEPLOYED', 'ok'],
+      ['TELEMETRY', 'LOCKED', 'ok'], ['THERMAL', 'NOMINAL', 'ok'],
+    ],
+    gauges: [['BATTERY', 99], ['COMMS', 96], ['ATTITUDE', 100]],
   },
 ];
 const p0 = phases[0];
 
-// --- 03 · Crypto / on-chain trading terminal (interactive, real px) ----------
-const markets = [
-  ['SOL', 'Solana', '148.92', '+6.41', 1],
-  ['ETH', 'Ethereum', '3,412.08', '+2.18', 1],
-  ['BTC', 'Bitcoin', '67,940.50', '+0.94', 1],
-  ['AVAX', 'Avalanche', '38.17', '-1.62', -1],
-  ['LINK', 'Chainlink', '18.44', '+3.07', 1],
-  ['ARB', 'Arbitrum', '1.082', '-2.94', -1],
-] as [string, string, string, string, number][];
-
-// order book: [price, size] for asks (desc) and bids (desc)
-const asks = [
-  ['149.12', '184.2'], ['149.08', '402.6'], ['149.03', '96.1'],
-  ['148.99', '658.0'], ['148.95', '221.7'],
-] as [string, string][];
-const bids = [
-  ['148.90', '512.4'], ['148.86', '143.9'], ['148.81', '870.3'],
-  ['148.77', '305.5'], ['148.72', '64.8'],
-] as [string, string][];
-
-// --- 04 · Deep-space science data-viz editorial -----------------------------
-const exoplanets = [
-  ['KEPLER-442 b', '1,206', '2.34', '112.3', 0.84],
-  ['TRAPPIST-1 e', '40.7', '0.92', '6.10', 0.71],
-  ['PROXIMA b', '4.24', '1.27', '11.19', 0.62],
-  ['TOI-700 d', '101.4', '1.19', '37.42', 0.69],
-  ['LHS 1140 b', '48.9', '1.73', '24.74', 0.58],
-] as [string, string, string, string, number][];
+// --- 05 · Gravity field -------------------------------------------------------
+// Wheeler's line, set as a weight field: the baked weights below are the
+// reduced-motion / no-pointer composition (a lens centred upper right).
+const gwLines = ['MASS TELLS SPACE', 'HOW TO CURVE.', 'SPACE TELLS MASS', 'HOW TO MOVE.'];
+const gwFocal = { x: 0.72, y: 0.22 };
+const gwField = gwLines.map((line, row) => {
+  const chars = line.split('');
+  return chars.map((ch, col) => {
+    const x = chars.length > 1 ? col / (chars.length - 1) : 0.5;
+    const y = gwLines.length > 1 ? row / (gwLines.length - 1) : 0.5;
+    const d = Math.hypot(x - gwFocal.x, (y - gwFocal.y) * 0.9);
+    const w = Math.round((700 - Math.min(1, d / 0.85) * 400) / 5) * 5;
+    return { ch, w };
+  });
+});
 ---
-<div class="iu" style={`--fam:${fam}`}>
+<div class="iu" style={`--fam:${fam}; --mono:${mono}; --serif:${serif}`}>
 
-  <!-- 01 — INTERACTIVE mission-control telemetry console (real device scale) -->
+  <!-- ============ 01 — BRANDING & IDENTITY ============ -->
+  <figure class="iu__item" data-shoot-click="[data-grade='700']">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Branding &amp; identity — a graphics-standards sheet for an orbital freight carrier, after Danne &amp; Blackburn’s NASA Graphics Standards Manual (1975), reissued for a variable master</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="sm" data-sm>
+        <header class="sm__head">
+          <span class="sm__sec">2.1</span>
+          <span class="sm__title">The Logotype — Reproduction &amp; Grades</span>
+          <span class="sm__man">PERIGEE ORBITAL LOGISTICS · GRAPHICS STANDARDS MANUAL · REISSUE 2026 (ORIGINAL FORMAT 1975)</span>
+        </header>
+        <div class="sm__body">
+          <div class="sm__plate">
+            <div class="sm__stage">
+              <span class="sm__guide sm__guide--cap"><i>cap</i></span>
+              <span class="sm__guide sm__guide--x"><i>x</i></span>
+              <span class="sm__guide sm__guide--base"><i>base</i></span>
+              <span class="sm__guide sm__guide--desc"><i>desc</i></span>
+              <span class="sm__logo" data-sm-logo>perigee</span>
+            </div>
+            <div class="sm__grades" role="group" aria-label="Approved grades">
+              <span class="sm__grades-k">APPROVED GRADES ▸</span>
+              {grades.map((g, i) => (
+                <button class={`sm__grade ${i === 2 ? 'is-on' : ''}`} data-grade={g} type="button" style={`font-variation-settings:'wght' ${g}`}>G{g}</button>
+              ))}
+              <span class="sm__readout" data-sm-readout>'wght' 500 · master instance, never a redrawing</span>
+            </div>
+          </div>
+          <aside class="sm__notes">
+            <div class="sm__cells">
+              {glyphCells.map((c) => (
+                <div class="sm__cell">
+                  <span class="sm__cell-glyph" aria-hidden="true">{c.ch}</span>
+                  <span class="sm__cell-note">{c.note}</span>
+                </div>
+              ))}
+            </div>
+            <div class="sm__spec">
+              <p><b>2.1.1</b> The logotype is set in the corporate grotesque, lowercase only, grade 500, tracked −1&frasl;100 em. It shall not be respaced, sheared, or outlined.</p>
+              <p><b>2.1.2</b> One variable master file supplies every grade. Field units holding metal or transfer artwork must destroy it.</p>
+            </div>
+            <div class="sm__chip">
+              <i></i>
+              <span>CORPORATE COLOR<br/>PANTONE 802&nbsp;C · FLUOR.&nbsp;GREEN</span>
+            </div>
+          </aside>
+        </div>
+        <footer class="sm__foot">
+          <span>NHB 1400.2 FORMAT · SHEET 7 OF 31</span>
+          <span>ISSUED BY THE OFFICE OF CORPORATE IDENTITY, HAWTHORNE</span>
+        </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">A standards manual with one ruling: the wordmark is a variable instance, not artwork. Click a grade — the logotype re-sets across the 300–700 axis and the spec line re-keys. The cells call out what survives every grade: the cut terminal, the single-storey g, the countdown figure.</p>
+  </figure>
+
+  <!-- ============ 02 — ILLUSTRATION & COMMERCIAL ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Illustration &amp; commercial — an exoplanet travel poster, after NASA/JPL’s <em>Visions of the Future</em> series (The Studio at JPL, 2016)</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="po">
+        <div class="po__stars po__stars--a" aria-hidden="true"></div>
+        <div class="po__stars po__stars--b" aria-hidden="true"></div>
+        <div class="po__horizon" aria-hidden="true"></div>
+        <div class="po__inner">
+          <p class="po__kicker" data-reveal>THE GRAND TOUR · ROUTE 7 · DEPARTURES HOURLY</p>
+          <h3 class="po__title">
+            <span class="po__visit" data-reveal style="--reveal-delay:80ms">VISIT</span>
+            <span class="po__dest" data-reveal style="--reveal-delay:160ms">TRAPPIST-<b>1e</b></span>
+          </h3>
+          <p class="po__sub" data-reveal style="--reveal-delay:260ms">Seven worlds, one red sun that never finishes rising. Walk the terminator line, where it is always almost morning.</p>
+          <div class="po__stats" data-reveal style="--reveal-delay:340ms">
+            {poStats.map((s) => (
+              <span class="po__stat"><i>{s[0]}</i><b>{s[1]}</b><em>{s[2]}</em></span>
+            ))}
+          </div>
+          <p class="po__imprint">INTERPLANETARY TOURISM BUREAU · SERIES C, POSTER 7 OF 14 · OFFSET LITHO, PASADENA · MMXXVI</p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The JPL travel-bureau fiction, set in the face it was waiting for: weight 300 spaced caps over a 700 destination, the tall tabular figures doing the fare-card stats. The starfield drifts on two slow layers; everything else is ink.</p>
+  </figure>
+
+  <!-- ============ 03 — EDITORIAL ============ -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — flight-control telemetry, real device scale</span></figcaption>
-    <div class="iu__scene iu__scene--console">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Editorial — a tech-monthly feature opener, after early <em>WIRED</em> under John Plunkett &amp; Barbara Kuhr (1993–98): fluorescent ink, hard data in the margin</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="ed">
+        <header class="ed__strap">
+          <span class="ed__mag">SIGNAL</span>
+          <span class="ed__sec">ORBIT ECONOMY</span>
+          <span class="ed__folio">07.26 · 043</span>
+        </header>
+        <div class="ed__grid">
+          <div class="ed__main">
+            <h3 class="ed__hed">There is no <em>away</em> in orbit.</h3>
+            <p class="ed__deck">Eleven thousand live satellites, forty-four thousand tracked fragments, and a regime of physics that never forgives. Inside the traffic problem 550 kilometres up.</p>
+            <p class="ed__byline">BY MARGUERITE OYELARAN · DIAGRAMS BY THE SIGNAL DESK</p>
+            <div class="ed__body">
+              <p>The first thing operators will tell you is that nothing in low Earth orbit ever really goes away. A paint fleck travels at seven and a half kilometres a second; a dead upper stage is a ten-tonne argument waiting for a counterparty. Every object launched since Sputnik either came home, burned, or is still up there — keeping score.</p>
+              <p>The second thing they tell you is quieter: the collision-avoidance screens have stopped being boring. What used to be a monthly alert is now a before-lunch routine, and the manoeuvre budgets written for a politer sky are running out years early.</p>
+            </div>
+            <p class="ed__pull"><span>“Every collision is a permanent weather system.”</span></p>
+          </div>
+          <aside class="ed__rail">
+            <p class="ed__rail-h">THE LEDGER, 550 KM UP</p>
+            {edStats.map((s) => (
+              <div class="ed__stat">
+                <span class="ed__stat-k">{s.k}</span>
+                <b class={`ed__stat-v ${s.frac ? 'fr' : ''}`}>{s.v}</b>
+                {s.u && <span class="ed__stat-u">{s.u}</span>}
+              </div>
+            ))}
+            <p class="ed__src">SOURCES: 18TH SDS CATALOG; SIGNAL ANALYSIS, JUNE 2026</p>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The Plunkett-era split: a grotesque that runs the masthead, headline and every number, fluorescent green doing the work red once did, Baskerville carrying the prose. The margin ledger is all tabular figures — and “2/3” is a true typographic fraction (frac), not a hack.</p>
+  </figure>
+
+  <!-- ============ 04 — WEB & APP UI ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-phase='ascent']">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Web &amp; app UI — a launch-webcast telemetry console at real device scale, after the SpaceX webcast HUD and the Apollo-era MOCR consoles behind it (interactive)</span>
+    </figcaption>
+    <div class="iu__scene">
       <div class="mc" data-mc>
         <div class="mc__bar">
-          <span class="mc__logo"><i class="mc__diamond"></i>RANGE&nbsp;CONTROL</span>
-          <span class="mc__vehicle" data-vehicle>{p0.vehicle}</span>
-          <span class="mc__met"><span class="mc__met-k">MET</span><span data-met>{p0.met}</span></span>
+          <span class="mc__logo"><i></i>RANGE CONTROL</span>
+          <span class="mc__vehicle">VLN-9 · KARMAN FREIGHT 12</span>
+          <span class="mc__met"><span class="mc__met-k">MET</span><b data-met>T−00:00:47</b></span>
         </div>
-
-        <div class="mc__phases" role="tablist">
+        <div class="mc__phases" role="tablist" aria-label="Flight phase">
           {phases.map((ph, i) => (
             <button class={`mc__phase ${i === 0 ? 'is-on' : ''}`} data-phase={ph.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
               <span class="mc__phase-i">T{i + 1}</span>
@@ -118,10 +245,9 @@ const exoplanets = [
             </button>
           ))}
         </div>
-
         <div class="mc__body">
-          <div class="mc__telem" data-telem>
-            <div class="mc__telem-h"><span data-stage>{p0.stage}</span><span class="mc__strip" data-strip>● STREAMING</span></div>
+          <div class="mc__telem">
+            <div class="mc__telem-h"><span data-stage>{p0.stage}</span><span class="mc__strip">● STREAMING</span></div>
             <div class="mc__readout">
               {p0.telem.map((t) => (
                 <div class="mc__cell" data-cell>
@@ -130,7 +256,7 @@ const exoplanets = [
                 </div>
               ))}
             </div>
-            <div class="mc__gauges" data-gauges>
+            <div class="mc__gauges">
               {p0.gauges.map((g) => (
                 <div class="mc__gauge" data-gauge>
                   <span class="mc__gauge-top"><span data-gk>{g[0]}</span><b data-gv>{g[1]}%</b></span>
@@ -139,153 +265,78 @@ const exoplanets = [
               ))}
             </div>
           </div>
-
           <div class="mc__side">
-            <span class="mc__side-h">SUBSYSTEMS</span>
-            <div class="mc__subs" data-subs>
+            <span class="mc__side-h">SUBSYSTEMS · TAP TO ACKNOWLEDGE</span>
+            <div class="mc__subs">
               {p0.subs.map((s) => (
-                <button class={`mc__sub mc__sub--${s[2]}`} data-sub data-state={s[2]}>
+                <button class="mc__sub" data-sub data-state={s[2]} type="button">
                   <span class="mc__sub-led"></span>
                   <span class="mc__sub-n" data-sn>{s[0]}</span>
                   <span class="mc__sub-s" data-ss>{s[1]}</span>
                 </button>
               ))}
             </div>
+            <div class="mc__note">FIGURES SET TNUM · THE CLOCK TICKS WITHOUT A WOBBLE</div>
           </div>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Switch flight phase (T1–T3) — the tabular telemetry re-streams and gauges re-arm. Tap a subsystem to acknowledge it. Tall, narrow figures hold their columns like a countdown clock.</p>
+    <p class="iu__hint label">Genuinely driven: switch flight phase (T1–T3) and the board re-keys — the MET clock runs live through the count, and because every figure is tabular the digits tick in place, no shimmer. Tap an amber subsystem to acknowledge it. 13px body: this is device scale, not a poster of a UI.</p>
   </figure>
 
-  <!-- 02 — techy product / brand poster, kinetic variable weight + stylistic-set reveal -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Brand — product launch wall, kinetic wght axis + ss01/02/03</span></figcaption>
-    <div class="iu__scene scene16">
-      <div class="halt" data-halt>
-        <div class="halt__grid" aria-hidden="true"></div>
-        <div class="halt__top">
-          <span class="halt__mark"><i class="halt__diamond"></i>HALT&nbsp;LABS</span>
-          <span class="halt__ver">REV&nbsp;0.9 · 2026</span>
-        </div>
-        <span class="halt__kicker">EDGE COMPUTE FOR THE ORBITAL AGE</span>
-        <h3 class="halt__head">
-          <span class="halt__word" data-flux style="--d:0s">gravity</span>
-          <span class="halt__word halt__word--accent" data-flux style="--d:-2.6s">signal</span>
-        </h3>
-        <p class="halt__sub">An edge runtime that streams telemetry from anywhere with a horizon — set in Space&nbsp;Grotesk&rsquo;s alternate <b class="halt__alt">a g t</b>.</p>
-        <div class="halt__foot">
-          <button class="halt__chip" data-ss-toggle type="button" aria-pressed="true">
-            <span class="halt__chip-dot" aria-hidden="true"></span>STYLISTIC&nbsp;SETS&nbsp;<b data-ss-state>ON</b>
-          </button>
-          <span class="halt__meta">SS01·alt&nbsp;a&nbsp; SS02·single-storey&nbsp;g&nbsp; SS03·alt&nbsp;t</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">The two display words breathe across the full 300–700 weight axis, phase-offset. Toggle the stylistic sets to swap in Space Grotesk&rsquo;s signature alternate a, single-storey g and cut t &mdash; the detail that makes the poster unmistakably this face.</p>
-  </figure>
-
-  <!-- 03 — INTERACTIVE crypto / on-chain trading terminal (own dark surface, real px) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Product UI — on-chain trading terminal, live tape</span></figcaption>
-    <div class="iu__scene iu__scene--console">
-      <div class="trade" data-trade>
-        <div class="trade__bar">
-          <span class="trade__logo">◈ HELION</span>
-          <span class="trade__net"><i class="trade__dot"></i>MAINNET</span>
-          <span class="trade__gas">GAS <b data-gas>14</b> gwei</span>
-        </div>
-        <div class="trade__watch" data-watch role="tablist">
-          {markets.map((mk, i) => (
-            <button class={`trade__tk ${i === 0 ? 'is-on' : ''} ${mk[4] > 0 ? 'is-up' : 'is-dn'}`} data-mkt={mk[0]} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
-              <span class="trade__tk-sym">{mk[0]}</span>
-              <span class="trade__tk-px" data-px>{mk[2]}</span>
-              <span class="trade__tk-ch" data-ch>{mk[3]}%</span>
-            </button>
+  <!-- ============ 05 — INTERACTIVE & EXPERIMENTAL ============ -->
+  <figure class="iu__item iu__item--bleed iu__item--gw">
+    <figcaption class="iu__cap">
+      <span class="index-num">05</span>
+      <span class="label">Interactive &amp; experimental — Wheeler’s law as a weight field, after DIA Studio’s kinetic-type practice: the pointer is the mass</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="gw" data-gw>
+        <div class="gw__stage" data-gw-stage>
+          {gwField.map((line) => (
+            <p class="gw__line">
+              {line.map((c) => (
+                c.ch === ' '
+                  ? <span class="gw__sp">&nbsp;</span>
+                  : <b class="gw__ch" data-ch style={`font-variation-settings:'wght' ${c.w}`}>{c.ch}</b>
+              ))}
+            </p>
           ))}
         </div>
-        <div class="trade__body">
-          <div class="trade__chart-wrap">
-            <div class="trade__quote">
-              <span class="trade__pair" data-pair>SOL / USDC</span>
-              <span class="trade__last" data-last>148.92</span>
-              <span class="trade__delta is-up" data-delta>+6.41%</span>
-            </div>
-            <svg class="trade__chart" viewBox="0 0 300 90" preserveAspectRatio="none" aria-hidden="true">
-              <polyline class="trade__spark" data-spark points="" fill="none" />
-              <polyline class="trade__sparkfill" data-sparkfill points="" />
-            </svg>
-            <div class="trade__btns">
-              <button class="trade__buy">BUY</button>
-              <button class="trade__sell">SELL</button>
-            </div>
-          </div>
-          <div class="trade__book">
-            <div class="trade__book-h"><span>PRICE</span><span>SIZE</span></div>
-            <div class="trade__asks">
-              {asks.map((a) => (
-                <div class="trade__lvl trade__lvl--ask"><i class="trade__depth" style={`width:${Math.min(100, +a[1] / 9)}%`}></i><span class="trade__lp">{a[0]}</span><span class="trade__ls">{a[1]}</span></div>
-              ))}
-            </div>
-            <div class="trade__spread"><span data-spread>SPREAD 0.02 · 0.013%</span></div>
-            <div class="trade__bids">
-              {bids.map((b) => (
-                <div class="trade__lvl trade__lvl--bid"><i class="trade__depth" style={`width:${Math.min(100, +b[1] / 9)}%`}></i><span class="trade__lp">{b[0]}</span><span class="trade__ls">{b[1]}</span></div>
-              ))}
-            </div>
-          </div>
+        <div class="gw__meta">
+          <span>J. A. WHEELER, <i class="tnum">1990</i></span>
+          <span class="gw__readout" data-gw-readout>FIELD 'wght' 300–700 · POINTER = MASS</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">Pick a market — the pair, last price, sparkline and book re-key live; the tape flickers like a ticker. Tabular figures keep every price column flush.</p>
+    <p class="iu__hint label">Move across the text: each letter’s weight is solved from its distance to your pointer — mass curving the typographic field, 700 at the centre falling to 300 at the rim. Idle, the mass drifts on a slow orbit; with motion reduced, the lens holds still where the orbit would begin.</p>
   </figure>
 
-  <!-- 04 — deep-space science data-viz editorial -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Editorial — exoplanet survey, data-viz spread</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="exo">
-        <div class="exo__head">
-          <span class="exo__issue">VOL. XII · DEEP FIELD SURVEY</span>
-          <h3 class="exo__title">THE HABITABLE<br/>SHORTLIST</h3>
-          <p class="exo__deck">Five rocky worlds in the circumstellar comfort zone, ranked by an Earth-Similarity Index drawn from radius, insolation and orbital geometry.</p>
-        </div>
-        <div class="exo__chart" data-exo>
-          <div class="exo__chart-h"><span>WORLD</span><span class="exo__num">DIST&nbsp;ly</span><span class="exo__num">R⊕</span><span class="exo__num">PERIOD&nbsp;d</span><span class="exo__esi">ESI</span></div>
-          {exoplanets.map((e) => (
-            <div class="exo__row">
-              <span class="exo__name">{e[0]}</span>
-              <span class="exo__num">{e[1]}</span>
-              <span class="exo__num">{e[2]}</span>
-              <span class="exo__num">{e[3]}</span>
-              <span class="exo__esi">
-                <i class="exo__bar" data-bar style={`--v:${e[4]}`}></i>
-                <b>{e[4].toFixed(2)}</b>
-              </span>
-            </div>
-          ))}
-        </div>
-        <div class="exo__foot">
-          <span>SOURCE · ARCHIVE DR4</span>
-          <span class="exo__foot-note">ESI 1.00 = EARTH</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">A data spread: display gothic headline over tabular survey figures, the ESI bars drawing in on reveal.</p>
-  </figure>
 </div>
 
 <script id="sg-mc-data" type="application/json" set:html={JSON.stringify(phases)} is:inline></script>
-<script id="sg-mkt-data" type="application/json" set:html={JSON.stringify({ markets, asks, bids })} is:inline></script>
 
 <script>
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ===== 01 · mission-control phase switching + subsystem ack =====
+  // ===== 01 · standards sheet: grade spec ====================================
+  document.querySelectorAll<HTMLElement>('[data-sm]').forEach((sm) => {
+    const logo = sm.querySelector('[data-sm-logo]') as HTMLElement;
+    const readout = sm.querySelector('[data-sm-readout]') as HTMLElement;
+    sm.querySelectorAll<HTMLButtonElement>('[data-grade]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const g = btn.dataset.grade!;
+        sm.querySelectorAll('[data-grade]').forEach((b) => b.classList.toggle('is-on', b === btn));
+        logo.style.fontVariationSettings = `'wght' ${g}`;
+        readout.textContent = `'wght' ${g} · master instance, never a redrawing`;
+      });
+    });
+  });
+
+  // ===== 04 · telemetry console ==============================================
   type Phase = {
-    id: string; name: string; met: string; live: boolean; vehicle: string; stage: string;
-    telem: [string, string, string][];
-    subs: [string, string, string][];
+    id: string; name: string; t: number; stage: string;
+    telem: [string, string, string][]; subs: [string, string, string][];
     gauges: [string, number][];
   };
   const mcIsland = document.getElementById('sg-mc-data');
@@ -294,53 +345,51 @@ const exoplanets = [
   const phaseById: Record<string, Phase> = {};
   phases.forEach((p) => (phaseById[p.id] = p));
 
+  function fmtMET(t: number): string {
+    const sign = t < 0 ? 'T−' : 'T+';
+    const a = Math.abs(t);
+    const h = String(Math.floor(a / 3600)).padStart(2, '0');
+    const m = String(Math.floor((a % 3600) / 60)).padStart(2, '0');
+    const s = String(a % 60).padStart(2, '0');
+    return `${sign}${h}:${m}:${s}`;
+  }
+
   document.querySelectorAll<HTMLElement>('[data-mc]').forEach((mc) => {
     if (!phases.length) return;
-    const q = (s: string) => mc.querySelector(s) as HTMLElement | null;
-    const vehicle = q('[data-vehicle]')!, met = q('[data-met]')!, stage = q('[data-stage]')!;
+    const met = mc.querySelector('[data-met]') as HTMLElement;
+    const stage = mc.querySelector('[data-stage]') as HTMLElement;
     const cells = Array.from(mc.querySelectorAll('[data-cell]'));
     const gauges = Array.from(mc.querySelectorAll('[data-gauge]'));
-    const subsWrap = q('[data-subs]')!;
+    const subs = Array.from(mc.querySelectorAll<HTMLButtonElement>('[data-sub]'));
+    let clock = phases[0].t;
 
     function render(id: string) {
       const p = phaseById[id];
       if (!p) return;
-      vehicle.textContent = p.vehicle;
-      met.textContent = p.met;
+      clock = p.t;
+      met.textContent = fmtMET(clock);
       stage.textContent = p.stage;
-
       cells.forEach((cell, i) => {
         const t = p.telem[i];
-        if (!t) { (cell as HTMLElement).style.display = 'none'; return; }
-        (cell as HTMLElement).style.display = '';
+        if (!t) return;
         (cell.querySelector('[data-ck]') as HTMLElement).textContent = t[0];
         (cell.querySelector('[data-cv]') as HTMLElement).textContent = t[1];
         (cell.querySelector('[data-cu]') as HTMLElement).textContent = t[2];
       });
-
       gauges.forEach((g, i) => {
         const gd = p.gauges[i];
-        if (!gd) { (g as HTMLElement).style.display = 'none'; return; }
-        (g as HTMLElement).style.display = '';
+        if (!gd) return;
         (g.querySelector('[data-gk]') as HTMLElement).textContent = gd[0];
         (g.querySelector('[data-gv]') as HTMLElement).textContent = gd[1] + '%';
         (g.querySelector('[data-gfill]') as HTMLElement).style.width = gd[1] + '%';
       });
-
-      subsWrap.replaceChildren();
-      p.subs.forEach((s) => {
-        const btn = document.createElement('button');
-        btn.className = `mc__sub mc__sub--${s[2]}`;
-        btn.setAttribute('data-sub', '');
-        btn.setAttribute('data-state', s[2]);
-        const led = document.createElement('span'); led.className = 'mc__sub-led';
-        const n = document.createElement('span'); n.className = 'mc__sub-n'; n.textContent = s[0];
-        const st = document.createElement('span'); st.className = 'mc__sub-s'; st.textContent = s[1];
-        btn.append(led, n, st);
-        wireSub(btn);
-        subsWrap.appendChild(btn);
+      subs.forEach((btn, i) => {
+        const s = p.subs[i];
+        if (!s) return;
+        btn.dataset.state = s[2];
+        (btn.querySelector('[data-sn]') as HTMLElement).textContent = s[0];
+        (btn.querySelector('[data-ss]') as HTMLElement).textContent = s[1];
       });
-
       mc.querySelectorAll('[data-phase]').forEach((t) => {
         const on = (t as HTMLElement).dataset.phase === id;
         t.classList.toggle('is-on', on);
@@ -348,462 +397,547 @@ const exoplanets = [
       });
     }
 
-    function wireSub(btn: HTMLElement) {
-      btn.addEventListener('click', () => {
-        const ss = btn.querySelector('[data-ss]') as HTMLElement;
-        if (btn.dataset.state === 'warn') {
-          btn.dataset.state = 'ok';
-          btn.classList.remove('mc__sub--warn');
-          btn.classList.add('mc__sub--ok');
-          ss.textContent = 'ACK';
-        } else {
-          btn.dataset.state = 'warn';
-          btn.classList.remove('mc__sub--ok');
-          btn.classList.add('mc__sub--warn');
-          ss.textContent = 'CHECK';
-        }
-      });
-    }
-    mc.querySelectorAll<HTMLElement>('[data-sub]').forEach(wireSub);
-
     mc.querySelectorAll<HTMLButtonElement>('[data-phase]').forEach((btn) =>
       btn.addEventListener('click', () => render(btn.dataset.phase!))
     );
 
-    // subtle live jitter on telemetry (reduced-motion: static)
+    subs.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const ss = btn.querySelector('[data-ss]') as HTMLElement;
+        if (btn.dataset.state === 'warn') { btn.dataset.state = 'ok'; ss.textContent = 'ACK'; }
+        else { btn.dataset.state = 'warn'; ss.textContent = 'CHECK'; }
+      })
+    );
+
     if (!reduce) {
-      const jitter = () => {
+      // the MET clock runs; tabular figures keep the tick perfectly still
+      setInterval(() => {
+        clock += clock < 0 && clock >= -1 ? 0 : 1; // hold at T−1 rather than "launch"
+        met.textContent = fmtMET(clock);
+      }, 1000);
+      // faint telemetry drift
+      setInterval(() => {
         cells.forEach((cell) => {
           const vEl = cell.querySelector('[data-cv]') as HTMLElement;
           const base = parseFloat(vEl.textContent || '0');
           if (!isFinite(base) || base === 0) return;
-          const drift = base * (1 + (Math.random() - 0.5) * 0.0016);
-          const dec = (vEl.textContent || '').includes('.') ? (vEl.textContent!.split('.')[1]?.length || 2) : 0;
-          vEl.textContent = drift.toFixed(dec);
+          const dec = (vEl.textContent || '').split('.')[1]?.length || 0;
+          vEl.textContent = (base * (1 + (Math.random() - 0.5) * 0.0016)).toFixed(dec);
         });
-      };
-      setInterval(jitter, 1200);
+      }, 1400);
     }
   });
 
-  // ===== 02 · HALT poster — stylistic-set (ss01/ss02/ss03) live toggle =====
-  document.querySelectorAll<HTMLElement>('[data-halt]').forEach((halt) => {
-    const btn = halt.querySelector('[data-ss-toggle]') as HTMLButtonElement | null;
-    const state = halt.querySelector('[data-ss-state]') as HTMLElement | null;
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const off = halt.toggleAttribute('data-ss-off');
-      btn.setAttribute('aria-pressed', off ? 'false' : 'true');
-      if (state) state.textContent = off ? 'OFF' : 'ON';
+  // ===== 05 · gravity field ===================================================
+  document.querySelectorAll<HTMLElement>('[data-gw]').forEach((gw) => {
+    const stage = gw.querySelector('[data-gw-stage]') as HTMLElement;
+    const readout = gw.querySelector('[data-gw-readout]') as HTMLElement | null;
+    const chars = Array.from(gw.querySelectorAll<HTMLElement>('[data-ch]'));
+    if (reduce || !chars.length) return; // reduced motion: the baked lens stands
+
+    let rects: { x: number; y: number }[] = [];
+    let stageRect = { left: 0, top: 0, w: 1, h: 1 };
+    function measure() {
+      const r = stage.getBoundingClientRect();
+      stageRect = { left: r.left, top: r.top, w: r.width, h: r.height };
+      rects = chars.map((c) => {
+        const b = c.getBoundingClientRect();
+        return { x: b.left + b.width / 2 - r.left, y: b.top + b.height / 2 - r.top };
+      });
+    }
+
+    let mx = -1, my = -1, hot = false, raf = 0, t0 = performance.now();
+    function paint(px: number, py: number) {
+      const radius = Math.max(stageRect.w, stageRect.h) * 0.42;
+      let peak = 300;
+      chars.forEach((c, i) => {
+        const p = rects[i];
+        const d = Math.hypot(p.x - px, p.y - py);
+        const w = Math.round((700 - Math.min(1, d / radius) * 400) / 5) * 5;
+        if (w > peak) peak = w;
+        c.style.fontVariationSettings = `'wght' ${w}`;
+      });
+      if (readout) readout.textContent = `FIELD 'wght' 300–700 · MASS AT ${Math.round(peak)}`;
+    }
+    function frame(now: number) {
+      raf = 0;
+      if (hot) { paint(mx, my); return; }
+      // idle: the mass drifts on a slow Lissajous orbit
+      const t = (now - t0) / 1000;
+      const px = stageRect.w * (0.5 + 0.34 * Math.sin(t * 0.31));
+      const py = stageRect.h * (0.5 + 0.36 * Math.sin(t * 0.23 + 1.7));
+      paint(px, py);
+      schedule();
+    }
+    function schedule() { if (!raf) raf = requestAnimationFrame(frame); }
+
+    gw.addEventListener('pointermove', (e) => {
+      hot = true;
+      mx = e.clientX - stageRect.left;
+      my = e.clientY - stageRect.top;
+      schedule();
     });
+    gw.addEventListener('pointerleave', () => { hot = false; t0 = performance.now(); schedule(); });
+
+    // only orbit while on screen
+    const io = new IntersectionObserver((ens) => {
+      ens.forEach((en) => {
+        if (en.isIntersecting) { measure(); if (!hot) schedule(); }
+        else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      });
+    }, { threshold: 0.15 });
+    io.observe(gw);
+
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(stage);
+    if ((document as any).fonts?.ready) (document as any).fonts.ready.then(measure);
+    measure();
   });
-
-  // ===== 03 · crypto terminal market switching + live tape =====
-  type Mkt = [string, string, string, string, number];
-  const mktIsland = document.getElementById('sg-mkt-data');
-  let mdata: { markets: Mkt[]; asks: [string, string][]; bids: [string, string][] } =
-    { markets: [], asks: [], bids: [] };
-  try { mdata = mktIsland ? JSON.parse(mktIsland.textContent || '{}') : mdata; } catch {}
-  const mktById: Record<string, Mkt> = {};
-  mdata.markets.forEach((m) => (mktById[m[0]] = m));
-
-  // deterministic-ish sparkline generator per symbol
-  function spark(sym: string, up: boolean): number[] {
-    let seed = 0;
-    for (const c of sym) seed += c.charCodeAt(0);
-    const pts: number[] = [];
-    let v = 45;
-    for (let i = 0; i < 32; i++) {
-      seed = (seed * 9301 + 49297) % 233280;
-      const r = seed / 233280;
-      v += (r - 0.5) * 14 + (up ? 0.5 : -0.5);
-      v = Math.max(10, Math.min(80, v));
-      pts.push(v);
-    }
-    return pts;
-  }
-
-  document.querySelectorAll<HTMLElement>('[data-trade]').forEach((tr) => {
-    if (!mdata.markets || !mdata.markets.length) return;
-    const q = (s: string) => tr.querySelector(s) as HTMLElement | null;
-    const pair = q('[data-pair]')!, last = q('[data-last]')!, delta = q('[data-delta]')!;
-    const spreadEl = q('[data-spread]')!;
-    const sparkEl = tr.querySelector('[data-spark]') as unknown as SVGPolylineElement;
-    const fillEl = tr.querySelector('[data-sparkfill]') as unknown as SVGPolylineElement;
-
-    function draw(sym: string) {
-      const m = mktById[sym];
-      if (!m) return;
-      const up = m[4] > 0;
-      pair.textContent = `${m[0]} / USDC`;
-      last.textContent = m[2];
-      delta.textContent = (up ? '+' : '') + m[3] + '%';
-      delta.classList.toggle('is-up', up);
-      delta.classList.toggle('is-dn', !up);
-      const ys = spark(sym, up);
-      const stepX = 300 / (ys.length - 1);
-      const pts = ys.map((y, i) => `${(i * stepX).toFixed(1)},${(90 - y).toFixed(1)}`).join(' ');
-      sparkEl.setAttribute('points', pts);
-      fillEl.setAttribute('points', `0,90 ${pts} 300,90`);
-      tr.dataset.dir = up ? 'up' : 'dn';
-      // re-trigger the draw animation
-      if (!reduce) {
-        sparkEl.style.animation = 'none';
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        sparkEl.getBoundingClientRect();
-        sparkEl.style.animation = '';
-      }
-    }
-
-    draw('SOL');
-    tr.querySelectorAll<HTMLButtonElement>('[data-mkt]').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        tr.querySelectorAll('[data-mkt]').forEach((b) => {
-          b.classList.remove('is-on');
-          b.setAttribute('aria-selected', 'false');
-        });
-        btn.classList.add('is-on');
-        btn.setAttribute('aria-selected', 'true');
-        draw(btn.dataset.mkt!);
-      })
-    );
-
-    // live gas + faint price tape flicker (reduced-motion: static)
-    if (!reduce) {
-      const gas = q('[data-gas]');
-      setInterval(() => {
-        if (gas) gas.textContent = String(8 + Math.floor(Math.random() * 22));
-      }, 2600);
-    }
-  });
-
-  // ===== 04 · exoplanet ESI bars draw in on reveal =====
-  if (!reduce && 'IntersectionObserver' in window) {
-    document.querySelectorAll<HTMLElement>('[data-exo]').forEach((exo) => {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((en) => {
-          if (en.isIntersecting) { exo.classList.add('is-in'); io.disconnect(); }
-        });
-      }, { threshold: 0.3 });
-      io.observe(exo);
-    });
-  } else {
-    document.querySelectorAll<HTMLElement>('[data-exo]').forEach((e) => e.classList.add('is-in'));
-  }
 </script>
 
 <style>
+  /* the stack reads as one launch sequence: tightened rhythm, and the last
+     two dark surfaces (console → gravity field) sit a beat closer */
+  .iu { gap: clamp(3rem, 8vh, 5.5rem); }
   .iu__item { margin: 0; }
+  .iu__item--gw { margin-top: calc(-1 * clamp(1rem, 3vh, 2.25rem)); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
   .iu * { font-family: var(--fam); }
 
-  /* shared scene framing — matches InUse.astro / inter.astro */
-  .iu__scene {
-    container-type: inline-size;
-    position: relative;
-    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
-    outline: 1px solid var(--line);
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--bg-2);
-  }
-  .iu__scene * { font-family: var(--fam); }
-  .scene16 { aspect-ratio: 16 / 9; }
-  .scene-tall { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 11; } }
+  .iu__scene { container-type: inline-size; overflow: clip; }
 
-  /* console variant: real-px UI that fills the scene */
-  .iu__scene--console { aspect-ratio: 16 / 10; padding: 0; }
-  @container (max-width: 520px) { .iu__scene--console { aspect-ratio: 4 / 5; } }
+  .fr { font-feature-settings: 'frac' 1; }
+  .tnum { font-style: normal; font-feature-settings: 'tnum' 1; }
 
   /* ============================================================
-     01 · MISSION-CONTROL TELEMETRY (own dark console surface, real px)
+     01 · PERIGEE STANDARDS SHEET — Danne & Blackburn, 1975
+     self-declared paper surface
+     ============================================================ */
+  .sm {
+    --s-paper: #f2f0e9;
+    --s-ink: #15171a;
+    --s-mid: #5e6168;
+    --s-rule: #15171a2a;
+    --s-acc: #9fd400; /* PANTONE 802 on paper: darker than the screen lime */
+    background: var(--s-paper); color: var(--s-ink);
+    display: flex; flex-direction: column;
+    padding: 2.6cqi 3.2cqi 2cqi;
+  }
+  .sm__head {
+    display: grid; grid-template-columns: auto 1fr; column-gap: 2cqi; row-gap: 0.5cqi;
+    align-items: baseline; padding-bottom: 1.4cqi; border-bottom: 3px solid var(--s-ink);
+  }
+  .sm__sec {
+    grid-row: span 2; font-size: clamp(28px, 5.4cqi, 84px); font-variation-settings: 'wght' 700;
+    line-height: 0.9; letter-spacing: -0.02em; font-feature-settings: 'tnum' 1;
+  }
+  .sm__title { font-size: clamp(14px, 2.1cqi, 32px); font-variation-settings: 'wght' 600; letter-spacing: 0.01em; }
+  .sm__man { font-family: var(--mono); font-size: clamp(8px, 0.95cqi, 13px); letter-spacing: 0.08em; color: var(--s-mid); }
+
+  .sm__body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3cqi; padding: 2.2cqi 0; flex: 1; }
+  .sm__plate { display: flex; flex-direction: column; min-width: 0; }
+  .sm__stage { position: relative; padding: 4.5cqi 1cqi 4cqi; flex: 1; display: flex; align-items: center; }
+  .sm__logo {
+    font-size: clamp(40px, 9.6cqi, 150px); line-height: 1; letter-spacing: -0.01em;
+    font-variation-settings: 'wght' 500;
+    transition: font-variation-settings 0.35s var(--ease, ease);
+  }
+  .sm__guide {
+    position: absolute; left: 0; right: 0; border-top: 1px dashed var(--s-rule); pointer-events: none;
+  }
+  .sm__guide i {
+    position: absolute; right: 0; top: 0; transform: translateY(-100%);
+    font-family: var(--mono); font-style: normal; font-size: clamp(7px, 0.85cqi, 11px);
+    letter-spacing: 0.1em; color: var(--s-mid); padding-bottom: 1px;
+  }
+  /* tuned to the rendered logotype box (lowercase mark: cap line ≈ ascender) */
+  .sm__guide--cap  { top: calc(50% - 3.5cqi); }
+  .sm__guide--x    { top: calc(50% - 1.55cqi); }
+  .sm__guide--base { top: calc(50% + 3.45cqi); }
+  .sm__guide--desc { top: calc(50% + 5.5cqi); }
+
+  .sm__grades {
+    display: flex; align-items: center; gap: 1cqi; flex-wrap: wrap;
+    border-top: 1px solid var(--s-rule); padding-top: 1.4cqi;
+  }
+  .sm__grades-k { font-family: var(--mono); font-size: clamp(8px, 0.95cqi, 13px); letter-spacing: 0.1em; color: var(--s-mid); }
+  .sm__grade {
+    font-family: var(--fam); font-size: clamp(11px, 1.35cqi, 20px); letter-spacing: 0.04em;
+    background: transparent; color: var(--s-ink);
+    border: 1px solid var(--s-ink); border-radius: 999px;
+    padding: 0.35cqi 1.2cqi; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .sm__grade:hover { background: #15171a14; }
+  .sm__grade.is-on { background: var(--s-ink); color: var(--s-acc); }
+  .sm__readout { width: 100%; font-family: var(--mono); font-size: clamp(8px, 0.95cqi, 13px); color: var(--s-mid); letter-spacing: 0.04em; padding-top: 0.5cqi; }
+
+  .sm__notes { display: flex; flex-direction: column; gap: 1.8cqi; border-left: 1px solid var(--s-rule); padding-left: 3cqi; min-width: 0; }
+  .sm__cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2cqi; }
+  .sm__cell { border: 1px solid var(--s-rule); padding: 1cqi 1cqi 0.9cqi; display: flex; flex-direction: column; gap: 0.8cqi; background: #fff8; }
+  .sm__cell-glyph {
+    font-size: clamp(30px, 4.6cqi, 72px); line-height: 1.05; font-variation-settings: 'wght' 500;
+    font-feature-settings: 'tnum' 1;
+  }
+  .sm__cell-note { font-family: var(--mono); font-size: clamp(7px, 0.82cqi, 11.5px); line-height: 1.45; color: var(--s-mid); }
+  .sm__spec p { margin: 0 0 0.9cqi; font-size: clamp(10px, 1.2cqi, 17px); line-height: 1.5; font-variation-settings: 'wght' 400; }
+  .sm__spec b { font-variation-settings: 'wght' 700; font-feature-settings: 'tnum' 1; }
+  .sm__chip { display: flex; align-items: center; gap: 1.2cqi; margin-top: auto; }
+  .sm__chip i { width: clamp(26px, 3.4cqi, 52px); aspect-ratio: 1; background: var(--s-acc); flex: none; }
+  .sm__chip span { font-family: var(--mono); font-size: clamp(7px, 0.85cqi, 12px); letter-spacing: 0.06em; color: var(--s-mid); line-height: 1.5; }
+
+  .sm__foot {
+    display: flex; justify-content: space-between; gap: 2cqi;
+    border-top: 1px solid var(--s-rule); padding-top: 1.2cqi;
+    font-family: var(--mono); font-size: clamp(7px, 0.85cqi, 12px); letter-spacing: 0.08em; color: var(--s-mid);
+  }
+
+  @container (max-width: 700px) {
+    .sm { padding: 4.5cqi 5cqi 4cqi; }
+    .sm__head { grid-template-columns: auto 1fr; }
+    .sm__man { grid-column: 1 / -1; }
+    .sm__body { grid-template-columns: 1fr; gap: 4cqi; }
+    .sm__notes { border-left: none; border-top: 1px solid var(--s-rule); padding-left: 0; padding-top: 3.5cqi; }
+    .sm__stage { padding: 8cqi 1cqi 7cqi; }
+    .sm__logo { font-size: 16cqi; }
+    .sm__guide--cap  { top: calc(50% - 5.8cqi); }
+    .sm__guide--x    { top: calc(50% - 2.6cqi); }
+    .sm__guide--base { top: calc(50% + 5.7cqi); }
+    .sm__guide--desc { top: calc(50% + 9.2cqi); }
+    .sm__grade { font-size: 2.9cqi; padding: 1cqi 2.6cqi; }
+    .sm__grades-k, .sm__readout, .sm__man { font-size: 2cqi; }
+    .sm__cell-glyph { font-size: 9cqi; }
+    .sm__cell-note { font-size: 1.75cqi; }
+    .sm__spec p { font-size: 2.7cqi; }
+    .sm__foot { font-size: 1.9cqi; flex-wrap: wrap; }
+    .sm__title { font-size: 3.6cqi; }
+    .sm__sec { font-size: 9cqi; }
+  }
+  @container (max-width: 460px) {
+    .sm__cells { grid-template-columns: repeat(3, 1fr); gap: 1.6cqi; }
+    .sm__cell-note { display: none; }
+    .sm__cell { padding-bottom: 1.6cqi; }
+  }
+
+  /* ============================================================
+     02 · TRAPPIST-1e — Visions of the Future
+     self-declared deep-space surface
+     ============================================================ */
+  .po {
+    --p-sky0: #04060b;
+    --p-sky1: #0a1420;
+    --p-ink: #eef3ee;
+    --p-acc: #caff48;
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, var(--p-sky0) 0%, var(--p-sky1) 62%, #11202a 78%);
+    color: var(--p-ink);
+    aspect-ratio: 16 / 9;
+  }
+  @container (max-width: 700px) { .po { aspect-ratio: 4 / 5; } }
+  .po__stars {
+    position: absolute; inset: -12% -4%; pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #ffffffd0 50%, transparent 51%),
+      radial-gradient(1px 1px at 34% 64%, #ffffff80 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 56% 30%, #ffffffb0 50%, transparent 51%),
+      radial-gradient(1px 1px at 71% 52%, #ffffff70 50%, transparent 51%),
+      radial-gradient(1px 1px at 88% 14%, #ffffffa0 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 23% 42%, #ffffff90 50%, transparent 51%),
+      radial-gradient(1px 1px at 47% 8%, #ffffff80 50%, transparent 51%),
+      radial-gradient(1px 1px at 64% 76%, #ffffff60 50%, transparent 51%),
+      radial-gradient(1px 1px at 8% 70%, #ffffff80 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 80% 38%, #ffffffc0 50%, transparent 51%),
+      radial-gradient(1px 1px at 93% 62%, #ffffff70 50%, transparent 51%),
+      radial-gradient(1px 1px at 41% 50%, #ffffff60 50%, transparent 51%);
+  }
+  .po__stars--b { transform: rotate(180deg); opacity: 0.7; }
+  .po__horizon {
+    position: absolute; left: -20%; right: -20%; bottom: -42cqi; height: 60cqi;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #2a1410 64%, #5c2418 78%, #b4502a 92%, transparent 100%);
+    box-shadow: 0 -1.5cqi 6cqi 0 #caff4830, 0 -0.4cqi 1.6cqi 0 #caff4866;
+  }
+  .po__inner {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 4cqi 6cqi 3cqi;
+  }
+  .po__kicker {
+    margin: 0; font-size: clamp(10px, 1.45cqi, 22px); letter-spacing: 0.42em;
+    font-variation-settings: 'wght' 300; color: var(--p-acc); font-feature-settings: 'tnum' 1;
+  }
+  .po__title { margin: 2.2cqi 0 0; display: flex; flex-direction: column; line-height: 0.92; }
+  .po__visit {
+    font-size: clamp(16px, 3.4cqi, 54px); letter-spacing: 0.58em; padding-left: 0.58em;
+    font-variation-settings: 'wght' 300;
+  }
+  .po__dest {
+    white-space: nowrap;
+    font-size: clamp(42px, 11.8cqi, 184px); letter-spacing: -0.015em;
+    font-variation-settings: 'wght' 700; font-feature-settings: 'tnum' 1;
+  }
+  .po__dest b { color: var(--p-acc); font-variation-settings: 'wght' 700; }
+  .po__sub {
+    margin: 2cqi 0 0; max-width: 46ch;
+    font-size: clamp(11px, 1.65cqi, 25px); line-height: 1.5; font-variation-settings: 'wght' 400;
+    color: #c4cfc6;
+  }
+  .po__stats {
+    margin-top: auto; display: flex; gap: 5cqi; justify-content: center; flex-wrap: wrap;
+  }
+  .po__stat { display: flex; flex-direction: column; gap: 0.3cqi; }
+  .po__stat i { font-style: normal; font-size: clamp(8px, 1cqi, 15px); letter-spacing: 0.3em; font-variation-settings: 'wght' 400; color: #8a978c; }
+  .po__stat b {
+    font-size: clamp(20px, 4cqi, 62px); line-height: 1; font-variation-settings: 'wght' 600;
+    font-feature-settings: 'tnum' 1; color: var(--p-ink);
+  }
+  .po__stat em { font-style: normal; font-size: clamp(7px, 0.9cqi, 13px); letter-spacing: 0.2em; color: #8a978c; }
+  .po__imprint {
+    margin: 2.4cqi 0 0; font-size: clamp(7px, 0.9cqi, 13px); letter-spacing: 0.18em;
+    font-variation-settings: 'wght' 400; color: #7d8a80; font-feature-settings: 'tnum' 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .po__stars--a { animation: po-drift 90s linear infinite alternate; }
+    .po__stars--b { animation: po-drift-b 140s linear infinite alternate; }
+    @keyframes po-drift {
+      from { transform: translate3d(0, 0, 0); }
+      to   { transform: translate3d(-3cqi, 2cqi, 0); }
+    }
+    @keyframes po-drift-b {
+      from { transform: rotate(180deg) translate3d(0, 0, 0); }
+      to   { transform: rotate(180deg) translate3d(-2cqi, 3cqi, 0); }
+    }
+    .po__kicker[data-reveal]:not(.is-visible) { letter-spacing: 0.7em; opacity: 0; }
+    .po__kicker { transition: letter-spacing 1.1s var(--ease-out, ease-out), opacity 0.8s ease; }
+  }
+  @container (max-width: 700px) {
+    .po__inner { padding: 7cqi 6cqi 5cqi; }
+    .po__visit { font-size: 5cqi; }
+    .po__dest { font-size: 12.6cqi; }
+    .po__sub { font-size: 3.1cqi; max-width: 38ch; }
+    .po__kicker { font-size: 2.4cqi; letter-spacing: 0.3em; }
+    .po__stats { gap: 7cqi; }
+    .po__stat b { font-size: 6.4cqi; }
+    .po__stat i { font-size: 1.9cqi; }
+    .po__stat em { font-size: 1.7cqi; }
+    .po__imprint { font-size: 1.8cqi; letter-spacing: 0.12em; }
+    .po__horizon { bottom: -54cqi; height: 72cqi; }
+  }
+
+  /* ============================================================
+     03 · SIGNAL — early-WIRED feature opener
+     self-declared white-stock surface
+     ============================================================ */
+  .ed {
+    --e-page: #fbfaf5;
+    --e-ink: #131310;
+    --e-mid: #61615a;
+    --e-acc: #b9ef2e;
+    background: var(--e-page); color: var(--e-ink);
+    padding: 0 0 3cqi;
+  }
+  .ed__strap {
+    display: flex; align-items: baseline; gap: 2.4cqi;
+    background: var(--e-ink); color: var(--e-page);
+    padding: 1.1cqi 3.2cqi;
+  }
+  .ed__mag { font-size: clamp(14px, 2cqi, 30px); font-variation-settings: 'wght' 700; letter-spacing: 0.22em; color: var(--e-acc); }
+  .ed__sec { font-size: clamp(9px, 1.15cqi, 17px); letter-spacing: 0.3em; font-variation-settings: 'wght' 400; }
+  .ed__folio { margin-left: auto; font-size: clamp(9px, 1.15cqi, 17px); font-feature-settings: 'tnum' 1; font-variation-settings: 'wght' 500; letter-spacing: 0.1em; }
+
+  .ed__grid { display: grid; grid-template-columns: 1fr clamp(180px, 24cqi, 360px); gap: 4cqi; padding: 3cqi 3.2cqi 0; }
+  .ed__main { min-width: 0; }
+  .ed__hed {
+    margin: 0; font-size: clamp(34px, 7.2cqi, 112px); line-height: 0.96; letter-spacing: -0.03em;
+    font-variation-settings: 'wght' 700; font-weight: normal; max-width: 14ch;
+  }
+  .ed__hed em { font-style: normal; color: transparent; -webkit-text-stroke: max(1px, 0.14cqi) var(--e-ink); }
+  .ed__deck {
+    margin: 1.8cqi 0 0; max-width: 56ch;
+    font-size: clamp(13px, 1.9cqi, 28px); line-height: 1.42; font-variation-settings: 'wght' 400;
+    color: var(--e-mid);
+  }
+  .ed__byline { margin: 1.6cqi 0 0; font-size: clamp(8px, 1cqi, 15px); letter-spacing: 0.22em; font-variation-settings: 'wght' 600; }
+  .ed__body { margin-top: 2cqi; padding-top: 2cqi; border-top: 1px solid #13131026; columns: 2; column-gap: 3cqi; }
+  .ed__body p {
+    font-family: var(--serif); font-size: clamp(11px, 1.42cqi, 18px); line-height: 1.66;
+    margin: 0 0 1em; color: #2a2a24;
+  }
+  .ed__body > p:first-child::first-letter {
+    font-family: var(--fam); font-variation-settings: 'wght' 700;
+    float: left; font-size: 3.2em; line-height: 0.8; padding: 0.05em 0.12em 0 0;
+  }
+  .ed__pull { margin: 2.2cqi 0 0; }
+  .ed__pull span {
+    font-size: clamp(20px, 3.5cqi, 54px); line-height: 1.12; letter-spacing: -0.01em;
+    font-variation-settings: 'wght' 300;
+    background: var(--e-acc); box-decoration-break: clone; -webkit-box-decoration-break: clone;
+    padding: 0.1em 0.25em;
+  }
+  .ed__rail { border-left: 3px solid var(--e-ink); padding-left: 2.4cqi; display: flex; flex-direction: column; min-width: 0; }
+  .ed__rail-h { margin: 0 0 1.6cqi; font-size: clamp(9px, 1.15cqi, 17px); letter-spacing: 0.18em; font-variation-settings: 'wght' 700; }
+  .ed__stat { padding: 1.4cqi 0; border-bottom: 1px solid #1313101f; display: flex; flex-direction: column; gap: 0.3cqi; }
+  .ed__stat-k { font-family: var(--mono); font-size: clamp(7px, 0.9cqi, 12.5px); letter-spacing: 0.1em; color: var(--e-mid); }
+  .ed__stat-v {
+    font-size: clamp(24px, 3.8cqi, 60px); line-height: 1; font-variation-settings: 'wght' 600;
+    font-feature-settings: 'tnum' 1; font-weight: normal;
+  }
+  .ed__stat-v.fr { font-feature-settings: 'tnum' 1, 'frac' 1; }
+  .ed__stat-u { font-family: var(--mono); font-size: clamp(7px, 0.85cqi, 12px); color: var(--e-mid); }
+  .ed__src { margin: 1.6cqi 0 0; font-family: var(--mono); font-size: clamp(6.5px, 0.8cqi, 11px); letter-spacing: 0.06em; color: var(--e-mid); line-height: 1.5; }
+
+  ::selection { background: #caff48; color: #131310; }
+
+  @container (max-width: 760px) {
+    .ed__grid { grid-template-columns: 1fr; gap: 0; padding: 4.5cqi 5cqi 0; }
+    .ed__strap { padding: 2cqi 5cqi; }
+    .ed__mag { font-size: 3.4cqi; }
+    .ed__sec, .ed__folio { font-size: 2.2cqi; }
+    .ed__hed { font-size: 10.6cqi; }
+    .ed__deck { font-size: 3.3cqi; }
+    .ed__byline { font-size: 2.1cqi; }
+    .ed__body { columns: 1; }
+    .ed__body p { font-size: 3.1cqi; }
+    .ed__pull span { font-size: 5.4cqi; }
+    .ed__rail {
+      border-left: none; border-top: 3px solid var(--e-ink);
+      margin-top: 4cqi; padding-left: 0; padding-top: 3cqi;
+    }
+    .ed__rail-h { font-size: 2.5cqi; }
+    .ed__stat { flex-direction: row; align-items: baseline; gap: 2cqi; }
+    .ed__stat-k { flex: 1; font-size: 2cqi; }
+    .ed__stat-v { font-size: 5.6cqi; }
+    .ed__stat-u { font-size: 1.9cqi; }
+    .ed__src { font-size: 1.8cqi; }
+  }
+
+  /* ============================================================
+     04 · RANGE CONTROL — webcast telemetry console, real px
+     intentional dark surface, fully self-declared; bleeds
      ============================================================ */
   .mc {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
+    display: flex; flex-direction: column;
     background:
       radial-gradient(120% 90% at 50% -10%, #0f1a16 0%, transparent 60%),
       #06080a;
-    color: #d6e6dd; font-size: 13px;
-    --mc-accent: #caff48; --mc-warn: #ffb02e; --mc-dim: #5d6f66; --mc-line: #ffffff14;
+    color: #d6e6dd; font-size: 13px; line-height: 1.4;
+    --mc-acc: #caff48; --mc-warn: #ffb02e; --mc-dim: #5d6f66; --mc-line: #ffffff14;
+    /* bleed act: classic scrollbars steal ~15px of 100vw on the right */
+    padding-right: 14px;
   }
   .mc__bar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 9px 14px; border-bottom: 1px solid var(--mc-line); flex: none;
-    background: #ffffff05;
+    padding: 10px 18px; border-bottom: 1px solid var(--mc-line); background: #ffffff05;
   }
-  .mc__logo { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; }
-  .mc__diamond { width: 7px; height: 7px; background: var(--mc-accent); transform: rotate(45deg); }
-  .mc__vehicle { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; color: var(--mc-dim); }
-  .mc__met { display: inline-flex; align-items: baseline; gap: 7px; font-feature-settings: 'tnum'; }
+  .mc__logo { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-variation-settings: 'wght' 700; letter-spacing: 0.18em; }
+  .mc__logo i { width: 7px; height: 7px; background: var(--mc-acc); transform: rotate(45deg); }
+  .mc__vehicle { font-size: 11px; font-variation-settings: 'wght' 600; letter-spacing: 0.2em; color: var(--mc-dim); font-feature-settings: 'tnum' 1; }
+  .mc__met { display: inline-flex; align-items: baseline; gap: 8px; }
   .mc__met-k { font-size: 9px; letter-spacing: 0.2em; color: var(--mc-dim); }
-  .mc__met [data-met] { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--mc-accent); }
+  .mc__met b { font-size: 16px; font-variation-settings: 'wght' 600; font-weight: normal; letter-spacing: 0.04em; color: var(--mc-acc); font-feature-settings: 'tnum' 1; }
 
-  .mc__phases { display: flex; gap: 0; border-bottom: 1px solid var(--mc-line); flex: none; }
+  .mc__phases { display: flex; border-bottom: 1px solid var(--mc-line); }
   .mc__phase {
     flex: 1; display: flex; align-items: baseline; justify-content: center; gap: 7px;
-    padding: 8px 6px; background: transparent; cursor: pointer; min-width: 0;
-    border-right: 1px solid var(--mc-line); border-bottom: 2px solid transparent;
+    padding: 9px 6px; background: transparent; cursor: pointer; min-width: 0;
+    border: 0; border-right: 1px solid var(--mc-line); border-bottom: 2px solid transparent;
+    font-family: var(--fam); color: #aebbb3;
     transition: background 0.15s ease;
   }
   .mc__phase:last-child { border-right: 0; }
   .mc__phase:hover { background: #ffffff08; }
-  .mc__phase.is-on { background: color-mix(in srgb, var(--mc-accent) 10%, transparent); border-bottom-color: var(--mc-accent); }
-  .mc__phase-i { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; color: var(--mc-dim); font-feature-settings: 'tnum'; }
-  .mc__phase.is-on .mc__phase-i { color: var(--mc-accent); }
-  .mc__phase-n { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; color: #aebbb3; white-space: nowrap; }
+  .mc__phase.is-on { background: color-mix(in srgb, var(--mc-acc) 10%, transparent); border-bottom-color: var(--mc-acc); }
+  .mc__phase-i { font-size: 10px; font-variation-settings: 'wght' 700; color: var(--mc-dim); font-feature-settings: 'tnum' 1; }
+  .mc__phase.is-on .mc__phase-i { color: var(--mc-acc); }
+  .mc__phase-n { font-size: 12px; font-variation-settings: 'wght' 600; letter-spacing: 0.12em; white-space: nowrap; }
   .mc__phase.is-on .mc__phase-n { color: #fff; }
 
-  .mc__body { flex: 1; display: grid; grid-template-columns: 1fr 38%; min-height: 0; }
-  .mc__telem { padding: 13px 15px; display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--mc-line); }
-  .mc__telem-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 11px; }
-  .mc__telem-h [data-stage] { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #c4d2ca; }
-  .mc__strip { font-size: 9px; font-weight: 600; letter-spacing: 0.16em; color: var(--mc-accent); }
-
+  .mc__body { display: grid; grid-template-columns: 1fr minmax(260px, 34%); }
+  .mc__telem { padding: 14px 18px 16px; border-right: 1px solid var(--mc-line); min-width: 0; }
+  .mc__telem-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .mc__telem-h [data-stage] { font-size: 11px; font-variation-settings: 'wght' 700; letter-spacing: 0.16em; color: #c4d2ca; }
+  .mc__strip { font-size: 9px; font-variation-settings: 'wght' 600; letter-spacing: 0.16em; color: var(--mc-acc); }
+  @media (prefers-reduced-motion: no-preference) {
+    .mc__strip { animation: mc-pulse 2.4s ease-in-out infinite; }
+    @keyframes mc-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  }
   .mc__readout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--mc-line); border: 1px solid var(--mc-line); }
-  .mc__cell { background: #070a0c; padding: 8px 10px 9px; display: flex; flex-direction: column; gap: 4px; }
+  .mc__cell { background: #070a0c; padding: 9px 11px 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
   .mc__cell-k { font-size: 9px; letter-spacing: 0.18em; color: var(--mc-dim); }
-  .mc__cell-v { display: flex; align-items: baseline; gap: 3px; }
-  .mc__cell-v b { font-size: 21px; font-weight: 500; font-feature-settings: 'tnum'; letter-spacing: 0.01em; color: #eaf4ee; line-height: 1; }
+  .mc__cell-v { display: flex; align-items: baseline; gap: 4px; }
+  .mc__cell-v b { font-size: 22px; font-variation-settings: 'wght' 500; font-weight: normal; font-feature-settings: 'tnum' 1; color: #eaf4ee; line-height: 1; }
   .mc__cell-v i { font-size: 9.5px; font-style: normal; color: var(--mc-dim); letter-spacing: 0.05em; }
-
-  .mc__gauges { display: flex; flex-direction: column; gap: 9px; margin-top: 13px; }
+  .mc__gauges { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
   .mc__gauge { display: flex; flex-direction: column; gap: 4px; }
-  .mc__gauge-top { display: flex; align-items: baseline; justify-content: space-between; font-size: 9.5px; letter-spacing: 0.14em; color: var(--mc-dim); }
-  .mc__gauge-top b { font-size: 11px; font-weight: 600; color: #c4d2ca; font-feature-settings: 'tnum'; letter-spacing: 0; }
+  .mc__gauge-top { display: flex; justify-content: space-between; font-size: 9.5px; letter-spacing: 0.14em; color: var(--mc-dim); }
+  .mc__gauge-top b { font-size: 11px; font-variation-settings: 'wght' 600; font-weight: normal; color: #c4d2ca; font-feature-settings: 'tnum' 1; letter-spacing: 0; }
   .mc__gauge-track { height: 4px; background: #ffffff10; overflow: hidden; }
-  .mc__gauge-track i { display: block; height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--mc-accent) 55%, transparent), var(--mc-accent)); transition: width 0.6s cubic-bezier(0.2,0.7,0.2,1); }
+  .mc__gauge-track i { display: block; height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--mc-acc) 55%, transparent), var(--mc-acc)); transition: width 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
 
-  .mc__side { padding: 13px 15px; display: flex; flex-direction: column; min-height: 0; }
-  .mc__side-h { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: var(--mc-dim); margin-bottom: 11px; }
+  .mc__side { padding: 14px 18px 16px; display: flex; flex-direction: column; min-width: 0; }
+  .mc__side-h { font-size: 9px; font-variation-settings: 'wght' 700; letter-spacing: 0.18em; color: var(--mc-dim); margin-bottom: 12px; }
   .mc__subs { display: flex; flex-direction: column; gap: 7px; }
   .mc__sub {
-    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px;
-    padding: 8px 10px; background: #ffffff05; border: 1px solid var(--mc-line);
-    cursor: pointer; text-align: left; transition: background 0.15s ease, border-color 0.15s ease;
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+    padding: 9px 11px; background: #ffffff05; border: 1px solid var(--mc-line);
+    cursor: pointer; text-align: left; font-family: var(--fam); color: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
   .mc__sub:hover { background: #ffffff0a; }
   .mc__sub-led { width: 7px; height: 7px; border-radius: 50%; }
-  .mc__sub--ok .mc__sub-led { background: var(--mc-accent); box-shadow: 0 0 6px color-mix(in srgb, var(--mc-accent) 70%, transparent); }
-  .mc__sub--warn { border-color: color-mix(in srgb, var(--mc-warn) 45%, transparent); }
-  .mc__sub--warn .mc__sub-led { background: var(--mc-warn); box-shadow: 0 0 6px color-mix(in srgb, var(--mc-warn) 70%, transparent); }
-  .mc__sub-n { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #c4d2ca; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .mc__sub-s { font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; font-feature-settings: 'tnum'; }
-  .mc__sub--ok .mc__sub-s { color: var(--mc-accent); }
-  .mc__sub--warn .mc__sub-s { color: var(--mc-warn); }
-
+  .mc__sub[data-state='ok'] .mc__sub-led { background: var(--mc-acc); box-shadow: 0 0 6px color-mix(in srgb, var(--mc-acc) 70%, transparent); }
+  .mc__sub[data-state='warn'] { border-color: color-mix(in srgb, var(--mc-warn) 45%, transparent); }
+  .mc__sub[data-state='warn'] .mc__sub-led { background: var(--mc-warn); box-shadow: 0 0 6px color-mix(in srgb, var(--mc-warn) 70%, transparent); }
+  .mc__sub-n { font-size: 11px; font-variation-settings: 'wght' 600; letter-spacing: 0.1em; color: #c4d2ca; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mc__sub-s { font-size: 9.5px; font-variation-settings: 'wght' 600; letter-spacing: 0.1em; font-feature-settings: 'tnum' 1; }
+  .mc__sub[data-state='ok'] .mc__sub-s { color: var(--mc-acc); }
+  .mc__sub[data-state='warn'] .mc__sub-s { color: var(--mc-warn); }
+  .mc__note { margin-top: auto; padding-top: 14px; font-size: 9px; letter-spacing: 0.16em; color: var(--mc-dim); }
   @media (prefers-reduced-motion: no-preference) {
-    .mc__sub--warn .mc__sub-led { animation: mc-blink 1s steps(1) infinite; }
+    .mc__sub[data-state='warn'] .mc__sub-led { animation: mc-blink 1s steps(1) infinite; }
     @keyframes mc-blink { 50% { opacity: 0.25; } }
   }
 
-  @container (max-width: 520px) {
+  @container (max-width: 720px) {
     .mc__body { grid-template-columns: 1fr; }
     .mc__telem { border-right: 0; border-bottom: 1px solid var(--mc-line); }
-    .mc__readout { grid-template-columns: repeat(3, 1fr); }
-    .mc__cell-v b { font-size: 18px; }
-    .mc__phase-n { font-size: 10px; }
+    .mc__note { margin-top: 0; }
+  }
+  @container (max-width: 460px) {
+    .mc__bar { flex-wrap: wrap; padding: 10px 14px; }
+    .mc__vehicle { order: 3; width: 100%; }
+    .mc__readout { grid-template-columns: repeat(2, 1fr); }
+    .mc__cell-v b { font-size: 19px; }
+    .mc__phase { flex-direction: column; align-items: center; gap: 2px; }
+    .mc__phase-n { font-size: 10.5px; letter-spacing: 0.08em; }
   }
 
   /* ============================================================
-     02 · HALT LABS PRODUCT POSTER (kinetic variable weight)
+     05 · GRAVITY FIELD — DIA-school kinetic type
+     sits on the page surface: the section dissolves into the site
      ============================================================ */
-  .halt {
-    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
-    padding: 4cqi 5.5cqi; display: flex; flex-direction: column; overflow: hidden;
+  .gw {
+    background: var(--bg); color: var(--fg);
+    /* bleed act: classic scrollbars steal ~15px of 100vw on the right */
+    padding: 7cqi calc(6cqi + 14px) 3.5cqi 6cqi;
+    cursor: crosshair;
   }
-  .halt__grid {
-    position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 8cqi 8cqi;
-    mask-image: radial-gradient(120% 80% at 80% 20%, #000 0%, transparent 75%);
+  .gw__stage { display: flex; flex-direction: column; align-items: center; }
+  .gw__line {
+    margin: 0; display: flex; white-space: nowrap;
+    font-size: clamp(28px, 9.4cqi, 150px); line-height: 1.04; letter-spacing: 0.01em;
   }
-  .halt__top, .halt__kicker, .halt__head, .halt__sub, .halt__foot { position: relative; }
-  .halt__top { display: flex; justify-content: space-between; align-items: center; font-size: 2.1cqi; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-2); flex: none; }
-  .halt__mark { display: inline-flex; align-items: center; gap: 1.4cqi; font-weight: 700; color: var(--fg); }
-  .halt__diamond { width: 1.8cqi; height: 1.8cqi; background: var(--accent); transform: rotate(45deg); }
-  .halt__ver { font-feature-settings: 'tnum'; color: var(--fg-3); }
-  .halt__kicker { font-size: 2cqi; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin-top: auto; margin-bottom: 1.4cqi; }
-  .halt__head { display: flex; flex-direction: column; gap: 0; line-height: 0.82; margin: 0; }
-  /* lowercase display words so Space Grotesk's signature alternates are visible.
-     ss01 alt a · ss02 single-storey g · ss03 cut t — toggled live below. */
-  .halt__word {
-    font-size: 16.5cqi; font-weight: 700; letter-spacing: -0.02em;
-    font-variation-settings: 'wght' 700;
-    font-feature-settings: 'ss01' 1, 'ss02' 1, 'ss03' 1;
-    transition: font-feature-settings 0.2s;
+  .gw__ch { font-weight: normal; font-variation-settings: 'wght' 400; }
+  .gw__sp { width: 0.38em; }
+  .gw__meta {
+    display: flex; justify-content: space-between; gap: 3cqi; flex-wrap: wrap;
+    margin-top: 5cqi; padding-top: 1.6cqi; border-top: 1px solid var(--line);
+    font-size: clamp(8px, 1cqi, 14px); letter-spacing: 0.2em; color: var(--fg-3);
+    font-variation-settings: 'wght' 400;
   }
-  .halt[data-ss-off] .halt__word { font-feature-settings: 'ss01' 0, 'ss02' 0, 'ss03' 0; }
-  .halt__word--accent { color: var(--accent); }
-  .halt__sub { font-size: 2.4cqi; line-height: 1.36; max-width: 60%; color: var(--fg-2); margin-top: 1.8cqi; margin-bottom: auto; }
-  .halt__alt {
-    font-weight: 700; color: var(--accent); letter-spacing: 0.08em;
-    font-feature-settings: 'ss01' 1, 'ss02' 1, 'ss03' 1;
-  }
-  .halt[data-ss-off] .halt__alt { color: var(--fg-3); font-feature-settings: 'ss01' 0, 'ss02' 0, 'ss03' 0; }
-  .halt__foot { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; flex: none; padding-top: 2.6cqi; border-top: 1px solid var(--line); }
-  .halt__chip {
-    display: inline-flex; align-items: center; gap: 1.4cqi;
-    font-size: 2.4cqi; font-weight: 700; letter-spacing: 0.06em;
-    color: var(--accent-contrast); background: var(--accent);
-    padding: 1.2cqi 2.8cqi; border-radius: 100px; border: 0; cursor: pointer;
-    transition: background 0.2s, color 0.2s, opacity 0.2s;
-  }
-  .halt__chip-dot { width: 1.6cqi; height: 1.6cqi; border-radius: 50%; background: var(--accent-contrast); flex: none; }
-  .halt[data-ss-off] .halt__chip { background: transparent; color: var(--fg-2); box-shadow: inset 0 0 0 1px var(--line); }
-  .halt[data-ss-off] .halt__chip-dot { background: var(--fg-3); }
-  .halt__chip:hover { filter: brightness(1.06); }
-  .halt__meta { font-size: 1.85cqi; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum'; text-align: right; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .halt__word[data-flux] {
-      animation: halt-flux 5.5s cubic-bezier(0.45,0,0.2,1) infinite alternate;
-      animation-delay: var(--d, 0s);
-    }
-    /* weight-breathe keeps the alternates lit across the whole axis, so the
-       reveal reads as THIS variable face flexing — not a generic wght demo. */
-    @keyframes halt-flux {
-      from { font-variation-settings: 'wght' 300; letter-spacing: 0.02em; }
-      to   { font-variation-settings: 'wght' 700; letter-spacing: -0.025em; }
-    }
-  }
-
-  @container (max-width: 520px) {
-    .halt__word { font-size: 22cqi; }
-    .halt__sub { max-width: 100%; font-size: 3.2cqi; }
-    .halt__meta { display: none; }
-    .halt__foot { justify-content: flex-start; }
-  }
-
-  /* ============================================================
-     03 · CRYPTO TRADING TERMINAL (own dark surface, real px)
-     ============================================================ */
-  .trade {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    background: #07090c; color: #c9d4dd; font-size: 13px;
-    --t-up: #2ee6a6; --t-dn: #ff5d6c; --t-accent: #caff48; --t-dim: #5e6b78; --t-line: #ffffff12;
-  }
-  .trade__bar { display: flex; align-items: center; gap: 12px; padding: 9px 13px; border-bottom: 1px solid var(--t-line); flex: none; }
-  .trade__logo { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; color: var(--t-accent); }
-  .trade__net { display: inline-flex; align-items: center; gap: 6px; font-size: 9.5px; font-weight: 600; letter-spacing: 0.16em; color: var(--t-up); }
-  .trade__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--t-up); box-shadow: 0 0 6px color-mix(in srgb, var(--t-up) 70%, transparent); }
-  .trade__gas { margin-left: auto; font-size: 10px; letter-spacing: 0.1em; color: var(--t-dim); font-feature-settings: 'tnum'; }
-  .trade__gas b { color: #c9d4dd; font-weight: 600; }
-
-  .trade__watch { display: flex; border-bottom: 1px solid var(--t-line); flex: none; overflow: hidden; }
-  .trade__tk {
-    flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-    padding: 7px 9px; background: transparent; cursor: pointer; min-width: 0;
-    border-right: 1px solid var(--t-line); border-bottom: 2px solid transparent;
-    transition: background 0.15s ease;
-  }
-  .trade__tk:last-child { border-right: 0; }
-  .trade__tk:hover { background: #ffffff07; }
-  .trade__tk.is-on { background: #ffffff0a; border-bottom-color: var(--t-accent); }
-  .trade__tk-sym { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: #e6edf2; }
-  .trade__tk-px { font-size: 11px; font-weight: 500; font-feature-settings: 'tnum'; letter-spacing: 0.01em; color: #aab6c0; }
-  .trade__tk-ch { font-size: 9.5px; font-weight: 600; font-feature-settings: 'tnum'; }
-  .trade__tk.is-up .trade__tk-ch { color: var(--t-up); }
-  .trade__tk.is-dn .trade__tk-ch { color: var(--t-dn); }
-
-  .trade__body { flex: 1; display: grid; grid-template-columns: 1fr 40%; min-height: 0; }
-  .trade__chart-wrap { display: flex; flex-direction: column; padding: 12px 14px; border-right: 1px solid var(--t-line); min-height: 0; }
-  .trade__quote { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
-  .trade__pair { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--t-dim); }
-  .trade__last { font-size: 28px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0; color: #eef3f7; line-height: 1; }
-  .trade__delta { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; }
-  .trade__delta.is-up { color: var(--t-up); }
-  .trade__delta.is-dn { color: var(--t-dn); }
-  .trade__chart { flex: 1; width: 100%; min-height: 70px; margin: 12px 0; overflow: visible; }
-  .trade__spark { stroke: var(--t-accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
-  [data-dir='dn'] .trade__spark { stroke: var(--t-dn); }
-  .trade__sparkfill { fill: color-mix(in srgb, var(--t-accent) 14%, transparent); stroke: none; }
-  [data-dir='dn'] .trade__sparkfill { fill: color-mix(in srgb, var(--t-dn) 12%, transparent); }
-  .trade__btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .trade__buy, .trade__sell { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 9px 0; cursor: pointer; border: 1px solid transparent; }
-  .trade__buy { background: var(--t-up); color: #04130d; }
-  .trade__sell { background: transparent; color: var(--t-dn); border-color: color-mix(in srgb, var(--t-dn) 45%, transparent); }
-  .trade__buy:hover { filter: brightness(1.08); }
-  .trade__sell:hover { background: color-mix(in srgb, var(--t-dn) 12%, transparent); }
-
-  .trade__book { display: flex; flex-direction: column; padding: 10px 12px; min-height: 0; }
-  .trade__book-h { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: 0.16em; color: var(--t-dim); margin-bottom: 6px; }
-  .trade__asks, .trade__bids { display: flex; flex-direction: column; gap: 1px; }
-  .trade__lvl { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 3px 6px; overflow: hidden; }
-  .trade__depth { position: absolute; top: 0; bottom: 0; right: 0; opacity: 0.16; }
-  .trade__lvl--ask .trade__depth { background: var(--t-dn); }
-  .trade__lvl--bid .trade__depth { background: var(--t-up); }
-  .trade__lp, .trade__ls { position: relative; font-size: 11px; font-feature-settings: 'tnum'; letter-spacing: 0.01em; }
-  .trade__lvl--ask .trade__lp { color: var(--t-dn); }
-  .trade__lvl--bid .trade__lp { color: var(--t-up); }
-  .trade__ls { color: #97a3ad; text-align: right; }
-  .trade__spread { padding: 6px 6px; font-size: 9.5px; letter-spacing: 0.14em; color: var(--t-dim); font-feature-settings: 'tnum'; text-align: center; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .trade__spark { stroke-dasharray: 1000; animation: trade-draw 0.7s ease-out both; }
-    @keyframes trade-draw { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
-    .trade__dot { animation: trade-pulse 1.6s ease-in-out infinite; }
-    @keyframes trade-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-  }
-
-  @container (max-width: 540px) {
-    .trade__watch { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .trade__tk:nth-child(3n) { border-right: 0; }
-    .trade__tk { border-bottom: 1px solid var(--t-line); }
-    .trade__body { grid-template-columns: 1fr; }
-    .trade__chart-wrap { border-right: 0; border-bottom: 1px solid var(--t-line); }
-    .trade__last { font-size: 24px; }
-  }
-
-  /* ============================================================
-     04 · EXOPLANET SURVEY (data-viz editorial)
-     ============================================================ */
-  .exo {
-    position: absolute; inset: 0; background: var(--bg); color: var(--fg);
-    padding: 5cqi 5.5cqi; display: flex; flex-direction: column; overflow: hidden;
-  }
-  .exo__head { flex: none; }
-  .exo__issue { font-size: 2cqi; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); }
-  .exo__title { font-size: 11cqi; font-weight: 700; line-height: 0.88; letter-spacing: -0.01em; text-transform: uppercase; margin: 1.4cqi 0 2cqi; }
-  .exo__deck { font-size: 2.5cqi; line-height: 1.42; color: var(--fg-2); max-width: 86%; padding-bottom: 2.6cqi; border-bottom: 1px solid var(--line); }
-  .exo__chart { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-top: 2cqi; }
-  .exo__chart-h, .exo__row {
-    display: grid; grid-template-columns: 1.8fr 0.9fr 0.6fr 1fr 1.5fr;
-    align-items: center; gap: 2cqi;
-  }
-  .exo__chart-h { font-size: 1.8cqi; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-3); padding-bottom: 1.4cqi; border-bottom: 1px solid var(--line); }
-  .exo__row { flex: 1; border-bottom: 1px solid var(--line-soft); }
-  .exo__row:last-child { border-bottom: 0; }
-  .exo__name { font-size: 3cqi; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .exo__num { font-size: 2.7cqi; font-weight: 400; font-feature-settings: 'tnum'; text-align: right; color: var(--fg-2); letter-spacing: 0.01em; }
-  .exo__chart-h .exo__num { font-size: 1.8cqi; color: var(--fg-3); }
-  .exo__esi { display: flex; align-items: center; gap: 1.4cqi; justify-content: flex-end; }
-  .exo__chart-h .exo__esi { justify-content: flex-end; }
-  .exo__bar { flex: 1; height: 1.4cqi; background: #ffffff14; position: relative; overflow: hidden; max-width: 70%; }
-  .exo__bar::after {
-    content: ''; position: absolute; inset: 0 auto 0 0; width: calc(var(--v) * 100%);
-    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 50%, transparent), var(--accent));
-    transform: scaleX(0); transform-origin: left; transition: transform 0.9s cubic-bezier(0.2,0.7,0.2,1);
-  }
-  [data-exo].is-in .exo__bar::after { transform: scaleX(1); }
-  .exo__esi b { font-size: 2.6cqi; font-weight: 600; font-feature-settings: 'tnum'; color: var(--fg); min-width: 7cqi; text-align: right; }
-  .exo__chart-h .exo__esi { font-size: 1.8cqi; }
-  .exo__foot { flex: none; display: flex; justify-content: space-between; align-items: baseline; margin-top: 2.4cqi; padding-top: 2cqi; border-top: 1px solid var(--line); font-size: 1.9cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); font-feature-settings: 'tnum'; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .exo__bar::after { transition: none; transform: scaleX(1); }
-  }
-
-  @container (max-width: 540px) {
-    .exo__title { font-size: 13cqi; }
-    .exo__deck { max-width: 100%; font-size: 3.4cqi; }
-    .exo__chart-h, .exo__row { grid-template-columns: 1.6fr 0.8fr 1.4fr; }
-    .exo__chart-h span:nth-child(3), .exo__chart-h span:nth-child(4),
-    .exo__row .exo__num:nth-of-type(2), .exo__row .exo__num:nth-of-type(3) { display: none; }
-    .exo__name { font-size: 4cqi; }
-    .exo__num { font-size: 3.4cqi; }
-    .exo__esi b { font-size: 3.4cqi; min-width: 10cqi; }
+  .gw__readout { color: var(--accent); }
+  @container (max-width: 700px) {
+    .gw { padding: 10cqi calc(4cqi + 14px) 6cqi 4cqi; }
+    .gw__line { font-size: 8.2cqi; }
+    .gw__meta { font-size: 2.1cqi; letter-spacing: 0.12em; }
   }
 </style>

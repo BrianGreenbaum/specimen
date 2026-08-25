@@ -4,803 +4,893 @@ export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
 
-// --- 01 · Material 3 "Today" app (interactive, real device scale) ---------
-// Roboto Slab's native habitat: Android / Material. Slab headlines on cards,
-// real px, FAB, segmented chips. Three day-tabs reload the agenda + metrics;
-// tabular figures ('tnum') hold the time column and temps on switch.
-const days = [
-  {
-    id: 'mon', label: 'Mon', date: 'Jun 8', hi: 24, lo: 14, cond: 'Sunny', icon: '☀',
-    steps: 8420, kcal: 642, focus: '3h 10m',
-    agenda: [
-      ['09:00', 'Design review', 'Studio · Room 4', 'work'],
-      ['11:30', 'Run — riverside loop', '5.2 km', 'health'],
-      ['14:00', '1:1 with Priya', 'Video call', 'work'],
-      ['18:45', 'Pick up groceries', 'Market St', 'home'],
-    ] as [string, string, string, string][],
-  },
-  {
-    id: 'tue', label: 'Tue', date: 'Jun 9', hi: 19, lo: 12, cond: 'Showers', icon: '☂',
-    steps: 5110, kcal: 488, focus: '4h 25m',
-    agenda: [
-      ['08:15', 'Standup', 'Room 4', 'work'],
-      ['10:00', 'Deep work — spec', 'Focus block', 'work'],
-      ['13:00', 'Lunch w/ Marco', 'Café Otto', 'home'],
-      ['20:00', 'Yoga', 'Studio East', 'health'],
-    ] as [string, string, string, string][],
-  },
-  {
-    id: 'wed', label: 'Wed', date: 'Jun 10', hi: 27, lo: 16, cond: 'Clear', icon: '◐',
-    steps: 11280, kcal: 905, focus: '2h 40m',
-    agenda: [
-      ['07:30', 'Long run — 10 km', 'Park gates', 'health'],
-      ['09:30', 'Roadmap sync', 'Room 2', 'work'],
-      ['15:30', 'Dentist', '120 Bell Rd', 'home'],
-      ['19:00', 'Dinner — Anya', 'Home', 'home'],
-    ] as [string, string, string, string][],
-  },
+// 02 — trailhead board: weight = proximity (the nearest trail reads heaviest)
+const trails = [
+  { name: 'Cascade Overlook', frac: '1/2', dec: 0.5, mi: 'MI.', wght: 900 },
+  { name: 'Granite Fork Falls', frac: '1 3/4', dec: 1.75, mi: 'MI.', wght: 700 },
+  { name: 'Hermit Lake', frac: '4 1/2', dec: 4.5, mi: 'MI.', wght: 500 },
+  { name: 'Pacific Crest Jct.', frac: '11 1/4', dec: 11.25, mi: 'MI.', wght: 300 },
 ];
-const d0 = days[0];
+
+// 03 — sidebar: sleeper routes relaid (CSS bars, lining figures — the font's default)
+const routes = [
+  { route: 'Vienna — Paris', km: '1,034', pct: 100 },
+  { route: 'Berlin — Stockholm', km: '918', pct: 89 },
+  { route: 'Brussels — Prague', km: '882', pct: 85 },
+  { route: 'Zürich — Rome', km: '694', pct: 67 },
+];
 ---
 <div class="iu" style={`--fam:${fam}`}>
 
-  <!-- 01 — Material 3 "Today" app (interactive, real device scale) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — Material 3 "Today" app, real device scale</span></figcaption>
-    <div class="iu__scene iu__scene--phone">
-      <div class="iu__device md" data-md>
-        <div class="md__chrome">
-          <span class="md__time">9:41</span>
-          <span class="md__status">
-            <svg class="md__wifi" viewBox="0 0 16 12" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect x="12" y="0" width="3" height="12" rx="0.6"/></svg>
-            <svg class="md__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="17" height="8" rx="1" fill="currentColor"/></svg>
+  <!-- ============ 01 — ILLUSTRATION & COMMERCIAL ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap">
+      <span class="index-num">01</span>
+      <span class="label">Illustration &amp; commercial — a Victorian fight-night playbill, after Vincent Figgins’s two-line Antique (1817) and the every-line-a-different-face playbill convention</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="pb">
+        <div class="pb__sheet">
+          <p class="pb__venue">Royal Albion Rooms · Lambeth</p>
+          <p class="pb__patron">Under the immediate patronage of the Fancy</p>
+          <div class="pb__rule pb__rule--double" aria-hidden="true"></div>
+          <p class="pb__when">On <b>Monday</b> Evening, <b>June the 17th</b>, 1861,</p>
+          <p class="pb__big pb__big--1" data-press>GRAND</p>
+          <p class="pb__big pb__big--2" data-press>PUGILISTIC</p>
+          <p class="pb__big pb__big--3" data-press>TOURNAMENT!</p>
+          <div class="pb__rule" aria-hidden="true"></div>
+          <p class="pb__bill">
+            <span class="pb__man">M<sup>R.</sup> JEM MACE</span>
+            <span class="pb__of">of Norwich, Champion of England,</span>
+            <span class="pb__vs">will spar</span>
+            <span class="pb__man">M<sup>R.</sup> SAM HURST</span>
+            <span class="pb__of">“The Stalybridge Infant,” of Lancashire,</span>
+          </p>
+          <p class="pb__rounds">TWELVE ROUNDS — NEW RULES OF THE RING</p>
+          <div class="pb__rule" aria-hidden="true"></div>
+          <p class="pb__prices">Boxes 2<i>s.</i> &nbsp;—&nbsp; Pit 1<i>s.</i> &nbsp;—&nbsp; Gallery 6<i>d.</i> &nbsp;·&nbsp; Doors open at Seven o’Clock</p>
+          <p class="pb__imprint">Printed by W. S. Johnson, “Nassau Steam Press,” 60, St. Martin’s Lane, Charing Cross, London.</p>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">One family does the whole bill: the display stack climbs the weight axis 700 → 800 → 900 over a 300-weight venue line, sizes following word length like a case of wood type. Press a big line — the letterpress bites deeper.</p>
+  </figure>
+
+  <!-- ============ 02 — BRANDING & IDENTITY ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click=".np__row[data-w='300']">
+    <figcaption class="iu__cap">
+      <span class="index-num">02</span>
+      <span class="label">Branding &amp; identity — a trailhead sign system, after the routed Clarendon boards of the U.S. National Park Service</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="np">
+        <div class="np__id">
+          <span class="np__roundel" aria-hidden="true">
+            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M20 68 38 40l9 13 11-19 22 34Z" fill="currentColor"/><circle cx="68" cy="30" r="5.5" fill="currentColor"/></svg>
           </span>
+          <h3 class="np__park">Granite<br/>Fork</h3>
+          <p class="np__sub">National Park · Est. 1923</p>
+          <div class="np__sys">
+            <p class="np__sys-k">Sign standard <b>GF-4</b></p>
+            <p class="np__sys-line">Letters routed <span class="np__frac">3/8</span> in. deep in fir, painted board <span class="np__frac">1 1/2</span> in. stock.</p>
+            <p class="np__sys-line np__sys-line--rule">Distance is set in weight — <b>the nearest trail reads heaviest.</b></p>
+          </div>
         </div>
-        <div class="md__appbar">
-          <span class="md__menu" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="md__title">Today</span>
-          <span class="md__avatar">RS</span>
-        </div>
-        <div class="md__days" role="tablist">
-          {days.map((dy, i) => (
-            <button class={`md__day ${i === 0 ? 'is-on' : ''}`} data-day={dy.id} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
-              <em>{dy.label}</em>
-              <b data-day-date={dy.id}>{dy.date.split(' ')[1]}</b>
-            </button>
+        <div class="np__board" role="list" aria-label="Trailhead distances">
+          <p class="np__board-k">← Trailhead · North Rim</p>
+          {trails.map((t) => (
+            <p class="np__row" role="listitem" tabindex="0" data-trail data-w={t.wght} data-mi={t.dec} style={`--w:${t.wght}`}>
+              <span class="np__dest">{t.name}</span>
+              <span class="np__dots" aria-hidden="true"></span>
+              <span class="np__mi"><span class="np__frac" data-mi-frac>{t.frac}</span> <span class="np__mi-live" data-mi-live hidden></span> {t.mi}</span>
+            </p>
           ))}
+          <p class="np__board-f">Pets on leash · Pack out what you pack in</p>
         </div>
-        <div class="md__body">
-          <div class="md__hero">
-            <span class="md__hero-top">
-              <span class="md__hero-place">Riverside</span>
-              <span class="md__hero-date" data-fulldate>{d0.date}</span>
+        <div class="np__apps" aria-label="The mark at three more scales">
+          <p class="np__apps-k">One mark, every fixture — standard GF-4</p>
+          <span class="np__badge">
+            <span class="np__badge-r" aria-hidden="true">
+              <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="3"/><path d="M20 68 38 40l9 13 11-19 22 34Z" fill="currentColor"/><circle cx="68" cy="30" r="5.5" fill="currentColor"/></svg>
             </span>
-            <span class="md__hero-display">
-              <b class="md__temp" data-hi>{d0.hi}°</b>
-              <span class="md__hero-side">
-                <span class="md__hero-ic" data-icon>{d0.icon}</span>
-                <span class="md__cond"><span data-cond>{d0.cond}</span></span>
-                <span class="md__hilo"><i data-lo>L {d0.lo}°</i></span>
-              </span>
-            </span>
+            <span class="np__badge-t">Granite Fork<br/><i>Ranger · District 4</i></span>
+          </span>
+          <span class="np__map">
+            <span class="np__map-k">GF-4 · North Rim Quad</span>
+            <span class="np__map-w">Granite Fork</span>
+            <span class="np__map-s">Scale 1:24,000 · Contour <span class="np__frac">1/2</span> mi.</span>
+          </span>
+          <span class="np__way">
+            <span class="np__way-k">Junction post · GF-4.2</span>
+            <span class="np__way-w">Cascade Overlook <i class="np__way-a" aria-hidden="true">→</i></span>
+            <span class="np__way-s"><span class="np__frac">1/2</span> mi. · Steep grade ahead</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <p class="iu__hint label">True fractions (<code>frac</code>) cut the mileages. Hover or tap a trail to walk it — the miles count down to zero as the row gains weight toward 900: distance set in weight, performed.</p>
+  </figure>
+
+  <!-- ============ 03 — EDITORIAL ============ -->
+  <figure class="iu__item">
+    <figcaption class="iu__cap">
+      <span class="index-num">03</span>
+      <span class="label">Editorial — a feature page, after Mark Porter’s 2005 Berliner <em>Guardian</em> and Guardian Egyptian’s hairline-to-black register</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="nw">
+        <header class="nw__mast">
+          <span class="nw__paper">The Ledger</span>
+          <span class="nw__sec">Industry</span>
+          <span class="nw__date">Saturday 13 June 2026</span>
+        </header>
+        <div class="nw__lede">
+          <p class="nw__kick">The Rail Files</p>
+          <h3 class="nw__head" data-head>The night train comes&nbsp;back</h3>
+          <p class="nw__deck">Twenty years after the sleepers were scrapped, Europe is relaying its overnight network — and freight is quietly paying for the renaissance.</p>
+          <p class="nw__by">Margit Keller <span>in Vienna</span></p>
+        </div>
+        <div class="nw__body">
+          <div class="nw__cols">
+            <p><b class="nw__drop">T</b>he 23:18 to Paris leaves from a platform that did not exist in January. Carriage by carriage, the operators that spent the 2000s tearing up their overnight timetables are rebuilding them — and discovering that the hardest part is not the track but the rolling stock, most of which was sold for scrap at the bottom of the market.</p>
+            <p>The economics only close because of what runs behind the sleepers. Every relaid night path is shared with freight, and the freight pays: a single intermodal service covers the access charges of three passenger departures. The night network, in other words, is being rebuilt the way it was built the first time — on cargo.</p>
+            <p>In the yards outside Vienna the refurbishers work in two shifts. A carriage comes in as a shell and leaves, eleven weeks later, with couchettes, a steel corridor floor, and a number plate from a class withdrawn in 2003. “Nobody believed the demand,” says the yard’s director, “until the demand sold out every berth to March.”</p>
           </div>
-          <div class="md__metrics">
-            <div class="md__metric"><span class="md__metric-k">Steps</span><b class="md__metric-val" data-steps>{d0.steps.toLocaleString()}</b></div>
-            <div class="md__metric"><span class="md__metric-k">Active kcal</span><b class="md__metric-val" data-kcal>{d0.kcal}</b></div>
-            <div class="md__metric"><span class="md__metric-k">Focus</span><b class="md__metric-val" data-focus>{d0.focus}</b></div>
-          </div>
-          <div class="md__agenda-h">Agenda</div>
-          <ul class="md__agenda" data-agenda>
-            {d0.agenda.map((a) => (
-              <li class={`md__ev md__ev--${a[3]}`}>
-                <span class="md__ev-time">{a[0]}</span>
-                <span class="md__ev-rail" aria-hidden="true"></span>
-                <span class="md__ev-main"><b>{a[1]}</b><i>{a[2]}</i></span>
-              </li>
+          <blockquote class="nw__pull">
+            <p><span class="nw__pull-q">“</span>We sold the rolling stock for scrap. Now we are buying the night back, carriage by carriage.”</p>
+            <footer>— Ute Brandstätter, ÖBB night-network director</footer>
+          </blockquote>
+          <aside class="nw__side">
+            <p class="nw__side-k">Sleepers, relaid</p>
+            <p class="nw__side-sub">Overnight routes reopened since 2021, by length</p>
+            {routes.map((r) => (
+              <p class="nw__route" tabindex="0">
+                <span class="nw__route-t"><span class="nw__route-n">{r.route}</span><span class="nw__km">{r.km} km</span></span>
+                <span class="nw__bar" aria-hidden="true"><i style={`--p:${r.pct}%`}></i></span>
+              </p>
             ))}
-          </ul>
+            <p class="nw__side-src">Source: ERA network statements, 2026</p>
+          </aside>
         </div>
-        <button class="md__fab" aria-label="New event">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-        </button>
-        <div class="md__nav">
-          <span class="is-on">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5M6 10v9h12v-9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>
-            <em>Today</em>
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="15" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 10h16M8 3.5v3.5M16 3.5v3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-            <em>Calendar</em>
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14l4-5 4 3 4-7 4 9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 19h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-            <em>Activity</em>
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-            <em>More</em>
-          </span>
-        </div>
+        <footer class="nw__folio"><span>The Ledger</span><span>Industry · Page 23</span><span>ledger.eu/rail-files</span></footer>
       </div>
     </div>
-    <p class="iu__hint label">Tap a day — temperature pulses through the wght axis on switch, metrics reload, agenda rebuilds. Roboto Slab in its native Material habitat: variable-weight slab headings, tabular times that hold their column.</p>
+    <p class="iu__hint label">One slab, every register: as the page enters, the headline eases from 300 down to a true hairline 100 — the Guardian Egyptian move — against a 900 pull quote and 400 text. Select the text; even the highlight is house style.</p>
   </figure>
 
-  <!-- 02 — Material product marketing page (Pixel-style hardware launch) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Product marketing — Material hardware launch page, color picker</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="mk" data-mk>
-        <div class="mk__nav">
-          <span class="mk__logo">◖ Pixel</span>
-          <nav class="mk__menu"><a>Phone</a><a>Watch</a><a>Buds</a><a class="mk__cta">Pre-order</a></nav>
+  <!-- ============ 04 — WEB & APP UI ============ -->
+  <figure class="iu__item" data-shoot-click="[data-wt-preset='600']">
+    <figcaption class="iu__cap">
+      <span class="index-num">04</span>
+      <span class="label">Web &amp; app UI — a reading app at real device scale, after Google Play Books’ Material 3 “Display options” sheet (interactive)</span>
+    </figcaption>
+    <div class="iu__scene iu__scene--rd" style="--rw:400">
+      <div class="rd-room">
+      <div class="rd-rail" aria-hidden="true">
+        <span class="rd-rail__k rd-rail__k--l">wght 100 · Thin</span>
+        <span class="rd-rail__k rd-rail__k--r">wght 900 · Black</span>
+        <span class="rd-rail__marker">wght <b data-rail-val>400</b></span>
+      </div>
+      <p class="rd-pole rd-pole--l" aria-hidden="true">It was a town of red brick, or of brick that would have been red if the smoke and ashes had allowed it.</p>
+      <p class="rd-pole rd-pole--r" aria-hidden="true">It was a town of red brick, or of brick that would have been red if the smoke and ashes had allowed it.</p>
+      <div class="rd" data-rd data-mode="paper" data-flowmode="flowing">
+        <div class="rd__top">
+          <span class="rd__back" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 5 8 12l6.5 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="rd__book">Hard Times <i>· Dickens</i></span>
+          <span class="rd__dots" aria-hidden="true">⋮</span>
         </div>
-        <div class="mk__hero">
-          <div class="mk__copy">
-            <span class="mk__eyebrow">New · Tensor G4</span>
-            <h3 class="mk__head">Pixel<br/>Pro</h3>
-            <p class="mk__sub">The slab that reads as easily on a spec sheet as it commands on a billboard. Built for the screen, footed in ink.</p>
-            <div class="mk__picker" role="group" aria-label="Finish">
-              <button class="mk__chip is-on" data-fin="Obsidian" data-hex="#1d1c1a" style="--c:#1d1c1a" aria-label="Obsidian"></button>
-              <button class="mk__chip" data-fin="Porcelain" data-hex="#e7e2d8" style="--c:#e7e2d8" aria-label="Porcelain"></button>
-              <button class="mk__chip" data-fin="Bay" data-hex="#5b7c99" style="--c:#5b7c99" aria-label="Bay"></button>
-              <button class="mk__chip" data-fin="Rose" data-hex="#c66b5a" style="--c:#c66b5a" aria-label="Rose"></button>
-              <span class="mk__fin" data-fin-name>Obsidian</span>
+        <div class="rd__page" data-page>
+          <p class="rd__ch"><span>Book the First — Chapter V</span><span class="rd__ch-w">wght <b data-wt-echo>400</b></span></p>
+          <h4 class="rd__ch-t">The Key-note</h4>
+          <p>It was a town of red brick, or of brick that would have been red if the smoke and ashes had allowed it; but as matters stood, it was a town of unnatural red and black like the painted face of a savage.</p>
+          <p>It was a town of machinery and tall chimneys, out of which interminable serpents of smoke trailed themselves for ever and ever, and never got uncoiled. It had a black canal in it, and a river that ran purple with ill-smelling dye, and vast piles of building full of windows where there was a rattling and a trembling all day long, and where the piston of the steam-engine worked monotonously up and down, like the head of an elephant in a state of melancholy madness.</p>
+        </div>
+        <div class="rd__prog" aria-hidden="true"><i></i></div>
+        <div class="rd__foot"><span>page 89 of 412</span><span>22 min left in chapter</span></div>
+        <div class="rd__ctrl">
+          <div class="rd__flow" role="group" aria-label="Display mode">
+            <button class="rd__flow-b is-on" data-flow="flowing" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5 10 18 19.5 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Flowing text</button>
+            <button class="rd__flow-b" data-flow="original" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5 10 18 19.5 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Original pages</button>
+          </div>
+          <div class="rd__themes" role="group" aria-label="Reading theme">
+            <button class="rd__theme is-on" data-theme="paper" aria-pressed="true">Paper</button>
+            <button class="rd__theme" data-theme="sepia" aria-pressed="false">Sepia</button>
+            <button class="rd__theme" data-theme="night" aria-pressed="false">Night</button>
+          </div>
+          <div class="rd__textset" data-textset>
+            <div class="rd__size" role="group" aria-label="Text size">
+              <button class="rd__sz" data-sz="-1" aria-label="Smaller text">A<sup>−</sup></button>
+              <span class="rd__sz-val" data-sz-val>16</span>
+              <button class="rd__sz rd__sz--big" data-sz="1" aria-label="Larger text">A<sup>+</sup></button>
             </div>
-            <div class="mk__buy">
-              <span class="mk__price">From £<i data-price>899</i></span>
-              <button class="mk__order">Pre-order</button>
+            <label class="rd__wt">
+              <span>Text weight</span>
+              <span class="rd__wt-track">
+                <i class="rd__wt-bubble" aria-hidden="true"><b data-wt-bub>400</b></i>
+                <input type="range" min="300" max="600" step="10" value="400" data-wt aria-label="Text weight" />
+              </span>
+            </label>
+            <div class="rd__presets" role="group" aria-label="Weight presets">
+              {[300, 400, 500, 600].map((w) => (
+                <button class={`rd__preset${w === 400 ? ' is-on' : ''}`} data-wt-preset={w} style={`font-weight:${w}`}>{w}</button>
+              ))}
             </div>
           </div>
-          <div class="mk__art" aria-hidden="true">
-            <div class="mk__device" data-device>
-              <div class="mk__screen" data-screen>
-                <div class="mk__scr-top">
-                  <span class="mk__scr-time">9:41</span>
-                  <span class="mk__scr-icons">▲ ▲ ▐</span>
-                </div>
-                <div class="mk__scr-photo" data-scr-photo></div>
-                <div class="mk__scr-caption" data-scr-cap>Morning light</div>
-                <div class="mk__scr-actions">
-                  <span class="mk__scr-btn">Edit</span>
-                  <span class="mk__scr-btn mk__scr-btn--share">Share</span>
-                </div>
-              </div>
-            </div>
-            <span class="mk__bignum">G4</span>
-          </div>
-        </div>
-        <div class="mk__specs">
-          <div class="mk__spec"><b data-s1>50</b><i>MP main, ƒ/1.7</i></div>
-          <div class="mk__spec"><b><span data-s2>6.7</span>″</b><i>120 Hz OLED</i></div>
-          <div class="mk__spec"><b><span data-s3>24</span>h</b><i>battery life</i></div>
-          <div class="mk__spec"><b data-s4>256</b><i>GB storage</i></div>
+          <p class="rd__locknote" data-locknote hidden>Text settings apply to flowing text only</p>
         </div>
       </div>
+      </div>
     </div>
-    <p class="iu__hint label">A Material hardware launch page. Pick a finish — the wordmark swings across the weight axis, the device screen recolors, the price and specs reset. Big slab numerals headline the specs.</p>
+    <p class="iu__hint label">The room is the instrument: the same Coketown sentence stands live at <code>wght</code> 100 and 900, joined by a graduated rail whose vermilion marker tracks the M3 weight slider. Switch to Original pages and the text settings lock, Play Books-style; choose Night and the whole room dims with the reader.</p>
   </figure>
 
-  <!-- 03 — Material 3 analytics dashboard (big slab metrics, tnum, range tabs) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Product UI — Material 3 analytics console, big slab metrics + tabular figures</span></figcaption>
-    <div class="iu__scene scene-dash">
-      <div class="iu__device dash" data-dash>
-        <div class="dash__bar">
-          <span class="dash__brand">◉ Console</span>
-          <span class="dash__title">Overview</span>
-          <div class="dash__range" role="tablist">
-            <button class="dash__rng is-on" data-rng="7d" role="tab" aria-selected="true">7d</button>
-            <button class="dash__rng" data-rng="28d" role="tab" aria-selected="false">28d</button>
-            <button class="dash__rng" data-rng="90d" role="tab" aria-selected="false">90d</button>
-          </div>
-          <span class="dash__av">RS</span>
+  <!-- ============ 05 — INTERACTIVE & EXPERIMENTAL ============ -->
+  <figure class="iu__item iu__item--bleed" data-shoot-click="[data-max]">
+    <figcaption class="iu__cap">
+      <span class="index-num">05</span>
+      <span class="label">Interactive &amp; experimental — <em>Tonnage</em>, a goods-yard weighbridge for letters, after the railway weighbridges of Henry Pooley &amp; Son, Albion Foundry, Liverpool</span>
+    </figcaption>
+    <div class="iu__scene">
+      <div class="tn" data-tn style="--w:100; --load:0">
+        <div class="tn__head">
+          <span class="tn__plate">Weighbridge N<sup>o</sup> 14 · Granite Fork Goods Yard</span>
+          <span class="tn__cert">Board of Trade certified · <span class="tn__frac">1/10</span> t</span>
         </div>
-        <div class="dash__grid">
-          <div class="dash__card dash__card--feat">
-            <span class="dash__k">Active users</span>
-            <b class="dash__big" data-m-users>128,402</b>
-            <span class="dash__delta dash__delta--up" data-d-users>▲ 12.4%</span>
-            <span class="dash__spark" data-spark aria-hidden="true">
-              <svg viewBox="0 0 120 36" preserveAspectRatio="none"><polyline data-poly points="" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
-            </span>
+        <div class="tn__stage">
+          <div class="tn__wordbox" aria-hidden="true">
+            <p class="tn__word" data-word>TONNAGE</p>
+            <p class="tn__word tn__word--feet">TONNAGE</p>
           </div>
-          <div class="dash__card">
-            <span class="dash__k">Revenue</span>
-            <b class="dash__big" data-m-rev>$94,210</b>
-            <span class="dash__delta dash__delta--up" data-d-rev>▲ 8.1%</span>
+          <div class="tn__platform" data-platform aria-hidden="true"></div>
+          <div class="tn__pit" aria-hidden="true"></div>
+          <p class="tn__cal" aria-hidden="true">Calibration · 2 t per 100 units of wght · range 2 t — 18 t</p>
+          <p class="tn__note"><i aria-hidden="true"></i>The slabs are the feet — the load bears on the serifs, flat to the deck</p>
+        </div>
+        <div class="tn__deck">
+          <div class="tn__read">
+            <span class="tn__read-k">Gross load</span>
+            <span class="tn__read-v"><b data-tons>2.0</b> t</span>
+            <span class="tn__read-w">wght <b data-wval>100</b></span>
           </div>
-          <div class="dash__card">
-            <span class="dash__k">Sessions</span>
-            <b class="dash__big" data-m-sess>312,860</b>
-            <span class="dash__delta dash__delta--down" data-d-sess>▼ 2.3%</span>
+          <label class="tn__lever">
+            <span class="label">Load</span>
+            <input type="range" min="100" max="900" step="1" value="100" data-lever aria-label="Load — drives the weight axis" />
+            <span class="tn__ends" aria-hidden="true"><i>100 · tare</i><i>900 · max</i></span>
+          </label>
+          <div class="tn__btns">
+            <button class="tn__btn" data-tare>Tare</button>
+            <button class="tn__btn tn__btn--max" data-max>Max load</button>
           </div>
-          <div class="dash__card dash__card--mid">
-            <span class="dash__k">Avg. session</span>
-            <b class="dash__big" data-m-dur>4:38</b>
-            <span class="dash__delta dash__delta--up" data-d-dur>▲ 0.9%</span>
-          </div>
-          <div class="dash__card dash__card--mid dash__card--bounce">
-            <span class="dash__k">Bounce rate</span>
-            <b class="dash__big" data-m-bounce>34.2%</b>
-            <span class="dash__delta dash__delta--down" data-d-bounce>▼ 1.8%</span>
-          </div>
-          <div class="dash__card dash__card--mid dash__card--ret">
-            <span class="dash__k">Retention</span>
-            <b class="dash__big" data-m-ret>68.9%</b>
-            <span class="dash__delta dash__delta--up" data-d-ret>▲ 3.2%</span>
-          </div>
-          <div class="dash__card dash__card--mid dash__card--conv">
-            <span class="dash__k">Conversions</span>
-            <b class="dash__big" data-m-conv>2,841</b>
-            <span class="dash__delta dash__delta--up" data-d-conv>▲ 5.9%</span>
-          </div>
-          <div class="dash__card dash__card--wide">
-            <span class="dash__k">Top channels</span>
-            <table class="dash__tbl">
-              <tbody data-rows>
-                <tr><td>Organic search</td><td class="num">48,120</td><td class="num pct">38.4%</td></tr>
-                <tr><td>Direct</td><td class="num">31,540</td><td class="num pct">25.2%</td></tr>
-                <tr><td>Referral</td><td class="num">22,910</td><td class="num pct">18.3%</td></tr>
-                <tr><td>Social</td><td class="num">14,200</td><td class="num pct">11.3%</td></tr>
-              </tbody>
-            </table>
-          </div>
+        </div>
+        <div class="tn__foot">
+          <span class="tn__maker">Henry Pooley &amp; Son · Albion Foundry, Liverpool · Makers to the Railways · N<sup>o</sup> 2214</span>
+          <span class="tn__tariff">Yard tariff per t: coal 1<span class="tn__frac">1/2</span> d. · timber 2<span class="tn__frac">1/4</span> d. · pig iron 3<span class="tn__frac">3/4</span> d.</span>
         </div>
       </div>
     </div>
-    <p class="iu__hint label">A Material 3 analytics console. Switch the date range — every metric, delta, sparkline and the channel table reflow. Big slab numerals headline the cards; tabular ('tnum') figures keep every column locked.</p>
+    <p class="iu__hint label">The bridge opens at tare. Haul the lever and the word takes on real mass — wght 100 → 900, two tonnes per hundred units, as engraved on the deck — while the platform sinks and the slab’s serif feet glow vermilion at the contact line: the load is carried on the slabs.</p>
   </figure>
 
-  <!-- 04 — Material You launch wall: per-letter weight wave spells the headline -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Brand — Material You launch wall, per-letter weight wave</span></figcaption>
-    <div class="iu__scene scene-tall">
-      <div class="wall">
-        <div class="wall__top">
-          <span class="wall__brand">▱&nbsp;Android&nbsp;16 <i>Material You</i></span>
-          <span class="wall__edition">Developer&nbsp;Preview</span>
-        </div>
-        <div class="wall__hero">
-          <span class="wall__kick">The one type system that</span>
-          <h3 class="wall__word" aria-label="ADAPTS" data-wave>
-            <span style="--i:0">A</span><span style="--i:1">D</span><span style="--i:2">A</span><span style="--i:3">P</span><span style="--i:4">T</span><span style="--i:5">S</span>
-          </h3>
-          <span class="wall__mid">to <em>every</em> screen, weight and color</span>
-        </div>
-        <div class="wall__foot">
-          <span class="wall__swatches" aria-hidden="true">
-            <i style="--s:#b1551f"></i><i style="--s:#5b7c99"></i><i style="--s:#7a8b53"></i><i style="--s:#9a6f4e"></i><i style="--s:#6d5d8a"></i>
-          </span>
-          <span class="wall__rail">wght&nbsp;100 → 900</span>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">A Material You launch wall. A weight wave travels letter-by-letter across "ADAPTS" — each glyph swings the full 100→900 slab axis in sequence, the type literally adapting. Distinct from any forge poster.</p>
-  </figure>
 </div>
 
-<script id="roboto-slab-day-data" type="application/json" set:html={JSON.stringify(days)} is:inline></script>
-
 <script>
-  // ============ 01 · MATERIAL "TODAY" APP ============
-  type Day = {
-    id: string; label: string; date: string; hi: number; lo: number; cond: string; icon: string;
-    steps: number; kcal: number; focus: string;
-    agenda: [string, string, string, string][];
-  };
-  const dayIsland = document.getElementById('roboto-slab-day-data');
-  let days: Day[] = [];
-  try { days = dayIsland ? JSON.parse(dayIsland.textContent || '[]') : []; } catch { days = []; }
-  const byDay: Record<string, Day> = {};
-  days.forEach((d) => (byDay[d.id] = d));
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  document.querySelectorAll<HTMLElement>('[data-md]').forEach((md) => {
-    if (!days.length) return;
-    const q = (s: string) => md.querySelector(s) as HTMLElement | null;
-    const icon = q('[data-icon]'), hi = q('[data-hi]'), cond = q('[data-cond]'), lo = q('[data-lo]');
-    const fulldate = q('[data-fulldate]'), steps = q('[data-steps]'), kcal = q('[data-kcal]'), focus = q('[data-focus]');
-    const agenda = q('[data-agenda]');
-
-    function render(id: string) {
-      const d = byDay[id];
-      if (!d) return;
-      if (icon) icon.textContent = d.icon;
-      if (hi) {
-        hi.textContent = `${d.hi}°`;
-        // pulse wght axis on switch so the variable axis is visibly exercised
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduced) {
-          hi.style.transition = 'none';
-          hi.style.fontVariationSettings = "'wght' 200";
-          requestAnimationFrame(() => {
-            hi.style.transition = 'font-variation-settings 0.55s cubic-bezier(0.34,1.56,0.64,1)';
-            hi.style.fontVariationSettings = "'wght' 800";
-          });
-        }
-      }
-      if (cond) cond.textContent = d.cond;
-      if (lo) lo.textContent = `L ${d.lo}°`;
-      if (fulldate) fulldate.textContent = d.date;
-      if (steps) steps.textContent = d.steps.toLocaleString();
-      if (kcal) kcal.textContent = String(d.kcal);
-      if (focus) focus.textContent = d.focus;
-
-      if (agenda) {
-        agenda.replaceChildren();
-        d.agenda.forEach((a) => {
-          const li = document.createElement('li');
-          li.className = `md__ev md__ev--${a[3]}`;
-          const time = document.createElement('span');
-          time.className = 'md__ev-time';
-          time.textContent = a[0];
-          const rail = document.createElement('span');
-          rail.className = 'md__ev-rail';
-          rail.setAttribute('aria-hidden', 'true');
-          const main = document.createElement('span');
-          main.className = 'md__ev-main';
-          const title = document.createElement('b');
-          title.textContent = a[1];
-          const sub = document.createElement('i');
-          sub.textContent = a[2];
-          main.append(title, sub);
-          li.append(time, rail, main);
-          agenda.appendChild(li);
-        });
-      }
-
-      md.querySelectorAll('[data-day]').forEach((b) => {
-        const on = (b as HTMLElement).dataset.day === id;
-        b.classList.toggle('is-on', on);
-        b.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-    }
-
-    md.querySelectorAll<HTMLButtonElement>('[data-day]').forEach((btn) =>
-      btn.addEventListener('click', () => render(btn.dataset.day!))
-    );
+  // ---- 01: letterpress press — pressing a display line deepens the impression ----
+  document.querySelectorAll<HTMLElement>('[data-press]').forEach((line) => {
+    const down = () => line.classList.add('is-press');
+    const up = () => line.classList.remove('is-press');
+    line.addEventListener('pointerdown', down);
+    line.addEventListener('pointerup', up);
+    line.addEventListener('pointerleave', up);
   });
 
-  // ============ 02 · MATERIAL MARKETING — finish picker ============
-  type MkFinish = { price: string; s1: string; s2: string; s3: string; s4: string; wght: number; scrBg: string; scrAccent: string; caption: string; };
-  const mkData: Record<string, MkFinish> = {
-    Obsidian:  { price: '899', s1: '50',  s2: '6.7', s3: '24', s4: '256', wght: 900, scrBg: '#1a1a1a', scrAccent: '#e07b3c', caption: 'Night city' },
-    Porcelain: { price: '899', s1: '50',  s2: '6.7', s3: '24', s4: '256', wght: 400, scrBg: '#f0ece5', scrAccent: '#5b7c99', caption: 'Morning light' },
-    Bay:       { price: '949', s1: '50',  s2: '6.7', s3: '26', s4: '512', wght: 700, scrBg: '#1c2e3d', scrAccent: '#7ab8d4', caption: 'Open water' },
-    Rose:      { price: '849', s1: '48',  s2: '6.3', s3: '22', s4: '128', wght: 300, scrBg: '#2d1a1a', scrAccent: '#c66b5a', caption: 'Golden hour' },
-  };
-  document.querySelectorAll<HTMLElement>('[data-mk]').forEach((mk) => {
-    const device = mk.querySelector<HTMLElement>('[data-device]');
-    const finName = mk.querySelector<HTMLElement>('[data-fin-name]');
-    const price = mk.querySelector<HTMLElement>('[data-price]');
-    const s1 = mk.querySelector<HTMLElement>('[data-s1]');
-    const s2 = mk.querySelector<HTMLElement>('[data-s2]');
-    const s3 = mk.querySelector<HTMLElement>('[data-s3]');
-    const s4 = mk.querySelector<HTMLElement>('[data-s4]');
-    const head = mk.querySelector<HTMLElement>('.mk__head');
-    const scrPhoto = mk.querySelector<HTMLElement>('[data-scr-photo]');
-    const scrCap = mk.querySelector<HTMLElement>('[data-scr-cap]');
-    const chips = Array.from(mk.querySelectorAll<HTMLButtonElement>('[data-fin]'));
-    let currentWght = 800;
-    const apply = (btn: HTMLButtonElement, animate: boolean) => {
-      chips.forEach((c) => { c.classList.toggle('is-on', c === btn); });
-      const name = btn.dataset.fin!;
-      const hex = btn.dataset.hex!;
-      if (device) device.style.setProperty('--dev', hex);
-      if (finName) finName.textContent = name;
-      const d = mkData[name];
-      if (d) {
-        if (price) price.textContent = d.price;
-        if (s1) s1.textContent = d.s1;
-        if (s2) s2.textContent = d.s2;
-        if (s3) s3.textContent = d.s3;
-        if (s4) s4.textContent = d.s4;
-        if (scrPhoto) { scrPhoto.style.background = d.scrBg; scrPhoto.style.setProperty('--sa', d.scrAccent); }
-        if (scrCap) scrCap.textContent = d.caption;
-        // swing the wordmark across the weight axis on finish change
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (head && animate && !reduced) {
-          const from = currentWght;
-          const to = d.wght;
-          head.style.transition = 'none';
-          head.style.fontVariationSettings = `'wght' ${from}`;
-          requestAnimationFrame(() => {
-            head.style.transition = 'font-variation-settings 0.5s cubic-bezier(0.25,0.46,0.45,0.94)';
-            head.style.fontVariationSettings = `'wght' ${to}`;
-          });
-        } else if (head) {
-          head.style.fontVariationSettings = `'wght' ${d.wght}`;
-        }
-        currentWght = d.wght;
-      }
+  // ---- 02: trailhead — hover/tap a trail to walk it: miles count to 0, weight climbs to 900 ----
+  document.querySelectorAll<HTMLElement>('[data-trail]').forEach((row) => {
+    const base = Number(row.dataset.w);
+    const miles = Number(row.dataset.mi);
+    const frac = row.querySelector<HTMLElement>('[data-mi-frac]')!;
+    const live = row.querySelector<HTMLElement>('[data-mi-live]')!;
+    let raf = 0;
+    let sticky = false;
+    let hold = 0; // a completed walk holds its 0.00 MI landing for a beat before resetting
+    const render = (p: number) => {
+      row.style.fontWeight = String(Math.round(base + (900 - base) * p));
+      live.textContent = (miles * (1 - p)).toFixed(2);
     };
-    chips.forEach((c) => c.addEventListener('click', () => apply(c, true)));
-    const first = chips.find((c) => c.classList.contains('is-on')) || chips[0];
-    if (first) apply(first, false);
+    const walk = (on: boolean) => {
+      cancelAnimationFrame(raf);
+      clearTimeout(hold);
+      if (!on) {
+        row.classList.remove('is-walk');
+        row.style.fontWeight = '';
+        frac.hidden = false;
+        live.hidden = true;
+        return;
+      }
+      row.classList.add('is-walk');
+      frac.hidden = true;
+      live.hidden = false;
+      if (reduce) { render(1); return; }
+      const t0 = performance.now();
+      const dur = 600;
+      const step = (t: number) => {
+        const p = Math.min(1, (t - t0) / dur);
+        render(1 - Math.pow(1 - p, 3));
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+    const leave = () => {
+      if (sticky) return;
+      clearTimeout(hold);
+      hold = window.setTimeout(() => walk(false), 850);
+    };
+    row.addEventListener('pointerenter', () => { if (!sticky) walk(true); });
+    row.addEventListener('pointerleave', leave);
+    row.addEventListener('focus', () => walk(true));
+    row.addEventListener('blur', leave);
+    row.addEventListener('click', () => { sticky = !sticky; walk(sticky); });
   });
 
-  // ============ 03 · MATERIAL ANALYTICS DASHBOARD — date range ============
-  type Metric = { users: string; rev: string; sess: string; dur: string; bounce: string; ret: string; conv: string;
-    du: string; dr: string; ds: string; dd: string; dbounce: string; dret: string; dconv: string;
-    up: boolean[]; spark: number[];
-    rows: [string, string, string][]; };
-  const dashData: Record<string, Metric> = {
-    '7d': {
-      users: '128,402', rev: '$94,210', sess: '312,860', dur: '4:38', bounce: '34.2%', ret: '68.9%', conv: '2,841',
-      du: '▲ 12.4%', dr: '▲ 8.1%', ds: '▼ 2.3%', dd: '▲ 0.9%', dbounce: '▼ 1.8%', dret: '▲ 3.2%', dconv: '▲ 5.9%',
-      up: [true, true, false, true, false, true, true],
-      spark: [12, 18, 14, 22, 19, 27, 31],
-      rows: [['Organic search', '48,120', '38.4%'], ['Direct', '31,540', '25.2%'], ['Referral', '22,910', '18.3%'], ['Social', '14,200', '11.3%']],
-    },
-    '28d': {
-      users: '512,940', rev: '$381,620', sess: '1,248,300', dur: '4:51', bounce: '31.6%', ret: '71.4%', conv: '11,340',
-      du: '▲ 9.7%', dr: '▲ 11.2%', ds: '▲ 4.0%', dd: '▲ 1.6%', dbounce: '▼ 4.4%', dret: '▲ 5.7%', dconv: '▲ 8.2%',
-      up: [true, true, true, true, false, true, true],
-      spark: [20, 16, 24, 21, 28, 26, 33],
-      rows: [['Organic search', '196,420', '39.1%'], ['Direct', '124,880', '24.9%'], ['Referral', '88,610', '17.6%'], ['Social', '61,300', '12.2%']],
-    },
-    '90d': {
-      users: '1,604,210', rev: '$1,142,900', sess: '3,981,540', dur: '4:29', bounce: '36.8%', ret: '65.2%', conv: '34,120',
-      du: '▲ 6.2%', dr: '▲ 5.4%', ds: '▼ 1.1%', dd: '▼ 0.7%', dbounce: '▲ 2.6%', dret: '▼ 2.1%', dconv: '▲ 4.1%',
-      up: [true, true, false, false, true, false, true],
-      spark: [14, 19, 17, 23, 20, 18, 25],
-      rows: [['Organic search', '624,800', '37.8%'], ['Direct', '402,110', '24.3%'], ['Referral', '301,540', '18.2%'], ['Social', '214,900', '13.0%']],
-    },
-  };
-  document.querySelectorAll<HTMLElement>('[data-dash]').forEach((dash) => {
-    const q = (s: string) => dash.querySelector(s) as HTMLElement | null;
-    const mUsers = q('[data-m-users]'), mRev = q('[data-m-rev]'), mSess = q('[data-m-sess]'), mDur = q('[data-m-dur]');
-    const mBounce = q('[data-m-bounce]'), mRet = q('[data-m-ret]'), mConv = q('[data-m-conv]');
-    const dUsers = q('[data-d-users]'), dRev = q('[data-d-rev]'), dSess = q('[data-d-sess]'), dDur = q('[data-d-dur]');
-    const dBounce = q('[data-d-bounce]'), dRet = q('[data-d-ret]'), dConv = q('[data-d-conv]');
-    const poly = dash.querySelector<SVGPolylineElement>('[data-poly]');
-    const rows = q('[data-rows]');
-    const deltas = [dUsers, dRev, dSess, dDur, dBounce, dRet, dConv];
-    const sparkPts = (vals: number[]) => {
-      const max = Math.max(...vals), min = Math.min(...vals);
-      const span = Math.max(1, max - min);
-      return vals.map((v, i) => {
-        const x = (i / (vals.length - 1)) * 120;
-        const y = 34 - ((v - min) / span) * 30;
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(' ');
-    };
-    const apply = (key: string, animate = false) => {
-      const d = dashData[key];
-      if (!d) return;
-      if (mUsers) {
-        mUsers.textContent = d.users;
-        // exercise wght axis on the feature metric
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (animate && !reduced) {
-          mUsers.style.transition = 'none';
-          mUsers.style.fontVariationSettings = "'wght' 200";
-          requestAnimationFrame(() => {
-            mUsers.style.transition = 'font-variation-settings 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-            mUsers.style.fontVariationSettings = "'wght' 800";
-          });
-        }
-      }
-      if (mRev) mRev.textContent = d.rev;
-      if (mSess) mSess.textContent = d.sess;
-      if (mDur) mDur.textContent = d.dur;
-      if (mBounce) mBounce.textContent = d.bounce;
-      if (mRet) mRet.textContent = d.ret;
-      if (mConv) mConv.textContent = d.conv;
-      const dtexts = [d.du, d.dr, d.ds, d.dd, d.dbounce, d.dret, d.dconv];
-      deltas.forEach((el, i) => {
-        if (!el) return;
-        el.textContent = dtexts[i];
-        el.classList.toggle('dash__delta--up', d.up[i]);
-        el.classList.toggle('dash__delta--down', !d.up[i]);
-      });
-      if (poly) poly.setAttribute('points', sparkPts(d.spark));
-      if (rows) {
-        rows.replaceChildren();
-        d.rows.forEach((r) => {
-          const tr = document.createElement('tr');
-          const t0 = document.createElement('td'); t0.textContent = r[0];
-          const t1 = document.createElement('td'); t1.className = 'num'; t1.textContent = r[1];
-          const t2 = document.createElement('td'); t2.className = 'num pct'; t2.textContent = r[2];
-          tr.append(t0, t1, t2);
-          rows.appendChild(tr);
-        });
-      }
-    };
-    dash.querySelectorAll<HTMLButtonElement>('[data-rng]').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        dash.querySelectorAll('[data-rng]').forEach((b) => {
-          const on = b === btn;
-          b.classList.toggle('is-on', on);
-          b.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        apply(btn.dataset.rng!, true);
+  // ---- 03: the headline eases 300 → 100 as the page scrolls into view ----
+  const head = document.querySelector<HTMLElement>('[data-head]');
+  if (head) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { head.classList.add('is-in'); io.disconnect(); } });
+    }, { threshold: 0.5 });
+    io.observe(head);
+  }
+
+  // ---- 04: reader — display mode, themes (Night takes the room), size, live weight axis ----
+  document.querySelectorAll<HTMLElement>('[data-rd]').forEach((rd) => {
+    const scene = rd.closest<HTMLElement>('.iu__scene') || rd;
+    const page = rd.querySelector<HTMLElement>('[data-page]')!;
+    const themes = Array.from(rd.querySelectorAll<HTMLButtonElement>('[data-theme]'));
+    themes.forEach((b) =>
+      b.addEventListener('click', () => {
+        rd.dataset.mode = b.dataset.theme;
+        scene.classList.toggle('is-night', b.dataset.theme === 'night');
+        themes.forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
       })
     );
-    apply('7d', false);
+    // Flowing text / Original pages — original locks the text settings (the Play Books rule)
+    const flows = Array.from(rd.querySelectorAll<HTMLButtonElement>('[data-flow]'));
+    const textset = rd.querySelector<HTMLElement>('[data-textset]')!;
+    const locknote = rd.querySelector<HTMLElement>('[data-locknote]')!;
+    flows.forEach((b) =>
+      b.addEventListener('click', () => {
+        const original = b.dataset.flow === 'original';
+        rd.setAttribute('data-flowmode', b.dataset.flow!);
+        flows.forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        textset.classList.toggle('is-locked', original);
+        textset.querySelectorAll<HTMLButtonElement | HTMLInputElement>('button, input').forEach((el) => { el.disabled = original; });
+        locknote.hidden = !original;
+      })
+    );
+    let size = 16;
+    const szVal = rd.querySelector<HTMLElement>('[data-sz-val]')!;
+    rd.querySelectorAll<HTMLButtonElement>('[data-sz]').forEach((b) =>
+      b.addEventListener('click', () => {
+        size = Math.min(20, Math.max(13, size + Number(b.dataset.sz)));
+        page.style.fontSize = size + 'px';
+        szVal.textContent = String(size);
+      })
+    );
+    // weight drives the page, the M3 value bubble, AND the room's rail marker
+    const wt = rd.querySelector<HTMLInputElement>('[data-wt]')!;
+    const bub = rd.querySelector<HTMLElement>('[data-wt-bub]')!;
+    const wtEcho = rd.querySelector<HTMLElement>('[data-wt-echo]')!;
+    const railVal = scene.querySelector<HTMLElement>('[data-rail-val]');
+    const presets = Array.from(rd.querySelectorAll<HTMLButtonElement>('[data-wt-preset]'));
+    const setWeight = (v: string, smooth: boolean) => {
+      scene.classList.toggle('is-smooth', smooth && !reduce);
+      scene.style.setProperty('--rw', v);
+      bub.textContent = v;
+      wtEcho.textContent = v;
+      if (railVal) railVal.textContent = v;
+      presets.forEach((p) => p.classList.toggle('is-on', p.dataset.wtPreset === v));
+      if (wt.value !== v) wt.value = v;
+    };
+    wt.addEventListener('input', () => setWeight(wt.value, false));
+    presets.forEach((p) => p.addEventListener('click', () => setWeight(p.dataset.wtPreset!, true)));
+  });
+
+  // ---- 05: tonnage — the lever drives the axis; the platform takes the load ----
+  document.querySelectorAll<HTMLElement>('[data-tn]').forEach((tn) => {
+    const lever = tn.querySelector<HTMLInputElement>('[data-lever]')!;
+    const tons = tn.querySelector<HTMLElement>('[data-tons]')!;
+    const wval = tn.querySelector<HTMLElement>('[data-wval]')!;
+    const set = (v: number, smooth: boolean) => {
+      tn.classList.toggle('is-smooth', smooth && !reduce);
+      tn.style.setProperty('--w', String(v));
+      tn.style.setProperty('--load', String((v - 100) / 800));
+      // as engraved on the deck: 2 t per 100 units of wght (tare 2 t, max 18 t)
+      tons.textContent = (v / 50).toFixed(1);
+      wval.textContent = String(v);
+      if (lever.value !== String(v)) lever.value = String(v);
+    };
+    lever.addEventListener('input', () => set(Number(lever.value), false));
+    tn.querySelector('[data-tare]')!.addEventListener('click', () => set(100, true));
+    tn.querySelector('[data-max]')!.addEventListener('click', () => set(900, true));
+    // the bridge opens at tare: the first pull of the lever performs the whole 100 → 900 journey
+    set(100, false);
   });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
+  /* ---- stack pacing: printed light / routed dark / newsprint / device / yard-black.
+     The vermilion ink of 01 threads every act: blaze, kicker, accent, needle. ---- */
+  .iu { gap: clamp(3.25rem, 8vh, 5.5rem); }
   .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .iu * { font-family: var(--fam); }
-
-  /* shared scene framing — matches inter.astro / oswald.astro */
-  .iu__scene {
-    container-type: inline-size;
-    position: relative;
-    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
-    outline: 1px solid var(--line);
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--bg-2);
-  }
+  .iu__hint code { font-family: var(--font-mono); font-size: 0.85em; color: var(--fg-2); }
+  .iu__scene { font-family: var(--fam); }
   .iu__scene * { font-family: var(--fam); }
-  .scene-tall { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .scene-tall { aspect-ratio: 16 / 10; } }
-  /* S03 dashboard: tall/portrait at narrow widths so nothing is clipped */
-  .scene-dash { aspect-ratio: 4 / 5; }
-  @container (min-width: 560px) { .scene-dash { aspect-ratio: 16 / 9; } }
+  .iu__scene :where(h3, h4, p, ul, blockquote, figure) { margin: 0; }
+  /* Roboto Slab has no italic — nothing in these scenes may slant */
+  .iu__scene :where(i, em, cite) { font-style: normal; }
+  .iu { --verm: #c43a16; }
 
-  .iu__scene--phone {
-    aspect-ratio: 16 / 10;
-    display: grid; place-items: center;
-    padding: clamp(14px, 3cqi, 34px) 0;
-    /* designed desk surface, not a beige void: a soft architectural grid +
-       a warm directional light pooling behind the device */
+  /* ============================================================
+     01 — PLAYBILL · printed cream, two-colour letterpress
+     ============================================================ */
+  .pb {
     background:
-      radial-gradient(120% 90% at 62% 18%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 55%),
-      radial-gradient(90% 70% at 30% 100%, color-mix(in srgb, var(--fg) 10%, transparent) 0%, transparent 60%),
-      var(--bg-2);
+      radial-gradient(120% 90% at 50% 0%, #f6ecd4 0%, #efe2c2 58%, #e6d6b0 100%);
+    color: #241c10;
+    padding: clamp(2rem, 5cqi, 4.25rem) clamp(1rem, 4cqi, 4rem);
+    display: grid; justify-items: center;
   }
-  .iu__scene--phone::before {
-    content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background-image:
-      linear-gradient(to right, color-mix(in srgb, var(--fg) 5%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--fg) 5%, transparent) 1px, transparent 1px);
-    background-size: 34px 34px;
-    -webkit-mask-image: radial-gradient(130% 110% at 60% 30%, #000 30%, transparent 78%);
-            mask-image: radial-gradient(130% 110% at 60% 30%, #000 30%, transparent 78%);
+  /* the broadside commits to the sheet: rules run nearly margin to margin */
+  .pb__sheet { width: min(100%, 90cqi); text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .pb__venue { font-size: clamp(13px, 2.1cqi, 24px); font-weight: 300; letter-spacing: 0.38em; text-transform: uppercase; }
+  .pb__patron { font-size: clamp(11px, 1.5cqi, 17px); font-weight: 400; letter-spacing: 0.08em; margin-top: 0.5em; color: #4a3d27; }
+  .pb__rule { width: 100%; height: 2px; background: #241c10; margin: clamp(0.8rem, 1.8cqi, 1.6rem) 0; }
+  .pb__rule--double { height: 7px; background: linear-gradient(#241c10 2px, transparent 2px, transparent 5px, #241c10 5px); }
+  .pb__when { font-size: clamp(13px, 2cqi, 23px); font-weight: 300; letter-spacing: 0.04em; }
+  .pb__when b { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  /* the weight ladder: 300 venue → 700/800/900 display, like a case of wood type.
+     At rest every display line carries a faint letterpress bite — the print fiction
+     (and the press affordance) read before anyone clicks. */
+  .pb__big {
+    line-height: 0.96; margin-top: 0.06em; cursor: pointer; user-select: none;
+    text-shadow: 0.5px 1px 0 rgba(252, 244, 220, 0.6), 0 0 1px rgba(36, 28, 16, 0.28);
+    transition: text-shadow 0.18s var(--ease), transform 0.18s var(--ease);
   }
-  .iu__scene--phone .md { z-index: 1; }
-  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
-
-  .iu__device {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    background: var(--bg); overflow: hidden;
-  }
-
-  /* ============ 01 · MATERIAL "TODAY" APP (real phone px) ============ */
-  .iu__scene--phone .md {
-    position: relative; inset: auto;
-    width: 348px; max-width: 100%; height: 100%; max-height: 668px;
-    aspect-ratio: 348 / 668;
-    border-radius: 30px; border: 1px solid var(--line);
-    box-shadow: 0 24px 60px -24px rgba(0,0,0,0.7), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
-  }
-  .md { font-size: 13px; --pos: #1f9d57; }
-  .md__chrome { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 1.2rem 0.35rem; flex: none; border-radius: 30px 30px 0 0; }
-  .md__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; letter-spacing: 0.02em; }
-  .md__status { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); }
-  .md__wifi { width: 15px; height: 11px; } .md__wifi rect { fill: currentColor; }
-  .md__batt { width: 22px; height: 10px; }
-  .md__appbar { display: flex; align-items: center; gap: 14px; padding: 0.35rem 1.1rem 0.55rem; flex: none; }
-  .md__menu { display: inline-flex; flex-direction: column; gap: 3px; width: 18px; }
-  .md__menu i { height: 2px; border-radius: 2px; background: var(--fg-2); }
-  .md__menu i:nth-child(2) { width: 72%; }
-  .md__title { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
-  .md__avatar { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
-  .md__days { display: flex; gap: 7px; padding: 0 1.1rem 0.7rem; flex: none; }
-  .md__day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 7px 4px; border-radius: 16px; background: color-mix(in srgb, var(--fg) 5%, transparent); cursor: pointer; transition: background 0.15s var(--ease), color 0.15s var(--ease); }
-  .md__day em { font-style: normal; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
-  .md__day b { font-size: 16px; font-weight: 700; font-feature-settings: 'tnum'; }
-  .md__day.is-on { background: var(--accent); }
-  .md__day.is-on em, .md__day.is-on b { color: var(--accent-contrast); }
-  .md__body { flex: 1; overflow: auto; padding: 0 1.1rem; display: flex; flex-direction: column; gap: 12px; }
-  .md__hero { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; border-radius: 24px; background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 88%, #ffb070) 0%, var(--accent) 42%, color-mix(in srgb, var(--accent) 58%, #2a0f00) 100%); color: var(--accent-contrast); box-shadow: 0 16px 34px -16px color-mix(in srgb, var(--accent) 80%, transparent); flex: none; overflow: hidden; }
-  .md__hero::after { content: ''; position: absolute; top: -40%; right: -20%; width: 70%; height: 120%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, #fff 32%, transparent), transparent 70%); pointer-events: none; }
-  .md__hero-top { display: flex; align-items: baseline; justify-content: space-between; }
-  .md__hero-place { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
-  .md__hero-date { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; opacity: 0.85; font-feature-settings: 'tnum'; }
-  .md__hero-display { display: flex; align-items: center; gap: 14px; }
-  /* the slab DISPLAY moment: big block-serif temperature, variable wght exercised via JS on day-switch */
-  .md__temp { font-size: 78px; font-weight: 800; font-variation-settings: 'wght' 800; letter-spacing: -0.04em; line-height: 0.86; font-feature-settings: 'tnum'; }
-  .md__hero-side { display: flex; flex-direction: column; gap: 1px; padding-bottom: 4px; }
-  .md__hero-ic { font-size: 26px; line-height: 1; margin-bottom: 2px; }
-  .md__cond { font-size: 14px; font-weight: 700; opacity: 0.95; letter-spacing: -0.005em; }
-  .md__hilo { font-size: 12px; font-weight: 600; opacity: 0.82; font-feature-settings: 'tnum'; }
-  .md__hilo i { font-style: normal; }
-  .md__metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; flex: none; }
-  .md__metric { border: 1px solid var(--line); border-radius: 16px; padding: 10px 10px 11px; display: flex; flex-direction: column; gap: 2px; background: color-mix(in srgb, var(--fg) 1.5%, var(--bg)); }
-  .md__metric-k { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-3); }
-  .md__metric b { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; font-feature-settings: 'tnum'; }
-  .md__agenda-h { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); padding-top: 2px; flex: none; }
-  .md__agenda { list-style: none; margin: 0; padding: 0 0 6px; display: flex; flex-direction: column; gap: 0; flex: none; }
-  .md__ev { display: grid; grid-template-columns: 44px 14px 1fr; align-items: stretch; gap: 8px; padding: 8px 0; }
-  .md__ev-time { font-size: 12.5px; font-weight: 700; color: var(--fg-2); font-feature-settings: 'tnum'; padding-top: 1px; }
-  .md__ev-rail { position: relative; }
-  .md__ev-rail::before { content: ''; position: absolute; left: 50%; top: 3px; transform: translateX(-50%); width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
-  .md__ev--health .md__ev-rail::before { background: var(--pos); }
-  .md__ev--home .md__ev-rail::before { background: color-mix(in srgb, var(--fg) 35%, var(--bg)); }
-  .md__ev-rail::after { content: ''; position: absolute; left: 50%; top: 14px; bottom: -8px; transform: translateX(-50%); width: 2px; background: var(--line); }
-  .md__ev:last-child .md__ev-rail::after { display: none; }
-  .md__ev-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-  .md__ev-main b { font-size: 13.5px; font-weight: 600; letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .md__ev-main i { font-size: 11px; font-style: normal; color: var(--fg-3); }
-  .md__fab { position: absolute; right: 16px; bottom: 64px; width: 52px; height: 52px; border-radius: 18px; border: 0; background: var(--accent); color: var(--accent-contrast); cursor: pointer; box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--accent) 75%, transparent); display: grid; place-items: center; transition: transform 0.15s var(--ease); }
-  .md__fab svg { width: 24px; height: 24px; display: block; }
-  .md__fab:hover { transform: translateY(-2px); }
-  .md__nav { display: flex; justify-content: space-around; padding: 0.5rem 0.5rem 0.7rem; border-top: 1px solid var(--line); flex: none; background: var(--bg); }
-  .md__nav span { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--fg-3); }
-  .md__nav span svg { width: 21px; height: 21px; display: block; }
-  .md__nav span em { font-size: 9.5px; font-style: normal; font-weight: 600; letter-spacing: 0.02em; }
-  .md__nav span.is-on { color: var(--accent); }
-  @media (prefers-reduced-motion: reduce) { .md__fab { transition: none; } }
-
-  /* ============ 02 · MATERIAL MARKETING PAGE (Pixel-style launch) ============ */
-  /* UI scale cap: 1cqi until ~650px wide, then frozen so body text stays ~14px */
-  .mk { --u: min(1cqi, 7.5px); position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: calc(3.2 * var(--u)) calc(4 * var(--u)); display: flex; flex-direction: column; overflow: hidden; }
-  .mk__nav { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: calc(2 * var(--u)); }
-  .mk__logo { font-size: calc(2.6 * var(--u)); font-weight: 800; letter-spacing: -0.01em; }
-  .mk__menu { display: flex; align-items: center; gap: calc(2.6 * var(--u)); font-size: calc(1.8 * var(--u)); font-weight: 600; color: var(--fg-2); }
-  .mk__menu .mk__cta { background: var(--accent); color: var(--accent-contrast); padding: calc(0.9 * var(--u)) calc(2 * var(--u)); border-radius: 100px; font-weight: 700; }
-  .mk__hero { flex: 1; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: calc(3 * var(--u)); align-items: center; min-height: 0; padding: calc(2.4 * var(--u)) 0; }
-  .mk__copy { display: flex; flex-direction: column; min-width: 0; }
-  .mk__eyebrow { font-size: calc(1.8 * var(--u)); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
-  .mk__head { font-size: calc(13 * var(--u)); font-weight: 800; line-height: 0.9; letter-spacing: -0.025em; margin: calc(1 * var(--u)) 0 0; font-variation-settings: 'wght' 800; }
-  .mk__sub { font-size: calc(2.1 * var(--u)); line-height: 1.36; color: var(--fg-2); margin: calc(2 * var(--u)) 0 0; max-width: 32ch; text-wrap: pretty; }
-  .mk__picker { display: flex; align-items: center; gap: calc(1.4 * var(--u)); margin-top: calc(2.8 * var(--u)); }
-  .mk__chip { width: calc(4.4 * var(--u)); height: calc(4.4 * var(--u)); border-radius: 50%; background: var(--c); border: 1px solid color-mix(in srgb, var(--fg) 20%, transparent); cursor: pointer; padding: 0; transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease); }
-  .mk__chip.is-on { box-shadow: 0 0 0 calc(0.7 * var(--u)) color-mix(in srgb, var(--accent) 22%, transparent); transform: scale(1.06); }
-  .mk__fin { margin-left: calc(0.6 * var(--u)); font-size: calc(1.9 * var(--u)); font-weight: 700; letter-spacing: 0.01em; }
-  .mk__buy { display: flex; align-items: center; gap: calc(2.4 * var(--u)); margin-top: calc(3 * var(--u)); }
-  .mk__price { font-size: calc(3 * var(--u)); font-weight: 800; font-feature-settings: 'tnum'; letter-spacing: -0.01em; }
-  .mk__price i { font-style: normal; }
-  .mk__order { font-size: calc(2 * var(--u)); font-weight: 700; color: var(--accent-contrast); background: var(--accent); border: 0; border-radius: 100px; padding: calc(1.2 * var(--u)) calc(3 * var(--u)); cursor: pointer; }
-  .mk__art { position: relative; display: grid; place-items: center; min-width: 0; height: 100%; }
-  .mk__device { width: calc(30 * var(--u)); height: 88%; max-height: calc(56 * var(--u)); border-radius: calc(5 * var(--u)); background: var(--dev, #1d1c1a); border: calc(0.5 * var(--u)) solid color-mix(in srgb, var(--fg) 12%, transparent); box-shadow: 0 calc(6 * var(--u)) calc(12 * var(--u)) calc(-5 * var(--u)) rgba(0,0,0,0.5); position: relative; transition: background 0.3s var(--ease); overflow: hidden; }
-  .mk__device::before { content: ''; position: absolute; top: calc(1.8 * var(--u)); left: 50%; transform: translateX(-50%); width: calc(5 * var(--u)); height: calc(1.4 * var(--u)); border-radius: calc(1 * var(--u)); background: color-mix(in srgb, #000 60%, transparent); z-index: 10; }
-  /* real screen content inside the device */
-  .mk__screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: calc(3.8 * var(--u)) calc(1.4 * var(--u)) calc(1.4 * var(--u)); gap: calc(0.6 * var(--u)); transition: background 0.3s var(--ease); }
-  .mk__scr-top { display: flex; justify-content: space-between; align-items: center; font-size: calc(1.6 * var(--u)); font-weight: 700; color: color-mix(in srgb, #fff 80%, transparent); margin-bottom: calc(0.4 * var(--u)); }
-  .mk__scr-icons { letter-spacing: 0.08em; font-size: calc(1.2 * var(--u)); }
-  .mk__scr-photo { flex: 1; border-radius: calc(2.4 * var(--u)); background: #1a1a1a; background-image: radial-gradient(ellipse at 30% 30%, var(--sa, #e07b3c) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, color-mix(in srgb, var(--sa, #e07b3c) 40%, #000) 0%, transparent 55%); transition: background-color 0.3s var(--ease), background-image 0.3s var(--ease); }
-  .mk__scr-caption { font-size: calc(1.8 * var(--u)); font-weight: 600; color: color-mix(in srgb, #fff 90%, transparent); letter-spacing: 0.02em; }
-  .mk__scr-actions { display: flex; gap: calc(1 * var(--u)); margin-top: calc(0.2 * var(--u)); }
-  .mk__scr-btn { flex: 1; background: color-mix(in srgb, #fff 14%, transparent); border-radius: calc(1.6 * var(--u)); padding: calc(0.9 * var(--u)); font-size: calc(1.5 * var(--u)); font-weight: 700; color: color-mix(in srgb, #fff 85%, transparent); text-align: center; }
-  .mk__scr-btn--share { background: var(--sa, #e07b3c); color: #fff; }
-  .mk__bignum { position: absolute; bottom: calc(1 * var(--u)); left: calc(-1 * var(--u)); font-size: calc(16 * var(--u)); font-weight: 800; line-height: 0.8; color: color-mix(in srgb, var(--accent) 16%, transparent); font-feature-settings: 'tnum'; letter-spacing: -0.04em; z-index: -1; }
-  .mk__specs { display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(2.4 * var(--u)); border-top: 1px solid var(--line); padding-top: calc(2.4 * var(--u)); }
-  .mk__spec { display: flex; flex-direction: column; gap: calc(0.3 * var(--u)); }
-  .mk__spec b { font-size: calc(4.4 * var(--u)); font-weight: 800; letter-spacing: -0.02em; font-feature-settings: 'tnum'; line-height: 1; }
-  .mk__spec i { font-style: normal; font-size: calc(1.6 * var(--u)); font-weight: 500; color: var(--fg-3); letter-spacing: 0.01em; }
-
-  @container (max-width: 560px) {
-    .mk { padding: calc(4 * var(--u)) calc(5 * var(--u)); }
-    .mk__hero { grid-template-columns: 1fr; gap: calc(1 * var(--u)); padding: calc(2 * var(--u)) 0; }
-    .mk__art { display: none; }
-    .mk__head { font-size: calc(18 * var(--u)); }
-    .mk__sub { font-size: calc(3.4 * var(--u)); max-width: 100%; }
-    .mk__eyebrow { font-size: calc(2.8 * var(--u)); }
-    .mk__menu a:not(.mk__cta) { display: none; }
-    .mk__logo { font-size: calc(4 * var(--u)); }
-    .mk__chip { width: calc(7 * var(--u)); height: calc(7 * var(--u)); }
-    .mk__fin { font-size: calc(3 * var(--u)); }
-    .mk__price { font-size: calc(5 * var(--u)); }
-    .mk__order { font-size: calc(3.2 * var(--u)); }
-    .mk__specs { gap: calc(3 * var(--u)) calc(2 * var(--u)); }
-    .mk__spec b { font-size: calc(6.4 * var(--u)); }
-    .mk__spec i { font-size: calc(2.6 * var(--u)); }
-  }
-
-  /* ============ 03 · MATERIAL 3 ANALYTICS DASHBOARD (real px) ============ */
-  .dash { font-size: 13px; background: color-mix(in srgb, var(--fg) 2.5%, var(--bg)); }
-  .dash__bar { display: flex; align-items: center; gap: 12px; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); background: var(--bg); flex: none; }
-  .dash__brand { font-size: 15px; font-weight: 800; letter-spacing: -0.01em; color: var(--accent); }
-  .dash__title { font-size: 14px; font-weight: 700; letter-spacing: -0.005em; }
-  .dash__range { display: inline-flex; margin-left: auto; border: 1px solid var(--line); border-radius: 100px; overflow: hidden; }
-  .dash__rng { font-size: 12px; font-weight: 700; color: var(--fg-3); padding: 5px 13px; background: transparent; border: 0; cursor: pointer; font-feature-settings: 'tnum'; transition: color 0.15s var(--ease), background 0.15s var(--ease); }
-  .dash__rng + .dash__rng { border-left: 1px solid var(--line); }
-  .dash__rng:hover { color: var(--fg); }
-  .dash__rng.is-on { background: var(--accent); color: var(--accent-contrast); }
-  .dash__av { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: none; }
-  .dash__grid { flex: 1; min-height: 0; overflow: hidden; padding: 14px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1.4fr 0.85fr 1.2fr; gap: 12px; }
-  .dash__card { border: 1px solid var(--line); border-radius: 18px; background: var(--bg); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; min-height: 0; overflow: hidden; }
-  .dash__card--feat { grid-column: span 2; }
-  .dash__card--mid { grid-column: span 1; }
-  .dash__card--wide { grid-column: span 4; }
-  .dash__k { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
-  /* big slab metric numerals carry the cards; wght axis exercised via JS on range switch */
-  .dash__big { font-size: 30px; font-weight: 800; font-variation-settings: 'wght' 800; letter-spacing: -0.02em; line-height: 1; font-feature-settings: 'tnum'; }
-  .dash__card--feat .dash__big { font-size: 44px; }
-  .dash__delta { font-size: 12px; font-weight: 700; font-feature-settings: 'tnum'; }
-  .dash__delta--up { color: #1f9d57; }
-  .dash__delta--down { color: var(--accent); }
-  .dash__spark { display: block; margin-top: auto; padding-top: 8px; color: var(--accent); flex: 1; min-height: 30px; }
-  .dash__spark svg { width: 100%; height: 100%; min-height: 30px; display: block; }
-  .dash__tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
-  .dash__tbl td { padding: 7px 4px; border-bottom: 1px solid var(--line-soft); color: var(--fg-2); }
-  .dash__tbl tr:last-child td { border-bottom: 0; }
-  .dash__tbl td:first-child { font-weight: 600; color: var(--fg); }
-  .dash__tbl td.num { text-align: right; font-feature-settings: 'tnum'; font-weight: 700; letter-spacing: -0.01em; }
-  .dash__tbl td.pct { color: var(--fg-3); font-weight: 600; width: 64px; }
-
-  @container (max-width: 640px) {
-    .dash__grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
-    .dash__card--feat { grid-column: span 2; }
-    .dash__card--mid { grid-column: span 1; }
-    .dash__card--wide { grid-column: span 2; }
-    .dash__title { display: none; }
-  }
-  @container (max-width: 420px) {
-    .dash__grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-    .dash__card--feat { grid-column: span 2; }
-    .dash__card--mid { grid-column: span 1; }
-    .dash__card--wide { grid-column: span 2; }
-    .dash__card--feat .dash__big { font-size: 28px; }
-    .dash__big { font-size: 18px; }
-    .dash__bar { gap: 6px; padding: 0.5rem 0.6rem; }
-    .dash__brand { font-size: 12px; }
-    .dash__k { font-size: 9px; }
-    .dash__delta { font-size: 10px; }
-  }
-
-  /* ============ 04 · MATERIAL YOU LAUNCH WALL (per-letter weight wave) ============ */
-  .wall { position: absolute; inset: 0; background:
-      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
-      var(--bg); color: var(--fg); padding: 4.2cqi 5cqi 3.4cqi; display: flex; flex-direction: column; overflow: hidden; }
-  .wall__top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 1.8cqi; font-size: 1.85cqi; font-weight: 700; letter-spacing: 0.02em; color: var(--fg); }
-  .wall__brand i { font-style: normal; font-weight: 500; color: var(--fg-3); letter-spacing: 0.01em; margin-left: 0.6cqi; }
-  .wall__edition { font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-size: 1.5cqi; }
-  .wall__hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0; min-height: 0; }
-  .wall__kick { font-size: 4cqi; font-weight: 500; letter-spacing: 0.005em; color: var(--fg-2); }
-  /* bridge the scale gap: mid line is a confident intermediate step (not an orphan) */
-  .wall__word { display: flex; justify-content: center; margin: -0.4cqi 0 -0.2cqi; line-height: 0.82; }
-  .wall__word span { font-size: 27cqi; font-weight: 800; letter-spacing: -0.012em; font-variation-settings: 'wght' 400; display: inline-block; }
-  .wall__mid { font-size: 5cqi; font-weight: 600; letter-spacing: -0.01em; color: var(--fg); margin-top: 0.6cqi; }
-  .wall__mid em { font-style: normal; color: var(--accent); font-weight: 800; }
-  .wall__foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 2cqi; }
-  .wall__swatches { display: flex; align-items: center; gap: 1.1cqi; }
-  /* swatches now read as the active color track the headline samples: pill-shaped,
-     low-key, sequenced to the wave so they belong to the animation */
-  .wall__swatches i { width: 5.4cqi; height: 2.4cqi; border-radius: 100px; background: var(--s); display: inline-block; }
-  .wall__rail { color: var(--fg-3); font-feature-settings: 'tnum'; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; font-size: 1.7cqi; }
-
-  /* per-letter weight wave: each glyph swings the full axis in sequence */
-  .wall__word span { font-variation-settings: 'wght' 700; }
+  .pb__big--1 { font-size: clamp(3.1rem, 17cqi, 12.4rem); font-weight: 700; letter-spacing: 0.04em; }
+  .pb__big--2 { font-size: clamp(1.9rem, 10.3cqi, 7.5rem); font-weight: 800; letter-spacing: 0.012em; }
+  .pb__big--3 { font-size: clamp(1.95rem, 10.6cqi, 7.7rem); font-weight: 900; color: var(--verm); letter-spacing: 0.005em; text-shadow: 0.5px 1px 0 rgba(252, 244, 220, 0.55), 0 0 1px rgba(196, 58, 22, 0.3); }
   @media (prefers-reduced-motion: no-preference) {
-    .wall__word[data-wave] span {
-      animation: wall-wave 3.4s var(--ease-out, ease-in-out) infinite;
-      animation-delay: calc(var(--i) * 0.18s);
-    }
-    @keyframes wall-wave {
-      0%, 70%, 100% { font-variation-settings: 'wght' 200; }
-      35% { font-variation-settings: 'wght' 900; }
-    }
-    /* swatches breathe in the same cadence — they belong to the system, not footnotes */
-    .wall__swatches i {
-      animation: wall-swatch 3.4s var(--ease-out, ease-in-out) infinite;
-    }
-    .wall__swatches i:nth-child(1) { animation-delay: 0s; }
-    .wall__swatches i:nth-child(2) { animation-delay: 0.18s; }
-    .wall__swatches i:nth-child(3) { animation-delay: 0.36s; }
-    .wall__swatches i:nth-child(4) { animation-delay: 0.54s; }
-    .wall__swatches i:nth-child(5) { animation-delay: 0.72s; }
-    @keyframes wall-swatch {
-      0%, 70%, 100% { transform: scaleX(0.7); opacity: 0.45; }
-      35% { transform: scaleX(1); opacity: 1; }
-    }
+    .pb__big.is-press { transform: translateY(2px) scale(0.992); text-shadow: 0 0 3px rgba(36,28,16,0.6), 0 0 1px rgba(36,28,16,0.75), 1px 1px 1px rgba(36,28,16,0.35); }
+    .pb__big--3.is-press { text-shadow: 0 0 3px rgba(196,58,22,0.65), 0 0 1px rgba(196,58,22,0.8), 1px 1px 1px rgba(196,58,22,0.4); }
+  }
+  /* the matchup is the second read: the men set a full size step up, block lines */
+  .pb__bill { font-size: clamp(13px, 2cqi, 23px); line-height: 1.5; max-width: none; }
+  .pb__man { display: block; font-size: clamp(1.4rem, 4.8cqi, 3.5rem); line-height: 1.12; font-weight: 800; letter-spacing: 0.04em; }
+  .pb__man sup { font-size: 0.5em; font-weight: 800; letter-spacing: 0.04em; }
+  .pb__of { display: block; font-weight: 300; margin-top: 0.12em; }
+  .pb__vs { display: block; font-weight: 400; font-size: 0.82em; letter-spacing: 0.5em; text-transform: uppercase; margin: 0.7em 0 0.55em; color: #3c3119; }
+  .pb__rounds { font-size: clamp(12px, 1.9cqi, 21px); font-weight: 600; letter-spacing: 0.22em; margin-top: 0.9em; color: var(--verm); }
+  .pb__prices { font-size: clamp(11px, 1.6cqi, 18px); font-weight: 500; letter-spacing: 0.06em; }
+  .pb__prices i { font-weight: 300; }
+  .pb__imprint { font-size: clamp(9px, 1.15cqi, 13px); font-weight: 300; letter-spacing: 0.05em; margin-top: clamp(1rem, 2.4cqi, 2rem); color: #5d5037; }
+
+  /* ============================================================
+     02 — TRAILHEAD · routed board, painted fir
+     ============================================================ */
+  .np {
+    background:
+      linear-gradient(180deg, #483420 0%, #3c2b1a 46%, #33240f 100%);
+    color: #efe4cd;
+    padding: clamp(2.25rem, 6.5cqi, 6.5rem) clamp(1.25rem, 6cqi, 6rem);
+    display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(1.75rem, 5cqi, 5rem); align-items: center;
+  }
+  .np__id { display: flex; flex-direction: column; }
+  .np__roundel { width: clamp(44px, 7cqi, 76px); color: #efe4cd; margin-bottom: clamp(0.8rem, 2cqi, 1.5rem); }
+  .np__roundel svg { display: block; width: 100%; }
+  .np__park { font-size: clamp(2.2rem, 7.4cqi, 5.6rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.01em; text-transform: uppercase; }
+  .np__sub { font-size: clamp(11px, 1.6cqi, 17px); font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; margin-top: 0.9em; color: #c9b890; }
+  .np__sys { margin-top: clamp(1.4rem, 3.4cqi, 2.75rem); border-top: 2px solid #efe4cd44; padding-top: clamp(0.9rem, 2cqi, 1.5rem); max-width: 34ch; }
+  .np__sys-k { font-size: clamp(10px, 1.35cqi, 14px); font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: #c9b890; }
+  .np__sys-k b { font-weight: 800; color: #efe4cd; }
+  .np__sys-line { font-size: clamp(12px, 1.6cqi, 17px); font-weight: 300; line-height: 1.55; margin-top: 0.7em; color: #ddd0b2; }
+  .np__sys-line b { font-weight: 700; color: #efe4cd; }
+  .np__frac { font-feature-settings: 'frac'; font-weight: inherit; }
+  /* the applications band: the mark at three more scales, on its own full-width
+     shelf beneath both columns — the system reading as a system */
+  .np__apps {
+    grid-column: 1 / -1;
+    display: grid; grid-template-columns: auto repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.6cqi, 2.25rem); align-items: stretch;
+    border-top: 2px solid #efe4cd2e; padding-top: clamp(1.25rem, 3cqi, 2.5rem);
+  }
+  .np__apps-k {
+    align-self: center; max-width: 11ch;
+    font-size: clamp(11px, 1.5cqi, 17px); font-weight: 400; line-height: 1.5;
+    letter-spacing: 0.16em; text-transform: uppercase; color: #c9b890;
+  }
+  .np__badge { display: flex; align-items: center; justify-content: center; gap: 0.8em; background: #2a1d0e; padding: clamp(0.8rem, 2cqi, 1.5rem) clamp(0.9rem, 2.2cqi, 1.75rem); outline: 2px solid #efe4cd2e; outline-offset: -6px; }
+  .np__badge-r { width: clamp(30px, 4cqi, 54px); color: #d8a83f; flex: none; }
+  .np__badge-r svg { display: block; width: 100%; }
+  .np__badge-t { font-size: clamp(11px, 1.5cqi, 17px); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.35; }
+  .np__badge-t i { font-weight: 300; letter-spacing: 0.16em; color: #c9b890; font-size: 0.82em; }
+  .np__map { display: flex; flex-direction: column; justify-content: center; background: #efe4cd; color: #33240f; padding: clamp(0.8rem, 2cqi, 1.5rem) clamp(0.9rem, 2.2cqi, 1.75rem); border-left: 4px solid var(--verm); }
+  .np__map-k { font-size: clamp(9px, 1.15cqi, 13px); font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #7a6845; }
+  .np__map-w { font-size: clamp(14px, 2.2cqi, 27px); font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.15em; }
+  .np__map-s { font-size: clamp(9px, 1.15cqi, 13px); font-weight: 400; letter-spacing: 0.06em; margin-top: 0.3em; font-feature-settings: 'frac'; color: #5d4d2e; }
+  /* the junction post: the board's own routed detail, at hand-rail scale */
+  .np__way { display: flex; flex-direction: column; justify-content: center; background: #2a1d0e; padding: clamp(0.8rem, 2cqi, 1.5rem) clamp(0.9rem, 2.2cqi, 1.75rem); box-shadow: inset 0 0 0 6px #2a1d0e, inset 0 0 0 7px #150d04, inset 0 0 0 8px #efe4cd30; }
+  .np__way-k { font-size: clamp(9px, 1.15cqi, 13px); font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #c9b890; }
+  .np__way-w { font-size: clamp(14px, 2.2cqi, 27px); font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; margin-top: 0.15em; }
+  .np__way-a { color: var(--verm); font-weight: 900; }
+  .np__way-s { font-size: clamp(9px, 1.15cqi, 13px); font-weight: 400; letter-spacing: 0.06em; margin-top: 0.3em; font-feature-settings: 'frac'; color: #c9b890; }
+  /* the board: a double routed line with a chamfer highlight — the groove catches
+     light on its lower edge, the way a router bit actually cuts painted fir */
+  .np__board {
+    position: relative; background: #2a1d0e;
+    padding: clamp(1.6rem, 4.4cqi, 4rem) clamp(1.2rem, 3.4cqi, 3rem);
+    align-self: stretch; display: flex; flex-direction: column; justify-content: center;
+  }
+  .np__board::before {
+    content: ''; position: absolute; inset: 9px; pointer-events: none;
+    border: 2px solid #150d04;
+    box-shadow: inset 0 1px 0 #efe4cd38, 0 1px 0 #efe4cd24, inset 0 0 0 1px #efe4cd14;
+  }
+  .np__board::after {
+    content: ''; position: absolute; inset: 16px; pointer-events: none;
+    border: 1px solid #150d04;
+    box-shadow: inset 0 1px 0 #efe4cd26, 0 1px 0 #efe4cd18;
+  }
+  .np__board-k { font-size: clamp(12px, 1.9cqi, 22px); font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--verm); -webkit-text-stroke: 0; }
+  .np__row { display: flex; align-items: baseline; gap: 0.6em; font-size: clamp(16px, 3.1cqi, 37px); font-weight: var(--w); margin-top: clamp(0.85rem, 2.1cqi, 1.75rem); text-transform: uppercase; letter-spacing: 0.02em; cursor: pointer; outline: none; }
+  .np__row:focus-visible .np__dest { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 2px; }
+  .np__dest { white-space: nowrap; }
+  .np__dots { flex: 1; border-bottom: 2px dotted #efe4cd3d; transform: translateY(-0.18em); min-width: 1.5em; }
+  .np__mi { font-feature-settings: 'frac'; white-space: nowrap; }
+  .np__mi-live { font-feature-settings: 'lnum'; }
+  .np__row.is-walk .np__mi { color: var(--verm); }
+  .np__row.is-walk .np__dots { border-color: var(--verm); border-bottom-style: solid; }
+  .np__board-f { font-size: clamp(10px, 1.3cqi, 14px); font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; color: #c9b89080; margin-top: clamp(1.4rem, 3.6cqi, 3rem); text-align: center; }
+
+  /* tablet: the act stacks — board takes the full width (the long rows need it),
+     and the id recomposes as a two-column masthead: mark left, sign standard right */
+  @container (max-width: 880px) {
+    .np { grid-template-columns: 1fr; }
+  }
+  @container (min-width: 641px) and (max-width: 880px) {
+    .np__id { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto; column-gap: clamp(2.5rem, 6cqi, 4rem); align-items: start; }
+    .np__roundel { grid-column: 1; grid-row: 1; }
+    .np__park { grid-column: 1; grid-row: 2; }
+    .np__sub { grid-column: 1; grid-row: 3; }
+    .np__sys { grid-column: 2; grid-row: 1 / span 3; align-self: center; margin-top: 0; max-width: 40ch; }
+    .np__apps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .np__apps-k { grid-column: 1 / -1; max-width: none; }
+  }
+  @container (max-width: 640px) {
+    .np__sys { max-width: none; }
+    .np__apps { grid-template-columns: 1fr; }
+    .np__apps-k { max-width: none; }
   }
 
-  @container (max-width: 520px) {
-    .wall { padding: 5cqi 4.5cqi; }
-    .wall__word span { font-size: 27cqi; }
-    .wall__kick { font-size: 5cqi; }
-    .wall__mid { font-size: 6cqi; }
-    .wall__top { font-size: 2.6cqi; }
-    .wall__edition { font-size: 2cqi; }
-    .wall__rail { font-size: 2.4cqi; }
-    .wall__swatches i { width: 7cqi; height: 3cqi; }
+  /* ============================================================
+     03 — NEWSPAPER · Berliner feature page
+     ============================================================ */
+  .nw { background: #f9f5ea; color: #181410; padding: clamp(1.25rem, 3.5cqi, 3.25rem) clamp(1.1rem, 4cqi, 4rem) clamp(1rem, 2.5cqi, 2rem); }
+  .nw ::selection { background: var(--verm); color: #f9f5ea; }
+  .nw__mast { display: flex; align-items: baseline; gap: 1.2em; border-bottom: 3px solid #181410; padding-bottom: 0.55rem; }
+  .nw__paper { font-size: clamp(17px, 2.4cqi, 28px); font-weight: 900; letter-spacing: -0.01em; }
+  .nw__sec { font-size: clamp(11px, 1.4cqi, 15px); font-weight: 500; letter-spacing: 0.26em; text-transform: uppercase; color: var(--verm); }
+  .nw__date { margin-left: auto; font-size: clamp(10px, 1.3cqi, 14px); font-weight: 400; color: #6e6354; }
+  .nw__lede { padding: clamp(0.9rem, 2.4cqi, 1.9rem) 0 clamp(0.8rem, 2.1cqi, 1.7rem); border-bottom: 1px solid #18141022; }
+  .nw__kick { font-size: clamp(11px, 1.5cqi, 16px); font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; color: var(--verm); }
+  /* the Guardian Egyptian move: news headline in the LIGHT end of the slab —
+     it eases 300 → 100 (a performed hairline) as the page scrolls into view.
+     The hairline IS the page's picture: it dominates the sheet at 1440. */
+  .nw__head { font-size: clamp(2.2rem, 10.6cqi, 8.6rem); font-weight: 300; font-variation-settings: 'wght' 300; line-height: 1.0; letter-spacing: -0.015em; margin-top: 0.16em; max-width: 14ch; }
+  @media (prefers-reduced-motion: no-preference) {
+    .nw__head { transition: font-variation-settings 0.5s var(--ease-out); }
+    .nw__head.is-in { font-variation-settings: 'wght' 100; }
+  }
+  .nw__deck { font-size: clamp(14px, 2.1cqi, 23px); font-weight: 500; line-height: 1.4; margin-top: 0.85em; max-width: 52ch; color: #2e2719; }
+  .nw__by { font-size: clamp(11px, 1.4cqi, 15px); font-weight: 700; margin-top: 1.1em; }
+  .nw__by span { font-weight: 300; color: #6e6354; }
+  .nw__body { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr); gap: clamp(1.2rem, 3cqi, 2.75rem); padding-top: clamp(1rem, 2.6cqi, 2.2rem); }
+  /* columns by measure, not by count: each column must clear ~36ch or it collapses
+     to one — no sub-35ch choppy rag at any width (column-count caps at 2) */
+  .nw__cols { columns: 36ch 2; column-gap: clamp(1.1rem, 2.4cqi, 2.2rem); column-rule: 1px solid #18141018; font-size: clamp(12.5px, 1.45cqi, 16.5px); font-weight: 400; line-height: 1.58; }
+  .nw__cols p + p { margin-top: 0.9em; }
+  /* three-line drop cap: sized so the T's baseline locks to line 3 */
+  .nw__drop { float: left; font-size: 5.35em; line-height: 0.74; font-weight: 900; padding: 0.024em 0.1em 0 0; color: var(--verm); }
+  /* the spread's second register: vermilion rules and an oversized 900 opening
+     quote give the middle of the page its own focal accent */
+  .nw__pull { grid-column: 1; border-top: 3px solid var(--verm); border-bottom: 1px solid color-mix(in srgb, var(--verm) 38%, transparent); margin-top: clamp(0.4rem, 1cqi, 0.8rem); padding: clamp(0.8rem, 1.8cqi, 1.4rem) 0; }
+  /* hung punctuation: the oversized opening quote sits in the margin, text optically flush */
+  .nw__pull p { font-size: clamp(17px, 2.9cqi, 33px); font-weight: 900; line-height: 1.16; letter-spacing: -0.01em; max-width: 30ch; text-indent: -0.52em; }
+  .nw__pull-q { font-size: 1.85em; font-weight: 900; line-height: 0; color: var(--verm); vertical-align: -0.28em; letter-spacing: -0.06em; }
+  .nw__pull footer { font-size: clamp(10.5px, 1.3cqi, 14px); font-weight: 400; color: #6e6354; margin-top: 0.8em; }
+  .nw__side { grid-column: 2; grid-row: 1 / span 2; background: #efe8d6; padding: clamp(0.9rem, 2.2cqi, 1.75rem); align-self: start; }
+  .nw__side-k { font-size: clamp(13px, 1.8cqi, 20px); font-weight: 900; letter-spacing: 0.01em; }
+  .nw__side-sub { font-size: clamp(10.5px, 1.3cqi, 14px); font-weight: 400; color: #6e6354; margin-top: 0.3em; line-height: 1.4; }
+  .nw__route { margin-top: clamp(0.7rem, 1.6cqi, 1.2rem); outline: none; }
+  /* name and figure share one line above the bar — each route reads as one unit */
+  .nw__route-t { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; }
+  .nw__route-n { font-size: clamp(11px, 1.4cqi, 15px); font-weight: 700; }
+  .nw__bar { display: block; height: clamp(8px, 1.2cqi, 12px); background: #18141014; margin-top: 0.35em; }
+  .nw__bar i { display: block; height: 100%; width: var(--p); background: #181410; transform-origin: left; transition: background 0.2s var(--ease); }
+  .nw__route:hover .nw__bar i, .nw__route:focus-visible .nw__bar i { background: var(--verm); }
+  .nw__km { font-size: clamp(12px, 1.6cqi, 18px); font-weight: 900; white-space: nowrap; }
+  .nw__side-src { font-size: clamp(9.5px, 1.15cqi, 12px); font-weight: 300; color: #6e6354; margin-top: clamp(0.8rem, 1.8cqi, 1.3rem); }
+  .nw__folio { display: flex; justify-content: space-between; gap: 1em; border-top: 1px solid #18141033; margin-top: clamp(1.1rem, 2.8cqi, 2.4rem); padding-top: 0.5rem; font-size: clamp(9.5px, 1.15cqi, 12px); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #6e6354; }
+
+  @container (max-width: 760px) {
+    .nw__body { grid-template-columns: 1fr; }
+    .nw__side { grid-column: 1; grid-row: auto; }
+    .nw__pull { grid-column: 1; }
+  }
+  @container (max-width: 480px) {
+    .nw__cols { font-size: 13.5px; }
+    .nw__mast { flex-wrap: wrap; gap: 0.4em 1em; }
+    .nw__date { margin-left: 0; flex-basis: 100%; }
+    .nw__folio { flex-direction: column; gap: 0.3em; }
+  }
+
+  /* ============================================================
+     04 — READER · real device px, Play Books “Display options”.
+     The whole scene is the weight instrument: the same Coketown
+     sentence stands live at wght 100 and 900 flanking the device,
+     and a graduated rail runs pole to pole under the room with a
+     vermilion marker tracking the slider's --rw. The rail is the
+     ground line act 05's weighbridge platform then inherits.
+     ============================================================ */
+  @property --rw { syntax: '<number>'; inherits: true; initial-value: 400; }
+  .iu__scene--rd {
+    position: relative;
+    background:
+      radial-gradient(90% 80% at 50% 12%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 62%),
+      var(--bg-2);
+    --room-ink: var(--fg);
+    --room-mut: var(--fg-2);
+    --room-line: color-mix(in srgb, var(--fg) 58%, transparent);
+  }
+  /* .rd-room carries the layout so its container queries resolve against the scene */
+  .rd-room { position: relative; padding: clamp(2.5rem, 5cqi, 4.5rem) clamp(0.5rem, 2cqi, 2rem) 7.5rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .iu__scene--rd.is-smooth { transition: --rw 0.3s var(--ease-out); }
+  }
+  /* Night follows the reader out of the device: a dark layer settles on the room */
+  .iu__scene--rd::before { content: ''; position: absolute; inset: 0; background: #131008; opacity: 0; pointer-events: none; }
+  .iu__scene--rd.is-night::before { opacity: 0.94; }
+  .iu__scene--rd.is-night { --room-ink: #e8dcc0; --room-mut: #b3a37d; --room-line: #e8dcc06b; }
+  @media (prefers-reduced-motion: no-preference) {
+    .iu__scene--rd::before { transition: opacity 0.45s var(--ease); }
+    .rd-pole, .rd-rail { transition: color 0.45s var(--ease), border-color 0.45s var(--ease); }
+    .rd-rail__k { transition: color 0.45s var(--ease); }
+  }
+  /* the poles: the same page, set live at the ends of the axis */
+  .rd-pole {
+    position: absolute; z-index: 1; bottom: calc(3.4rem + 1.4rem);
+    width: min(24cqi, 330px);
+    font-size: clamp(15px, 1.9cqi, 23px); line-height: 1.5;
+    color: var(--room-ink);
+  }
+  .rd-pole--l { left: 4cqi; font-weight: 100; }
+  .rd-pole--r { right: 4cqi; font-weight: 900; text-align: right; }
+  /* the rail: wght 100 → 900 graduated in hundreds, marker riding at --rw */
+  .rd-rail { position: absolute; z-index: 1; left: 4cqi; right: 4cqi; bottom: 3.4rem; border-top: 1px solid var(--room-line); color: var(--room-line); }
+  .rd-rail::before {
+    content: ''; position: absolute; left: 0; right: 0; top: -10px; height: 10px;
+    background-image: linear-gradient(90deg, currentColor 0 2px, transparent 2px);
+    background-size: calc(100% / 8) 100%;
+  }
+  .rd-rail::after { content: ''; position: absolute; right: 0; top: -10px; width: 2px; height: 10px; background: currentColor; }
+  .rd-rail__k { position: absolute; top: 9px; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--room-mut); white-space: nowrap; }
+  .rd-rail__k--l { left: 0; }
+  .rd-rail__k--r { right: 0; }
+  .rd-rail__marker {
+    position: absolute; bottom: 0;
+    left: clamp(0%, calc((var(--rw) - 100) / 800 * 100%), 100%);
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--room-mut); white-space: nowrap;
+  }
+  /* Roboto Slab's default figures are already even-width — no feature needed */
+  .rd-rail__marker b { font-weight: 800; color: var(--verm); }
+  .rd-rail__marker::after { content: ''; width: 3px; height: 16px; background: var(--verm); }
+  /* below 960 the instrument recomposes: thin setting above the device, black
+     setting below it, the rail still graduated along the foot of the room */
+  @container (max-width: 959.9px) {
+    .rd-room { padding: 7.5rem clamp(0.75rem, 3cqi, 2rem) 12.5rem; }
+    .rd-pole { width: auto; font-size: 13px; bottom: auto; }
+    .rd-pole--l { top: 1.6rem; left: 5cqi; right: 5cqi; }
+    .rd-pole--r { top: auto; bottom: calc(2.4rem + 3.2rem); left: 5cqi; right: 5cqi; }
+    .rd-rail { left: 5cqi; right: 5cqi; bottom: 2.4rem; }
+  }
+  /* tablet: the poles take opposite corners — a diagonal composition, not a stretched phone */
+  @container (min-width: 560px) and (max-width: 959.9px) {
+    .rd-pole { font-size: clamp(13px, 1.9cqi, 16px); }
+    .rd-pole--l { right: auto; width: min(44cqi, 36ch); }
+    .rd-pole--r { left: auto; width: min(44cqi, 36ch); }
+  }
+  .rd {
+    position: relative; z-index: 2;
+    width: 360px; max-width: 100%; margin-inline: auto;
+    border-radius: 28px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 70px -28px rgba(20, 12, 2, 0.55), 0 0 0 1px var(--line);
+    /* reading-surface palette, switched by data-mode; --m3 is the Google-blue accent */
+    --pg: #faf6ec; --tx: #221c12; --mut: #847862; --chip: #221c1212; --ui: #fffdf7;
+    --m3: #1a73e8; --m3-on: #fff;
+    transition: none;
+  }
+  .rd[data-mode='sepia'] { --pg: #f0e3c8; --tx: #4a3617; --mut: #93805b; --chip: #4a361715; --ui: #f6ecd6; }
+  .rd[data-mode='night'] { --pg: #17130c; --tx: #e3d9c4; --mut: #8d8166; --chip: #e3d9c41f; --ui: #211b11; --m3: #8ab4f8; --m3-on: #17130c; }
+  /* Original pages: justified, indented, centered head — the scan, not the reflow */
+  .rd[data-flowmode='original'] .rd__page { text-align: justify; hyphens: auto; font-weight: 400; font-size: 15px !important; }
+  .rd[data-flowmode='original'] .rd__page p + p { text-indent: 1.5em; margin-top: 0; }
+  .rd[data-flowmode='original'] .rd__ch-t { text-align: center; }
+  .rd__top { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; background: var(--pg); color: var(--tx); }
+  .rd__back svg { width: 20px; height: 20px; display: block; }
+  .rd__book { font-size: 14px; font-weight: 700; }
+  .rd__book i { font-weight: 300; color: var(--mut); }
+  .rd__dots { margin-left: auto; font-size: 16px; color: var(--mut); }
+  .rd__page { background: var(--pg); color: var(--tx); padding: 10px 22px 6px; font-size: 16px; font-weight: var(--rw); line-height: 1.62; flex: 1; }
+  .rd__page p + p { margin-top: 0.8em; }
+  .rd__ch { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mut); }
+  .rd__ch-w { letter-spacing: 0.1em; }
+  .rd__ch-w b { font-weight: 800; color: var(--tx); }
+  .rd__ch-t { font-size: 22px; font-weight: 800; margin: 4px 0 14px; color: var(--tx); }
+  .rd__prog { height: 3px; background: var(--chip); position: relative; }
+  /* page 89 of 412 = 21.6% read */
+  .rd__prog i { position: absolute; inset: 0 auto 0 0; width: 21.6%; background: var(--m3); }
+  .rd__foot { display: flex; justify-content: space-between; padding: 8px 22px 12px; background: var(--pg); color: var(--mut); font-size: 11.5px; font-weight: 500; }
+  .rd__ctrl { background: var(--ui); color: var(--tx); border-top: 1px solid var(--chip); padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+  /* M3 segmented buttons: Flowing text / Original pages, check on the selected segment */
+  .rd__flow { display: flex; border: 1px solid var(--chip); border-radius: 100px; overflow: hidden; }
+  .rd__flow-b { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 8px 0; background: transparent; color: var(--mut); border: 0; cursor: pointer; }
+  .rd__flow-b + .rd__flow-b { border-left: 1px solid var(--chip); }
+  .rd__flow-b svg { width: 13px; height: 13px; display: none; }
+  .rd__flow-b.is-on { background: color-mix(in srgb, var(--m3) 18%, transparent); color: var(--tx); font-weight: 700; }
+  .rd__flow-b.is-on svg { display: block; }
+  .rd__textset { display: flex; flex-direction: column; gap: 12px; }
+  .rd__textset.is-locked { opacity: 0.4; pointer-events: none; transition: opacity 0.2s var(--ease); }
+  .rd__locknote { font-size: 11px; font-weight: 500; color: var(--mut); margin-top: -6px; }
+  .rd__themes { display: flex; gap: 8px; }
+  /* each pill is a swatch of its own reading surface — all three themes visible at once */
+  .rd__theme { --tp: #faf6ec; --tt: #221c12; flex: 1; font-size: 12.5px; font-weight: 600; padding: 7px 0; border: 1px solid var(--chip); border-radius: 100px; background: var(--tp); color: var(--tt); cursor: pointer; transition: box-shadow 0.15s var(--ease); }
+  .rd__theme[data-theme='sepia'] { --tp: #f0e3c8; --tt: #4a3617; }
+  .rd__theme[data-theme='night'] { --tp: #17130c; --tt: #e3d9c4; }
+  .rd__theme.is-on { box-shadow: 0 0 0 1.5px var(--ui), 0 0 0 3.5px var(--tx); font-weight: 800; }
+  .rd__size { display: flex; align-items: center; gap: 12px; }
+  .rd__sz { width: 64px; font-size: 13px; font-weight: 700; padding: 6px 0; border: 1px solid var(--chip); border-radius: 10px; background: transparent; color: var(--tx); cursor: pointer; }
+  .rd__sz--big { font-size: 16px; }
+  .rd__sz sup { font-weight: 400; }
+  .rd__sz-val { flex: 1; text-align: center; font-size: 13px; font-weight: 700; color: var(--mut); }
+  /* M3 slider with a value bubble — active track and label in Google blue */
+  .rd__wt { display: flex; flex-direction: column; gap: 4px; }
+  .rd__wt > span { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mut); }
+  .rd__wt-track { position: relative; display: block; margin-top: 24px; }
+  .rd__wt-bubble {
+    position: absolute; bottom: calc(100% + 9px);
+    left: calc((var(--rw) - 300) / 300 * (100% - 20px) + 10px);
+    transform: translateX(-50%);
+    background: var(--m3); color: var(--m3-on);
+    font-size: 11px; font-weight: 700; line-height: 1; padding: 5px 8px; border-radius: 10px;
+  }
+  .rd__wt-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--m3); }
+  .rd__wt input { appearance: none; display: block; width: 100%; height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--m3) calc((var(--rw) - 300) / 3 * 1%), var(--chip) 0); outline-offset: 4px; }
+  .rd__wt input::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--m3); border: 3px solid var(--ui); box-shadow: 0 0 0 1px var(--chip); cursor: ew-resize; }
+  .rd__wt input::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--m3); border: 3px solid var(--ui); cursor: ew-resize; }
+  .rd__presets { display: flex; gap: 8px; margin-top: -4px; }
+  .rd__preset { flex: 1; font-size: 12px; padding: 5px 0; border: 1px solid var(--chip); border-radius: 8px; background: transparent; color: var(--mut); cursor: pointer; transition: color 0.15s var(--ease), border-color 0.15s var(--ease); }
+  .rd__preset.is-on { color: var(--tx); border-color: var(--tx); }
+
+  /* ============================================================
+     05 — TONNAGE · weighbridge instrument
+     ============================================================ */
+  .tn {
+    background: linear-gradient(180deg, #1a150c 0%, #14100a 70%, #0e0b06 100%);
+    color: #e8dcc0;
+    padding: clamp(1.5rem, 4cqi, 3.5rem) clamp(1.1rem, 5cqi, 5rem) clamp(1.75rem, 4.5cqi, 4rem);
+    display: flex; flex-direction: column;
+  }
+  .tn__head { display: flex; justify-content: space-between; gap: 1em; font-size: clamp(10px, 1.4cqi, 15px); font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: #9c8d6b; border-bottom: 1px solid #e8dcc022; padding-bottom: 0.8rem; }
+  .tn__head sup { font-weight: 500; }
+  .tn__frac { font-feature-settings: 'frac'; letter-spacing: 0.05em; }
+  /* --load registered so Tare/Max ease the WHOLE machine: sink, pit, glow */
+  @property --load { syntax: '<number>'; inherits: true; initial-value: 0; }
+  .tn.is-smooth { transition: --load 0.55s var(--ease-out); }
+  .tn__stage { position: relative; padding: clamp(1.5rem, 5cqi, 4.5rem) 0 0; display: flex; flex-direction: column; align-items: center; }
+  /* a low backlight keeps the hairline end legible — it dims as the load comes on */
+  .tn__stage::before { content: ''; position: absolute; inset: 0; background: radial-gradient(52% 64% at 50% 46%, #f1e4c4, transparent 72%); opacity: calc((1 - var(--load, 0)) * 0.22); pointer-events: none; }
+  .tn__wordbox { position: relative; transform: translateY(calc(var(--load, 0) * 2.3cqi)); }
+  .tn__word {
+    font-size: clamp(2.6rem, 16.2cqi, 13rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    color: #f3e8cc;
+    font-variation-settings: 'wght' var(--w);
+    text-shadow:
+      0 0 1px rgba(248, 236, 205, calc((1 - var(--load, 0)) * 0.9)),
+      0 0 14px rgba(248, 236, 205, calc((1 - var(--load, 0)) * 0.55));
+    user-select: none;
+  }
+  /* the slab's argument: the serif feet — the platform's actual contact points —
+     lit vermilion at the baseline, brighter as the load comes on. Inter has no
+     feet to light; only a slab can stand on this bridge. */
+  .tn__word--feet {
+    position: absolute; inset: 0;
+    color: var(--verm);
+    clip-path: inset(85.5% -2% -6% -2%);
+    opacity: calc(0.35 + var(--load, 0) * 0.65);
+    text-shadow: 0 0 10px rgba(196, 58, 22, calc(0.25 + var(--load, 0) * 0.6));
+  }
+  .tn.is-smooth .tn__word { transition: font-variation-settings 0.55s var(--ease-out); }
+  /* the calibration, engraved on the deck plate itself */
+  .tn__cal {
+    margin-top: 0.8rem; text-align: center; text-wrap: balance;
+    font-size: clamp(8.5px, 1.2cqi, 13px); font-weight: 500;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: #8a7b5c;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75), 0 -1px 0 rgba(244, 232, 204, 0.1);
+  }
+  /* the annotation: a leader from the contact line to its claim */
+  .tn__note {
+    position: absolute; right: 0; bottom: calc(clamp(16px, 3cqi, 34px) + 3.1em);
+    display: flex; align-items: center; gap: 0.7em;
+    max-width: 24ch;
+    font-size: clamp(9.5px, 1.15cqi, 12.5px); font-weight: 500; line-height: 1.5;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #b3a37d;
+    text-align: left;
+  }
+  .tn__note i { flex: none; width: clamp(1.5rem, 6cqi, 5.5rem); height: 1px; background: var(--verm); }
+  /* below ~1000 the word spans the bridge — the annotation steps down to the deck */
+  @container (max-width: 1020px) {
+    .tn__note { position: static; margin: 0.55rem auto 0; max-width: 44ch; justify-content: center; text-align: center; }
+    .tn__note i { display: none; }
+  }
+  .tn__platform { width: min(100%, 56cqi + 14rem); height: clamp(8px, 1.4cqi, 14px); background: var(--verm); margin-top: clamp(0.4rem, 1cqi, 0.9rem); transform: translateY(calc(var(--load, 0) * 2.6cqi)) scaleY(calc(1 - var(--load, 0) * 0.5)); transform-origin: top; }
+  /* the pit compresses from the top as the platform descends into it */
+  .tn__pit { width: min(100%, 56cqi + 14rem); height: clamp(16px, 3cqi, 34px); background: repeating-linear-gradient(-45deg, #e8dcc02b 0 6px, transparent 6px 13px); transform: scaleY(calc(1 - var(--load, 0) * 0.62)); transform-origin: bottom; }
+  .tn__deck { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(1rem, 3cqi, 2.5rem); align-items: end; margin-top: clamp(1.9rem, 4.6cqi, 3.75rem); border-top: 1px solid #e8dcc022; padding-top: clamp(1rem, 2.6cqi, 2rem); }
+  .tn__read { display: flex; flex-direction: column; gap: 0.2em; }
+  .tn__read-k { font-size: clamp(9.5px, 1.2cqi, 13px); font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #9c8d6b; }
+  .tn__read-v { font-size: clamp(1.6rem, 4.4cqi, 3.4rem); font-weight: 200; line-height: 1; }
+  .tn__read-v b { font-weight: 200; font-variation-settings: 'wght' var(--w); }
+  .tn.is-smooth .tn__read-v b { transition: font-variation-settings 0.55s var(--ease-out); }
+  .tn__read-w { font-size: clamp(10px, 1.3cqi, 14px); font-weight: 500; letter-spacing: 0.1em; color: #9c8d6b; }
+  .tn__read-w b { font-weight: 800; color: #e8dcc0; }
+  .tn__read-w i { font-weight: 300; }
+  .tn__lever { display: flex; flex-direction: column; gap: 0.5em; }
+  .tn__lever > .label { color: #9c8d6b; }
+  .tn__lever input { appearance: none; width: 100%; height: 6px; background: linear-gradient(90deg, #e8dcc02b, #e8dcc05c); outline-offset: 6px; }
+  .tn__lever input::-webkit-slider-thumb { appearance: none; width: 18px; height: 34px; border-radius: 4px; background: var(--verm); box-shadow: inset 0 -3px 0 rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.22); cursor: grab; }
+  .tn__lever input::-webkit-slider-thumb:active { cursor: grabbing; }
+  .tn__lever input::-moz-range-thumb { width: 18px; height: 34px; border-radius: 4px; background: var(--verm); border: 0; cursor: grab; }
+  .tn__ends { display: flex; justify-content: space-between; font-size: clamp(9px, 1.1cqi, 12px); font-weight: 500; letter-spacing: 0.14em; color: #9c8d6b; }
+  .tn__btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tn__btn { font-size: clamp(11px, 1.4cqi, 14px); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.7em 1.3em; background: transparent; border: 1px solid #e8dcc04d; color: #e8dcc0; cursor: pointer; white-space: nowrap; transition: background 0.15s var(--ease), color 0.15s var(--ease); }
+  .tn__btn:hover { background: #e8dcc01a; }
+  .tn__btn--max { border-color: var(--verm); color: #ff9b76; }
+  .tn__btn--max:hover { background: var(--verm); color: #14100a; }
+
+  /* the yard paperwork: maker's plate and tariff, the period anchor of the fiction */
+  .tn__foot {
+    display: flex; justify-content: space-between; gap: 1em 2em; flex-wrap: wrap;
+    border-top: 1px solid #e8dcc022; margin-top: clamp(1rem, 2.4cqi, 1.9rem); padding-top: clamp(0.7rem, 1.6cqi, 1.2rem);
+    font-size: clamp(9px, 1.1cqi, 12px); letter-spacing: 0.14em; text-transform: uppercase; color: #8a7b5c;
+  }
+  .tn__maker { font-weight: 600; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7), 0 -1px 0 rgba(244, 232, 204, 0.09); }
+  .tn__maker sup { font-weight: 600; }
+  .tn__tariff { font-weight: 400; }
+  .tn__tariff .tn__frac { margin-left: 0.08em; }
+
+  @container (max-width: 620px) {
+    .tn__deck { grid-template-columns: 1fr 1fr; }
+    .tn__lever { grid-column: 1 / -1; grid-row: 2; }
+    .tn__btns { justify-content: end; }
+    .tn__foot { flex-direction: column; gap: 0.45em; }
   }
 </style>

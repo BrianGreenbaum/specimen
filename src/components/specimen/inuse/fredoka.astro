@@ -4,989 +4,986 @@ export interface Props { font: CollectionEntry<'fonts'>['data']; }
 const { font } = Astro.props;
 const fam = font.fontFamily;
 
-// 01 — food-delivery order tracker (real px, interactive)
+// 01 — Plump! cold-pressed juice: the wdth axis as flavour voice
+const cans = [
+  { mod: 'cherry', flav: ['SOUR', 'CHERRY'], wd: 75,  hd: 125, note: 'tight & tart — wdth 75',  blurb: 'Puckers first, smiles after.' },
+  { mod: 'yuzu',   flav: ['YUZU', 'FIZZ'],   wd: 100, hd: 125, note: 'true round — wdth 100',   blurb: 'The circle, carbonated.' },
+  { mod: 'peach',  flav: ['PEACH', 'SUN'],   wd: 125, hd: 75,  note: 'wide open — wdth 125',    blurb: 'Cheeks full of July.' },
+];
+
+// 03 — Snack magazine: ingredients exercise the live `frac` feature
+const ingredients = [
+  { pre: '1 ', frac: '1/2', post: ' cups flour, the fluffy kind' },
+  { pre: '',   frac: '3/4', post: ' cup milk, cold as a creek' },
+  { pre: '',   frac: '1/4', post: ' tsp salt (a small pinch, big job)' },
+  { pre: '',   frac: '1/2', post: ' stick butter, for the pan & the soul' },
+  { pre: '2 ', frac: '',    post: 'eggs, cracked with confidence' },
+];
 const steps = [
-  { id: 'placed',   icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',   label: 'Order placed',   sub: 'Nori Kitchen' },
-  { id: 'prep',     icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', label: 'Preparing',     sub: 'In the kitchen' },
-  { id: 'pickup',   icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z',                         label: 'Ready',          sub: 'Rider assigned' },
-  { id: 'otw',      icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',          label: 'On the way',     sub: '12 min away' },
-  { id: 'done',     icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', label: 'Delivered!',    sub: 'Enjoy your meal' },
+  { n: '1', t: 'Whisk like you mean it', d: 'Lumps are shy. Chase them out with twenty big circles.' },
+  { n: '2', t: 'Pour a puddle', d: 'About the size of your hand. The pan should whisper, not shout.' },
+  { n: '3', t: 'Wait for the wink', d: 'When the bubbles open and wink at you — flip. One brave motion.' },
 ];
 
-const items = [
-  { name: 'Salmon Poke Bowl', price: '$14.50', note: '× 1 · No sesame' },
-  { name: 'Edamame', price: '$4.00', note: '× 1 · Salted' },
-  { name: 'Miso Soup', price: '$3.50', note: '× 2' },
+// 04 — Alef: a Hebrew lesson at real device scale (Hebrew subset ships with Fredoka)
+const quiz = [
+  { prompt: 'thank you', opts: [
+    { he: 'שלום',     tr: 'shalom',     right: false },
+    { he: 'תודה',     tr: 'todá',       right: true  },
+    { he: 'סליחה',    tr: 'slichá',     right: false },
+    { he: 'להתראות',  tr: 'lehitra’ot', right: false },
+  ]},
+  { prompt: 'good morning', opts: [
+    { he: 'לילה טוב', tr: 'láyla tov',  right: false },
+    { he: 'בוקר טוב', tr: 'bóker tov',  right: true  },
+    { he: 'מה נשמע',  tr: 'ma nishmá',  right: false },
+    { he: 'שלום',     tr: 'shalom',     right: false },
+  ]},
+  { prompt: 'please', opts: [
+    { he: 'כן',       tr: 'ken',        right: false },
+    { he: 'לא',       tr: 'lo',         right: false },
+    { he: 'בבקשה',    tr: 'bevakashá',  right: true  },
+    { he: 'סליחה',    tr: 'slichá',     right: false },
+  ]},
 ];
+
+// 05 — Balloon practice
+const word = 'BALLOON'.split('');
 ---
-<div class="iu" style={`--fam:${fam}`}>
+<div class="iu iu--fredoka" style={`--fam:${fam}`}>
 
-  <!-- 01 — interactive food-delivery order tracker (real device scale) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Mobile app — food delivery tracker, real device scale (interactive)</span></figcaption>
-    <div class="iu__scene iu__scene--phone">
-      <div class="iu__device food" data-food>
-        <!-- status bar -->
-        <div class="food__bar">
-          <span class="food__time">9:41</span>
-          <span class="food__notch" aria-hidden="true"></span>
-          <span class="food__icons" aria-hidden="true">
-            <svg viewBox="0 0 16 12" class="food__sig"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="4" y="5" width="3" height="7" rx="0.6"/><rect x="8" y="2" width="3" height="10" rx="0.6"/><rect x="12" y="0" width="3" height="12" rx="0.6"/></svg>
-            <svg viewBox="0 0 26 12" class="food__batt"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2" y="2" width="16" height="8" rx="1" fill="currentColor"/></svg>
-          </span>
-        </div>
-        <!-- header -->
-        <div class="food__head">
-          <span class="food__logo">
-            <svg viewBox="0 0 32 32" class="food__logomark" aria-hidden="true">
-              <circle cx="16" cy="16" r="15" fill="var(--accent)" />
-              <text x="16" y="22" text-anchor="middle" font-size="18" font-weight="700" fill="var(--accent-contrast)" font-family="var(--fam)">N</text>
-            </svg>
-            nori
-          </span>
-          <span class="food__ordid">Order #2847</span>
-        </div>
-
-        <!-- stepper track -->
-        <div class="food__track" data-track>
-          <div class="food__line" aria-hidden="true"><span class="food__linefill" data-linefill></span></div>
-          {steps.map((s, i) => (
-            <button class={`food__step ${i === 0 ? 'is-done' : ''}`} data-step={i} aria-label={s.label}>
-              <span class="food__dot" data-dot>
-                <svg viewBox="0 0 24 24" class="food__stepico" aria-hidden="true"><path d={s.icon} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-              <span class="food__steplabel">{s.label}</span>
-              <span class="food__stepsub">{s.sub}</span>
-            </button>
-          ))}
-        </div>
-
-        <!-- ETA pill -->
-        <div class="food__eta" data-etapill>
-          <svg viewBox="0 0 24 24" class="food__etaico" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span data-etalabel>Arriving in 28 min</span>
-        </div>
-
-        <!-- order items -->
-        <div class="food__items">
-          <span class="food__sechead">Your order</span>
-          {items.map((it) => (
-            <div class="food__item">
-              <div class="food__iteminfo">
-                <span class="food__itemname">{it.name}</span>
-                <span class="food__itemnote">{it.note}</span>
-              </div>
-              <span class="food__itemprice">{it.price}</span>
-            </div>
-          ))}
-        </div>
-
-        <!-- total row pinned above CTA -->
-        <div class="food__total">
-          <span>Total</span>
-          <span class="food__totalv">$25.50</span>
-        </div>
-
-        <!-- action button -->
-        <div class="food__foot">
-          <button class="food__cta" data-cta>Track on map</button>
+  <!-- ============ 01 · BRANDING & IDENTITY — Plump! ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Branding &amp; identity — Plump! cold-pressed juice; the width axis as flavour voice</span></figcaption>
+    <div class="iu__scene">
+      <div class="plump">
+      <div class="plump__intro">
+        <span class="plump__eyebrow">Identity system · cold-pressed · 2026</span>
+        <span class="plump__wm">plump!</span>
+        <p class="plump__manifesto">Juice with its cheeks full. One rounded skeleton, three widths&nbsp;— every flavour speaks at its own setting of the same wordmark.</p>
+        <div class="plump__spec">
+          <span>Wordmark · SemiBold 600</span>
+          <span>Voice · wdth 75 / 100 / 125</span>
+          <span>Squeezed, never shouted</span>
         </div>
       </div>
-    </div>
-    <p class="iu__hint label">Tap each step or the button to advance the order — the tracker fills, ETA updates, and Fredoka Bold with rounded terminals reads warm at phone scale.</p>
-  </figure>
-
-  <!-- 02 — kids summer camp poster (wght + wdth axes, container-query scaled) -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Poster — kids summer camp, wght + wdth axes live</span></figcaption>
-    <div class="iu__scene camp-scene">
-      <div class="camp" data-camp>
-        <header class="camp__top">
-          <span class="camp__edition">Summer 2026</span>
-          <span class="camp__loc">Lakeside · Colorado</span>
-        </header>
-
-        <div class="camp__hero">
-          <span class="camp__eyebrow">Camp Roundabout</span>
-          <h3 class="camp__headline">
-            <span class="camp__hl camp__hl--1" data-camphl>BIG</span>
-            <span class="camp__hl camp__hl--2" data-camphl>FUN</span>
-          </h3>
-          <p class="camp__tagline">Swim · Hike · Create · Explore</p>
-        </div>
-
-        <!-- activities grid -->
-        <div class="camp__grid">
-          <div class="camp__pill">🏊 Swimming</div>
-          <div class="camp__pill">🎨 Art Studio</div>
-          <div class="camp__pill">🏕️ Camping</div>
-          <div class="camp__pill">🎸 Music</div>
-          <div class="camp__pill">🌿 Nature</div>
-          <div class="camp__pill">🚀 Robotics</div>
-        </div>
-
-        <footer class="camp__foot">
-          <div class="camp__dates">
-            <span class="camp__datelbl">Ages 7–15</span>
-            <span class="camp__dateval">Jul 7 – Aug 22</span>
-          </div>
-          <span class="camp__register">Register now →</span>
-        </footer>
-
-        <!-- axis controls -->
-        <div class="camp__controls" aria-label="Axis controls">
-          <label class="camp__ctrl">
-            <span>wght</span>
-            <input type="range" min="300" max="700" value="700" class="camp__slider" data-camp-wght />
-            <span class="camp__ctrlval" data-camp-wghtval>700</span>
-          </label>
-          <label class="camp__ctrl">
-            <span>wdth</span>
-            <input type="range" min="75" max="125" value="125" class="camp__slider" data-camp-wdth />
-            <span class="camp__ctrlval" data-camp-wdthval>125</span>
-          </label>
-        </div>
-      </div>
-    </div>
-    <p class="iu__hint label">Drag wght (300→700) and wdth (75→125) — the headline shifts from a breezy Light-wide to a squat, punchy Bold-condensed. Both Fredoka axes in one poster.</p>
-  </figure>
-
-  <!-- 03 — wellness brand identity board -->
-  <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Brand — consumer wellness wordmark system</span></figcaption>
-    <div class="iu__scene well-scene">
-      <div class="well">
-        <div class="well__hd">
-          <span class="well__doc">Bloom — Brand System</span>
-          <span class="well__ver">v2.0 · 2026</span>
-        </div>
-
-        <div class="well__grid">
-          <!-- wordmark -->
-          <div class="well__logo">
-            <span class="well__wm">
-              <span class="well__mark" aria-hidden="true"></span>
-              bloom
+      <div class="plump__shelf">
+        {cans.map((c) => (
+          <div class={`plump__can plump__can--${c.mod}`} style={`--wd:${c.wd}; --hd:${c.hd}`} tabindex="0">
+            <span class="plump__lid" aria-hidden="true"></span>
+            <span class="plump__mark">plump!</span>
+            <span class="plump__flav">{c.flav.map((l) => <span class="plump__fl">{l}</span>)}</span>
+            <span class="plump__blurb">{c.blurb}</span>
+            <span class="plump__note">{c.note}</span>
+            <span class="plump__meta">
+              <span class="plump__ml">330&thinsp;ml</span>
+              <span class="plump__barcode" aria-hidden="true"></span>
             </span>
-            <span class="well__cap">Primary wordmark · Fredoka SemiBold, wdth 105</span>
           </div>
-
-          <!-- weight ramp -->
-          <div class="well__rampC">
-            <span class="well__lbl">Weight ramp · Light → Bold</span>
-            <div class="well__ramp" data-wellramp>
-              {[300,400,500,600,700].map((w) => (
-                <span style={`font-weight:${w};font-variation-settings:'wght' ${w},'wdth' 100`}>{w === 300 ? 'Light' : w === 400 ? 'Regular' : w === 500 ? 'Medium' : w === 600 ? 'SemiBold' : 'Bold'}</span>
-              ))}
-            </div>
-          </div>
-
-          <!-- voice copy -->
-          <div class="well__voiceC">
-            <span class="well__lbl">Voice</span>
-            <p class="well__voice">Feel good,<br/><span class="well__voiceaccent">every day.</span></p>
-            <p class="well__voicesub">Gentle habits, generous design — a wellness companion built on rounded warmth and honest simplicity.</p>
-          </div>
-
-          <!-- colour swatches -->
-          <div class="well__swatchC">
-            <span class="well__lbl">Palette</span>
-            <div class="well__sw">
-              <span class="well__chip" style="background:var(--accent);color:var(--accent-contrast)">Sunrise<i>accent</i></span>
-              <span class="well__chip" style="background:var(--fg);color:var(--bg)">Dusk<i>fg</i></span>
-              <span class="well__chip well__chip--line" style="background:var(--bg-2);color:var(--fg)">Cream<i>bg-2</i></span>
-            </div>
-          </div>
-
-          <!-- specimen strip -->
-          <div class="well__specC">
-            <span class="well__lbl">Specimen</span>
-            <span class="well__alpha">AaBbCcGgOoRr <b>012345</b></span>
-          </div>
-        </div>
-
-        <div class="well__ft">
-          <span>Rounded Geometric Sans · Variable wght 300–700, wdth 75–125</span>
-          <span>Soft terminals. Open forms. Genuine warmth.</span>
-        </div>
+        ))}
+        <span class="plump__shelfline" aria-hidden="true"></span>
+      </div>
       </div>
     </div>
-    <p class="iu__hint label">The weight ramp auto-breathes through the axis at rest. Tap any stop to lock it at Bold — hover the ramp to hold all stops at Bold simultaneously.</p>
+    <p class="iu__hint label">Give a can a squeeze (hover) — each flavour name springs to the far end of Fredoka’s width axis and settles back.</p>
   </figure>
 
-  <!-- 04 — community habit tracker poster (kinetic, interactive tiles) -->
+  <!-- ============ 02 · ILLUSTRATION & COMMERCIAL — The Big Scoop ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Illustration &amp; commercial — The Big Scoop, an ice-cream-social broadside after Push Pin</span></figcaption>
+    <div class="iu__scene">
+      <div class="scoop">
+      <div class="scoop__sun" aria-hidden="true">
+        <i class="scoop__arc scoop__arc--1"></i>
+        <i class="scoop__arc scoop__arc--2"></i>
+        <i class="scoop__arc scoop__arc--3"></i>
+        <i class="scoop__arc scoop__arc--4"></i>
+        <i class="scoop__arc scoop__arc--5"></i>
+      </div>
+      <div class="scoop__ringwrap" aria-hidden="true">
+        <svg class="scoop__ring" viewBox="0 0 100 100">
+          <defs><path id="fredoka-scoop-ring" d="M50,50 m-42,0 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0" fill="none"/></defs>
+          <text><textPath href="#fredoka-scoop-ring">EVERYBODY GETS A DOUBLE&ensp;·&ensp;EVERYBODY GETS A DOUBLE&ensp;·&ensp;</textPath></text>
+        </svg>
+      </div>
+      <header class="scoop__mast">The Ninth Street Block Association presents</header>
+      <h3 class="scoop__title"><span class="scoop__t1">THE BIG</span><span class="scoop__t2">SCOOP</span></h3>
+      <p class="scoop__sub">An ice-cream social on the green</p>
+      <p class="scoop__sub2">Free admission · bring a spoon</p>
+      <footer class="scoop__foot">
+        <span>Sat July 18 · noon till dusk</span>
+        <span>Silkscreen in four colours</span>
+      </footer>
+      </div>
+    </div>
+    <p class="iu__hint label">Wide-track Bold at wdth 125 with a solid offset shadow — the Push Pin sunrise, reset on the web; the date ring turns like a carousel.</p>
+  </figure>
+
+  <!-- ============ 03 · EDITORIAL — Snack magazine ============ -->
   <figure class="iu__item">
-    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">App poster — community habit tracker, rotating word + interactive tiles</span></figcaption>
-    <div class="iu__scene habit-scene">
-      <div class="habit" data-habit>
-
-        <div class="habit__bg" aria-hidden="true">
-          <span class="habit__blob habit__blob--1"></span>
-          <span class="habit__blob habit__blob--2"></span>
-          <span class="habit__blob habit__blob--3"></span>
+    <figcaption class="iu__cap"><span class="index-num">03</span><span class="label">Editorial — Snack, the happy food mag for kids (after Anorak); live OpenType fractions</span></figcaption>
+    <div class="iu__scene">
+      <div class="snack">
+      <div class="snack__page snack__page--verso">
+        <span class="snack__head">snack <i>· the happy food mag</i></span>
+        <span class="snack__badge"><b>No.&thinsp;12</b>the breakfast issue</span>
+        <h3 class="snack__display" data-flip>FLIP!</h3>
+        <p class="snack__deck">Twelve pancakes, one spatula, zero fear — a field guide for small chefs and their tall assistants.</p>
+        <p class="snack__byline">Words · Pip Okafor&emsp;Pans · Grandma Rosa</p>
+        <span class="snack__folio">24</span>
+      </div>
+      <span class="snack__gutter" aria-hidden="true"></span>
+      <div class="snack__page snack__page--recto">
+        <div class="snack__col snack__col--need">
+          <h4 class="snack__h">What you need <em class="snack__tag">OpenType frac — live</em></h4>
+          <ul class="snack__list">
+            {ingredients.map((it) => (
+              <li>{it.pre}{it.frac && <span class="snack__frac">{it.frac}</span>}{it.post}</li>
+            ))}
+          </ul>
+          <blockquote class="snack__pull">“Butter first. Always butter&nbsp;first.”<cite>— Grandma Rosa, pan sage</cite></blockquote>
         </div>
+        <div class="snack__col snack__col--do">
+          <h4 class="snack__h">What you do</h4>
+          <ol class="snack__steps">
+            {steps.map((s) => (
+              <li><span class="snack__num">{s.n}</span><span class="snack__step"><b>{s.t}</b>{s.d}</span></li>
+            ))}
+          </ol>
+        </div>
+        <span class="snack__folio snack__folio--r">25 · flip!</span>
+      </div>
+      </div>
+    </div>
+    <p class="iu__hint label">The fractions are real OpenType <code>frac</code> — Fredoka’s own numerals, not typed glyphs. Click FLIP! to flip it.</p>
+  </figure>
 
-        <header class="habit__top">
-          <span class="habit__brand">Habit Loop</span>
-          <span class="habit__streak" data-streak>🔥 14-day streak</span>
-        </header>
-
-        <!-- big rotating word -->
-        <div class="habit__center" aria-live="polite">
-          <span class="habit__preword">Today's focus</span>
-          <div class="habit__wordwrap">
-            <span class="habit__word" data-habitword>Move</span>
+  <!-- ============ 04 · WEB & APP UI — Alef ============ -->
+  <figure class="iu__item" data-shoot-click='[data-q="0"] [data-right]'>
+    <figcaption class="iu__cap"><span class="index-num">04</span><span class="label">Web &amp; app UI — Alef, a Hebrew lesson at real device scale (interactive)</span></figcaption>
+    <div class="iu__scene alef-scene">
+      <div class="alef" data-alef>
+        <div class="alef__statusbar"><span>9:41</span><span class="alef__notch" aria-hidden="true"></span><svg class="alef__batt" viewBox="0 0 26 12" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="24" y="3.5" width="2" height="5" rx="1" fill="currentColor"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.5" fill="currentColor"/></svg></div>
+        <header class="alef__top">
+          <button class="alef__back" aria-label="Back to units"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="alef__progress" aria-label="Lesson progress">
+            <i data-seg></i><i data-seg></i><i data-seg></i>
           </div>
-          <span class="habit__postword">Do it. Track it. Build it.</span>
+          <span class="alef__streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4-3 5.5-3 9a3.4 3.4 0 002 3c-.2-1.6.8-2.4 1.6-3.6C13.8 12.6 17 14 17 17a5 5 0 01-10 .2C7 13 10 11 10 7c1.4 1 2 2.4 2 4 1.4-2.2.6-5.6 0-9z" fill="currentColor"/></svg>23</span>
+        </header>
+        <span class="alef__unit">Unit 2 · Greetings</span>
+        <div class="alef__panels">
+          {quiz.map((q, qi) => (
+            <section class={`alef__q ${qi === 0 ? 'is-active' : ''}`} data-q={qi}>
+              <h4 class="alef__prompt">Which one means <em>“{q.prompt}”</em>?</h4>
+              <div class="alef__opts">
+                {q.opts.map((o) => (
+                  <button class="alef__opt" {...(o.right ? { 'data-right': '' } : {})}>
+                    <span class="alef__he" dir="rtl" lang="he">{o.he}</span>
+                    <span class="alef__tr">{o.tr}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
+          <section class="alef__q alef__q--done" data-q="done">
+            <span class="alef__bigdone" dir="rtl" lang="he">!כל הכבוד</span>
+            <span class="alef__donesub">Kol hakavod — nice work.</span>
+            <span class="alef__xp">+30 XP &ensp;·&ensp; 24-day streak</span>
+            <button class="alef__again" data-reset>Practice again</button>
+          </section>
         </div>
-
-        <!-- habit tiles -->
-        <div class="habit__tiles" data-habitiles>
-          <button class="habit__tile is-done" data-tile="0">
-            <span class="habit__tileico">💧</span>
-            <span class="habit__tilename">Water</span>
-            <span class="habit__tilesub">8 glasses</span>
-            <span class="habit__tilecheck is-on" aria-label="Complete"></span>
-          </button>
-          <button class="habit__tile" data-tile="1">
-            <span class="habit__tileico">🏃</span>
-            <span class="habit__tilename">Move</span>
-            <span class="habit__tilesub">30 min</span>
-            <span class="habit__tilecheck" aria-label="Tap to complete"></span>
-          </button>
-          <button class="habit__tile" data-tile="2">
-            <span class="habit__tileico">📖</span>
-            <span class="habit__tilename">Read</span>
-            <span class="habit__tilesub">20 pages</span>
-            <span class="habit__tilecheck" aria-label="Tap to complete"></span>
-          </button>
-          <button class="habit__tile" data-tile="3">
-            <span class="habit__tileico">🧘</span>
-            <span class="habit__tilename">Breathe</span>
-            <span class="habit__tilesub">10 min</span>
-            <span class="habit__tilecheck" aria-label="Tap to complete"></span>
-          </button>
-        </div>
-
-        <footer class="habit__foot">
-          <span class="habit__progress" data-habprogress>1 of 4 complete</span>
-          <span class="habit__date">Fri, Jun 6</span>
+        <footer class="alef__foot">
+          <button class="alef__cta" data-continue disabled>Continue</button>
         </footer>
       </div>
     </div>
-    <p class="iu__hint label">Tap any tile to complete it — the count updates. The hero word cycles every 3 s, driven at wdth 115 for Fredoka's widest, friendliest warmth.</p>
+    <p class="iu__hint label">A real lesson, 13&thinsp;px body — tap the right answer, the bar fills, the streak holds. Fredoka ships its Hebrew alongside the Latin.</p>
+  </figure>
+
+  <!-- ============ 05 · INTERACTIVE & EXPERIMENTAL — Balloon practice ============ -->
+  <figure class="iu__item iu__item--bleed">
+    <figcaption class="iu__cap"><span class="index-num">05</span><span class="label">Interactive &amp; experimental — Balloon practice: the cursor is the air pump</span></figcaption>
+    <div class="iu__scene">
+      <div class="balloon" data-balloon>
+      <span class="balloon__eyebrow">After DIA’s kinetic wordmarks · two live axes, no italic, all air</span>
+      <div class="balloon__word">
+        {word.map((l) => (
+          <button class="balloon__l" data-l aria-label={`Pop the letter ${l}`}><span class="balloon__g">{l}</span></button>
+        ))}
+      </div>
+      <div class="balloon__readout" aria-hidden="true">
+        <span data-read-w>wght 300</span>
+        <span class="balloon__sep">·</span>
+        <span data-read-d>wdth 75</span>
+      </div>
+      <span class="balloon__foot">Fredoka Variable — wght 300–700 × wdth 75–125</span>
+      </div>
+    </div>
+    <p class="iu__hint label">Sweep across the word to pump air into the letters; click one and it pops. Reduced motion holds the full ramp, 300 to 700, left to right.</p>
   </figure>
 
 </div>
 
 <script>
-// ---- 01 · food delivery tracker ----
-document.querySelectorAll<HTMLElement>('[data-food]').forEach((food) => {
-  const stepEls = Array.from(food.querySelectorAll<HTMLButtonElement>('[data-step]'));
-  const linefill = food.querySelector('[data-linefill]') as HTMLElement;
-  const etaLabel = food.querySelector('[data-etalabel]') as HTMLElement;
-  const cta = food.querySelector('[data-cta]') as HTMLButtonElement;
-
-  const etas = ['Arriving in 28 min', 'Arriving in 22 min', 'Arriving in 16 min', 'Arriving in 8 min', 'Delivered! Enjoy 🎉'];
-  const ctas = ['Track on map', 'Track on map', 'Track on map', 'Track on map', 'Rate your order'];
-  let current = 0;
-
-  function renderTracker(active: number) {
-    stepEls.forEach((el, i) => {
-      el.classList.toggle('is-done', i <= active);
-      el.classList.toggle('is-active', i === active);
-    });
-    const pct = active / (stepEls.length - 1) * 100;
-    linefill.style.height = pct + '%';
-    etaLabel.textContent = etas[active];
-    cta.textContent = ctas[active];
-  }
-
-  stepEls.forEach((btn) =>
-    btn.addEventListener('click', () => {
-      current = parseInt(btn.dataset.step!, 10);
-      renderTracker(current);
-    })
-  );
-
-  cta.addEventListener('click', () => {
-    current = current < stepEls.length - 1 ? current + 1 : 0;
-    renderTracker(current);
-  });
-
-  renderTracker(0);
-});
-
-// ---- 02 · camp poster axis sliders ----
-document.querySelectorAll<HTMLElement>('[data-camp]').forEach((camp) => {
-  const wghtSlider = camp.querySelector<HTMLInputElement>('[data-camp-wght]')!;
-  const wdthSlider = camp.querySelector<HTMLInputElement>('[data-camp-wdth]')!;
-  const wghtVal = camp.querySelector<HTMLElement>('[data-camp-wghtval]')!;
-  const wdthVal = camp.querySelector<HTMLElement>('[data-camp-wdthval]')!;
-  const hls = Array.from(camp.querySelectorAll<HTMLElement>('[data-camphl]'));
-
-  function applyAxes() {
-    const wg = wghtSlider.value;
-    const wd = wdthSlider.value;
-    wghtVal.textContent = wg;
-    wdthVal.textContent = wd;
-    hls.forEach((el) => {
-      el.style.fontVariationSettings = `'wght' ${wg}, 'wdth' ${wd}`;
-    });
-  }
-
-  wghtSlider.addEventListener('input', applyAxes);
-  wdthSlider.addEventListener('input', applyAxes);
-  applyAxes();
-});
-
-// ---- 03 · wellness ramp tap-to-lock ----
-document.querySelectorAll<HTMLElement>('[data-wellramp]').forEach((ramp) => {
-  const spans = Array.from(ramp.querySelectorAll<HTMLElement>('span'));
-  spans.forEach((span) => {
-    span.addEventListener('click', () => {
-      const wasLocked = span.classList.contains('is-locked');
-      spans.forEach((s) => s.classList.remove('is-locked'));
-      if (!wasLocked) span.classList.add('is-locked');
-    });
+// ---- 03 · FLIP! ----
+document.querySelectorAll<HTMLElement>('[data-flip]').forEach((el) => {
+  el.addEventListener('click', () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    el.classList.remove('is-flip');
+    void el.offsetWidth;
+    el.classList.add('is-flip');
   });
 });
 
-// ---- 04 · habit tracker tiles ----
-document.querySelectorAll<HTMLElement>('[data-habit]').forEach((habit) => {
-  const tiles = Array.from(habit.querySelectorAll<HTMLButtonElement>('[data-tile]'));
-  const progress = habit.querySelector<HTMLElement>('[data-habprogress]')!;
-  const wordEl = habit.querySelector<HTMLElement>('[data-habitword]')!;
-  const words = ['Move', 'Rest', 'Read', 'Flow', 'Grow'];
-  let wordIdx = 0;
+// ---- 04 · Alef lesson ----
+document.querySelectorAll<HTMLElement>('[data-alef]').forEach((app) => {
+  const panels = Array.from(app.querySelectorAll<HTMLElement>('[data-q]'));
+  const qPanels = panels.filter((p) => p.dataset.q !== 'done');
+  const donePanel = panels.find((p) => p.dataset.q === 'done')!;
+  const segs = Array.from(app.querySelectorAll<HTMLElement>('[data-seg]'));
+  const cont = app.querySelector<HTMLButtonElement>('[data-continue]')!;
+  const reset = app.querySelector<HTMLButtonElement>('[data-reset]')!;
+  let idx = 0;
 
-  function updateProgress() {
-    const done = tiles.filter((t) => t.classList.contains('is-done')).length;
-    progress.textContent = done + ' of ' + tiles.length + ' complete';
-  }
+  const show = (p: HTMLElement) => panels.forEach((x) => x.classList.toggle('is-active', x === p));
 
-  tiles.forEach((tile) => {
-    tile.addEventListener('click', () => {
-      tile.classList.toggle('is-done');
-      const check = tile.querySelector<HTMLElement>('.habit__tilecheck');
-      if (check) check.classList.toggle('is-on');
-      updateProgress();
+  qPanels.forEach((panel, qi) => {
+    panel.querySelectorAll<HTMLButtonElement>('.alef__opt').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (panel.classList.contains('is-solved')) return;
+        if (btn.hasAttribute('data-right')) {
+          panel.classList.add('is-solved');
+          btn.classList.add('is-right');
+          segs[qi]?.classList.add('is-full');
+          cont.disabled = false;
+          cont.textContent = qi === qPanels.length - 1 ? 'Finish lesson' : 'Continue';
+        } else {
+          btn.classList.add('is-wrong');
+          window.setTimeout(() => btn.classList.remove('is-wrong'), 600);
+        }
+      });
     });
   });
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reducedMotion) {
-    setInterval(() => {
-      wordIdx = (wordIdx + 1) % words.length;
-      wordEl.classList.add('is-exit');
-      setTimeout(() => {
-        wordEl.textContent = words[wordIdx];
-        wordEl.classList.remove('is-exit');
-        wordEl.classList.add('is-enter');
-        setTimeout(() => wordEl.classList.remove('is-enter'), 380);
-      }, 250);
-    }, 3000);
+  cont.addEventListener('click', () => {
+    if (cont.disabled) return;
+    idx += 1;
+    if (idx < qPanels.length) {
+      show(qPanels[idx]);
+      cont.disabled = true;
+      cont.textContent = 'Continue';
+    } else {
+      show(donePanel);
+      app.classList.add('is-done');
+    }
+  });
+
+  reset.addEventListener('click', () => {
+    idx = 0;
+    qPanels.forEach((p) => {
+      p.classList.remove('is-solved');
+      p.querySelectorAll('.alef__opt').forEach((b) => b.classList.remove('is-right', 'is-wrong'));
+    });
+    segs.forEach((s) => s.classList.remove('is-full'));
+    app.classList.remove('is-done');
+    cont.disabled = true;
+    cont.textContent = 'Continue';
+    show(qPanels[0]);
+  });
+});
+
+// ---- 05 · Balloon practice ----
+document.querySelectorAll<HTMLElement>('[data-balloon]').forEach((scene) => {
+  const letters = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-l]'));
+  const readW = scene.querySelector<HTMLElement>('[data-read-w]');
+  const readD = scene.querySelector<HTMLElement>('[data-read-d]');
+  const n = letters.length;
+  const rest = letters.map((_, i) => (n > 1 ? i / (n - 1) : 0));
+  const cur = rest.slice();
+  const target = rest.slice();
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function apply(i: number, t: number): [number, number] {
+    const wg = Math.round(300 + 400 * t);
+    const wd = Math.round(75 + 50 * t);
+    letters[i].style.fontVariationSettings = `'wght' ${wg}, 'wdth' ${wd}`;
+    letters[i].style.transform = `translateY(${(-0.1 * t).toFixed(3)}em)`;
+    return [wg, wd];
+  }
+  letters.forEach((_, i) => apply(i, rest[i]));
+
+  if (!reduce.matches) {
+    let raf = 0;
+    const tick = () => {
+      let busy = false;
+      let maxT = -1, mw = 300, md = 75;
+      cur.forEach((c, i) => {
+        const d = target[i] - c;
+        if (Math.abs(d) > 0.004) { cur[i] = c + d * 0.16; busy = true; } else { cur[i] = target[i]; }
+        const [wg, wd] = apply(i, cur[i]);
+        if (cur[i] > maxT) { maxT = cur[i]; mw = wg; md = wd; }
+      });
+      if (readW) readW.textContent = `wght ${mw}`;
+      if (readD) readD.textContent = `wdth ${md}`;
+      raf = busy ? requestAnimationFrame(tick) : 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+
+    scene.addEventListener('pointermove', (e) => {
+      letters.forEach((l, i) => {
+        const r = l.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const dist = Math.hypot(e.clientX - cx, (e.clientY - cy) * 0.55);
+        target[i] = Math.max(0, Math.min(1, 1 - dist / (r.width * 2.1)));
+      });
+      kick();
+    });
+    scene.addEventListener('pointerleave', () => {
+      rest.forEach((v, i) => { target[i] = v; });
+      kick();
+    });
   }
 
-  updateProgress();
+  letters.forEach((l) => {
+    l.addEventListener('click', () => {
+      if (reduce.matches) return;
+      const g = l.querySelector<HTMLElement>('.balloon__g');
+      if (!g) return;
+      g.classList.remove('is-pop');
+      void g.offsetWidth;
+      g.classList.add('is-pop');
+    });
+  });
 });
 </script>
 
 <style>
-  .iu__item { margin: 0; }
-  .iu__hint { margin-top: var(--sp-2); color: var(--fg-3); }
-  .iu * { font-family: var(--fam); }
+  /* ================= the stack: pacing & handoffs ================= */
+  .iu--fredoka { gap: clamp(3.25rem, 8vh, 6rem); }
+  .iu--fredoka * { font-family: var(--fam); }
+  .iu--fredoka ::selection { background: #f5820a; color: #fffcf5; }
+  /* 01→02 run tight: two silkscreens off the same press */
+  .iu--fredoka > .iu__item:nth-child(2) { margin-top: calc(clamp(3.25rem, 8vh, 6rem) * -0.45); }
+  /* a longer breath before the dark finale */
+  .iu--fredoka > .iu__item:nth-child(5) { margin-top: clamp(1.5rem, 4vh, 3.5rem); }
 
-  /* ---- shared scene framing ---- */
-  .iu__scene {
-    container-type: inline-size;
-    position: relative;
-    border: clamp(22px, 3.4vw, 44px) solid var(--bg-2);
-    outline: 1px solid var(--line);
-    overflow: hidden;
-    aspect-ratio: 16 / 9;
-    background: var(--bg-2);
-  }
-  .iu__scene * { font-family: var(--fam); }
-
-  /* S01 phone scene — remove heavy outer border, add warm atmospheric background */
-  .iu__scene--phone {
-    aspect-ratio: 16 / 10;
+  /* =================================================================
+     01 · PLUMP! — DTC shelf (self-declared surface: orange field)
+     ================================================================= */
+  .plump {
+    --field: #ee7e08;
+    --ink: #2b1502;
+    --cream: #fff4e0;
+    background: var(--field);
+    color: var(--ink);
     display: grid;
-    place-items: center;
-    padding: clamp(14px, 3cqi, 34px) 0;
-    /* replace the boxy border with a fine outline only */
-    border: 1px solid var(--line);
-    /* warm tonal wash: top-left glow + bottom-right vignette */
-    background:
-      radial-gradient(ellipse 70% 60% at 30% 20%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
-      radial-gradient(ellipse 55% 45% at 80% 85%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 65%),
-      color-mix(in srgb, var(--bg-2) 55%, var(--bg));
-    /* soft rounded corners for the scene itself */
-    border-radius: 6px;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: 5cqi;
+    padding: 6cqi 8cqi 0;
   }
-  /* floating accent blobs behind the phone for depth */
-  .iu__scene--phone::before,
-  .iu__scene--phone::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
+  .plump__intro { display: flex; flex-direction: column; gap: 1.6cqi; padding-bottom: 6cqi; }
+  .plump__eyebrow {
+    font-size: clamp(11px, 1.05cqi, 16px); font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream);
   }
-  .iu__scene--phone::before {
-    /* top-right warm circle */
-    width: 28cqi; height: 28cqi;
-    top: -6cqi; right: -2cqi;
-    background: color-mix(in srgb, var(--accent) 18%, transparent);
-    filter: blur(clamp(18px, 5cqi, 48px));
+  .plump__wm {
+    font-size: clamp(56px, 9.5cqi, 150px); font-weight: 600; line-height: 0.95;
+    letter-spacing: -0.025em; color: var(--ink);
+    font-variation-settings: 'wght' 600, 'wdth' 100;
   }
-  .iu__scene--phone::after {
-    /* bottom-left softer echo */
-    width: 22cqi; height: 22cqi;
-    bottom: -4cqi; left: 0cqi;
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    filter: blur(clamp(14px, 4cqi, 36px));
+  .plump__manifesto {
+    margin: 0; max-width: 30ch;
+    font-size: clamp(14px, 1.35cqi, 21px); font-weight: 500; line-height: 1.45;
+    color: color-mix(in srgb, var(--ink) 82%, var(--field));
   }
-  @container (max-width: 540px) { .iu__scene--phone { aspect-ratio: 3 / 4; } }
-
-  .camp-scene { aspect-ratio: 3 / 4; }
-  @container (min-width: 720px) { .camp-scene { aspect-ratio: 5 / 7; } }
-
-  .well-scene { aspect-ratio: 16 / 10; }
-  .habit-scene { aspect-ratio: 4 / 5; }
-  @container (min-width: 720px) { .habit-scene { aspect-ratio: 3 / 4; } }
-
-  .iu__device {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    background: var(--bg); overflow: hidden;
+  .plump__spec {
+    display: flex; flex-wrap: wrap; gap: 0.5em 1.6em;
+    margin-top: 0.6cqi; padding-top: 1.2cqi;
+    border-top: 2px solid color-mix(in srgb, var(--ink) 30%, transparent);
+    font-size: clamp(10px, 0.95cqi, 14px); font-weight: 600;
+    letter-spacing: 0.06em; color: var(--ink);
   }
 
-  /* ======================================================
-     01 · FOOD DELIVERY TRACKER (real px, phone)
-     ====================================================== */
-  .iu__scene--phone .food {
-    position: relative; inset: auto;
-    width: 340px; max-width: 100%;
-    height: 100%; max-height: 660px;
-    aspect-ratio: 340 / 660;
-    border-radius: 38px;
-    border: 1px solid var(--line);
-    box-shadow: 0 28px 64px -24px rgba(0,0,0,0.50), 0 0 0 8px color-mix(in srgb, var(--fg) 6%, transparent);
-    font-size: 13px;
-    background: var(--bg);
+  .plump__shelf {
+    position: relative; align-self: end;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3cqi; padding: 0 1cqi;
   }
-
-  .food__bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.4rem 1.3rem 0.2rem;
-    flex: none;
-    border-radius: 38px 38px 0 0;
+  .plump__shelfline {
+    position: absolute; left: -4cqi; right: -9cqi; bottom: 0; height: 2px;
+    background: color-mix(in srgb, var(--ink) 38%, transparent);
+  }
+  .plump__can {
+    --flav: #c8372d;
     position: relative;
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--cream); color: var(--ink);
+    border-radius: 2.2cqi 2.2cqi 0.7cqi 0.7cqi;
+    padding: 0 1.6cqi 1.8cqi;
+    min-height: 30cqi;
+    transition: transform 0.35s cubic-bezier(.3,1.6,.4,1);
   }
-  .food__time { font-size: 12px; font-weight: 600; font-feature-settings: 'tnum'; }
-  .food__notch {
-    position: absolute; left: 50%; top: 0.4rem; transform: translateX(-50%);
-    width: 78px; height: 18px; border-radius: 100px;
-    background: color-mix(in srgb, var(--fg) 86%, transparent);
+  .plump__can:hover, .plump__can:focus-visible { transform: translateY(-1.2cqi); }
+  .plump__can--cherry { --flav: #c0332a; }
+  .plump__can--yuzu   { --flav: #c98f0e; }
+  .plump__can--peach  { --flav: #8a4ab8; }
+  .plump__lid {
+    width: 62%; height: 1.1cqi; margin-top: 1.4cqi;
+    border-radius: 100px; background: var(--flav); opacity: 0.9;
   }
-  .food__icons { display: inline-flex; align-items: center; gap: 5px; color: var(--fg-2); }
-  .food__sig { width: 15px; height: 11px; } .food__sig rect { fill: currentColor; }
-  .food__batt { width: 21px; height: 10px; }
+  .plump__mark {
+    margin-top: 1.6cqi;
+    font-size: clamp(13px, 1.6cqi, 24px); font-weight: 600; letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .plump__flav {
+    margin-top: auto; padding-top: 1cqi;
+    display: flex; flex-direction: column; align-items: center;
+    color: var(--flav); text-align: center;
+  }
+  .plump__fl {
+    font-size: clamp(22px, 3.6cqi, 56px); font-weight: 700; line-height: 0.98;
+    letter-spacing: 0;
+    font-variation-settings: 'wght' 700, 'wdth' var(--wd);
+    transition: font-variation-settings 0.45s cubic-bezier(.3,1.4,.4,1);
+  }
+  .plump__can:hover .plump__fl, .plump__can:focus-visible .plump__fl {
+    font-variation-settings: 'wght' 700, 'wdth' var(--hd);
+  }
+  .plump__blurb {
+    margin-top: 0.9cqi; text-align: center;
+    font-size: clamp(10px, 1.05cqi, 15px); font-weight: 500;
+    color: color-mix(in srgb, var(--ink) 75%, var(--cream));
+  }
+  .plump__note {
+    margin: auto 0 0; padding-top: 1.4cqi;
+    font-size: clamp(9px, 0.85cqi, 12px); font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink) 60%, var(--cream));
+  }
+  .plump__meta {
+    width: 100%; margin-top: 1cqi; padding-top: 0.9cqi;
+    border-top: 1.5px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    display: flex; align-items: center; justify-content: space-between; gap: 1cqi;
+  }
+  .plump__ml { font-size: clamp(10px, 1cqi, 14px); font-weight: 600; }
+  .plump__barcode {
+    width: 5.5cqi; min-width: 34px; height: 1.6cqi; min-height: 12px;
+    background: repeating-linear-gradient(90deg,
+      var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px,
+      var(--ink) 8px 11px, transparent 11px 13px);
+    opacity: 0.8;
+  }
 
-  .food__head {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.5rem 1.2rem 0.4rem;
-    flex: none;
-    border-bottom: 1px solid var(--line-soft);
+  /* 768: intro on top, shelf of three below */
+  @container (max-width: 979px) {
+    .plump { grid-template-columns: 1fr; gap: 2cqi; padding: 7cqi 8cqi 0; }
+    .plump__intro { padding-bottom: 0; }
+    .plump__manifesto { max-width: 44ch; }
+    .plump__shelf { margin-top: 4cqi; }
+    .plump__can { min-height: 34cqi; }
   }
-  .food__logo {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 18px; font-weight: 700;
-    letter-spacing: -0.02em;
-    font-variation-settings: 'wght' 700;
+  /* 390: cans recompose into full-width shelf-label strips */
+  @container (max-width: 559px) {
+    .plump { padding: 10cqi 7cqi 0; }
+    .plump__shelf { grid-template-columns: 1fr; gap: 3.5cqi; padding: 0; margin-top: 7cqi; }
+    .plump__shelfline { left: -7cqi; right: -7cqi; }
+    .plump__can {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-rows: auto auto;
+      align-items: center;
+      column-gap: 4cqi;
+      padding: 3.5cqi 5cqi;
+      border-radius: 3cqi;
+    }
+    .plump__can:hover, .plump__can:focus-visible { transform: none; }
+    .plump__lid { display: none; }
+    .plump__mark { grid-column: 1; grid-row: 1; margin: 0; font-size: 4cqi; }
+    .plump__flav { grid-column: 2; grid-row: 1 / 3; margin: 0; padding: 0; flex-direction: row; gap: 0.28em; justify-content: center; }
+    .plump__fl { font-size: 7.4cqi; }
+    .plump__blurb { display: none; }
+    .plump__note { grid-column: 1; grid-row: 2; margin: 0; padding: 0; font-size: 2.4cqi; text-transform: none; letter-spacing: 0.05em; }
+    .plump__meta { grid-column: 3; grid-row: 1 / 3; width: auto; margin: 0; padding: 0; border: 0; flex-direction: column; align-items: flex-end; gap: 1.4cqi; }
   }
-  .food__logomark { width: 28px; height: 28px; flex: none; border-radius: 50%; }
-  .food__ordid { font-size: 11.5px; font-weight: 500; color: var(--fg-3); letter-spacing: 0.04em; }
-
-  /* stepper */
-  .food__track {
-    position: relative;
-    display: flex; flex-direction: column;
-    padding: 0.6rem 1.3rem 0.4rem;
-    flex: none;
-  }
-  .food__line {
-    position: absolute; left: calc(1.3rem + 11px); top: 1.1rem;
-    width: 3px; bottom: 0.6rem;
-    background: color-mix(in srgb, var(--fg) 10%, transparent);
-    border-radius: 100px; overflow: hidden;
-  }
-  .food__linefill {
-    position: absolute; left: 0; right: 0; top: 0;
-    height: 0; background: var(--accent);
-    border-radius: 100px;
-    transition: height 0.45s cubic-bezier(.4,0,.2,1);
-  }
-  .food__step {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: 25px 1fr;
-    grid-template-rows: auto auto;
-    column-gap: 0.75rem;
-    padding: 0.28rem 0;
-    background: none; border: none; cursor: pointer; text-align: left;
-    transition: opacity 0.2s;
-  }
-  .food__step:not(.is-done):not(.is-active) { opacity: 0.45; }
-  .food__dot {
-    grid-row: 1 / 3; align-self: center;
-    width: 25px; height: 25px; border-radius: 50%;
-    background: color-mix(in srgb, var(--fg) 8%, transparent);
-    border: 2px solid color-mix(in srgb, var(--fg) 18%, transparent);
-    display: grid; place-items: center;
-    transition: background 0.25s, border-color 0.25s;
-    flex: none;
-  }
-  .food__step.is-done .food__dot {
-    background: var(--accent); border-color: var(--accent); color: var(--accent-contrast);
-  }
-  .food__stepico { width: 13px; height: 13px; }
-  .food__steplabel { font-size: 13px; font-weight: 600; line-height: 1.2; color: var(--fg); font-variation-settings: 'wght' 600; }
-  .food__stepsub { font-size: 11px; color: var(--fg-3); }
-
-  /* ETA pill */
-  .food__eta {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    margin: 0.25rem 1.3rem 0;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    border-radius: 100px; padding: 0.32rem 0.9rem;
-    font-size: 12px; font-weight: 500; color: var(--fg-2);
-    flex: none; align-self: flex-start;
-  }
-  .food__etaico { width: 15px; height: 15px; color: var(--accent); }
-
-  /* order items */
-  .food__items {
-    flex: 1; padding: 0.45rem 1.3rem 0; overflow-y: auto;
-    border-top: 1px solid var(--line-soft); margin-top: 0.4rem;
-    min-height: 0;
-  }
-  .food__sechead { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 0.3rem; }
-  .food__item { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.22rem 0; border-bottom: 1px solid var(--line-soft); }
-  .food__iteminfo { display: flex; flex-direction: column; gap: 0; min-width: 0; }
-  .food__itemname { font-size: 12px; font-weight: 600; color: var(--fg); font-variation-settings: 'wght' 600; line-height: 1.3; }
-  .food__itemnote { font-size: 10px; color: var(--fg-3); line-height: 1.2; }
-  .food__itemprice { font-size: 12px; font-weight: 600; color: var(--fg); font-feature-settings: 'tnum'; white-space: nowrap; flex: none; }
-  .food__total {
-    display: flex; justify-content: space-between;
-    padding: 0.3rem 1.3rem 0;
-    border-top: 1px solid var(--line-soft);
-    flex: none;
-  }
-  .food__total span { font-size: 12px; font-weight: 500; color: var(--fg-3); }
-  .food__totalv { font-size: 13.5px; font-weight: 700; color: var(--fg); font-feature-settings: 'tnum'; font-variation-settings: 'wght' 700; }
-
-  .food__foot { flex: none; padding: 0.55rem 1.3rem 1rem; }
-  .food__cta {
-    width: 100%; padding: 0.75rem;
-    background: var(--accent); color: var(--accent-contrast);
-    border: none; border-radius: 14px;
-    font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
-    font-variation-settings: 'wght' 700;
-    cursor: pointer;
-    transition: filter 0.15s;
-  }
-  .food__cta:hover { filter: brightness(1.08); }
 
   @media (prefers-reduced-motion: reduce) {
-    .food__linefill { transition: none; }
-    .food__cta { transition: none; }
-    .food__step { transition: none; }
-    .food__dot { transition: none; }
+    .plump__can, .plump__fl { transition: none; }
   }
 
-  /* ======================================================
-     02 · KIDS CAMP POSTER (container-query scaled)
-     ====================================================== */
-  .camp {
-    position: absolute; inset: 0;
-    padding: 5cqi 6cqi 4cqi;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    background: radial-gradient(80% 50% at 50% 0%, color-mix(in srgb, var(--accent) 18%, var(--bg)), var(--bg));
-  }
-  .camp__top {
-    display: flex; justify-content: space-between;
-    font-size: 2.1cqi; font-weight: 500; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--fg-3);
-    margin-bottom: 3cqi;
-  }
-  .camp__hero { text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-  .camp__eyebrow {
-    font-size: 3cqi; font-weight: 600; letter-spacing: 0.3em;
-    text-transform: uppercase; color: var(--accent);
-    display: block; margin-bottom: 1.5cqi;
-  }
-  .camp__headline {
-    margin: 0; display: flex; flex-direction: column;
-    align-items: center;
-  }
-  .camp__hl {
-    display: block;
-    font-size: 30cqi; line-height: 0.88;
-    font-weight: 700; letter-spacing: -0.01em;
-    font-variation-settings: 'wght' 700, 'wdth' 125;
-    transition: font-variation-settings 0.3s cubic-bezier(.4,0,.2,1);
-  }
-  .camp__hl--1 { color: var(--fg); }
-  .camp__hl--2 { color: var(--accent); }
-  .camp__tagline {
-    font-size: 3.2cqi; font-weight: 500; letter-spacing: 0.08em;
-    color: var(--fg-2); margin: 2cqi 0 0;
-  }
-
-  .camp__grid {
-    display: flex; flex-wrap: wrap; gap: 1.4cqi;
-    justify-content: center; margin: 3cqi 0;
-  }
-  .camp__pill {
-    font-size: 2.4cqi; font-weight: 600;
-    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
-    border-radius: 100px;
-    padding: 0.9cqi 2.2cqi;
-    color: var(--fg-2);
-    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-  }
-
-  .camp__foot {
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid var(--line); padding-top: 2.5cqi;
-  }
-  .camp__datelbl { display: block; font-size: 1.9cqi; color: var(--fg-3); font-weight: 500; }
-  .camp__dateval { display: block; font-size: 2.8cqi; font-weight: 700; color: var(--fg); font-variation-settings: 'wght' 700; }
-  .camp__register {
-    font-size: 2.6cqi; font-weight: 700;
-    background: var(--accent); color: var(--accent-contrast);
-    padding: 1.2cqi 2.8cqi; border-radius: 100px;
-    letter-spacing: 0.01em; cursor: pointer;
-  }
-
-  /* axis controls */
-  .camp__controls {
-    display: flex; gap: 3cqi;
-    margin-top: 1.8cqi; flex-wrap: wrap;
-  }
-  .camp__ctrl {
-    display: flex; align-items: center; gap: 1.3cqi;
-    font-size: 2cqi; font-weight: 600; color: var(--fg-3);
-    flex: 1;
-  }
-  .camp__slider {
-    flex: 1; accent-color: var(--accent);
-    height: 3px; cursor: pointer;
-  }
-  .camp__ctrlval {
-    font-size: 1.8cqi; font-feature-settings: 'tnum';
-    color: var(--fg-2); min-width: 3.5cqi; text-align: right;
-  }
-
-  @container (max-width: 480px) {
-    .camp__hl { font-size: 34cqi; }
-    .camp__pill { font-size: 3.4cqi; }
-    .camp__ctrl { font-size: 2.8cqi; }
-    .camp__ctrlval { font-size: 2.5cqi; }
-  }
-
-  /* ======================================================
-     03 · WELLNESS BRAND BOARD
-     ====================================================== */
-  .well {
-    position: absolute; inset: 0;
-    background: var(--bg); color: var(--fg);
-    padding: 3cqi 4.5cqi; display: flex; flex-direction: column; overflow: hidden;
-  }
-  .well__hd {
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-size: 1.9cqi; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3);
-    border-bottom: 1px solid var(--line); padding-bottom: 1.6cqi;
-  }
-  .well__grid {
-    flex: 1;
-    display: grid; grid-template-columns: 1.5fr 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 1.6cqi 2cqi; align-content: center;
-    min-height: 0; padding: 1.2cqi 0;
-  }
-
-  .well__logo { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; gap: 1.2cqi; }
-  .well__wm {
-    display: inline-flex; align-items: center; gap: 1.4cqi;
-    font-size: 9cqi; font-weight: 600; letter-spacing: -0.02em; line-height: 1;
-    font-variation-settings: 'wght' 600, 'wdth' 105;
-  }
-  .well__mark {
-    display: inline-block;
-    width: 5.5cqi; height: 5.5cqi; border-radius: 50%;
-    background: var(--accent); position: relative; flex: none;
-  }
-  .well__mark::after {
-    content: '';
-    position: absolute; left: 50%; top: 50%;
-    width: 2.4cqi; height: 2.4cqi; border-radius: 50%;
-    background: var(--accent-contrast);
-    transform: translate(-50%, -50%);
-  }
-  .well__cap { font-size: 1.8cqi; color: var(--fg-3); letter-spacing: 0.02em; }
-
-  .well__rampC { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; overflow: hidden; }
-  .well__ramp {
-    display: flex; gap: 1.2cqi; flex-wrap: wrap; align-items: baseline;
-    margin-top: 1cqi;
-  }
-  .well__ramp span {
-    font-size: 2.6cqi; color: var(--fg-2);
-    transition: font-variation-settings 0.4s cubic-bezier(.4,0,.2,1), color 0.3s;
-    cursor: pointer;
-    border-radius: 0.4cqi;
-    padding: 0.2cqi 0.4cqi;
-  }
-  .well__ramp span.is-locked {
-    color: var(--fg);
-    font-variation-settings: 'wght' 700, 'wdth' 100 !important;
-    animation: none !important;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-  }
-
-  .well__lbl { display: block; font-size: 1.7cqi; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 1cqi; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  .well__voiceC { grid-column: 1; grid-row: 2; }
-  .well__voice {
-    font-size: 5.2cqi; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin: 0;
-    font-variation-settings: 'wght' 700;
-  }
-  .well__voiceaccent { color: var(--accent); }
-  .well__voicesub { font-size: 2.1cqi; line-height: 1.45; color: var(--fg-2); max-width: 34cqi; margin: 1.2cqi 0 0; }
-
-  .well__swatchC { grid-column: 2; grid-row: 2; }
-  .well__sw { display: flex; gap: 0.9cqi; align-items: stretch; }
-  .well__chip {
-    flex: 1;
-    /* tall rectangular colour field — reads as intentional brand swatch */
-    min-height: 11cqi;
-    border-radius: 1.4cqi;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 1.1cqi 1.3cqi; font-size: 2.4cqi; font-weight: 700; letter-spacing: -0.01em;
-    line-height: 1.1;
-  }
-  .well__chip i { font-style: normal; display: block; font-size: 1.6cqi; font-weight: 500; opacity: 0.75; letter-spacing: 0.05em; margin-top: 0.2cqi; }
-  .well__chip--line { border: 1px solid var(--line); }
-
-  .well__specC { grid-column: 1 / -1; grid-row: 3; border-top: 1px solid var(--line); padding-top: 1.5cqi; overflow: hidden; min-width: 0; }
-  .well__alpha { display: block; font-size: clamp(14px, 4.2cqi, 4.2cqi); font-weight: 400; letter-spacing: 0.02em; line-height: 1; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-  .well__alpha b { font-weight: 700; color: var(--accent); font-feature-settings: 'tnum'; }
-
-  .well__ft {
-    display: flex; justify-content: space-between; gap: 2cqi;
-    font-size: 1.8cqi; letter-spacing: 0.06em; color: var(--fg-3);
-    border-top: 1px solid var(--line); padding-top: 1.5cqi;
-  }
-
-  @keyframes ramp-breathe-1 { 0%,100% { font-variation-settings: 'wght' 300,'wdth' 100; } 50% { font-variation-settings: 'wght' 420,'wdth' 100; } }
-  @keyframes ramp-breathe-2 { 0%,100% { font-variation-settings: 'wght' 400,'wdth' 100; } 50% { font-variation-settings: 'wght' 520,'wdth' 100; } }
-  @keyframes ramp-breathe-3 { 0%,100% { font-variation-settings: 'wght' 500,'wdth' 100; } 50% { font-variation-settings: 'wght' 620,'wdth' 100; } }
-  @keyframes ramp-breathe-4 { 0%,100% { font-variation-settings: 'wght' 600,'wdth' 100; } 50% { font-variation-settings: 'wght' 700,'wdth' 100; } }
-  @keyframes ramp-breathe-5 { 0%,100% { font-variation-settings: 'wght' 700,'wdth' 100; } 50% { font-variation-settings: 'wght' 540,'wdth' 100; } }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .well__ramp span:not(.is-locked):nth-child(1) {
-      animation: ramp-breathe-1 4s ease-in-out infinite;
-      animation-delay: 0s;
-    }
-    .well__ramp span:not(.is-locked):nth-child(2) {
-      animation: ramp-breathe-2 4s ease-in-out infinite;
-      animation-delay: 0.6s;
-    }
-    .well__ramp span:not(.is-locked):nth-child(3) {
-      animation: ramp-breathe-3 4s ease-in-out infinite;
-      animation-delay: 1.2s;
-    }
-    .well__ramp span:not(.is-locked):nth-child(4) {
-      animation: ramp-breathe-4 4s ease-in-out infinite;
-      animation-delay: 1.8s;
-    }
-    .well__ramp span:not(.is-locked):nth-child(5) {
-      animation: ramp-breathe-5 4s ease-in-out infinite;
-      animation-delay: 2.4s;
-    }
-    .well__ramp:hover span:not(.is-locked) {
-      font-variation-settings: 'wght' 700, 'wdth' 100;
-      color: var(--fg);
-      animation: none;
-    }
-    .well__ramp span:not(.is-locked):nth-child(1) { transition-delay: 0s; }
-    .well__ramp span:not(.is-locked):nth-child(2) { transition-delay: 0.05s; }
-    .well__ramp span:not(.is-locked):nth-child(3) { transition-delay: 0.10s; }
-    .well__ramp span:not(.is-locked):nth-child(4) { transition-delay: 0.15s; }
-    .well__ramp span:not(.is-locked):nth-child(5) { transition-delay: 0.20s; }
-  }
-
-  @container (max-width: 620px) {
-    .well__grid { grid-template-columns: 1fr; gap: 2.5cqi; }
-    .well__logo { grid-column: 1; grid-row: 1; }
-    .well__rampC { grid-column: 1; grid-row: 2; }
-    .well__voiceC { grid-column: 1; grid-row: 3; }
-    .well__swatchC { grid-column: 1; grid-row: 4; }
-    .well__specC { grid-column: 1; grid-row: 5; }
-    .well__wm { font-size: 12cqi; }
-    .well__voice { font-size: 8cqi; }
-    .well__voicesub { font-size: 3cqi; max-width: none; }
-    .well__ramp span { font-size: 4cqi; }
-    .well__lbl { font-size: 2.4cqi; }
-    .well__alpha { font-size: 6cqi; }
-    .well__chip { font-size: 3cqi; }
-    .well__chip i { font-size: 2.2cqi; }
-    .well__ft { font-size: 2.6cqi; flex-direction: column; gap: 0.5cqi; }
-  }
-
-  /* ======================================================
-     04 · HABIT TRACKER POSTER (playful, kinetic)
-     ====================================================== */
-  .habit {
-    position: absolute; inset: 0; overflow: hidden;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 4cqi 5cqi;
-  }
-
-  .habit__bg { position: absolute; inset: 0; pointer-events: none; }
-  .habit__blob {
-    position: absolute; border-radius: 50%;
-    filter: blur(clamp(20px, 6cqi, 60px));
-    opacity: 0.35;
-  }
-  .habit__blob--1 {
-    width: 42cqi; height: 42cqi;
-    background: var(--accent);
-    top: -12cqi; right: -10cqi;
-  }
-  .habit__blob--2 {
-    width: 30cqi; height: 30cqi;
-    background: color-mix(in srgb, var(--accent) 60%, #ff69b4);
-    bottom: 5cqi; left: -8cqi;
-  }
-  .habit__blob--3 {
-    width: 20cqi; height: 20cqi;
-    background: color-mix(in srgb, var(--accent) 45%, #6be6a0);
-    top: 40cqi; left: 30cqi;
-    opacity: 0.2;
-  }
-
-  .habit__top {
-    position: relative; z-index: 1;
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 2cqi;
-  }
-  .habit__brand { font-size: 3.2cqi; font-weight: 700; letter-spacing: -0.01em; font-variation-settings: 'wght' 700; }
-  .habit__streak {
-    font-size: 2.4cqi; font-weight: 600; color: var(--fg-2);
-    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
-    border-radius: 100px; padding: 0.5cqi 1.8cqi;
-    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-  }
-
-  .habit__center {
-    position: relative; z-index: 1;
-    text-align: center; flex: 1;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-  }
-  .habit__preword {
-    font-size: 2.4cqi; font-weight: 500; letter-spacing: 0.2em;
-    text-transform: uppercase; color: var(--fg-3); margin-bottom: 1.2cqi;
-  }
-  .habit__wordwrap { overflow: hidden; }
-  .habit__word {
-    display: block;
-    font-size: 22cqi; line-height: 0.9; font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--fg);
-    font-variation-settings: 'wght' 700, 'wdth' 115;
-    transition: opacity 0.25s, transform 0.25s;
-  }
-  .habit__word.is-exit { opacity: 0; transform: translateY(-10px); }
-  .habit__word.is-enter { animation: habit-enter 0.38s cubic-bezier(.2,.8,.2,1); }
-  @keyframes habit-enter {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: none; }
-  }
-  .habit__postword {
-    font-size: 2.3cqi; font-weight: 500; color: var(--fg-2);
-    margin-top: 1.6cqi; letter-spacing: 0.04em;
-  }
-
-  .habit__tiles {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2cqi;
-    margin: 2.5cqi 0 0;
-  }
-  @container (max-width: 480px) {
-    .habit__tiles { grid-template-columns: repeat(2, 1fr); }
-    .habit__word { font-size: 26cqi; }
-  }
-  .habit__tile {
-    background: color-mix(in srgb, var(--bg-2) 80%, transparent);
-    border: 1.5px solid var(--line);
-    border-radius: 2.4cqi;
-    padding: 2cqi 1.8cqi 1.6cqi;
-    display: flex; flex-direction: column; align-items: center; gap: 0.5cqi;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  /* =================================================================
+     02 · THE BIG SCOOP — Push Pin broadside (self-declared: cream paper)
+     ================================================================= */
+  .scoop {
+    --paper: #f4e8cf;
+    --ink2: #38241a;
+    --red: #d94f30;
+    --gold: #eda33b;
+    --pink: #df7e9d;
+    --leaf: #8a9a5b;
+    position: relative;
+    background: var(--paper);
+    color: var(--ink2);
+    min-height: clamp(420px, 46cqi, 720px);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 3.2cqi 6cqi 0;
     text-align: center;
   }
-  .habit__tile:hover { transform: translateY(-2px); }
-  .habit__tile.is-done {
-    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
-    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  .scoop__sun { position: absolute; left: 50%; bottom: 0; width: 0; height: 0; }
+  .scoop__arc {
+    position: absolute; left: 0; bottom: 0;
+    transform: translate(-50%, 50%);
+    border-radius: 50%;
   }
-  .habit__tileico { font-size: 3.8cqi; line-height: 1; }
-  .habit__tilename { font-size: 2.4cqi; font-weight: 700; color: var(--fg); font-variation-settings: 'wght' 700; }
-  .habit__tilesub { font-size: 1.9cqi; font-weight: 500; color: var(--fg-3); }
-  .habit__tilecheck {
-    width: 3cqi; height: 3cqi; min-width: 12px; min-height: 12px;
-    border-radius: 50%; border: 1.5px solid var(--line);
-    margin-top: 0.6cqi;
-    transition: background 0.2s, border-color 0.2s;
-    display: grid; place-items: center;
-    font-size: 1.4cqi;
-  }
-  .habit__tilecheck.is-on {
-    background: var(--accent); border-color: var(--accent);
-    color: var(--accent-contrast);
-  }
-  .habit__tilecheck.is-on::after {
-    content: '✓'; font-size: 1.5cqi; color: var(--accent-contrast); font-weight: 700; line-height: 1;
-  }
+  .scoop__arc--1 { width: 62cqi; height: 62cqi; background: var(--leaf); }
+  .scoop__arc--2 { width: 50cqi; height: 50cqi; background: var(--pink); }
+  .scoop__arc--3 { width: 38cqi; height: 38cqi; background: var(--gold); }
+  .scoop__arc--4 { width: 26cqi; height: 26cqi; background: var(--red); }
+  .scoop__arc--5 { width: 14cqi; height: 14cqi; background: var(--paper); }
 
-  .habit__foot {
-    position: relative; z-index: 1;
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-top: 2cqi;
-    font-size: 2cqi; color: var(--fg-3); font-weight: 500;
-    border-top: 1px solid var(--line-soft); padding-top: 1.6cqi;
+  .scoop__ringwrap {
+    position: absolute; left: 50%; bottom: 0;
+    width: 21cqi; height: 21cqi;
+    transform: translate(-50%, 50%);
   }
-  .habit__progress { font-weight: 600; color: var(--fg-2); }
-
   @media (prefers-reduced-motion: no-preference) {
-    .habit__blob--1 { animation: blob-drift 12s ease-in-out infinite alternate; }
-    .habit__blob--2 { animation: blob-drift 16s ease-in-out infinite alternate-reverse; }
-    .habit__blob--3 { animation: blob-drift 10s ease-in-out infinite alternate; }
-    @keyframes blob-drift {
-      from { transform: translate(0, 0) scale(1); }
-      to   { transform: translate(2cqi, 3cqi) scale(1.08); }
-    }
+    .scoop__ringwrap { animation: scoop-spin 46s linear infinite; }
+  }
+  @keyframes scoop-spin { to { transform: translate(-50%, 50%) rotate(360deg); } }
+  .scoop__ring { width: 100%; height: 100%; overflow: visible; }
+  .scoop__ring text {
+    font-size: 7.6px; font-weight: 700; letter-spacing: 0.12em;
+    fill: var(--paper);
+    font-variation-settings: 'wght' 700, 'wdth' 100;
+  }
+
+  .scoop__mast {
+    position: relative; z-index: 1;
+    font-size: clamp(11px, 1.15cqi, 17px); font-weight: 600;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink2) 72%, var(--paper));
+  }
+  .scoop__title {
+    position: relative; z-index: 1;
+    margin: 1cqi 0 0; display: flex; flex-direction: column; align-items: center;
+    color: var(--red);
+    text-shadow: 0.035em 0.045em 0 var(--ink2);
+  }
+  .scoop__t1 {
+    font-size: clamp(30px, 5.4cqi, 86px); font-weight: 700; line-height: 1;
+    letter-spacing: 0.08em;
+    font-variation-settings: 'wght' 700, 'wdth' 125;
+  }
+  .scoop__t2 {
+    font-size: clamp(64px, 15.5cqi, 240px); font-weight: 700; line-height: 0.86;
+    letter-spacing: -0.005em;
+    font-variation-settings: 'wght' 700, 'wdth' 125;
+  }
+  .scoop__sub {
+    position: relative; z-index: 1;
+    margin: 1.4cqi 0 0;
+    font-size: clamp(14px, 1.7cqi, 26px); font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink2);
+  }
+  .scoop__foot {
+    position: relative; z-index: 1;
+    margin-top: auto; width: 100%;
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 2cqi;
+    padding-bottom: 2.2cqi;
+    font-size: clamp(10px, 1.05cqi, 15px); font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink2);
+  }
+  .scoop__foot-mid { color: var(--paper); }
+
+  @container (max-width: 767px) {
+    .scoop { min-height: 120cqi; padding: 8cqi 7cqi 0; }
+    .scoop__arc--1 { width: 130cqi; height: 130cqi; }
+    .scoop__arc--2 { width: 104cqi; height: 104cqi; }
+    .scoop__arc--3 { width: 78cqi;  height: 78cqi; }
+    .scoop__arc--4 { width: 52cqi;  height: 52cqi; }
+    .scoop__arc--5 { width: 27cqi;  height: 27cqi; }
+    .scoop__ringwrap { width: 40cqi; height: 40cqi; }
+    .scoop__title { margin-top: 3cqi; }
+    .scoop__t1 { font-size: 11cqi; }
+    .scoop__t2 { font-size: 27cqi; }
+    .scoop__sub { font-size: 4cqi; margin-top: 3cqi; }
+    .scoop__foot { flex-direction: column; align-items: center; gap: 1.6cqi; padding-bottom: 5cqi; font-size: 2.9cqi; }
+  }
+
+  /* =================================================================
+     03 · SNACK — kids food magazine spread (self-declared: white paper)
+     ================================================================= */
+  .snack {
+    --paper3: #fffdf6;
+    --ink3: #241a0d;
+    --orange3: #f5820a;
+    --blue3: #2f6fb4;
+    background: var(--paper3);
+    color: var(--ink3);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr);
+  }
+  .snack__gutter {
+    width: 1px; align-self: stretch;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ink3) 22%, transparent), transparent);
+    box-shadow: 0 0 18px 6px color-mix(in srgb, var(--ink3) 7%, transparent);
+  }
+  .snack__page { position: relative; display: flex; flex-direction: column; padding: 4cqi 4.5cqi 5.5cqi; min-width: 0; }
+
+  .snack__head {
+    font-size: clamp(13px, 1.5cqi, 22px); font-weight: 700; letter-spacing: -0.01em;
+    color: var(--orange3);
+  }
+  .snack__head i { font-style: normal; font-weight: 500; color: color-mix(in srgb, var(--ink3) 55%, var(--paper3)); font-size: 0.78em; }
+  .snack__badge {
+    position: absolute; top: 3.2cqi; right: 3.6cqi;
+    width: 9.5cqi; height: 9.5cqi; min-width: 74px; min-height: 74px;
+    border-radius: 50%;
+    background: var(--blue3); color: var(--paper3);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 0.1em;
+    font-size: clamp(8px, 0.85cqi, 12px); font-weight: 500; line-height: 1.15;
+    padding: 0.8cqi; transform: rotate(7deg);
+  }
+  .snack__badge b { font-size: 1.7em; font-weight: 700; letter-spacing: -0.01em; }
+
+  .snack__display {
+    margin: auto 0 0; cursor: pointer;
+    font-size: clamp(64px, 13.5cqi, 200px); font-weight: 700; line-height: 0.9;
+    letter-spacing: -0.015em; color: var(--orange3);
+    font-variation-settings: 'wght' 700, 'wdth' 125;
+    transform-origin: 50% 55%;
+    align-self: flex-start;
+    user-select: none;
+  }
+  .snack__display.is-flip { animation: snack-flip 0.9s cubic-bezier(.3,.7,.3,1); }
+  @keyframes snack-flip {
+    0% { transform: rotateX(0); }
+    45% { transform: rotateX(200deg); }
+    100% { transform: rotateX(360deg); }
+  }
+  .snack__deck {
+    margin: 1.6cqi 0 0; max-width: 30ch;
+    font-size: clamp(15px, 1.75cqi, 26px); font-weight: 500; line-height: 1.35;
+    color: var(--ink3);
+  }
+  .snack__byline {
+    margin: 2cqi 0 0;
+    font-size: clamp(10px, 1cqi, 14px); font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--ink3) 55%, var(--paper3));
+  }
+  .snack__folio {
+    position: absolute; bottom: 2.2cqi; left: 4.5cqi;
+    font-size: clamp(10px, 1cqi, 14px); font-weight: 600;
+    color: color-mix(in srgb, var(--ink3) 50%, var(--paper3));
+  }
+  .snack__folio--r { left: auto; right: 4.5cqi; }
+
+  .snack__page--recto {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: 1fr;
+    gap: 3.4cqi;
+    align-content: start;
+  }
+  .snack__col { min-width: 0; display: flex; flex-direction: column; }
+  .snack__h {
+    margin: 0 0 1.4cqi; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.7em;
+    font-size: clamp(15px, 1.7cqi, 25px); font-weight: 700; letter-spacing: -0.01em;
+    color: var(--ink3);
+  }
+  .snack__tag {
+    font-style: normal; font-weight: 600;
+    font-size: clamp(8px, 0.8cqi, 11px); letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--blue3);
+    border: 1.5px solid color-mix(in srgb, var(--blue3) 45%, transparent);
+    border-radius: 100px; padding: 0.2em 0.8em;
+  }
+  .snack__list { margin: 0; padding: 0; list-style: none; }
+  .snack__list li {
+    font-size: clamp(13px, 1.35cqi, 19px); font-weight: 500; line-height: 1.5;
+    padding: 0.55em 0; border-bottom: 1.5px dotted color-mix(in srgb, var(--ink3) 28%, transparent);
+    color: var(--ink3);
+  }
+  .snack__frac { font-feature-settings: 'frac' 1; color: var(--orange3); font-weight: 600; }
+
+  .snack__pull {
+    margin: auto 0 0; padding: 1.8cqi 0 0;
+    font-size: clamp(16px, 1.9cqi, 28px); font-weight: 600; line-height: 1.25;
+    letter-spacing: -0.01em; color: var(--blue3);
+  }
+  .snack__pull cite {
+    display: block; margin-top: 0.6em;
+    font-style: normal; font-size: clamp(10px, 1cqi, 14px); font-weight: 500;
+    color: color-mix(in srgb, var(--ink3) 55%, var(--paper3));
+  }
+
+  .snack__steps { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.6cqi; }
+  .snack__steps li { display: flex; gap: 1.4cqi; align-items: flex-start; }
+  .snack__num {
+    flex: none;
+    width: 4cqi; height: 4cqi; min-width: 34px; min-height: 34px;
+    border-radius: 50%;
+    background: var(--orange3); color: var(--paper3);
+    display: grid; place-items: center;
+    font-size: clamp(15px, 1.8cqi, 26px); font-weight: 700;
+  }
+  .snack__step { display: flex; flex-direction: column; gap: 0.15em; min-width: 0; }
+  .snack__step b {
+    font-size: clamp(13px, 1.4cqi, 20px); font-weight: 700; color: var(--ink3);
+  }
+  .snack__step { font-size: clamp(12px, 1.2cqi, 17px); font-weight: 500; line-height: 1.45; color: color-mix(in srgb, var(--ink3) 75%, var(--paper3)); }
+
+  /* 768-ish: a single page, two columns under the display */
+  @container (max-width: 899px) {
+    .snack { grid-template-columns: 1fr; }
+    .snack__gutter { display: none; }
+    .snack__page { padding: 5cqi 6cqi 7cqi; }
+    .snack__page--verso { padding-bottom: 2cqi; }
+    .snack__display { margin-top: 4cqi; font-size: 19cqi; }
+    .snack__folio { display: none; }
+    .snack__page--recto { gap: 5cqi; }
+    .snack__folio--r { display: block; bottom: 2.4cqi; right: 6cqi; }
+    .snack__pull { margin-top: 3cqi; }
+  }
+  /* 390: full single column */
+  @container (max-width: 559px) {
+    .snack__badge { top: auto; bottom: 4cqi; right: 6cqi; }
+    .snack__display { font-size: 24cqi; }
+    .snack__deck { font-size: 4.4cqi; max-width: none; }
+    .snack__byline { font-size: 2.8cqi; }
+    .snack__page--recto { grid-template-columns: 1fr; }
+    .snack__h { font-size: 4.6cqi; }
+    .snack__list li { font-size: 3.8cqi; }
+    .snack__pull { font-size: 5cqi; margin-top: 5cqi; }
+    .snack__pull cite { font-size: 3cqi; }
+    .snack__num { width: 9cqi; height: 9cqi; font-size: 4.4cqi; }
+    .snack__step b { font-size: 4cqi; }
+    .snack__step { font-size: 3.6cqi; }
+    .snack__folio--r { position: static; margin-top: 6cqi; align-self: flex-end; }
+  }
+
+  /* =================================================================
+     04 · ALEF — Hebrew lesson app (theme tokens; real device px)
+     ================================================================= */
+  .alef-scene {
+    display: grid; place-items: center;
+    padding: clamp(2rem, 5vw, 4.5rem) 1rem;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 40%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%),
+      var(--bg-2);
+  }
+  .alef {
+    width: 354px; max-width: 100%;
+    min-height: 660px;
+    display: flex; flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    border-radius: 40px;
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 70px -30px color-mix(in srgb, var(--fg) 45%, transparent),
+                0 0 0 9px color-mix(in srgb, var(--fg) 7%, transparent);
+    padding: 10px 18px 16px;
+    font-size: 13px;
+  }
+  .alef__statusbar {
+    position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 2px 8px 6px;
+    font-size: 12px; font-weight: 600;
+    color: var(--fg-2);
+  }
+  .alef__notch {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+    width: 76px; height: 17px; border-radius: 100px;
+    background: color-mix(in srgb, var(--fg) 88%, transparent);
+  }
+  .alef__batt { width: 21px; height: 10px; }
+
+  .alef__top { display: flex; align-items: center; gap: 12px; padding: 8px 0 2px; }
+  .alef__back {
+    flex: none; width: 30px; height: 30px;
+    border: none; border-radius: 50%;
+    background: color-mix(in srgb, var(--fg) 7%, transparent);
+    color: var(--fg-2); cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .alef__back svg { width: 14px; height: 14px; }
+  .alef__progress { flex: 1; display: flex; gap: 5px; }
+  .alef__progress i {
+    flex: 1; height: 8px; border-radius: 100px;
+    background: color-mix(in srgb, var(--fg) 10%, transparent);
+    overflow: hidden; position: relative;
+  }
+  .alef__progress i::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--accent); border-radius: 100px;
+    transform: scaleX(0); transform-origin: left center;
+    transition: transform 0.45s var(--ease-out, ease-out);
+  }
+  .alef__progress i.is-full::after { transform: scaleX(1); }
+  .alef__streak {
+    flex: none; display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+  }
+  .alef__streak svg { width: 14px; height: 14px; }
+  .alef__unit {
+    display: block; margin-top: 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  .alef__panels { flex: 1; display: grid; margin-top: 6px; min-height: 0; }
+  .alef__q { grid-area: 1 / 1; display: none; flex-direction: column; }
+  .alef__q.is-active { display: flex; }
+  .alef__prompt { margin: 6px 0 14px; font-size: 19px; font-weight: 600; line-height: 1.3; color: var(--fg); letter-spacing: -0.01em; }
+  .alef__prompt em { font-style: normal; font-weight: 700; color: var(--accent); }
+  .alef__opts { display: flex; flex-direction: column; gap: 10px; }
+  .alef__opt {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    padding: 13px 16px;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    border-bottom-width: 4px;
+    border-radius: 16px;
+    cursor: pointer; text-align: left;
+    color: var(--fg);
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  }
+  .alef__opt:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .alef__opt:active { transform: translateY(1px); border-bottom-width: 2px; margin-bottom: 2px; }
+  .alef__he { font-size: 21px; font-weight: 600; line-height: 1.2; }
+  .alef__tr { font-size: 12px; font-weight: 500; color: var(--fg-3); letter-spacing: 0.03em; }
+  .alef__opt.is-right {
+    border-color: #3da356;
+    background: color-mix(in srgb, #3da356 12%, var(--bg));
+  }
+  .alef__opt.is-right .alef__tr { color: #2c7a40; font-weight: 700; }
+  .alef__opt.is-wrong {
+    border-color: #cf4631;
+    background: color-mix(in srgb, #cf4631 10%, var(--bg));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .alef__opt.is-wrong { animation: alef-shake 0.4s var(--ease, ease); }
+  }
+  @keyframes alef-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    55% { transform: translateX(4px); }
+    80% { transform: translateX(-2px); }
+  }
+  .alef__q.is-solved .alef__opt:not(.is-right) { opacity: 0.45; }
+
+  .alef__q--done { align-items: center; justify-content: center; text-align: center; gap: 8px; }
+  .alef__bigdone { font-size: 40px; font-weight: 700; color: var(--accent); letter-spacing: -0.01em; }
+  .alef__donesub { font-size: 14px; font-weight: 500; color: var(--fg-2); }
+  .alef__xp {
+    margin-top: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-radius: 100px; padding: 6px 14px;
+  }
+  .alef__again {
+    margin-top: 18px; padding: 11px 22px;
+    background: var(--accent); color: var(--accent-contrast);
+    border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .alef__foot { padding-top: 14px; }
+  .alef__cta {
+    width: 100%; padding: 13px;
+    background: var(--accent); color: var(--accent-contrast);
+    border: none; border-radius: 16px;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: opacity 0.2s, filter 0.15s;
+  }
+  .alef__cta:hover:not(:disabled) { filter: brightness(1.07); }
+  .alef__cta:disabled { opacity: 0.35; cursor: default; }
+  .alef.is-done .alef__cta { visibility: hidden; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .alef__progress i::after, .alef__opt, .alef__cta { transition: none; }
+  }
+
+  /* =================================================================
+     05 · BALLOON — pointer-pumped variable type (self-declared: night)
+     ================================================================= */
+  .balloon {
+    --night: #19102d;
+    --air: #ffeccd;
+    --pump: #ff8a1e;
+    background:
+      radial-gradient(ellipse 70% 90% at 50% 110%, color-mix(in srgb, var(--pump) 16%, transparent), transparent 70%),
+      var(--night);
+    color: var(--air);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: clamp(380px, 42cqi, 660px);
+    padding: 5cqi 4cqi;
+    touch-action: manipulation;
+  }
+  .balloon__eyebrow {
+    font-size: clamp(10px, 1cqi, 15px); font-weight: 600;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--air) 55%, var(--night));
+    text-align: center;
+  }
+  .balloon__word {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    margin-top: 2cqi;
+  }
+  .balloon__l {
+    appearance: none; background: none; border: none; padding: 0; margin: 0;
+    width: 12.4cqi;
+    display: grid; place-items: center;
+    font-size: 13cqi; line-height: 1.1;
+    color: var(--air); cursor: pointer;
+    font-variation-settings: 'wght' 300, 'wdth' 75;
+    will-change: transform;
+  }
+  .balloon__l:nth-child(odd):hover .balloon__g,
+  .balloon__l:focus-visible .balloon__g { color: var(--pump); }
+  .balloon__g { display: block; transition: color 0.25s; }
+  .balloon__g.is-pop { animation: balloon-pop 0.5s cubic-bezier(.3,1.8,.4,1); }
+  @keyframes balloon-pop {
+    0% { transform: scale(1, 1); }
+    30% { transform: scale(1.22, 0.82); }
+    55% { transform: scale(0.88, 1.16); }
+    100% { transform: scale(1, 1); }
+  }
+  .balloon__readout {
+    margin-top: 2.4cqi;
+    display: inline-flex; gap: 0.9em; align-items: baseline;
+    font-size: clamp(12px, 1.2cqi, 18px); font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--pump);
+  }
+  .balloon__sep { color: color-mix(in srgb, var(--air) 40%, var(--night)); }
+  .balloon__foot {
+    margin-top: 1cqi;
+    font-size: clamp(10px, 0.95cqi, 14px); font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--air) 45%, var(--night));
+  }
+  .balloon ::selection { background: var(--pump); color: var(--night); }
+
+  /* 390: two-row word, bigger letters */
+  @container (max-width: 559px) {
+    .balloon { min-height: 120cqi; }
+    .balloon__word { margin-top: 6cqi; max-width: 96cqi; }
+    .balloon__l { width: 23cqi; font-size: 24cqi; }
+    .balloon__readout { margin-top: 7cqi; font-size: 3.4cqi; }
+    .balloon__foot { font-size: 2.8cqi; margin-top: 2.5cqi; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .habit__word { transition: none; }
-    .habit__word.is-exit, .habit__word.is-enter { animation: none; opacity: 1; transform: none; }
+    .balloon__g, .balloon__g.is-pop { animation: none; transition: none; }
   }
 </style>
