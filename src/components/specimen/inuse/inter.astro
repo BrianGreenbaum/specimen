@@ -80,7 +80,7 @@ const commands = [
   <!-- 01 — analytics dashboard (interactive, real device scale) -->
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">01</span><span class="label">Product UI — analytics dashboard, real device scale</span></figcaption>
-    <div class="iu__scene">
+    <div class="iu__scene dash-scene">
       <div class="iu__device dash" data-dash>
         <div class="dash__chrome">
           <div class="dash__dots"><i></i><i></i><i></i></div>
@@ -263,8 +263,14 @@ const commands = [
           <p class="hero__sub">A single, fast surface for docs, data and decisions — set in Inter, the typeface drawn to be invisible on the screens you read all day.</p>
           <div class="hero__row">
             <span class="hero__btn">Start free</span>
-            <span class="hero__btn hero__btn--ghost">Watch the demo</span>
+            <button type="button" class="hero__btn hero__btn--ghost" data-weight-pause aria-pressed="false">Freeze the type</button>
           </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__orbit"></div>
+          <div class="hero__tile hero__tile--doc"><span>01 / THINK</span><b>A little<br/>less noise.</b><i></i><i></i><i></i></div>
+          <div class="hero__tile hero__tile--data"><span>02 / MAKE</span><b>+24.8%</b><div class="hero__mini-chart">{[32,48,40,64,58,82,100].map(h => <i style={`height:${h}%`}></i>)}</div></div>
+          <div class="hero__tile hero__tile--ship"><span>03 / SHIP</span><b>Good things,<br/>in motion.</b><em>All systems in sync</em></div>
         </div>
         <div class="hero__strip">
           <span class="hero__stat"><b>180k+</b><i>teams shipping</i></span>
@@ -281,6 +287,17 @@ const commands = [
 <script id="inter-bank-data" type="application/json" set:html={JSON.stringify(accounts)} is:inline></script>
 
 <script>
+  document.querySelectorAll<HTMLButtonElement>('[data-weight-pause]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const paused = button.getAttribute('aria-pressed') !== 'true';
+      const word = button.closest('.hero')?.querySelector<HTMLElement>('[data-em]');
+      if (!word) return;
+      word.style.animationPlayState = paused ? 'paused' : 'running';
+      button.setAttribute('aria-pressed', String(paused));
+      button.textContent = paused ? 'Let it move' : 'Freeze the type';
+    });
+  });
+
   // ============ 01 · DASHBOARD ============
   document.querySelectorAll<HTMLElement>('[data-dash]').forEach((dash) => {
     const ranges: Record<string, string> = { overview: 'Last 30 days', audience: 'Last 30 days', revenue: 'Last quarter' };
@@ -661,7 +678,7 @@ const commands = [
   }
   .cmd__search { display: flex; align-items: center; gap: 10px; padding: 13px 15px; border-bottom: 1px solid var(--line); }
   .cmd__search-ic { font-size: 16px; color: var(--fg-3); }
-  .cmd__input { flex: 1; border: 0; background: transparent; color: var(--fg); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; outline: none; }
+  .cmd__input { min-width: 0; flex: 1; border: 0; background: transparent; color: var(--fg); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; outline: none; }
   .cmd__input::placeholder { color: var(--fg-3); font-weight: 400; }
   .cmd__esc { font: inherit; font-size: 10.5px; font-weight: 600; color: var(--fg-3); padding: 2px 7px; border: 1px solid var(--line); border-radius: 5px; }
   .cmd__list { list-style: none; margin: 0; padding: 6px; max-height: 264px; overflow: auto; }
@@ -693,11 +710,11 @@ const commands = [
   .hero__nav-links { display: flex; gap: calc(2.6 * var(--u)); }
   .hero__nav-links b { font-size: calc(1.9 * var(--u)); font-weight: 500; color: var(--fg-2); letter-spacing: 0.01em; }
   .hero__cta { font-size: calc(1.9 * var(--u)); font-weight: 600; color: var(--accent-contrast); background: var(--accent); padding: calc(1 * var(--u)) calc(2.4 * var(--u)); border-radius: 100px; }
-  .hero__body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: calc(3 * var(--u)) 0; min-height: 0; }
+  .hero__body { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; padding: calc(3 * var(--u)) 0; min-height: 0; }
   .hero__eyebrow { font-size: calc(1.9 * var(--u)); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-feature-settings: 'tnum'; }
-  .hero__head { font-size: calc(11 * var(--u)); font-weight: 800; line-height: 0.96; letter-spacing: -0.04em; margin: calc(2 * var(--u)) 0 0; }
+  .hero__head { font-size: calc(9 * var(--u)); font-weight: 800; line-height: 0.96; letter-spacing: -0.04em; margin: calc(2 * var(--u)) 0 0; }
   .hero__em { color: var(--accent); font-variation-settings: 'wght' 800; }
-  .hero__sub { font-size: calc(2.6 * var(--u)); line-height: 1.45; font-weight: 400; color: var(--fg-2); max-width: 64%; margin-top: calc(3 * var(--u)); letter-spacing: -0.005em; }
+  .hero__sub { font-size: calc(2.6 * var(--u)); line-height: 1.45; font-weight: 400; color: var(--fg-2); max-width: 48%; margin-top: calc(3 * var(--u)); letter-spacing: -0.005em; }
   .hero__row { display: flex; align-items: center; gap: calc(2 * var(--u)); margin-top: calc(4 * var(--u)); }
   .hero__btn { font-size: calc(2.2 * var(--u)); font-weight: 600; padding: calc(1.5 * var(--u)) calc(3.2 * var(--u)); border-radius: 10px; background: var(--accent); color: var(--accent-contrast); }
   .hero__btn--ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
@@ -705,6 +722,25 @@ const commands = [
   .hero__stat { display: flex; flex-direction: column; gap: calc(0.4 * var(--u)); }
   .hero__stat b { font-size: calc(4 * var(--u)); font-weight: 700; letter-spacing: -0.03em; font-feature-settings: 'tnum'; }
   .hero__stat i { font-size: calc(1.6 * var(--u)); font-style: normal; font-weight: 500; color: var(--fg-3); letter-spacing: 0.02em; }
+
+  .hero__visual { position: absolute; right: 5%; top: 23%; width: 35%; height: 57%; }
+  .hero__orbit { position: absolute; inset: 6% -8%; border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 50%; transform: rotate(-25deg); }
+  .hero__orbit::after { content: ''; position: absolute; inset: 13%; border: inherit; border-radius: inherit; }
+  .hero__tile { position: absolute; width: 64%; padding: calc(2.5 * var(--u)); border: 1px solid var(--line); border-radius: 12px; background: var(--bg); box-shadow: 0 16px 40px -20px #10182b50; }
+  .hero__tile > span { display: block; font-size: calc(1.35 * var(--u)); letter-spacing: 0.12em; font-weight: 600; opacity: 0.65; margin-bottom: calc(1.5 * var(--u)); }
+  .hero__tile b { display: block; font-size: calc(3.8 * var(--u)); line-height: 1.08; letter-spacing: -0.04em; }
+  .hero__tile--doc { top: 0; left: 0; transform: rotate(-8deg); }
+  .hero__tile--doc > i { display: block; width: 90%; height: 3px; background: var(--line); margin-top: calc(1.3 * var(--u)); }
+  .hero__tile--doc > i:last-child { width: 55%; }
+  .hero__tile--data { top: 29%; right: -2%; transform: rotate(8deg); }
+  .hero__tile--data b { color: var(--accent); }
+  .hero__mini-chart { height: calc(8 * var(--u)); display: flex; align-items: end; gap: 5px; margin-top: calc(2 * var(--u)); }
+  .hero__mini-chart i { flex: 1; background: var(--accent); border-radius: 2px 2px 0 0; opacity: 0.65; }
+  .hero__tile--ship { bottom: 0; left: 0; transform: rotate(-4deg); background: var(--accent); color: var(--accent-contrast); }
+  .hero__tile--ship em { display: block; font-size: calc(1.5 * var(--u)); font-style: normal; margin-top: calc(2 * var(--u)); opacity: 0.8; }
+  @container (max-width: 800px) { .hero__visual { display: none; } .hero__sub { max-width: 85%; } }
+  @container (max-width: 640px) { .dash-scene { aspect-ratio: auto; } .dash-scene .dash { position: relative; inset: auto; } }
+  @container (max-width: 420px) { .dash__bar { flex-wrap: wrap; } .dash__logo { flex: 1; } .dash__tabs { order: 3; width: 100%; } .dash__body { padding: 0.75rem; } }
 
   @media (prefers-reduced-motion: no-preference) {
     .hero__em[data-em] { animation: hero-weight 4.5s var(--ease-out, ease-in-out) infinite alternate; }

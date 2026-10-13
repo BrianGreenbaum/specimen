@@ -50,12 +50,12 @@ const recipes = fonts.flatMap((f) =>
     <aside class="pair-rail">
       <div class="label pair-rail__head">Recipes</div>
       <ul class="pair-recipes" data-pair-recipes>
-        {recipes.map((r, i) => {
+        {recipes.map((r) => {
           const A = fonts.find((f) => f.id === r.a)!;
           const B = fonts.find((f) => f.id === r.bSlug)!;
           return (
             <li>
-              <button type="button" class:list={['pair-recipe', { 'is-on': i === 0 }]} data-recipe={`${r.a}+${r.bSlug}`}>
+              <button type="button" class:list={['pair-recipe', { 'is-on': r.a === 'fraunces' && r.bSlug === 'inter' }]} data-recipe={`${r.a}+${r.bSlug}`}>
                 <span class="pair-recipe__a" style={`font-family:${A.data.fontFamily}`}>{A.data.name}</span>
                 <span class="pair-recipe__sep" aria-hidden="true">+</span>
                 <span class="pair-recipe__b" style={`font-family:${B.data.fontFamily}`}>{B.data.name}</span>
@@ -100,7 +100,7 @@ const recipes = fonts.flatMap((f) =>
 
       <div class="pair-stage">
         <h3 class="pair-h" data-pair-h style={`font-family:'Fraunces Variable'`}>A quiet voice for loud ideas</h3>
-        <p class="pair-b" data-pair-b style={`font-family:'Inter Variable'`}>
+        <p class="pair-b" data-pair-body style={`font-family:'Inter Variable'`}>
           Typography is the craft of endowing human language with a durable visual form. A well-made
           typeface is at once invisible and unforgettable: it disappears into the act of reading, yet it
           shapes the tone of every word it carries. Set two faces side by side and you are really asking
@@ -126,7 +126,7 @@ const recipes = fonts.flatMap((f) =>
     const selA = root.querySelector<HTMLSelectElement>('[data-pair-a]')!;
     const selB = root.querySelector<HTMLSelectElement>('[data-pair-b]')!;
     const h = root.querySelector<HTMLElement>('[data-pair-h]')!;
-    const b = root.querySelector<HTMLElement>('[data-pair-b]')!;
+    const b = root.querySelector<HTMLElement>('[data-pair-body]')!;
     const linkA = root.querySelector<HTMLAnchorElement>('[data-pair-link-a]')!;
     const linkB = root.querySelector<HTMLAnchorElement>('[data-pair-link-b]')!;
     const out = (k: string) => root.querySelector<HTMLElement>(`[data-out="${k}"]`)!;
@@ -134,7 +134,6 @@ const recipes = fonts.flatMap((f) =>
     const tune: Record<string, any> = {
       asize: 44, awght: 600, bsize: 17, measure: 62, lead: 1.55,
     };
-    let swap = false;
 
     // load both families before first paint of the bench
     await Promise.all(
@@ -159,8 +158,8 @@ const recipes = fonts.flatMap((f) =>
     };
 
     const applyFaces = () => {
-      const A = byId.get(swap ? selB.value : selA.value)!;
-      const B = byId.get(swap ? selA.value : selB.value)!;
+      const A = byId.get(selA.value)!;
+      const B = byId.get(selB.value)!;
       h.style.fontFamily = A.family;
       h.style.fontVariationSettings =
         `'wght' ${Math.min(Math.max(tune.awght, A.wght.min), A.wght.max)}`;
@@ -171,33 +170,42 @@ const recipes = fonts.flatMap((f) =>
       linkB.textContent = `Open ${B.name} →`;
     };
 
-    selA.addEventListener('change', applyFaces);
-    selB.addEventListener('change', applyFaces);
+    const syncRecipe = () => {
+      root.querySelectorAll<HTMLButtonElement>('[data-recipe]').forEach((btn) => {
+        const active = btn.dataset.recipe === `${selA.value}+${selB.value}`;
+        btn.classList.toggle('is-on', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+    };
+    const changeFaces = () => { applyFaces(); syncRecipe(); };
+    selA.addEventListener('change', changeFaces);
+    selB.addEventListener('change', changeFaces);
     root.querySelector('[data-pair-swap]')?.addEventListener('click', () => {
-      swap = !swap;
-      applyFaces();
+      const previous = selA.value;
+      selA.value = selB.value;
+      selB.value = previous;
+      changeFaces();
     });
     root.querySelectorAll<HTMLInputElement>('[data-tune]').forEach((inp) =>
       inp.addEventListener('input', () => {
         const v = inp.dataset.tune!;
-        tune[v === 'awght' ? 'awght' : v] = +inp.value;
-        if (v === 'awght') applyFaces();
+        tune[v] = +inp.value;
         applyTune();
+        applyFaces();
       })
     );
     root.querySelectorAll<HTMLButtonElement>('[data-recipe]').forEach((btn) =>
       btn.addEventListener('click', () => {
         const [a, bslug] = (btn.getAttribute('data-recipe') || '').split('+');
-        selA.value = a; selB.value = bslug!; swap = false;
-        root.querySelectorAll('.pair-recipe').forEach((x) => x.classList.remove('is-on'));
-        btn.classList.add('is-on');
+        selA.value = a; selB.value = bslug!;
+        syncRecipe();
         applyFaces();
         document.querySelector('.pair-tuners')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       })
     );
 
     applyTune();
-    applyFaces();
+    changeFaces();
   });
 </script>
 
