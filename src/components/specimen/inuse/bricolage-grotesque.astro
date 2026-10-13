@@ -91,7 +91,7 @@ const programme: [string, string, string][] = [
   <figure class="iu__item">
     <figcaption class="iu__cap"><span class="index-num">02</span><span class="label">Optical size — drag a feature headline from text cut to display cut</span></figcaption>
     <div class="iu__scene scene-opsz">
-      <div class="opsz" data-opsz>
+      <div class="opsz" data-bricolage-opsz>
         <div class="opsz__bar">
           <span class="opsz__tag">opsz axis</span>
           <span class="opsz__val"><i data-opsz-out>96</i> pt</span>
@@ -213,7 +213,7 @@ const programme: [string, string, string][] = [
 
 <script>
   // ---- 02 · optical-size scrubber on a live headline ----
-  document.querySelectorAll<HTMLElement>('[data-opsz]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('[data-bricolage-opsz]').forEach((root) => {
     const word = root.querySelector<HTMLElement>('[data-opsz-word]')!;
     const out = root.querySelector<HTMLElement>('[data-opsz-out]')!;
     const range = root.querySelector<HTMLInputElement>('[data-opsz-axis]')!;

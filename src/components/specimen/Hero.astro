@@ -12,7 +12,7 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
 <header
   class="hero"
   style={`--fam:${font.fontFamily}`}
-  data-hero
+  data-specimen-hero
   data-variable={font.isVariable ? 'true' : 'false'}
   data-wmin={wghtAxis?.min ?? 400}
   data-wmax={wghtAxis?.max ?? 400}
@@ -45,7 +45,7 @@ const wghtAxis = font.axes.find((a) => a.tag === 'wght');
   // Cursor-reactive hero: the giant name's weight follows the pointer,
   // the ghost letter parallaxes. Refined, and disabled for reduced-motion.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
+  document.querySelectorAll<HTMLElement>('[data-specimen-hero]').forEach((hero) => {
     const name = hero.querySelector('[data-hero-name]') as HTMLElement;
     const ghost = hero.querySelector('[data-hero-ghost]') as HTMLElement;
 

@@ -407,9 +407,10 @@ const bars = [
   }
   /* NOTE: .ink is itself the queried container — only descendants recompose. */
   @container (max-width: 560px) {
+    .ink { min-height: clamp(360px, 55svh, 540px); }
     .ink__word {
-      flex-direction: column; align-items: center; margin: 1.75rem 0 2rem;
-      font-size: 23cqi; line-height: 0.82; letter-spacing: 0;
+      flex-direction: row; align-items: baseline; margin: auto 0;
+      font-size: 17cqi; line-height: 0.95; letter-spacing: -0.04em;
     }
     .ink__foot { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
   }

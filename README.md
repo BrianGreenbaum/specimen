@@ -13,6 +13,14 @@ npm run build    # static output to dist/
 npm run preview  # preview the built site
 ```
 
+### Browser regression checks
+
+With a dev or preview server running, run `node scripts/check-ui.mjs` (or pass
+its base URL, e.g. `node scripts/check-ui.mjs http://localhost:4322`). The checks
+cover responsive gallery and example layouts at 390, 768, and 1440px, pairing
+controls, and browser errors across all 36 specimens. Set `CHROME_PATH` if Chrome
+or Chromium is not installed in a standard location.
+
 ## How it's organised
 
 ```

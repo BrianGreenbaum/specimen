@@ -279,6 +279,9 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
   .index-row:hover .index-row__arrow { opacity: 1; transform: none; }
 
   @media (max-width: 760px) {
+    .home-history .section-head { flex-wrap: wrap; }
+    .home-history .section-head h2 { flex-basis: calc(100% - 2rem); }
+    .home-history__more { margin-left: 2rem; }
     .index-row__link { grid-template-columns: 2.2rem 1fr; gap: var(--sp-2); }
     .index-row__meta { display: none; }
     .index-row__arrow { display: none; }

@@ -223,12 +223,12 @@ const rooms = fonts.map((f) => {
 
   /* --- intro room --- */
   .room--intro { place-items: center start; }
-  .intro { padding-inline: var(--gutter, clamp(1.25rem, 5vw, 4rem)); max-width: 60rem; }
+  .intro { width: 100%; min-width: 0; padding-inline: var(--gutter, clamp(1.25rem, 5vw, 4rem)); max-width: 60rem; }
   .intro__kicker { color: var(--accent); display: block; margin-bottom: var(--sp-4); }
   .intro__title {
     font-family: var(--font-ui);
     font-weight: 680;
-    font-size: clamp(4rem, 17vh, 11rem);
+    font-size: clamp(3rem, min(17vh, 20vw), 11rem);
     line-height: 0.88;
     letter-spacing: -0.04em;
   }
@@ -243,11 +243,11 @@ const rooms = fonts.map((f) => {
   .intro__hint-sep { color: var(--accent); }
 
   /* --- the artwork --- */
-  .room__piecewrap { position: relative; width: fit-content; }
+  .room__piecewrap { --gallery-glyph-size: min(58vh, 40vw); position: relative; width: fit-content; }
   .room__art { display: block; line-height: 0; position: relative; }
   .room__glyph {
     display: block;
-    font-size: min(58vh, 56vw);
+    font-size: var(--gallery-glyph-size);
     line-height: 1;
     /* Ink can paint far past the advance width (italic overhangs, swash
        tails). Once the breathe animation promotes the glyph to its own
@@ -294,11 +294,11 @@ const rooms = fonts.map((f) => {
   }
   .room.is-live .room__ring { opacity: 1; transform: translate(-50%, -50%); }
 
-  /* The wall text sits fully clear of the letter — anchored to the right of
-     the whole glyph box — with a hairline leader running back to the ring. */
+  /* Anchor wall text beyond the ink, using the glyph’s protective padding
+     rather than adding another column outside its already-padded box. */
   .room__anno {
     position: absolute;
-    left: calc(100% + clamp(1.5rem, 2.5vw, 3rem));
+    left: calc(100% - var(--gallery-glyph-size) * 0.45 + 1rem);
     top: var(--ay);
     transform: translateY(-50%);
     width: max-content;
@@ -313,7 +313,7 @@ const rooms = fonts.map((f) => {
     position: absolute;
     left: var(--ax);
     top: var(--ay);
-    width: calc(100% - var(--ax) + clamp(1.5rem, 2.5vw, 3rem) - 0.9rem);
+    width: calc(100% - var(--ax) - var(--gallery-glyph-size) * 0.45 + 0.1rem);
     height: 1px;
     background: color-mix(in srgb, var(--accent) 55%, transparent);
     opacity: 0;
@@ -428,7 +428,7 @@ const rooms = fonts.map((f) => {
   @media (max-width: 900px) {
     .rail { display: none; }
     .room__wing { display: none; }
-    .room__glyph { font-size: min(46vh, 72vw); }
+    .room__piecewrap { --gallery-glyph-size: min(38vh, 42vw); }
     .room__plaque { width: calc(100% - 2 * var(--gutter, 1.25rem)); }
     /* tight rooms: spotlight chrome and catalog lines give way so the
        letter stays visible */

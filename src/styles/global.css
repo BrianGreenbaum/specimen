@@ -215,6 +215,8 @@ body::after {
    its surface, its scale, and the handoff into the next act. Components set
    their own rhythm (override gap, run acts flush, bleed to the viewport). */
 .iu {
+  /* Scenes can query the stack when changing their own proportions. */
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: clamp(4rem, 10vh, 7.5rem);
