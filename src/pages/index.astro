@@ -72,13 +72,13 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
       </div>
 
       <div class="showpieces" data-reveal>
-        <p class="showpieces__head label">✦ Showpieces — two faces given a page built entirely by hand</p>
+        <p class="showpieces__head label">✦ Showpieces — four faces, each given a page built entirely by hand</p>
         <div class="showpieces__grid">
           {showpieces.map((s) => (
             <a class={`showpiece showpiece--${s.slug}`} href={`/fonts/${s.slug}`}>
               <span class="showpiece__tag label">{s.tag} · {s.year}</span>
               <span class="showpiece__name" style={`font-family:'${s.family}'`} aria-label={s.name}>
-                {[...(s.slug === 'recursive' ? s.name : s.name.toUpperCase())].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c === ' ' ? '\u00a0' : c}</span>)}
+                {[...(['recursive', 'handjet'].includes(s.slug) ? s.name : s.name.toUpperCase())].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c === ' ' ? '\u00a0' : c}</span>)}
               </span>
               <span class="showpiece__blurb">{s.blurb}</span>
               <span class="showpiece__cta label">Open the specimen →</span>
@@ -260,6 +260,26 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
     transition-delay: calc(var(--i) * 45ms);
   }
   .showpiece--recursive:hover .showpiece__name span { font-variation-settings: 'MONO' 0, 'CASL' 1, 'wght' 1000, 'slnt' -15, 'CRSV' 1; color: #e8391a; }
+  .showpiece--nabla { background: radial-gradient(120% 120% at 80% 0%, #3a1a2e, #0a061c 70%); color: #f4eeff; }
+  .showpiece--nabla .showpiece__tag, .showpiece--nabla .showpiece__cta { color: #ffd214; }
+  .showpiece--nabla .showpiece__blurb { color: #bdb1de; }
+  .showpiece--nabla .showpiece__name { font-size: 27cqi; }
+  .showpiece--nabla .showpiece__name span {
+    font-variation-settings: 'EDPT' 60, 'EHLT' 10;
+    transition: font-variation-settings 0.6s var(--ease);
+    transition-delay: calc(var(--i) * 50ms);
+  }
+  .showpiece--nabla:hover .showpiece__name span { font-variation-settings: 'EDPT' 200, 'EHLT' 24; }
+  .showpiece--handjet { background: radial-gradient(#f3efe614 1.2px, transparent 1.6px) 0 0 / 12px 12px, #0a0a0b; color: #f3efe6; }
+  .showpiece--handjet .showpiece__tag, .showpiece--handjet .showpiece__cta { color: #ffb000; }
+  .showpiece--handjet .showpiece__blurb { color: #b8b3a6; }
+  .showpiece--handjet .showpiece__name { font-size: 40cqi; line-height: 0.78; color: #ffb000; text-transform: none; padding-block: 0 0.1em; }
+  .showpiece--handjet .showpiece__name span {
+    font-variation-settings: 'wght' 500, 'ELGR' 1, 'ELSH' 8;
+    transition: font-variation-settings 0.9s var(--ease);
+    transition-delay: calc(var(--i) * 50ms);
+  }
+  .showpiece--handjet:hover .showpiece__name span { font-variation-settings: 'wght' 800, 'ELGR' 1, 'ELSH' 16; }
   .showpiece--climate-crisis { background: linear-gradient(180deg, #04141f, #0b2c40); color: #eaf6fb; }
   .showpiece--climate-crisis .showpiece__tag, .showpiece--climate-crisis .showpiece__cta { color: #8fd8f0; }
   .showpiece--climate-crisis .showpiece__blurb { color: #a9c6d4; }
