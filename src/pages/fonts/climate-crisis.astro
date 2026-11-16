@@ -233,10 +233,10 @@ const themeStyle = [
         <p class="cc-end__small">The ice doesn’t.</p>
       </section>
 
-      <a class="cc-next" href="/fonts/recursive">
+      <a class="cc-next" href="/fonts/nabla">
         <span class="cc-next__k">Next showpiece →</span>
-        <span class="cc-next__name" aria-label="Recursive">{[...'Recursive'].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c}</span>)}</span>
-        <span class="cc-next__sub">One file, five dials.</span>
+        <span class="cc-next__name" aria-label="Nabla">{[...'NABLA'].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c}</span>)}</span>
+        <span class="cc-next__sub">A colour font with a third dimension.</span>
       </a>
     </main>
   </div>
@@ -644,18 +644,19 @@ const themeStyle = [
   .cc-next {
     display: grid; gap: 0.8rem; justify-items: center; text-align: center;
     padding: clamp(3.5rem, 9vw, 8rem) var(--gutter);
-    background: #fbf6e9; color: #1a1723;
+    background: #0a061c; color: #f4eeff;
     overflow: hidden;
   }
-  .cc-next__k { font-family: var(--cc-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: #e8391a; }
-  .cc-next__name { display: flex; font-family: 'Recursive Variable', sans-serif; font-size: clamp(3.4rem, 15vw, 15rem); line-height: 1.1; }
+  .cc-next__k { font-family: var(--cc-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd214; }
+  .cc-next__name { display: flex; font-family: 'Nabla Variable', sans-serif; font-size: clamp(4rem, 17vw, 17rem); line-height: 1.05; }
   .cc-next__name span {
-    font-variation-settings: 'MONO' 0, 'CASL' 0, 'wght' 300, 'slnt' 0, 'CRSV' 0.5;
-    transition: font-variation-settings 0.7s var(--ease), color 0.7s var(--ease);
-    transition-delay: calc(var(--i) * 45ms);
+    --d: 30; --h: 8;
+    font-variation-settings: 'EDPT' var(--d), 'EHLT' var(--h);
+    transition: --d 0.6s var(--ease), --h 0.6s var(--ease);
+    transition-delay: calc(var(--i) * 60ms);
   }
-  .cc-next:hover .cc-next__name span { font-variation-settings: 'MONO' 0, 'CASL' 1, 'wght' 1000, 'slnt' -15, 'CRSV' 1; color: #e8391a; }
-  .cc-next__sub { color: #4c4759; }
+  .cc-next:hover .cc-next__name span { --d: 200; --h: 24; }
+  .cc-next__sub { color: #bdb1de; }
 
   /* ---------- small screens ---------- */
   @media (max-width: 900px) {

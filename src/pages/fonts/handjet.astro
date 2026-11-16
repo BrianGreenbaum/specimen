@@ -1,0 +1,608 @@
+---
+// HANDJET — a showpiece specimen, built by hand outside the collection
+// template. Every letter is a grid of identical elements; the page is a wall
+// of displays that lets you choose what that element is.
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+
+// The whole-number stops of the Element Shape axis. The font only numbers
+// them; the nicknames are ours.
+const shapes = [
+  'Sawtooth', 'Square', 'Tile', 'Hairline', 'Needle', 'Brick', 'Pebble', 'Dot',
+  'Seed', 'Grain', 'Bead', 'Clover', 'Flower', 'Sparkle', 'Diamond', 'Heart',
+].map((name, i) => ({ n: i + 1, name }));
+
+const board = [
+  { time: '18:04', to: 'PRAHA HL.N.', plat: '2', status: 'ON TIME' },
+  { time: '18:11', to: 'WIEN HBF', plat: '5', status: 'BOARDING' },
+  { time: '18:19', to: 'BRATISLAVA', plat: '1', status: 'ON TIME' },
+  { time: '18:32', to: 'BERLIN HBF', plat: '4', status: 'DELAYED 12' },
+  { time: '18:47', to: 'KRAKOW GL.', plat: '3', status: 'ON TIME' },
+];
+
+const receipt = [
+  ['2 x ESPRESSO', '5.60'],
+  ['1 x CINNAMON BUN', '3.20'],
+  ['1 x SPARKLING WATER', '2.40'],
+  ['1 x POSTCARD', '1.10'],
+];
+
+const hellos = [
+  { text: 'Hello', lang: 'Latin', shape: 8, dir: 'ltr' },
+  { text: 'Γειά σου', lang: 'Greek', shape: 2, dir: 'ltr' },
+  { text: 'Привет', lang: 'Cyrillic', shape: 15, dir: 'ltr' },
+  { text: 'שלום', lang: 'Hebrew', shape: 12, dir: 'rtl' },
+  { text: 'مرحبا', lang: 'Arabic', shape: 11, dir: 'rtl' },
+  { text: 'Բարեւ', lang: 'Armenian', shape: 7, dir: 'ltr' },
+];
+
+const ticker = ['NOW SHOWING', 'ONE FONT', 'SIXTEEN PIXELS', 'ZERO BITMAPS', 'MIND THE GAP', 'OPEN ALL NIGHT'];
+const inks = [
+  { id: 'amber', c: '#ffb000' }, { id: 'red', c: '#ff3b30' }, { id: 'green', c: '#6dff7a' },
+  { id: 'ice', c: '#8fe3ff' }, { id: 'pink', c: '#ff5c9d' }, { id: 'white', c: '#f3efe6' },
+];
+const glyphs = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', ...'abcdefghijklmnopqrstuvwxyz', ...'0123456789', ...'!?&@#$%*+=/()[]{}<>'];
+
+const themeStyle = [
+  '--bg:#0a0a0b', '--bg-2:#141416', '--fg:#f3efe6', '--fg-2:#b8b3a6', '--fg-3:#7f7a6e',
+  '--accent:#ffb000', '--accent-contrast:#0a0a0b', '--line:#f3efe624', '--line-soft:#f3efe612',
+  'color-scheme:dark',
+].join(';');
+---
+<Layout
+  title="Handjet — Specimen"
+  description="Handjet, an element-based variable font: every glyph is a grid of one repeated shape, and the shape itself is an axis."
+  themeStyle={themeStyle}
+  mode="dark"
+  fixedTheme
+>
+  <SiteHeader current="Handjet" showToggle={false} />
+
+  <div class="hj-page" data-hj>
+
+    <!-- ============ HERO ============ -->
+    <header class="hj-hero" data-hj-hero>
+      <div class="hj-hero__top">
+        <span>Handjet · Rosetta · David Březina</span>
+        <span>Element-based variable font</span>
+      </div>
+
+      <h1 class="hj-hero__word hj" data-hero-word aria-label="Handjet">
+        {[...'Handjet'].map((ch, i) => <span data-l style={`--i:${i}`} aria-hidden="true">{ch}</span>)}
+      </h1>
+
+      <div class="hj-hero__foot">
+        <p class="hj-hero__lede">
+          Every letter is a grid of one small shape. You get to choose the shape.
+          <span class="hj-hero__hint" data-hint-fine>Move sideways to change the element, up and down for its size. Click to double the grid.</span>
+          <span class="hj-hero__hint" data-hint-coarse>Drag across the word to change the element. Tap to double the grid.</span>
+        </p>
+        <dl class="hj-readout">
+          <div><dt>ELSH · shape</dt><dd><span data-hud="elsh">02.0</span> <em data-hud="name">Square</em></dd></div>
+          <div><dt>wght · size</dt><dd data-hud="wght">400</dd></div>
+          <div><dt>ELGR · grid</dt><dd data-hud="elgr">1.0</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <!-- ============ TICKER ============ -->
+    <div class="hj-ticker hj" aria-hidden="true">
+      <div class="hj-ticker__track">
+        {[0, 1].map(() => ticker.map((t, i) => <span style={`--elsh:${[8, 2, 16, 12, 15, 13][i]}`}>{t}<i>•</i></span>))}
+      </div>
+    </div>
+
+    <main>
+      <!-- ============ SHAPES ============ -->
+      <section class="hj-sec" data-hj-shapes>
+        <div class="hj-kicker"><span>01</span> Pick your pixel</div>
+        <h2 class="hj-h2">Squares are only <em>one option</em>.</h2>
+        <p class="hj-lede">
+          The Element Shape axis runs from 0 to 16. Each whole number is a different mark — dots, diamonds, clovers,
+          hearts — and everything in between is a smooth morph from one to the next. Choose one and the page follows.
+        </p>
+
+        <div class="hj-shapes" role="radiogroup" aria-label="Element shape">
+          {shapes.map((s) => (
+            <button type="button" class="hj-shape" role="radio" aria-checked={s.n === 8 ? 'true' : 'false'} data-shape={s.n} data-name={s.name} style={`--elsh:${s.n}`}>
+              <span class="hj hj-shape__g" aria-hidden="true">a</span>
+              <span class="hj-shape__n">{String(s.n).padStart(2, '0')}</span>
+              <span class="hj-shape__name">{s.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div class="hj-morph">
+          <p class="hj hj-morph__word" data-morph-word aria-hidden="true">In between</p>
+          <label class="hj-slider">
+            <span>ELSH <b data-morph-val>8.0</b></span>
+            <input type="range" min="1" max="16" step="0.1" value="8" data-morph aria-label="Element shape" />
+          </label>
+        </div>
+      </section>
+
+      <!-- ============ THREE AXES ============ -->
+      <section class="hj-sec">
+        <div class="hj-kicker"><span>02</span> Three axes</div>
+        <h2 class="hj-h2">What it is, how big it is,<br />and <em>how many</em> there are.</h2>
+
+        <div class="hj-axes">
+          <figure class="hj-axis hj-axis--shape" data-hj-inview>
+            <p class="hj hj-axis__g" aria-hidden="true">Rg</p>
+            <figcaption><b>Element Shape</b> <code>ELSH 0 – 16</code><p>What each element is. Sixteen stops, endless in-betweens.</p></figcaption>
+          </figure>
+          <figure class="hj-axis hj-axis--size" data-hj-inview>
+            <p class="hj hj-axis__g" aria-hidden="true">Rg</p>
+            <figcaption><b>Weight</b> <code>wght 100 – 900</code><p>How large each element is. The letter never changes width; the dots swell until they touch.</p></figcaption>
+          </figure>
+          <figure class="hj-axis hj-axis--grid" data-hj-inview>
+            <p class="hj hj-axis__g" aria-hidden="true">Rg</p>
+            <figcaption><b>Element Grid</b> <code>ELGR 1 – 2</code><p>How many elements fill each unit. At 2 the resolution doubles and the same letter is drawn with four times the marks.</p></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ IN USE ============ -->
+      <section class="hj-sec">
+        <div class="hj-kicker"><span>03</span> In use</div>
+        <h2 class="hj-h2">Anything that speaks in dots.</h2>
+
+        <div class="hj-bento">
+          <article class="hj-board" data-hj-inview>
+            <div class="hj-board__panel hj">
+              <header><span>DEPARTURES</span><span data-hj-clock>18:00:00</span></header>
+              <ol>
+                {board.map((r, i) => (
+                  <li style={`--i:${i}`} class:list={[r.status === 'BOARDING' && 'is-boarding', r.status.startsWith('DELAYED') && 'is-late']}>
+                    <span>{r.time}</span><span>{r.to}</span><span>{r.plat}</span><span>{r.status}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <p class="hj-cap">Departure board — the Dot element, amber on black</p>
+          </article>
+
+          <article class="hj-receipt">
+            <div class="hj-receipt__paper hj">
+              <p class="hj-receipt__shop">CORNER SHOP</p>
+              <p class="hj-receipt__meta">TILL 02 · RECEIPT 004127</p>
+              <ul>
+                {receipt.map(([a, b]) => <li><span>{a}</span><span>{b}</span></li>)}
+              </ul>
+              <p class="hj-receipt__total"><span>TOTAL</span><span>12.30</span></p>
+              <p class="hj-receipt__thanks">THANK YOU</p>
+            </div>
+            <p class="hj-cap">Till receipt — and the last line switches to hearts</p>
+          </article>
+
+          <article class="hj-love" data-hj-inview>
+            <div class="hj-love__card hj"><span>LOVE</span><span>LETTERS</span></div>
+            <p class="hj-cap">Card — the Heart element, growing and shrinking</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ SCRIPTS ============ -->
+      <section class="hj-sec">
+        <div class="hj-kicker"><span>04</span> Six scripts</div>
+        <h2 class="hj-h2">The same dots, in six alphabets.</h2>
+        <p class="hj-lede">Pixel fonts usually stop at A to Z. This one also sets Greek, Cyrillic, Hebrew, Arabic and Armenian.</p>
+        <div class="hj-hellos">
+          {hellos.map((h) => (
+            <figure class="hj-hello" style={`--elsh:${h.shape}`}>
+              <p class="hj" dir={h.dir}>{h.text}</p>
+              <figcaption>{h.lang}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="hj-sec" data-hj-test>
+        <div class="hj-kicker"><span>05</span> Your turn</div>
+        <h2 class="hj-h2">Write on the wall.</h2>
+
+        <div class="hj-test__stage">
+          <div class="hj hj-test__text" contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Sample text — editable" data-test-text>Type here</div>
+        </div>
+        <div class="hj-test__ctl">
+          <label class="hj-slider"><span>Shape <b data-tv="elsh"></b></span><input type="range" min="1" max="16" step="0.1" value="13" data-t="elsh" /></label>
+          <label class="hj-slider"><span>Size <b data-tv="hw"></b></span><input type="range" min="100" max="900" step="1" value="560" data-t="hw" /></label>
+          <label class="hj-slider"><span>Grid <b data-tv="elgr"></b></span><input type="range" min="1" max="2" step="0.1" value="1" data-t="elgr" /></label>
+          <div class="hj-inks" role="radiogroup" aria-label="Colour">
+            {inks.map((k, i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} aria-label={k.id} data-ink={k.c} style={`--c:${k.c}`}></button>)}
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ GLYPHS ============ -->
+      <section class="hj-sec">
+        <div class="hj-kicker"><span>06</span> The set</div>
+        <h2 class="hj-h2">Run a hand over it.</h2>
+        <div class="hj-keys" data-hj-keys>
+          {glyphs.map((g) => <button type="button" class="hj hj-key" aria-label={`Glyph ${g}`}>{g}</button>)}
+        </div>
+      </section>
+
+      <!-- ============ STORY + SPECS ============ -->
+      <section class="hj-sec">
+        <div class="hj-kicker"><span>07</span> The story</div>
+        <div class="hj-story">
+          <div class="hj-story__prose">
+            <p class="hj-story__lede">
+              Handjet comes from <strong>Rosetta</strong>, the foundry of <strong>David Březina</strong>, a studio best
+              known for careful work across many writing systems. Here that care is pointed at the humblest kind of
+              lettering there is: the kind made of dots.
+            </p>
+            <p>
+              A pixel font is normally frozen. Someone decides the grid, fills in the squares, and that is the
+              typeface. Handjet keeps the grid and unfreezes everything else. Every glyph is built from copies of a
+              single element, and the element is a variable: its shape, its size, and how many of it fill a unit are
+              all axes you can set or animate.
+            </p>
+            <p>
+              So the same file is a ticket machine, a stadium scoreboard, a cross-stitch sampler and a valentine,
+              and it can pass through all of them in one transition. Johannes Neumeier, Borna Izadpanah, Khajag
+              Apelian and Meir Sadan contributed to it, and it covers six scripts rather than the usual one.
+            </p>
+          </div>
+
+          <dl class="hj-specs">
+            <div><dt>Design</dt><dd>David Březina, Rosetta</dd></div>
+            <div><dt>With</dt><dd>Johannes Neumeier, Borna Izadpanah, Khajag Apelian, Meir Sadan</dd></div>
+            <div><dt>Format</dt><dd>Element-based variable font, three axes</dd></div>
+            <div><dt>Axes</dt><dd><code>ELSH</code> 0–16 (default 2)<br /><code>ELGR</code> 1–2 (default 1)<br /><code>wght</code> 100–900 (default 400)</dd></div>
+            <div><dt>Scripts</dt><dd>Latin, Greek, Cyrillic, Hebrew, Arabic, Armenian</dd></div>
+            <div><dt>Caveat</dt><dd>Its makers note that macOS can draw it with visual artefacts.</dd></div>
+            <div><dt>Licence</dt><dd>SIL Open Font License 1.1</dd></div>
+            <div class="hj-specs__links">
+              <a href="https://fonts.google.com/specimen/Handjet" rel="noopener">Get it on Google Fonts ↗</a>
+              <a href="https://github.com/rosettatype/handjet" rel="noopener">Source ↗</a>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <a class="hj-next" href="/fonts/recursive">
+        <span class="hj-next__k">Next showpiece →</span>
+        <span class="hj-next__name" aria-label="Recursive">{[...'Recursive'].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c}</span>)}</span>
+        <span class="hj-next__sub">One file, five dials.</span>
+      </a>
+    </main>
+  </div>
+
+  <SiteFooter />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-hj]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+    const shapeBtns = Array.from(page.querySelectorAll<HTMLButtonElement>('[data-shape]'));
+    const nameOf = (v: number) => shapeBtns[clamp(Math.round(v), 1, 16) - 1].dataset.name!;
+
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.target.classList.toggle('is-in', e.isIntersecting)),
+      { threshold: 0.2 }
+    );
+    page.querySelectorAll('[data-hj-inview]').forEach((el) => io.observe(el));
+
+    // ---------- Hero: sideways = shape, height + proximity = element size ----------
+    const hero = page.querySelector<HTMLElement>('[data-hj-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-hero-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((el) => [el.dataset.hud!, el]));
+    const w = letters.map(() => 400);
+    let px = 0.5, py = 0.5, lastMove = -1e9, on = true, elsh = 8, elgr = 1, gridTarget = 1;
+    let centers: number[] = [];
+    const measure = () => {
+      const r = hero.getBoundingClientRect();
+      centers = letters.map((l) => { const b = l.getBoundingClientRect(); return (b.left + b.width / 2 - r.left) / r.width; });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure);
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      px = clamp((e.clientX - r.left) / r.width, 0, 1);
+      py = clamp((e.clientY - r.top) / r.height, 0, 1);
+      lastMove = performance.now();
+    });
+    hero.addEventListener('click', () => { gridTarget = gridTarget === 1 ? 2 : 1; });
+    new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(hero);
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!on) return;
+      const live = now - lastMove < 2600;
+      const t = now / 1000;
+      const ts = live ? 1 + 15 * clamp((px - 0.06) / 0.88, 0, 1) : reduce ? 8 : 8.5 + 7.5 * Math.sin(t * 0.33);
+      elsh += (ts - elsh) * 0.12;
+      elgr += (gridTarget - elgr) * 0.12;
+      let sum = 0;
+      letters.forEach((l, i) => {
+        let tw: number;
+        if (live) { const near = 1 - clamp(Math.abs(centers[i] - px) / 0.34, 0, 1); tw = 220 + (1 - py) * 330 + 350 * near * near; }
+        else if (reduce) tw = 500;
+        else tw = 520 + 330 * Math.sin(t * 1.5 - i * 0.7);
+        w[i] += (clamp(tw, 100, 900) - w[i]) * 0.15;
+        l.style.setProperty('--hw', w[i].toFixed(0));
+        sum += w[i];
+      });
+      word.style.setProperty('--elsh', elsh.toFixed(2));
+      word.style.setProperty('--elgr', elgr.toFixed(2));
+      hud.elsh.textContent = elsh.toFixed(1).padStart(4, '0');
+      hud.name.textContent = nameOf(elsh);
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+      hud.elgr.textContent = elgr.toFixed(1);
+    };
+    requestAnimationFrame(tick);
+
+    // ---------- Shapes: one choice re-dots the page ----------
+    const morph = page.querySelector<HTMLInputElement>('[data-morph]')!;
+    const morphVal = page.querySelector<HTMLElement>('[data-morph-val]')!;
+    const setShape = (v: number, fromSlider = false) => {
+      page.style.setProperty('--elsh', String(v));
+      morphVal.textContent = v.toFixed(1);
+      if (!fromSlider) morph.value = String(v);
+      shapeBtns.forEach((b) => b.setAttribute('aria-checked', String(+b.dataset.shape! === v)));
+    };
+    shapeBtns.forEach((b) => b.addEventListener('click', () => setShape(+b.dataset.shape!)));
+    morph.addEventListener('input', () => setShape(+morph.value, true));
+
+    // ---------- Board clock ----------
+    const clock = page.querySelector<HTMLElement>('[data-hj-clock]');
+    if (clock) {
+      const paint = () => { clock.textContent = new Date().toTimeString().slice(0, 8); };
+      paint(); setInterval(paint, 1000);
+    }
+
+    // ---------- Tester ----------
+    const test = page.querySelector<HTMLElement>('[data-hj-test]')!;
+    const text = test.querySelector<HTMLElement>('[data-test-text]')!;
+    test.querySelectorAll<HTMLInputElement>('[data-t]').forEach((s) => {
+      const out = test.querySelector<HTMLElement>(`[data-tv="${s.dataset.t}"]`)!;
+      const run = () => { text.style.setProperty(`--${s.dataset.t}`, s.value); out.textContent = s.dataset.t === 'elsh' ? `${(+s.value).toFixed(1)} · ${nameOf(+s.value)}` : s.value; };
+      s.addEventListener('input', run); run();
+    });
+    const inkBtns = Array.from(test.querySelectorAll<HTMLButtonElement>('[data-ink]'));
+    inkBtns.forEach((b) => b.addEventListener('click', () => {
+      text.style.color = b.dataset.ink!;
+      inkBtns.forEach((o) => o.setAttribute('aria-checked', String(o === b)));
+    }));
+    if (text.contentEditable !== 'plaintext-only') text.contentEditable = 'true';
+    text.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+    // ---------- Keys: tap toggles on touch screens ----------
+    page.querySelector('[data-hj-keys]')!.addEventListener('click', (e) => {
+      (e.target as HTMLElement).closest('.hj-key')?.classList.toggle('is-lit');
+    });
+  }
+</script>
+
+<style is:global>
+  /* Registered so shape, size and grid can be transitioned and keyframed. */
+  @property --elsh { syntax: '<number>'; inherits: true; initial-value: 8; }
+  @property --elgr { syntax: '<number>'; inherits: true; initial-value: 1; }
+  @property --hw { syntax: '<number>'; inherits: true; initial-value: 500; }
+
+  .hj-page {
+    --elsh: 8;
+    --amber: #ffb000;
+    --m: var(--font-mono);
+    background: var(--bg);
+    transition: --elsh 0.9s var(--ease);
+  }
+  /* `.hj *` too: font-variation-settings inherits as a computed string. */
+  .hj, .hj * { font-variation-settings: 'wght' var(--hw), 'ELGR' var(--elgr), 'ELSH' var(--elsh); }
+  .hj { font-family: 'Handjet Variable', monospace; font-weight: 400; font-feature-settings: normal; line-height: 0.9; }
+
+  /* ---------- hero ---------- */
+  .hj-hero {
+    position: relative; overflow: hidden; cursor: pointer; touch-action: pan-y;
+    min-height: calc(100svh - 64px);
+    display: grid; grid-template-rows: auto 1fr auto; grid-template-columns: minmax(0, 1fr);
+    padding: clamp(1rem, 2.5vw, 2rem) var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+    background:
+      radial-gradient(90% 70% at 50% 45%, #ffb00022, transparent 70%),
+      radial-gradient(#f3efe614 1.2px, transparent 1.6px) 0 0 / 14px 14px,
+      var(--bg);
+  }
+  .hj-hero__top { display: flex; justify-content: space-between; gap: 1rem; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
+  .hj-hero__word {
+    align-self: center; justify-self: center;
+    display: flex; white-space: nowrap; user-select: none;
+    font-size: min(35.5vw, 74svh); line-height: 0.82;
+    color: var(--amber);
+    filter: drop-shadow(0 0 0.04em #ffb00066);
+  }
+  .hj-hero__word span { display: block; }
+  .hj-hero__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .hj-hero__lede { font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2.1rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.15; max-width: 24ch; text-wrap: balance; }
+  .hj-hero__hint { display: block; margin-top: 0.8rem; font: 400 0.78rem/1.5 var(--m); letter-spacing: 0.02em; color: var(--fg-2); max-width: 46ch; }
+  [data-hint-coarse] { display: none; }
+  @media (hover: none) { .hj-hero__hint[data-hint-fine] { display: none; } .hj-hero__hint[data-hint-coarse] { display: block; } }
+  .hj-readout { display: flex; gap: clamp(1.2rem, 2.4vw, 2.4rem); }
+  .hj-readout dt { font: 400 0.68rem/1.4 var(--m); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .hj-readout dd { font: 300 clamp(1.5rem, 1rem + 1.8vw, 2.6rem)/1.15 var(--m); font-variant-numeric: tabular-nums; color: var(--amber); white-space: nowrap; }
+  .hj-readout em { font: 400 0.72rem/1 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); display: inline-block; min-width: 9ch; }
+
+  /* ---------- ticker ---------- */
+  .hj-ticker { overflow: hidden; border-block: 1px solid var(--line); background: #000; padding-block: 0.5rem; --hw: 600; }
+  .hj-ticker__track { display: flex; width: max-content; animation: hj-scroll 38s linear infinite; font-size: clamp(2.6rem, 6vw, 5.4rem); color: var(--amber); }
+  .hj-ticker__track span { white-space: nowrap; padding-right: 0.5em; }
+  .hj-ticker__track span:nth-child(3n) { color: #ff5c9d; }
+  .hj-ticker__track span:nth-child(3n + 2) { color: #8fe3ff; }
+  .hj-ticker__track i { font-style: normal; padding-left: 0.5em; color: var(--fg-3); }
+  @keyframes hj-scroll { to { transform: translateX(-50%); } }
+
+  /* ---------- shared section chrome ---------- */
+  .hj-sec { padding: clamp(4.5rem, 10vw, 9rem) var(--gutter) 0; max-width: var(--maxw); margin-inline: auto; }
+  .hj-kicker { display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font: 400 0.74rem/1.4 var(--m); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); }
+  .hj-kicker span { color: var(--amber); }
+  .hj-h2 { margin-top: clamp(1.5rem, 3vw, 2.5rem); font-size: clamp(2rem, 1rem + 4.2vw, 5rem); font-weight: 600; letter-spacing: -0.035em; line-height: 1; text-wrap: balance; }
+  .hj-h2 em { font-style: normal; color: var(--amber); }
+  .hj-lede { margin-top: 1.4rem; max-width: 60ch; font-size: var(--step-1); line-height: 1.5; color: var(--fg-2); }
+  .hj-cap { margin-top: 0.9rem; font: 400 0.72rem/1.5 var(--m); letter-spacing: 0.04em; color: var(--fg-3); }
+  .hj-page code { font-family: var(--m); font-size: 0.84em; color: var(--amber); }
+
+  /* ---------- shapes ---------- */
+  .hj-shapes { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0.6rem; margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .hj-shape {
+    --hw: 520;
+    display: grid; justify-items: center; gap: 0.2rem; padding: 0.6rem 0.4rem 0.9rem;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg-2);
+    transition: border-color 0.2s, background 0.2s, transform 0.3s var(--ease), --hw 0.4s var(--ease);
+  }
+  .hj-shape:hover { --hw: 760; transform: translateY(-3px); border-color: #ffb00088; }
+  .hj-shape[aria-checked='true'] { border-color: var(--amber); background: #ffb0001f; --hw: 700; }
+  .hj-shape__g { font-size: clamp(4.5rem, 15vw, 15.5rem); line-height: 0.78; color: var(--amber); padding-bottom: 0.08em; }
+  .hj-shape__n { font: 400 0.66rem/1 var(--m); color: var(--fg-3); }
+  .hj-shape__name { font-size: 0.86rem; font-weight: 600; }
+  .hj-morph { margin-top: clamp(2rem, 4vw, 3.5rem); display: grid; gap: 1rem; }
+  .hj-morph__word { font-size: clamp(5rem, 22vw, 23rem); line-height: 0.8; color: var(--fg); --hw: 600; white-space: nowrap; }
+  .hj-page:has([data-morph]:active) { transition: none; }
+  .hj-slider { display: grid; gap: 0.6rem; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
+  .hj-slider b { font-weight: 500; color: var(--amber); margin-left: 0.5em; }
+  .hj-page input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: none; cursor: pointer; }
+  .hj-page input[type='range']::-webkit-slider-runnable-track { height: 6px; background: radial-gradient(circle, var(--fg-3) 1.5px, transparent 2px) 0 0 / 10px 6px; }
+  .hj-page input[type='range']::-moz-range-track { height: 6px; background: radial-gradient(circle, var(--fg-3) 1.5px, transparent 2px) 0 0 / 10px 6px; }
+  .hj-page input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 12px #ffb000aa; }
+  .hj-page input[type='range']::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: var(--amber); box-shadow: 0 0 12px #ffb000aa; }
+
+  /* ---------- three axes ---------- */
+  .hj-axes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .hj-axis { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-2); padding: clamp(1.2rem, 2.4vw, 2.2rem); display: grid; gap: 1.2rem; overflow: hidden; }
+  .hj-axis__g { font-size: clamp(9rem, 21vw, 21rem); line-height: 0.8; text-align: center; color: var(--amber); padding-bottom: 0.14em; }
+  .hj-axis figcaption b { font-size: var(--step-1); font-weight: 600; margin-right: 0.6rem; }
+  .hj-axis figcaption p { margin-top: 0.6rem; color: var(--fg-2); line-height: 1.5; }
+  .hj-axis--shape.is-in .hj-axis__g { animation: hj-shape 9s linear infinite alternate; }
+  .hj-axis--size .hj-axis__g { --elsh: 8; }
+  .hj-axis--size.is-in .hj-axis__g { animation: hj-size 3s ease-in-out infinite alternate; }
+  .hj-axis--grid .hj-axis__g { --elsh: 2; --hw: 420; }
+  .hj-axis--grid.is-in .hj-axis__g { animation: hj-grid 3.4s ease-in-out infinite alternate; }
+  @keyframes hj-shape { from { --elsh: 1; } to { --elsh: 16; } }
+  @keyframes hj-size { from { --hw: 100; } to { --hw: 900; } }
+  @keyframes hj-grid { 0%, 20% { --elgr: 1; } 80%, 100% { --elgr: 2; } }
+
+  /* ---------- in use ---------- */
+  .hj-bento { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(1.2rem, 2.4vw, 2.4rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); align-items: start; }
+  .hj-board__panel {
+    --elsh: 8; --hw: 560;
+    container-type: inline-size;
+    background: #000; color: var(--amber);
+    border-radius: 10px; padding: clamp(1rem, 2.4vw, 2rem);
+    box-shadow: inset 0 0 0 1px #ffffff1f, inset 0 0 0 9px #16161a, 0 30px 70px -30px #ffb00055;
+  }
+  .hj-board__panel header { display: flex; justify-content: space-between; font-size: 9cqi; color: #f3efe6; padding-bottom: 0.1em; border-bottom: 2px dotted #ffb00066; margin-bottom: 0.18em; }
+  .hj-board__panel ol { font-size: 7.4cqi; display: grid; }
+  .hj-board__panel li { display: grid; grid-template-columns: 2.1em 1fr 0.9em 4.3em; gap: 0.35em; white-space: nowrap; line-height: 0.98; }
+  .hj-board__panel li span:nth-child(3) { text-align: center; color: #f3efe6; }
+  .hj-board__panel li span:nth-child(4) { text-align: right; }
+  .hj-board.is-in li { animation: hj-boot 1.4s var(--ease) backwards; animation-delay: calc(var(--i) * 160ms); }
+  .hj-board__panel li.is-boarding span:nth-child(4) { color: #6dff7a; animation: hj-pulse 1s ease-in-out infinite alternate; }
+  .hj-board__panel li.is-late span:nth-child(4) { color: #ff3b30; }
+  @keyframes hj-boot { 0% { --hw: 100; --elsh: 4; opacity: 0.2; } 100% { --hw: 560; --elsh: 8; opacity: 1; } }
+  @keyframes hj-pulse { from { --hw: 300; } to { --hw: 800; } }
+
+  .hj-receipt { grid-row: span 2; container-type: inline-size; position: sticky; top: 92px; }
+  .hj-receipt__paper {
+    --elsh: 8; --hw: 620;
+    background: #f4f1ea; color: #1b1a17;
+    padding: 9cqi 7cqi 12cqi; font-size: 9.2cqi;
+    display: grid; gap: 0.2em;
+    transform: rotate(1.2deg);
+    -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 16px 100% repeat-x;
+            mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 16px 100% repeat-x;
+  }
+  .hj-receipt__shop { font-size: 1.9em; text-align: center; --hw: 800; }
+  .hj-receipt__meta { text-align: center; font-size: 0.72em; padding-bottom: 0.5em; border-bottom: 2px dashed #1b1a1766; margin-bottom: 0.4em; }
+  .hj-receipt__paper li, .hj-receipt__total { display: flex; justify-content: space-between; gap: 1em; white-space: nowrap; }
+  .hj-receipt__total { font-size: 1.5em; --hw: 800; margin-top: 0.35em; padding-top: 0.3em; border-top: 2px dashed #1b1a1766; }
+  .hj-receipt__thanks { --elsh: 16; --hw: 700; text-align: center; font-size: 1.7em; color: #d81e5b; margin-top: 0.4em; }
+
+  .hj-love { container-type: inline-size; }
+  .hj-love__card {
+    --elsh: 16; --hw: 600;
+    background: radial-gradient(120% 120% at 30% 20%, #ff5c9d, #b3124f 70%); color: #fff4f7;
+    border-radius: 14px; padding: 6cqi 5cqi 8cqi;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .hj-love__card span { font-size: 26cqi; line-height: 0.78; }
+  .hj-love.is-in .hj-love__card { animation: hj-beat 1.3s ease-in-out infinite; }
+  @keyframes hj-beat { 0%, 100% { --hw: 420; } 18% { --hw: 860; } 36% { --hw: 520; } 52% { --hw: 800; } }
+
+  /* ---------- scripts ---------- */
+  .hj-hellos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .hj-hello { background: var(--bg); padding: clamp(1.2rem, 3vw, 2.6rem); display: grid; gap: 0.6rem; container-type: inline-size; transition: --hw 0.5s var(--ease); --hw: 480; }
+  .hj-hello:hover { --hw: 820; }
+  .hj-hello p { font-size: 30cqi; line-height: 0.95; color: var(--fg); white-space: nowrap; text-align: center; }
+  .hj-hello:nth-child(2n) p { color: var(--amber); }
+  .hj-hello figcaption { font: 400 0.7rem/1 var(--m); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); text-align: center; }
+
+  /* ---------- tester ---------- */
+  .hj-test__stage {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem); min-height: clamp(15rem, 36vw, 30rem);
+    display: grid; place-items: center; padding: clamp(1rem, 3vw, 3rem);
+    background: radial-gradient(#f3efe612 1.2px, transparent 1.6px) 0 0 / 14px 14px, #000;
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  }
+  .hj-test__text { font-size: clamp(6rem, 24vw, 25rem); line-height: 0.82; color: var(--amber); text-align: center; outline: none; max-width: 100%; overflow-wrap: anywhere; caret-color: #fff; }
+  .hj-test__ctl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: clamp(1rem, 3vw, 3rem); align-items: end; margin-top: 1.5rem; }
+  .hj-inks { display: flex; gap: 0.5rem; padding-bottom: 2px; }
+  .hj-inks button { width: 26px; height: 26px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px transparent; transition: box-shadow 0.2s; }
+  .hj-inks button[aria-checked='true'] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--c); }
+
+  /* ---------- keys ---------- */
+  .hj-keys { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: clamp(0.2rem, 0.5vw, 0.5rem); margin-top: clamp(2rem, 4vw, 3.5rem); }
+  .hj-key {
+    --hw: 300; --elsh: 2;
+    aspect-ratio: 1; display: grid; place-items: center;
+    font-size: clamp(2.2rem, 7vw, 7.4rem); line-height: 0.7; color: var(--fg-2);
+    background: var(--bg-2); border-radius: 8px;
+    transition: --hw 0.9s var(--ease), --elsh 0.9s var(--ease), color 0.9s;
+  }
+  .hj-key:hover, .hj-key:focus-visible, .hj-key.is-lit { --hw: 820; --elsh: 13; color: var(--amber); transition-duration: 0.15s; }
+
+  /* ---------- story ---------- */
+  .hj-story { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 7rem); margin-top: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  .hj-story__prose { font-size: var(--step-1); line-height: 1.6; color: var(--fg-2); max-width: 60ch; }
+  .hj-story__prose p + p { margin-top: 1.1em; }
+  .hj-story__prose strong { color: var(--fg); font-weight: 600; }
+  .hj-story__lede { font-size: 1.22em; line-height: 1.42; color: var(--fg); letter-spacing: -0.01em; }
+  .hj-specs { border-top: 1px solid var(--fg); }
+  .hj-specs > div { display: grid; grid-template-columns: 8rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+  .hj-specs dt { font: 400 0.7rem/1.4 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding-top: 0.2em; }
+  .hj-specs dd { line-height: 1.45; }
+  .hj-specs .hj-specs__links { display: flex; gap: 1.5rem; flex-wrap: wrap; border-bottom: 0; padding-top: 1.3rem; }
+  .hj-specs__links a { font: 400 0.78rem/1.4 var(--m); letter-spacing: 0.06em; color: var(--amber); border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+  /* ---------- next ---------- */
+  .hj-next { display: grid; gap: 0.8rem; justify-items: center; text-align: center; margin-top: clamp(5rem, 10vw, 9rem); padding: clamp(3.5rem, 9vw, 8rem) var(--gutter); background: #fbf6e9; color: #1a1723; overflow: hidden; }
+  .hj-next__k { font: 400 0.74rem/1.4 var(--m); letter-spacing: 0.14em; text-transform: uppercase; color: #e8391a; }
+  .hj-next__name { display: flex; font-family: 'Recursive Variable', sans-serif; font-size: clamp(3.4rem, 15vw, 15rem); line-height: 1.1; }
+  .hj-next__name span { font-variation-settings: 'MONO' 0, 'CASL' 0, 'wght' 300, 'slnt' 0, 'CRSV' 0.5; transition: font-variation-settings 0.7s var(--ease), color 0.7s var(--ease); transition-delay: calc(var(--i) * 45ms); }
+  .hj-next:hover .hj-next__name span { font-variation-settings: 'MONO' 0, 'CASL' 1, 'wght' 1000, 'slnt' -15, 'CRSV' 1; color: #e8391a; }
+  .hj-next__sub { color: #4c4759; }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 900px) {
+    .hj-shapes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .hj-axes, .hj-bento, .hj-story { grid-template-columns: minmax(0, 1fr); }
+    .hj-axis__g { font-size: 46vw; }
+    .hj-receipt { grid-row: auto; max-width: 24rem; position: static; }
+    .hj-hellos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hj-test__ctl { grid-template-columns: 1fr; }
+    .hj-keys { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .hj-hero__top span:last-child { display: none; }
+    .hj-readout { width: 100%; justify-content: space-between; gap: 0.8rem; }
+    .hj-readout em { display: block; margin-top: 0.3rem; min-width: 0; }
+    .hj-shape__name { font-size: 0.72rem; }
+    .hj-shape__g { font-size: 27vw; }
+    .hj-specs > div { grid-template-columns: 6.5rem 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hj-ticker__track { animation: none; } }
+</style>
