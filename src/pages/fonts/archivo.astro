@@ -1,0 +1,452 @@
+---
+// ARCHIVO — new edition. A hand-built page for a face that is still part of
+// the `fonts` collection (so Compare, Pair, Moods and History keep working);
+// facts, story and theme come from src/content/fonts/archivo.mdx.
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
+import InUse from '../../components/specimen/inuse/archivo.astro';
+import { themeToStyle } from '../../lib/theme';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+const i = fonts.findIndex((f) => f.id === 'archivo');
+const entry = fonts[i];
+const prev = fonts[(i - 1 + fonts.length) % fonts.length];
+const next = fonts[(i + 1) % fonts.length];
+const font = entry.data;
+const { Content } = await render(entry);
+
+// Five headlines of different lengths. Same type size; only the width axis
+// changes, solved in the browser so each one fills the column exactly.
+const fitLines = [
+  { text: 'Last train home', w: 900 },
+  { text: 'Night shift radio', w: 300 },
+  { text: 'Doors open at seven', w: 700 },
+  { text: 'Harbour lights, all week', w: 500 },
+  { text: 'Every ticket half price', w: 800 },
+];
+
+const widths = [62, 75, 88, 100, 112, 125];
+const weights = [100, 300, 500, 700, 900];
+
+const presets = [
+  { name: 'Text',            v: [400, 100], it: false },
+  { name: 'Condensed deck',  v: [600, 62], it: false },
+  { name: 'Wide headline',   v: [800, 125], it: false },
+  { name: 'Hairline',        v: [100, 110], it: false },
+  { name: 'Poster',          v: [900, 70], it: false },
+  { name: 'Fast italic',     v: [750, 118], it: true },
+];
+---
+<Layout
+  title="Archivo — Specimen"
+  description={font.blurb}
+  themeStyle={themeToStyle(font.theme)}
+  mode={font.theme.mode}
+  fixedTheme
+>
+  <SiteHeader current="Archivo" showToggle={false} />
+
+  <div class="ar-page" data-ar>
+
+    <!-- ============ HERO ============ -->
+    <header class="ar-hero" data-ar-hero>
+      <div class="ar-hero__top">
+        <span>Archivo · Omnibus-Type · Buenos Aires · {font.year}</span>
+        <span>Weight × Width</span>
+      </div>
+
+      <h1 class="ar-hero__word ar" data-hero-word aria-label="Archivo">
+        {[...'ARCHIVO'].map((ch, n) => <span data-l style={`--i:${n}`} aria-hidden="true">{ch}</span>)}
+      </h1>
+
+      <div class="ar-hero__foot">
+        <p class="ar-hero__lede ar">
+          A grotesque with <em>an accordion</em> built in.
+          <span class="ar-hero__hint" data-hint-fine>Move across the word: letters under the pointer stretch, the rest squeeze. Up is heavier. Click for italic.</span>
+          <span class="ar-hero__hint" data-hint-coarse>Drag across the word: letters under your finger stretch, the rest squeeze. Tap for italic.</span>
+        </p>
+        <dl class="ar-readout">
+          <div><dt>wdth · narrowest</dt><dd data-hud="min">62</dd></div>
+          <div><dt>wdth · widest</dt><dd data-hud="max">125</dd></div>
+          <div><dt>wght</dt><dd data-hud="wght">800</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ FIT ============ -->
+      <section class="ar-sec" data-ar-fit>
+        <div class="ar-kicker"><span>01</span> What width is for</div>
+        <h2 class="ar-h2 ar">Five headlines.<br />One size. <em>All of them fit.</em></h2>
+        <p class="ar-lede">
+          The type size never changes below. Each line solves for the one width setting, somewhere between 62 and 125,
+          that makes it fill the column exactly. Change the column and they all solve again.
+        </p>
+
+        <div class="ar-fit">
+          <div class="ar-fit__col" data-fit-col>
+            {fitLines.map((l) => (
+              <p class="ar-fit__line" style={`--ag:${l.w}`}>
+                <span class="ar ar-fit__text" data-fit-line>{l.text}</span>
+                <b data-fit-val>—</b>
+              </p>
+            ))}
+            <span class="ar-fit__rule" aria-hidden="true"></span>
+          </div>
+          <label class="ar-slider ar-fit__ctl">
+            <span>Column <b data-fit-pct>100</b>%</span>
+            <input type="range" min="46" max="100" step="1" value="100" data-fit-width aria-label="Column width" />
+          </label>
+        </div>
+      </section>
+
+      <!-- ============ DESIGN SPACE ============ -->
+      <section class="ar-sec" data-ar-space>
+        <div class="ar-kicker"><span>02</span> The whole range</div>
+        <h2 class="ar-h2 ar">Thirty stops on a map<br />with <em>no gaps between them</em>.</h2>
+
+        <div class="ar-space">
+          <div class="ar-space__grid" role="group" aria-label="Weight and width map">
+            {weights.map((w) => widths.map((d) => (
+              <button type="button" class="ar ar-space__cell" style={`--ag:${w};--ad:${d}`} data-w={w} data-d={d} aria-label={`Weight ${w}, width ${d}`}>Rag</button>
+            )))}
+          </div>
+          <div class="ar-space__preview">
+            <p class="ar ar-space__big" data-space-big aria-hidden="true">Rag</p>
+            <dl>
+              <div><dt>wght</dt><dd data-space-w>500</dd></div>
+              <div><dt>wdth</dt><dd data-space-d>100</dd></div>
+            </dl>
+            <p class="ar-space__note">Columns run condensed to expanded, rows thin to black. Point at any stop.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ IN USE ============ -->
+      <section class="ar-sec">
+        <div class="ar-kicker"><span>03</span> In use</div>
+        <h2 class="ar-h2 ar">Posters, timetables,<br /><em>and the small print</em>.</h2>
+        <div class="ar-use"><InUse font={font} /></div>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="ar-sec" data-ar-test>
+        <div class="ar-kicker"><span>04</span> Your turn</div>
+        <h2 class="ar-h2 ar">Squeeze it. <em>Stretch it.</em></h2>
+
+        <div class="ar-test">
+          <div class="ar-test__stage">
+            <div class="ar ar-test__text" contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Sample text — editable" data-test-text>Make room</div>
+          </div>
+          <div class="ar-test__ctl">
+            <div class="ar-test__presets">
+              {presets.map((p, n) => (
+                <button type="button" data-preset={JSON.stringify(p.v)} data-italic={p.it ? '1' : '0'} aria-pressed={n === 2 ? 'true' : 'false'}>{p.name}</button>
+              ))}
+            </div>
+            <label class="ar-slider"><span>Weight <b data-tv="0"></b></span><input type="range" min="100" max="900" step="1" data-t="0" /></label>
+            <label class="ar-slider"><span>Width <b data-tv="1"></b></span><input type="range" min="62" max="125" step="1" data-t="1" /></label>
+            <button type="button" class="ar ar-test__italic" data-test-italic aria-pressed="false">Italic</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ STORY ============ -->
+      <section class="ar-sec">
+        <div class="ar-kicker"><span>05</span> The story</div>
+        <div class="ar-story">
+          <div class="ar-story__prose ar"><Content /></div>
+          <dl class="ar-specs">
+            <div><dt>Design</dt><dd>{font.designer}</dd></div>
+            <div><dt>Foundry</dt><dd>{font.foundry}</dd></div>
+            <div><dt>Released</dt><dd>{font.year}</dd></div>
+            <div><dt>Classification</dt><dd>{font.classification}</dd></div>
+            <div><dt>Axes</dt><dd>{font.axes.map((a) => <><code>{a.tag}</code> {a.min}–{a.max}<br /></>)}</dd></div>
+            <div><dt>Styles</dt><dd>Roman and italic</dd></div>
+            <div><dt>Licence</dt><dd>{font.license}</dd></div>
+            <div class="ar-specs__links">
+              <a href={font.googleFontsUrl} rel="noopener">Get it on Google Fonts ↗</a>
+              {font.sourceUrl && <a href={font.sourceUrl} rel="noopener">Source ↗</a>}
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ============ GLYPHS ============ -->
+      <section class="ar-sec ar-sec--last">
+        <div class="ar-kicker"><span>06</span> The set</div>
+        <h2 class="ar-h2 ar">Every character. <em>Click one.</em></h2>
+        <div class="ar-glyphs"><GlyphGrid font={font} /></div>
+      </section>
+    </main>
+  </div>
+
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-ar]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // ---------- Hero: an accordion. Near the pointer stretches, the rest squeeze ----------
+    const hero = page.querySelector<HTMLElement>('[data-ar-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-hero-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((el) => [el.dataset.hud!, el]));
+    const d = letters.map(() => 100);
+    let px = 0.5, py = 0.4, lastMove = -1e9, on = true, wght = 800;
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      px = clamp((e.clientX - r.left) / r.width, 0, 1);
+      py = clamp((e.clientY - r.top) / r.height, 0, 1);
+      lastMove = performance.now();
+    });
+    hero.addEventListener('click', () => word.classList.toggle('is-italic'));
+    new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(hero);
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!on) return;
+      const live = now - lastMove < 2600;
+      const t = now / 1000;
+      // Each letter owns an equal slice of the word, so the stretch tracks the pointer even as widths shift.
+      const pos = live ? clamp((px - 0.08) / 0.84, 0, 1) * (letters.length - 1) : 0;
+      let lo = 125, hi = 62;
+      letters.forEach((l, n) => {
+        let td: number;
+        if (live) { const near = 1 - clamp(Math.abs(n - pos) / 2.2, 0, 1); td = 62 + 63 * near * near * (3 - 2 * near); }
+        else if (reduce) td = 100;
+        else td = 93.5 + 31.5 * Math.sin(t * 1.3 - n * 0.9);
+        d[n] += (td - d[n]) * 0.14;
+        l.style.setProperty('--ad', d[n].toFixed(1));
+        lo = Math.min(lo, d[n]); hi = Math.max(hi, d[n]);
+      });
+      const tw = live ? 900 - 760 * py : reduce ? 800 : 620 + 280 * Math.sin(t * 0.5);
+      wght += (tw - wght) * 0.1;
+      word.style.setProperty('--ag', wght.toFixed(0));
+      hud.min.textContent = String(Math.round(lo));
+      hud.max.textContent = String(Math.round(hi));
+      hud.wght.textContent = String(Math.round(wght));
+    };
+    requestAnimationFrame(tick);
+
+    // ---------- Fit: solve the width axis so every line fills the column ----------
+    const fit = page.querySelector<HTMLElement>('[data-ar-fit]')!;
+    const col = fit.querySelector<HTMLElement>('[data-fit-col]')!;
+    const lines = Array.from(fit.querySelectorAll<HTMLElement>('[data-fit-line]'));
+    const outs = Array.from(fit.querySelectorAll<HTMLElement>('[data-fit-val]'));
+    const range = fit.querySelector<HTMLInputElement>('[data-fit-width]')!;
+    const pct = fit.querySelector<HTMLElement>('[data-fit-pct]')!;
+    const widthAt = (el: HTMLElement, v: number) => { el.style.setProperty('--ad', String(v)); return el.getBoundingClientRect().width; };
+    const solve = () => {
+      const target = col.clientWidth - 64; // leave the gutter where the solved values sit
+      // Size the type so the longest line just fits at its most condensed.
+      col.style.setProperty('--fit-size', '100px');
+      const narrowest = Math.max(...lines.map((l) => widthAt(l, 62)));
+      col.style.setProperty('--fit-size', `${(100 * target) / narrowest * 0.985}px`);
+      lines.forEach((l, n) => {
+        let a = 62, b = 125;
+        for (let k = 0; k < 9; k++) { const m = (a + b) / 2; if (widthAt(l, m) > target) b = m; else a = m; }
+        const v = (a + b) / 2;
+        l.style.setProperty('--ad', v.toFixed(1));
+        outs[n].textContent = v.toFixed(0);
+      });
+    };
+    let touched = false, fitOn = false;
+    const setCol = (v: number) => { col.style.width = `${v}%`; pct.textContent = String(Math.round(v)); solve(); };
+    range.addEventListener('input', () => { touched = true; setCol(+range.value); });
+    window.addEventListener('resize', solve);
+    document.fonts?.ready.then(solve);
+    new IntersectionObserver((es) => { fitOn = es[0].isIntersecting; }, { threshold: 0.2 }).observe(col.parentElement!);
+    const breathe = (now: number) => {
+      if (touched || reduce) return;
+      requestAnimationFrame(breathe);
+      if (!fitOn) return;
+      const v = 76 + 24 * Math.cos(now / 2600);
+      range.value = String(Math.round(v));
+      setCol(v);
+    };
+    solve();
+    requestAnimationFrame(breathe);
+
+    // ---------- Design space ----------
+    const space = page.querySelector<HTMLElement>('[data-ar-space]')!;
+    const big = space.querySelector<HTMLElement>('[data-space-big]')!;
+    const cells = Array.from(space.querySelectorAll<HTMLElement>('.ar-space__cell'));
+    const pick = (c: HTMLElement) => {
+      cells.forEach((o) => o.classList.toggle('is-on', o === c));
+      big.style.setProperty('--ag', c.dataset.w!);
+      big.style.setProperty('--ad', c.dataset.d!);
+      space.querySelector('[data-space-w]')!.textContent = c.dataset.w!;
+      space.querySelector('[data-space-d]')!.textContent = c.dataset.d!;
+    };
+    let roam = !reduce, spaceOn = false;
+    cells.forEach((c) => {
+      c.addEventListener('pointerenter', () => { roam = false; pick(c); });
+      c.addEventListener('focus', () => { roam = false; pick(c); });
+    });
+    new IntersectionObserver((es) => { spaceOn = es[0].isIntersecting; }, { threshold: 0.3 }).observe(space);
+    pick(cells[15]);
+    setInterval(() => { if (roam && spaceOn) pick(cells[Math.floor(Math.random() * cells.length)]); }, 1100);
+
+    // ---------- Tester ----------
+    const test = page.querySelector<HTMLElement>('[data-ar-test]')!;
+    const text = test.querySelector<HTMLElement>('[data-test-text]')!;
+    const sliders = Array.from(test.querySelectorAll<HTMLInputElement>('[data-t]'));
+    const vals = Array.from(test.querySelectorAll<HTMLElement>('[data-tv]'));
+    const presetBtns = Array.from(test.querySelectorAll<HTMLButtonElement>('[data-preset]'));
+    const italic = test.querySelector<HTMLButtonElement>('[data-test-italic]')!;
+    const names = ['ag', 'ad'];
+    const apply = () => sliders.forEach((s, n) => { text.style.setProperty(`--${names[n]}`, s.value); vals[n].textContent = s.value; });
+    const setItalic = (v: boolean) => { italic.setAttribute('aria-pressed', String(v)); text.style.fontStyle = v ? 'italic' : 'normal'; };
+    sliders.forEach((s) => s.addEventListener('input', () => { presetBtns.forEach((b) => b.setAttribute('aria-pressed', 'false')); apply(); }));
+    italic.addEventListener('click', () => setItalic(italic.getAttribute('aria-pressed') !== 'true'));
+    const usePreset = (b: HTMLButtonElement) => {
+      presetBtns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      (JSON.parse(b.dataset.preset!) as number[]).forEach((v, n) => (sliders[n].value = String(v)));
+      setItalic(b.dataset.italic === '1');
+      apply();
+    };
+    presetBtns.forEach((b) => b.addEventListener('click', () => usePreset(b)));
+    usePreset(presetBtns.find((b) => b.getAttribute('aria-pressed') === 'true') ?? presetBtns[0]);
+    if (text.contentEditable !== 'plaintext-only') text.contentEditable = 'true';
+    text.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+  }
+</script>
+
+<style is:global>
+  /* Registered so weight and width can be transitioned like any number. */
+  @property --ag { syntax: '<number>'; inherits: true; initial-value: 400; }
+  @property --ad { syntax: '<number>'; inherits: true; initial-value: 100; }
+
+  .ar-page { --ink: #111010; --paper: #f5f2ed; --m: var(--font-mono); background: var(--bg); }
+  /* `.ar *` too: font-variation-settings inherits as a computed string. */
+  .ar, .ar * { font-variation-settings: 'wght' var(--ag), 'wdth' var(--ad); }
+  .ar { font-family: 'Archivo Variable', system-ui, sans-serif; font-weight: 400; font-feature-settings: normal; }
+
+  /* ---------- hero ---------- */
+  .ar-hero {
+    position: relative; overflow: hidden; cursor: pointer; touch-action: pan-y;
+    min-height: calc(100svh - 64px);
+    display: grid; grid-template-rows: auto 1fr auto; grid-template-columns: minmax(0, 1fr);
+    padding: clamp(1rem, 2.5vw, 2rem) var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--ink); color: var(--paper);
+    --fg-2: #c9c3b9; --fg-3: #8a847b;
+  }
+  .ar-hero__top { display: flex; justify-content: space-between; gap: 1rem; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
+  .ar-hero__word {
+    --ag: 800;
+    align-self: center; justify-self: center;
+    display: flex; white-space: nowrap; user-select: none;
+    font-size: min(19.5vw, 58svh); line-height: 0.9; letter-spacing: -0.01em;
+  }
+  .ar-hero__word span { display: block; }
+  .ar-hero__word span:nth-child(4) { color: var(--accent); }
+  .ar-hero__word.is-italic { font-style: italic; }
+  .ar-hero__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .ar-hero__lede { --ag: 650; --ad: 112; font-size: clamp(1.3rem, 0.9rem + 1.7vw, 2.3rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 20ch; text-wrap: balance; }
+  .ar-hero__lede em { font-style: normal; --ad: 62; --ag: 300; color: var(--accent); letter-spacing: 0; }
+  .ar-hero__hint { display: block; margin-top: 0.9rem; font: 400 0.78rem/1.5 var(--m); letter-spacing: 0.02em; color: var(--fg-2); max-width: 48ch; font-variation-settings: normal; }
+  [data-hint-coarse] { display: none; }
+  @media (hover: none) { .ar-hero__hint[data-hint-fine] { display: none; } .ar-hero__hint[data-hint-coarse] { display: block; } }
+  .ar-readout { display: flex; gap: clamp(1rem, 2.4vw, 2.4rem); }
+  .ar-readout dt { font: 400 0.68rem/1.4 var(--m); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .ar-readout dd { font: 300 clamp(1.5rem, 1rem + 1.8vw, 2.6rem)/1.15 var(--m); font-variant-numeric: tabular-nums; color: var(--accent); }
+
+  /* ---------- shared section chrome ---------- */
+  .ar-sec { padding: clamp(4.5rem, 10vw, 9rem) var(--gutter) 0; max-width: var(--maxw); margin-inline: auto; }
+  .ar-sec--last { padding-bottom: clamp(4rem, 8vw, 7rem); }
+  .ar-kicker { display: flex; gap: 1rem; padding-top: 1rem; border-top: 3px solid var(--ink); font: 400 0.74rem/1.4 var(--m); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); }
+  .ar-kicker span { color: var(--accent); }
+  .ar-h2 { --ag: 820; --ad: 118; margin-top: clamp(1.5rem, 3vw, 2.5rem); font-size: clamp(1.9rem, 1rem + 3.9vw, 4.7rem); letter-spacing: -0.03em; line-height: 0.98; text-wrap: balance; }
+  .ar-h2 em { font-style: normal; --ag: 300; --ad: 62; letter-spacing: 0; color: var(--accent); }
+  .ar-lede { margin-top: 1.5rem; max-width: 60ch; font-size: var(--step-1); line-height: 1.5; color: var(--fg-2); }
+  .ar-slider { display: grid; gap: 0.6rem; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
+  .ar-slider b { font-weight: 500; color: var(--accent); margin-left: 0.4em; }
+  .ar-page input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: none; cursor: pointer; }
+  .ar-page input[type='range']::-webkit-slider-runnable-track { height: 3px; background: var(--ink); }
+  .ar-page input[type='range']::-moz-range-track { height: 3px; background: var(--ink); }
+  .ar-page input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 26px; margin-top: -11.5px; background: var(--accent); border: 0; border-radius: 0; }
+  .ar-page input[type='range']::-moz-range-thumb { width: 12px; height: 26px; background: var(--accent); border: 0; border-radius: 0; }
+
+  /* ---------- fit ---------- */
+  .ar-fit { margin-top: clamp(2.5rem, 5vw, 4.5rem); display: grid; gap: 1.6rem; }
+  .ar-fit__col { --fit-size: 80px; position: relative; width: 100%; background: var(--ink); color: var(--paper); padding: clamp(0.8rem, 2vw, 1.6rem) 0; overflow: hidden; }
+  .ar-fit__line { display: flex; align-items: center; justify-content: space-between; white-space: nowrap; line-height: 1; padding-inline: 0.75rem 0; border-top: 1px solid #ffffff22; }
+  .ar-fit__line:first-child { border-top: 0; }
+  .ar-fit__text { font-size: var(--fit-size); text-transform: uppercase; line-height: 1.02; padding-block: 0.06em; display: inline-block; }
+  .ar-fit__line:nth-child(2n) .ar-fit__text { color: var(--accent); }
+  .ar-fit__line b { flex: none; width: 52px; text-align: right; padding-right: 0.75rem; font: 400 0.7rem/1 var(--m); color: #c9c3b9; font-variant-numeric: tabular-nums; }
+  .ar-fit__ctl { max-width: 34rem; }
+
+  /* ---------- design space ---------- */
+  .ar-space { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.5rem, 3vw, 3rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); align-items: stretch; }
+  .ar-space__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--ink); }
+  .ar-space__cell {
+    aspect-ratio: 1.25; display: grid; place-items: center;
+    border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+    font-size: clamp(0.9rem, 2.1vw, 2.2rem); overflow: hidden;
+    transition: background 0.25s, color 0.25s;
+  }
+  .ar-space__cell.is-on { background: var(--accent); color: var(--accent-contrast); }
+  .ar-space__preview { display: flex; flex-direction: column; justify-content: space-between; gap: 1.2rem; padding: clamp(1.2rem, 2.4vw, 2.2rem); background: var(--ink); color: var(--paper); overflow: hidden; }
+  .ar-space__big { font-size: clamp(4.5rem, 12.5vw, 12.5rem); line-height: 0.95; white-space: nowrap; transition: --ag 0.5s var(--ease), --ad 0.5s var(--ease); }
+  .ar-space__preview dl { display: flex; gap: 2.2rem; }
+  .ar-space__preview dt { font: 400 0.68rem/1.4 var(--m); letter-spacing: 0.12em; color: #8a847b; }
+  .ar-space__preview dd { font: 300 clamp(1.5rem, 1rem + 1.6vw, 2.4rem)/1.1 var(--m); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .ar-space__note { font: 400 0.72rem/1.5 var(--m); color: #c9c3b9; max-width: 34ch; }
+
+  .ar-use { margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  /* the component zeroes figure margins, which cancels the shared full-bleed offset */
+  .ar-use .iu__item--bleed { margin-left: calc(50% - 50vw) !important; }
+
+  /* ---------- tester ---------- */
+  .ar-test { margin-top: clamp(2.5rem, 5vw, 4.5rem); display: grid; gap: 1.5rem; }
+  .ar-test__stage { display: grid; place-items: center; min-height: clamp(14rem, 32vw, 26rem); padding: clamp(1rem, 3vw, 3rem); border: 3px solid var(--ink); overflow: hidden; }
+  .ar-test__text {
+    font-size: clamp(2.6rem, 10vw, 10.5rem); line-height: 0.98; text-align: center; text-transform: uppercase; outline: none; max-width: 100%; overflow-wrap: anywhere; caret-color: var(--accent);
+    transition: --ag 0.6s var(--ease), --ad 0.6s var(--ease);
+  }
+  .ar-test__ctl { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: clamp(1rem, 2.6vw, 2.6rem); align-items: end; }
+  .ar-test__presets { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .ar-test__presets button { padding: 0.5rem 0.8rem; border: 1.5px solid var(--ink); font: 400 0.7rem/1.4 var(--m); letter-spacing: 0.06em; text-transform: uppercase; transition: all 0.2s; }
+  .ar-test__presets button:hover { background: var(--bg-2); }
+  .ar-test__presets button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  .ar-test__italic { --ag: 700; --ad: 110; font-style: italic; font-size: 1.15rem; padding: 0.5rem 1.2rem; border: 1.5px solid var(--ink); transition: all 0.2s; }
+  .ar-test__italic[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+
+  /* ---------- story ---------- */
+  .ar-story { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 7rem); margin-top: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  .ar-story__prose { --ag: 400; --ad: 100; font-size: var(--step-1); line-height: 1.58; color: var(--fg-2); max-width: 60ch; }
+  .ar-story__prose p + p { margin-top: 1.1em; }
+  .ar-story__prose strong { --ag: 700; font-weight: inherit; color: var(--fg); }
+  .ar-story__prose em { font-style: italic; }
+  .ar-story__prose p:first-child { --ag: 560; --ad: 108; font-size: 1.24em; line-height: 1.36; color: var(--fg); letter-spacing: -0.01em; }
+  .ar-specs { border-top: 3px solid var(--ink); position: sticky; top: 96px; }
+  .ar-specs > div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+  .ar-specs dt { font: 400 0.7rem/1.4 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding-top: 0.2em; }
+  .ar-specs dd { line-height: 1.5; }
+  .ar-specs code { font-family: var(--m); font-size: 0.86em; color: var(--accent); }
+  .ar-specs .ar-specs__links { display: flex; gap: 1.5rem; flex-wrap: wrap; border-bottom: 0; padding-top: 1.3rem; }
+  .ar-specs__links a { font: 400 0.78rem/1.4 var(--m); letter-spacing: 0.06em; color: var(--accent); border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+  .ar-glyphs { margin-top: clamp(2rem, 4vw, 3.5rem); }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 900px) {
+    .ar-space, .ar-story { grid-template-columns: minmax(0, 1fr); }
+    .ar-specs { position: static; }
+    .ar-test__ctl { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .ar-hero__top span:last-child { display: none; }
+    .ar-readout { width: 100%; justify-content: space-between; gap: 0.6rem; }
+    .ar-fit__line b { width: 34px; font-size: 0.6rem; padding-right: 0.4rem; }
+    .ar-fit__line { padding-left: 0.4rem; }
+    .ar-specs > div { grid-template-columns: 6.5rem 1fr; }
+  }
+</style>

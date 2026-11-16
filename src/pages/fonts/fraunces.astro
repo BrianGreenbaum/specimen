@@ -1,0 +1,464 @@
+---
+// FRAUNCES — new edition. A hand-built page for a face that is still part of
+// the `fonts` collection (so Compare, Pair, Moods and History keep working);
+// facts, story and theme come from src/content/fonts/fraunces.mdx.
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import GlyphGrid from '../../components/specimen/GlyphGrid.astro';
+import InUse from '../../components/specimen/inuse/fraunces.astro';
+import { themeToStyle } from '../../lib/theme';
+
+const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
+const i = fonts.findIndex((f) => f.id === 'fraunces');
+const entry = fonts[i];
+const prev = fonts[(i - 1 + fonts.length) % fonts.length];
+const next = fonts[(i + 1) % fonts.length];
+const font = entry.data;
+const { Content } = await render(entry);
+
+const dials = [
+  { id: 'fw', tag: 'wght', name: 'Weight', min: 100, max: 900, step: 1, start: 100, word: 'Aa',
+    desc: 'Thin to Black. Nine named weights, and every value between them.' },
+  { id: 'fo', tag: 'opsz', name: 'Optical Size', min: 9, max: 144, step: 1, start: 9, word: 'Regal',
+    desc: 'The same word redrawn for the size it will be read at. Low, it is sturdy and open. High, the hairlines thin and the contrast blooms.' },
+  { id: 'fs', tag: 'SOFT', name: 'Softness', min: 0, max: 100, step: 1, start: 0, word: 'Jam',
+    desc: 'How much ink pools in the corners. At zero the serifs are crisp. At a hundred the letters look freshly printed and slightly over-inked.' },
+  { id: 'fk', tag: 'WONK', name: 'Wonky', min: 0, max: 1, step: 1, start: 0, word: 'humans',
+    desc: 'A switch, not a slider. On, the h, m and n lean over and the s loosens — the misbehaviour the whole face is named for.' },
+];
+
+const presets = [
+  { name: 'Book text',     v: [400, 9, 0, 0], it: false },
+  { name: 'Display',       v: [600, 144, 0, 0], it: false },
+  { name: 'Hairline',      v: [100, 144, 0, 0], it: false },
+  { name: 'Soft serve',    v: [850, 144, 100, 0], it: false },
+  { name: 'Full wonk',     v: [700, 144, 60, 1], it: false },
+  { name: 'Wonky italic',  v: [600, 144, 100, 1], it: true },
+];
+---
+<Layout
+  title="Fraunces — Specimen"
+  description={font.blurb}
+  themeStyle={themeToStyle(font.theme)}
+  mode={font.theme.mode}
+  fixedTheme
+>
+  <SiteHeader current="Fraunces" showToggle={false} />
+
+  <div class="fr-page" data-fr>
+
+    <!-- ============ HERO ============ -->
+    <header class="fr-hero" data-fr-hero>
+      <div class="fr-hero__glow" aria-hidden="true"></div>
+      <div class="fr-hero__top">
+        <span>Fraunces · Undercase Type · {font.year}</span>
+        <span>Four axes, two styles</span>
+      </div>
+
+      <h1 class="fr-hero__word fr" data-hero-word aria-label="Fraunces">
+        {[...'Fraunces'].map((ch, n) => <span data-l style={`--i:${n}`} aria-hidden="true">{ch}</span>)}
+      </h1>
+
+      <div class="fr-hero__foot">
+        <p class="fr-hero__lede fr">
+          A soft, <em>wonky</em> old-style serif that would rather be charming than correct.
+          <span class="fr-hero__hint" data-hint-fine>Move sideways to soften it, near a letter to fatten it. Click to switch the wonk.</span>
+          <span class="fr-hero__hint" data-hint-coarse>Drag across the word to soften and fatten it. Tap to switch the wonk.</span>
+        </p>
+        <dl class="fr-readout">
+          <div><dt>wght</dt><dd data-hud="wght">400</dd></div>
+          <div><dt>SOFT</dt><dd data-hud="soft">0</dd></div>
+          <div><dt>WONK</dt><dd data-hud="wonk">off</dd></div>
+          <div><dt>opsz</dt><dd>144</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ FOUR DIALS ============ -->
+      <section class="fr-sec">
+        <div class="fr-kicker"><span>01</span> Four dials</div>
+        <h2 class="fr-h2 fr">How heavy, how big, how soft,<br />and <em>how badly behaved</em>.</h2>
+
+        <div class="fr-dials">
+          {dials.map((d) => (
+            <article class={`fr-dial fr-dial--${d.id}`} data-dial={d.id} data-fr-inview>
+              <p class="fr fr-dial__word" data-dial-word aria-hidden="true">{d.word}</p>
+              <div class="fr-dial__body">
+                <p class="fr-dial__tag">{d.tag} <span>{d.min} – {d.max}</span></p>
+                <h3 class="fr">{d.name}</h3>
+                <p class="fr-dial__desc">{d.desc}</p>
+                <input type="range" min={d.min} max={d.max} step={d.step} value={d.start} aria-label={`${d.name} axis`} data-dial-input />
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- ============ OPTICAL SIZE ============ -->
+      <section class="fr-sec" data-fr-opsz>
+        <div class="fr-kicker"><span>02</span> The clever one</div>
+        <h2 class="fr-h2 fr">One word, drawn again<br />for <em>every size</em> you set it at.</h2>
+        <p class="fr-lede fr">
+          Drag the size. The middle line lets the optical-size axis follow along; the other two are stuck at the ends
+          of it. Small, the display cut falls apart into hairlines. Large, the text cut looks like it is wearing boots.
+        </p>
+
+        <div class="fr-opsz">
+          <div class="fr-opsz__rows">
+            <div class="fr-opsz__row"><span class="fr-opsz__k">Stuck at 9<br /><i>the text cut</i></span><p class="fr" style="--fo:9">Marmalade</p></div>
+            <div class="fr-opsz__row is-auto"><span class="fr-opsz__k">Follows the size<br /><i>opsz <b data-opsz-val>64</b></i></span><p class="fr" data-opsz-auto>Marmalade</p></div>
+            <div class="fr-opsz__row"><span class="fr-opsz__k">Stuck at 144<br /><i>the display cut</i></span><p class="fr" style="--fo:144">Marmalade</p></div>
+          </div>
+          <label class="fr-slider">
+            <span>Size <b data-opsz-px>64</b> px</span>
+            <input type="range" min="11" max="170" step="1" value="120" data-opsz-size />
+          </label>
+        </div>
+      </section>
+
+      <!-- ============ IN USE ============ -->
+      <section class="fr-sec fr-sec--use">
+        <div class="fr-kicker"><span>03</span> In use</div>
+        <h2 class="fr-h2 fr">From the broadside<br />to <em>the bakery window</em>.</h2>
+        <div class="fr-use"><InUse font={font} /></div>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="fr-sec" data-fr-test>
+        <div class="fr-kicker"><span>04</span> Your turn</div>
+        <h2 class="fr-h2 fr">Now <em>you</em> misbehave.</h2>
+
+        <div class="fr-test">
+          <div class="fr-test__stage">
+            <div class="fr fr-test__text" contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Sample text — editable" data-test-text>Honey, hush &amp; hum</div>
+          </div>
+          <div class="fr-test__panel">
+            <div class="fr-test__presets">
+              {presets.map((p, n) => (
+                <button type="button" data-preset={JSON.stringify(p.v)} data-italic={p.it ? '1' : '0'} aria-pressed={n === 4 ? 'true' : 'false'}>{p.name}</button>
+              ))}
+            </div>
+            <div class="fr-test__sliders">
+              {dials.map((d, n) => (
+                <label class="fr-slider">
+                  <span>{d.tag} <b data-test-val={n}></b></span>
+                  <input type="range" min={d.min} max={d.max} step={d.step} data-test-ax={n} />
+                </label>
+              ))}
+            </div>
+            <button type="button" class="fr-test__italic fr" data-test-italic aria-pressed="false">Italic</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ STORY ============ -->
+      <section class="fr-sec">
+        <div class="fr-kicker"><span>05</span> The story</div>
+        <div class="fr-story">
+          <div class="fr-story__prose fr"><Content /></div>
+          <dl class="fr-specs">
+            <div><dt>Design</dt><dd>{font.designer}</dd></div>
+            <div><dt>Foundry</dt><dd>{font.foundry}</dd></div>
+            <div><dt>Released</dt><dd>{font.year}</dd></div>
+            <div><dt>Classification</dt><dd>{font.classification}</dd></div>
+            <div><dt>Axes</dt><dd>{font.axes.map((a) => <><code>{a.tag}</code> {a.min}–{a.max}<br /></>)}</dd></div>
+            <div><dt>Styles</dt><dd>Roman and a true italic</dd></div>
+            <div><dt>Wonk reaches</dt><dd class="fr fr-specs__wonk">h m n s &amp;</dd></div>
+            <div><dt>Licence</dt><dd>{font.license}</dd></div>
+            <div class="fr-specs__links">
+              <a href={font.googleFontsUrl} rel="noopener">Get it on Google Fonts ↗</a>
+              {font.sourceUrl && <a href={font.sourceUrl} rel="noopener">Source ↗</a>}
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ============ GLYPHS ============ -->
+      <section class="fr-sec fr-sec--last">
+        <div class="fr-kicker"><span>06</span> The set</div>
+        <h2 class="fr-h2 fr">Every character. <em>Click one.</em></h2>
+        <div class="fr-glyphs"><GlyphGrid font={font} /></div>
+      </section>
+    </main>
+  </div>
+
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-fr]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.target.classList.toggle('is-in', e.isIntersecting)),
+      { threshold: 0.25 }
+    );
+    page.querySelectorAll('[data-fr-inview]').forEach((el) => io.observe(el));
+
+    // ---------- Hero: sideways softens, proximity fattens, click wonks ----------
+    const hero = page.querySelector<HTMLElement>('[data-fr-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-hero-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((el) => [el.dataset.hud!, el]));
+    const w = letters.map(() => 400);
+    let px = 0.5, lastMove = -1e9, on = true, soft = 0, wonk = 0, userWonk = false;
+    const centerOf = (l: HTMLElement) => { const r = hero.getBoundingClientRect(), b = l.getBoundingClientRect(); return (b.left + b.width / 2 - r.left) / r.width; };
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      px = clamp((e.clientX - r.left) / r.width, 0, 1);
+      lastMove = performance.now();
+    });
+    hero.addEventListener('click', () => { userWonk = true; wonk = wonk ? 0 : 1; });
+    new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(hero);
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!on) return;
+      const live = now - lastMove < 2600;
+      const t = now / 1000;
+      const ts = live ? 100 * clamp((px - 0.08) / 0.84, 0, 1) : reduce ? 50 : 50 - 50 * Math.cos(t * 0.6);
+      soft += (ts - soft) * 0.1;
+      if (!live && !userWonk && !reduce) wonk = Math.floor(t / 3.2) % 2;
+      let sum = 0;
+      letters.forEach((l, n) => {
+        let tw: number;
+        if (live) { const near = 1 - clamp(Math.abs(centerOf(l) - px) / 0.3, 0, 1); tw = 140 + 760 * near * near * (3 - 2 * near); }
+        else if (reduce) tw = 500;
+        else tw = 500 + 400 * Math.sin(t * 1.4 - n * 0.65);
+        w[n] += (tw - w[n]) * 0.14;
+        l.style.setProperty('--fw', w[n].toFixed(0));
+        sum += w[n];
+      });
+      word.style.setProperty('--fs', soft.toFixed(1));
+      word.style.setProperty('--fk', String(wonk));
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+      hud.soft.textContent = String(Math.round(soft));
+      hud.wonk.textContent = wonk ? 'on' : 'off';
+    };
+    requestAnimationFrame(tick);
+
+    // ---------- Dials: each animates until you take the slider ----------
+    page.querySelectorAll<HTMLElement>('[data-dial]').forEach((card) => {
+      const input = card.querySelector<HTMLInputElement>('[data-dial-input]')!;
+      const target = card.querySelector<HTMLElement>('[data-dial-word]')!;
+      input.addEventListener('input', () => {
+        card.classList.add('is-manual');
+        target.style.setProperty(`--${card.dataset.dial}`, input.value);
+      });
+    });
+
+    // ---------- Optical size follows the type size ----------
+    const oz = page.querySelector<HTMLElement>('[data-fr-opsz]')!;
+    const size = oz.querySelector<HTMLInputElement>('[data-opsz-size]')!;
+    const rows = oz.querySelector<HTMLElement>('.fr-opsz__rows')!;
+    const auto = oz.querySelector<HTMLElement>('[data-opsz-auto]')!;
+    const paintSize = () => {
+      // Scale the slider's 11–170 range so the longest setting still fits the row.
+      const label = window.innerWidth < 700 ? 0 : 170;
+      const maxPx = Math.min(170, (rows.clientWidth - label) / 5.3);
+      const shown = Math.round(11 + ((+size.value - 11) / 159) * (maxPx - 11));
+      rows.style.setProperty('--sz', `${shown}px`);
+      const op = clamp(shown, 9, 144);
+      auto.style.setProperty('--fo', String(op));
+      oz.querySelector('[data-opsz-px]')!.textContent = String(shown);
+      oz.querySelector('[data-opsz-val]')!.textContent = String(op);
+    };
+    size.addEventListener('input', paintSize);
+    window.addEventListener('resize', paintSize);
+    paintSize();
+
+    // ---------- Tester ----------
+    const test = page.querySelector<HTMLElement>('[data-fr-test]')!;
+    const text = test.querySelector<HTMLElement>('[data-test-text]')!;
+    const sliders = Array.from(test.querySelectorAll<HTMLInputElement>('[data-test-ax]'));
+    const vals = Array.from(test.querySelectorAll<HTMLElement>('[data-test-val]'));
+    const presetBtns = Array.from(test.querySelectorAll<HTMLButtonElement>('[data-preset]'));
+    const italic = test.querySelector<HTMLButtonElement>('[data-test-italic]')!;
+    const names = ['fw', 'fo', 'fs', 'fk'];
+    const apply = () => sliders.forEach((s, n) => {
+      text.style.setProperty(`--${names[n]}`, s.value);
+      vals[n].textContent = n === 3 ? (+s.value ? 'on' : 'off') : s.value;
+    });
+    const setItalic = (v: boolean) => { italic.setAttribute('aria-pressed', String(v)); text.style.fontStyle = v ? 'italic' : 'normal'; };
+    sliders.forEach((s) => s.addEventListener('input', () => { presetBtns.forEach((b) => b.setAttribute('aria-pressed', 'false')); apply(); }));
+    italic.addEventListener('click', () => setItalic(italic.getAttribute('aria-pressed') !== 'true'));
+    const usePreset = (b: HTMLButtonElement) => {
+      presetBtns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      (JSON.parse(b.dataset.preset!) as number[]).forEach((v, n) => (sliders[n].value = String(v)));
+      setItalic(b.dataset.italic === '1');
+      apply();
+    };
+    presetBtns.forEach((b) => b.addEventListener('click', () => usePreset(b)));
+    usePreset(presetBtns.find((b) => b.getAttribute('aria-pressed') === 'true') ?? presetBtns[0]);
+    if (text.contentEditable !== 'plaintext-only') text.contentEditable = 'true';
+    text.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+  }
+</script>
+
+<style is:global>
+  /* Registered so each axis can be transitioned and keyframed like any number. */
+  @property --fw { syntax: '<number>'; inherits: true; initial-value: 400; }
+  @property --fo { syntax: '<number>'; inherits: true; initial-value: 144; }
+  @property --fs { syntax: '<number>'; inherits: true; initial-value: 0; }
+  @property --fk { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+  .fr-page {
+    --tomato: #ff6b4a;
+    --cream: #f4e9d4;
+    --m: var(--font-mono);
+    background: var(--bg);
+  }
+  /* `.fr *` too: font-variation-settings inherits as a computed string. */
+  .fr, .fr * { font-variation-settings: 'wght' var(--fw), 'opsz' var(--fo), 'SOFT' var(--fs), 'WONK' var(--fk); }
+  .fr { font-family: 'Fraunces Variable', Georgia, serif; font-weight: 400; font-feature-settings: normal; }
+  .fr em { font-style: italic; }
+
+  /* ---------- hero ---------- */
+  .fr-hero {
+    position: relative; isolation: isolate; overflow: hidden; cursor: pointer; touch-action: pan-y;
+    min-height: calc(100svh - 64px);
+    display: grid; grid-template-rows: auto 1fr auto; grid-template-columns: minmax(0, 1fr);
+    padding: clamp(1rem, 2.5vw, 2rem) var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .fr-hero__glow {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(60% 55% at 50% 48%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 70%),
+      radial-gradient(40% 40% at 82% 80%, color-mix(in srgb, var(--tomato) 18%, transparent), transparent 70%);
+  }
+  .fr-hero__top { display: flex; justify-content: space-between; gap: 1rem; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-2); }
+  .fr-hero__word {
+    --fo: 144;
+    align-self: center; justify-self: center;
+    display: flex; align-items: baseline; white-space: nowrap; user-select: none;
+    font-size: min(20vw, 50svh); line-height: 1; letter-spacing: -0.02em;
+    color: var(--accent);
+    transition: --fk 0.2s;
+  }
+  .fr-hero__word span { display: block; }
+  .fr-hero__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .fr-hero__lede { --fw: 420; --fo: 36; --fs: 60; font-size: clamp(1.4rem, 0.9rem + 1.9vw, 2.5rem); line-height: 1.12; letter-spacing: -0.01em; max-width: 22ch; text-wrap: balance; }
+  .fr-hero__lede em { --fk: 1; color: var(--accent); }
+  .fr-hero__hint { display: block; margin-top: 0.9rem; font: 400 0.78rem/1.5 var(--m); letter-spacing: 0.02em; color: var(--fg-2); max-width: 44ch; font-variation-settings: normal; }
+  [data-hint-coarse] { display: none; }
+  @media (hover: none) { .fr-hero__hint[data-hint-fine] { display: none; } .fr-hero__hint[data-hint-coarse] { display: block; } }
+  .fr-readout { display: flex; gap: clamp(1rem, 2.2vw, 2.2rem); }
+  .fr-readout dt { font: 400 0.68rem/1.4 var(--m); letter-spacing: 0.12em; color: var(--fg-3); }
+  .fr-readout dd { font: 300 clamp(1.4rem, 1rem + 1.6vw, 2.4rem)/1.15 var(--m); font-variant-numeric: tabular-nums; color: var(--accent); min-width: 3.2ch; }
+
+  /* ---------- shared section chrome ---------- */
+  .fr-sec { padding: clamp(4.5rem, 10vw, 9rem) var(--gutter) 0; max-width: var(--maxw); margin-inline: auto; }
+  .fr-sec--last { padding-bottom: clamp(4rem, 8vw, 7rem); }
+  .fr-kicker { display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font: 400 0.74rem/1.4 var(--m); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-2); }
+  .fr-kicker span { color: var(--accent); }
+  .fr-h2 { --fw: 560; --fo: 144; --fs: 80; margin-top: clamp(1.5rem, 3vw, 2.5rem); font-size: clamp(2.1rem, 1rem + 4.6vw, 5.4rem); letter-spacing: -0.025em; line-height: 1; text-wrap: balance; }
+  .fr-h2 em { --fk: 1; --fw: 500; color: var(--accent); }
+  .fr-lede { --fw: 380; --fo: 24; --fs: 30; margin-top: 1.5rem; max-width: 58ch; font-size: var(--step-1); line-height: 1.5; color: var(--fg-2); }
+  .fr-slider { display: grid; gap: 0.6rem; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
+  .fr-slider b { font-weight: 500; color: var(--accent); margin-left: 0.4em; text-transform: none; }
+  .fr-page input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: none; cursor: pointer; }
+  .fr-page input[type='range']::-webkit-slider-runnable-track { height: 2px; background: var(--fg-3); border-radius: 2px; }
+  .fr-page input[type='range']::-moz-range-track { height: 2px; background: var(--fg-3); }
+  .fr-page input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -10px; border-radius: 50% 46% 52% 48%; background: var(--accent); border: 0; }
+  .fr-page input[type='range']::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); border: 0; }
+
+  /* ---------- four dials ---------- */
+  .fr-dials { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .fr-dial {
+    display: grid; grid-template-rows: 1fr auto; gap: 1.5rem;
+    padding: clamp(1.4rem, 2.8vw, 2.6rem);
+    border-radius: 22px; background: var(--bg-2); border: 1px solid var(--line);
+    overflow: hidden; min-height: clamp(22rem, 38vw, 34rem);
+  }
+  .fr-dial:nth-child(2) { background: var(--cream); color: #1d150b; --fg-2: #5a4a33; --fg-3: #8a7858; --accent: #c2410c; --line: #1d150b22; }
+  .fr-dial:nth-child(3) { background: color-mix(in srgb, var(--tomato) 88%, #000); color: #fff4e8; --fg-2: #ffe1cf; --fg-3: #ffc6ac; --accent: #ffe08a; --line: #ffffff33; }
+  .fr-dial__word { align-self: center; text-align: center; font-size: clamp(5rem, 15vw, 15rem); line-height: 0.95; white-space: nowrap; }
+  .fr-dial--fw .fr-dial__word { --fw: 100; }
+  .fr-dial--fo .fr-dial__word { --fo: 9; --fw: 500; font-size: clamp(4.4rem, 12.5vw, 12.5rem); }
+  .fr-dial--fs .fr-dial__word { --fs: 0; --fw: 850; }
+  .fr-dial--fk .fr-dial__word { --fk: 0; --fw: 500; --fs: 50; font-size: clamp(3.4rem, 9.6vw, 9.6rem); }
+  .fr-dial.is-in:not(.is-manual) .fr-dial__word { animation: 3.2s ease-in-out infinite alternate; }
+  .fr-dial--fw.is-in:not(.is-manual) .fr-dial__word { animation-name: fr-fw; }
+  .fr-dial--fo.is-in:not(.is-manual) .fr-dial__word { animation-name: fr-fo; }
+  .fr-dial--fs.is-in:not(.is-manual) .fr-dial__word { animation-name: fr-fs; }
+  .fr-dial--fk.is-in:not(.is-manual) .fr-dial__word { animation: fr-fk 2.2s steps(1) infinite; }
+  @keyframes fr-fw { 0%, 8% { --fw: 100; } 92%, 100% { --fw: 900; } }
+  @keyframes fr-fo { 0%, 10% { --fo: 9; } 90%, 100% { --fo: 144; } }
+  @keyframes fr-fs { 0%, 10% { --fs: 0; } 90%, 100% { --fs: 100; } }
+  @keyframes fr-fk { 0% { --fk: 0; } 50% { --fk: 1; } }
+  .fr-dial__tag { font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.1em; color: var(--accent); }
+  .fr-dial__tag span { color: var(--fg-3); margin-left: 0.6em; }
+  .fr-dial h3 { --fw: 600; --fo: 48; --fs: 50; font-size: var(--step-2); line-height: 1.1; letter-spacing: -0.015em; margin-top: 0.2rem; }
+  .fr-dial__desc { margin: 0.6rem 0 1rem; color: var(--fg-2); max-width: 46ch; line-height: 1.5; }
+
+  /* ---------- optical size ---------- */
+  .fr-opsz { margin-top: clamp(2.5rem, 5vw, 4.5rem); display: grid; gap: 1.5rem; }
+  .fr-opsz__rows { --sz: 64px; border-block: 1px solid var(--line); }
+  .fr-opsz__row { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); align-items: center; gap: 1rem; min-height: clamp(5.5rem, 14vw, 12.5rem); border-top: 1px solid var(--line); overflow: hidden; }
+  .fr-opsz__row:first-child { border-top: 0; }
+  .fr-opsz__row p { --fw: 430; font-size: var(--sz); line-height: 1; white-space: nowrap; color: var(--fg-2); }
+  .fr-opsz__row.is-auto p { color: var(--accent); }
+  .fr-opsz__k { font: 400 0.7rem/1.5 var(--m); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); }
+  .fr-opsz__k i { font-style: normal; color: var(--fg-3); text-transform: none; }
+  .fr-opsz__k b { font-weight: 500; color: var(--accent); }
+
+  /* ---------- in use ---------- */
+  .fr-use { margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+
+  /* ---------- tester ---------- */
+  .fr-test { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(1.2rem, 2.4vw, 2.4rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .fr-test__stage { display: grid; place-items: center; min-height: clamp(16rem, 34vw, 30rem); padding: clamp(1.2rem, 3vw, 3rem); background: var(--cream); color: #1d150b; border-radius: 22px; overflow: hidden; }
+  .fr-test__text {
+    font-size: clamp(2.6rem, 7.6vw, 8rem); line-height: 1.02; text-align: center; outline: none; max-width: 100%; overflow-wrap: anywhere; caret-color: #c2410c;
+    transition: --fw 0.6s var(--ease), --fo 0.6s var(--ease), --fs 0.6s var(--ease);
+  }
+  .fr-test__panel { display: flex; flex-direction: column; gap: 1.3rem; }
+  .fr-test__presets { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .fr-test__presets button { padding: 0.5rem 0.9rem; border: 1px solid var(--line); border-radius: 100px; font: 400 0.72rem/1.4 var(--m); letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-2); transition: all 0.2s; }
+  .fr-test__presets button:hover { border-color: var(--fg); color: var(--fg); }
+  .fr-test__presets button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .fr-test__sliders { display: grid; gap: 0.7rem; }
+  .fr-test__italic { --fw: 500; --fo: 36; --fs: 60; --fk: 1; align-self: flex-start; font-style: italic; font-size: 1.5rem; padding: 0.35rem 1.2rem 0.5rem; border: 1px solid var(--line); border-radius: 100px; transition: all 0.2s; }
+  .fr-test__italic[aria-pressed='true'] { background: var(--cream); color: #1d150b; border-color: var(--cream); }
+
+  /* ---------- story ---------- */
+  .fr-story { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 7rem); margin-top: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  .fr-story__prose { --fw: 380; --fo: 18; --fs: 20; font-size: var(--step-1); line-height: 1.58; color: var(--fg-2); max-width: 60ch; }
+  .fr-story__prose p + p { margin-top: 1.1em; }
+  .fr-story__prose strong { --fw: 650; font-weight: inherit; color: var(--fg); }
+  .fr-story__prose em { font-style: italic; color: var(--accent); }
+  .fr-story__prose p:first-child { --fo: 48; --fs: 60; font-size: 1.28em; line-height: 1.34; color: var(--fg); }
+  .fr-story__prose p:first-child::first-letter { --fw: 800; --fo: 144; --fs: 100; font-size: 3.3em; line-height: 0.82; float: left; padding: 0.06em 0.1em 0 0; color: var(--accent); }
+  .fr-specs { border-top: 1px solid var(--fg); position: sticky; top: 96px; }
+  .fr-specs > div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+  .fr-specs dt { font: 400 0.7rem/1.4 var(--m); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding-top: 0.2em; }
+  .fr-specs dd { line-height: 1.5; }
+  .fr-specs code { font-family: var(--m); font-size: 0.86em; color: var(--accent); }
+  .fr-specs__wonk { --fk: 1; --fw: 500; --fs: 60; font-size: 1.7rem; line-height: 1 !important; letter-spacing: 0.12em; color: var(--accent); }
+  .fr-specs .fr-specs__links { display: flex; gap: 1.5rem; flex-wrap: wrap; border-bottom: 0; padding-top: 1.3rem; }
+  .fr-specs__links a { font: 400 0.78rem/1.4 var(--m); letter-spacing: 0.06em; color: var(--accent); border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+  .fr-glyphs { margin-top: clamp(2rem, 4vw, 3.5rem); }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 900px) {
+    .fr-dials, .fr-test, .fr-story { grid-template-columns: minmax(0, 1fr); }
+    .fr-specs { position: static; }
+    .fr-dial { min-height: 0; }
+  }
+  @media (max-width: 700px) {
+    .fr-hero__top span:last-child { display: none; }
+    .fr-readout { width: 100%; justify-content: space-between; gap: 0.6rem; }
+    .fr-opsz__row { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; padding-block: 0.8rem; min-height: 0; }
+    .fr-opsz__k br { display: none; }
+    .fr-opsz__k i { margin-left: 0.6em; }
+    .fr-dial__word { font-size: 30vw; }
+    .fr-dial--fo .fr-dial__word { font-size: 24vw; }
+    .fr-dial--fk .fr-dial__word { font-size: 19vw; }
+    .fr-specs > div { grid-template-columns: 6.5rem 1fr; }
+  }
+</style>

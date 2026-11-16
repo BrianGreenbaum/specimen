@@ -4,6 +4,7 @@
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
+import GlyphInspector from '../../components/specimen/GlyphInspector.astro';
 
 const FAMILY = 'Nabla Variable';
 
@@ -295,12 +296,13 @@ h1 {'{'}
       <section class="nb-sec nb-glyphs">
         <div class="nb-kicker"><span>06</span> The blocks</div>
         <h2 class="nb-h2">Every key, a tiny building.</h2>
-        <p class="nb-lede">Run a pointer over the set — or tap a letter to drop it into the tester above.</p>
-        <div class="nb-keys" data-nb-keys data-nb-inview>
+        <p class="nb-lede">Run a pointer over the set. Click any letter to see it large.</p>
+        <div class="nb-keys" data-nb-keys data-nb-inview data-glyphroot>
           {glyphs.map((g, i) => (
-            <button type="button" class="nb-key nb" data-key={g} style={`--i:${i % 13 + Math.floor(i / 13)}`} aria-label={`Add ${g} to the tester`}>{g}</button>
+            <button type="button" class="nb-key nb" data-glyph={g} style={`--i:${i % 13 + Math.floor(i / 13)}`} aria-label={`Inspect ${g}`}>{g}</button>
           ))}
         </div>
+        <GlyphInspector family="Nabla Variable" />
       </section>
 
       <!-- ============ STORY + SPECS ============ -->
@@ -509,16 +511,6 @@ h1 {'{'}
       waveBtn.setAttribute('aria-pressed', String(on));
       waveBtn.textContent = on ? 'Hold still' : 'Make a wave';
       out.classList.toggle('is-wave', on);
-    });
-
-    // ---------- Keys: tap a glyph to drop it into the tester ----------
-    page.querySelector('[data-nb-keys]')!.addEventListener('click', (e) => {
-      const k = (e.target as HTMLElement).closest<HTMLElement>('[data-key]');
-      if (!k) return;
-      if (input.value.length >= input.maxLength) input.value = '';
-      input.value += k.dataset.key!;
-      render();
-      k.classList.remove('is-hit'); void k.offsetWidth; k.classList.add('is-hit');
     });
   }
 </script>

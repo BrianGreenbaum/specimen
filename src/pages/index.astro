@@ -3,17 +3,31 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { showpieces } from '../lib/showpieces';
+import { showpieces, newEditions, NEW_EDITION_LABEL } from '../lib/showpieces';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
+
+// One index: collection faces first, then the faces that live outside it.
+const rows = [
+  ...fonts.map((f) => ({
+    slug: f.id, name: f.data.name, order: f.data.order, category: f.data.category,
+    designer: f.data.designer, year: f.data.year, accent: f.data.theme.accent,
+    family: f.data.fontFamily, isNew: newEditions.includes(f.id),
+  })),
+  ...showpieces.map((s, i) => ({
+    slug: s.slug, name: s.name, order: fonts.length + i + 1, category: s.category,
+    designer: s.designer, year: s.year, accent: s.accent,
+    family: `'${s.family}'`, isNew: true,
+  })),
+];
 ---
 <Layout title="Specimen — A living library of type">
   <SiteHeader />
 
   <header class="home-hero">
     <div class="container">
-      <p class="home-hero__eyebrow label" data-reveal>The type specimen library · {fonts.length} faces · {eras.length} chapters</p>
+      <p class="home-hero__eyebrow label" data-reveal>The type specimen library · {rows.length} faces · {eras.length} chapters</p>
       <h1 class="home-hero__title" data-reveal style="--reveal-delay:80ms">
         Specimen<span class="home-hero__period">.</span>
       </h1>
@@ -68,23 +82,7 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
       <div class="section-head" id="index">
         <span class="index-num">✳</span>
         <h2 id="fonts-head">The faces behind the story</h2>
-        <span class="label">{fonts.length} specimens · each its own chapter</span>
-      </div>
-
-      <div class="showpieces" data-reveal>
-        <p class="showpieces__head label">✦ Showpieces — four faces, each given a page built entirely by hand</p>
-        <div class="showpieces__grid">
-          {showpieces.map((s) => (
-            <a class={`showpiece showpiece--${s.slug}`} href={`/fonts/${s.slug}`}>
-              <span class="showpiece__tag label">{s.tag} · {s.year}</span>
-              <span class="showpiece__name" style={`font-family:'${s.family}'`} aria-label={s.name}>
-                {[...(['recursive', 'handjet'].includes(s.slug) ? s.name : s.name.toUpperCase())].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c === ' ' ? '\u00a0' : c}</span>)}
-              </span>
-              <span class="showpiece__blurb">{s.blurb}</span>
-              <span class="showpiece__cta label">Open the specimen →</span>
-            </a>
-          ))}
-        </div>
+        <span class="label">{rows.length} specimens · each its own chapter</span>
       </div>
 
       <p class="index-search" data-reveal>
@@ -98,22 +96,22 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
       </p>
 
     <ul class="index-list" data-index-list>
-      {fonts.map((f) => (
+      {rows.map((f) => (
         <li
-          class="index-row"
-          style={`--row-accent:${f.data.theme.accent}; --fam:${f.data.fontFamily}`}
-          data-row={f.id}
-          data-name={f.data.name}
-          data-designer={f.data.designer}
-          data-category={f.data.category}
+          class:list={['index-row', `index-row--${f.slug}`]}
+          style={`--row-accent:${f.accent}; --fam:${f.family}`}
+          data-row={f.slug}
+          data-name={f.name}
+          data-designer={f.designer}
+          data-category={f.category}
         >
-          <a href={`/fonts/${f.id}`} class="index-row__link" data-reveal>
-            <span class="index-row__num index-num">{String(f.data.order).padStart(2, '0')}</span>
-            <span class="index-row__name">{f.data.name}</span>
+          <a href={`/fonts/${f.slug}`} class="index-row__link" data-reveal>
+            <span class="index-row__num index-num">{String(f.order).padStart(2, '0')}</span>
+            <span class="index-row__name">{f.name}{f.isNew && <span class="index-row__new label">{NEW_EDITION_LABEL}</span>}</span>
             <span class="index-row__meta">
-              <span class="index-row__cat label">{f.data.category}</span>
-              <span class="index-row__designer">{f.data.designer}</span>
-              <span class="index-row__year label">{f.data.year}</span>
+              <span class="index-row__cat label">{f.category}</span>
+              <span class="index-row__designer">{f.designer}</span>
+              <span class="index-row__year label">{f.year}</span>
             </span>
             <span class="index-row__arrow" aria-hidden="true">→</span>
           </a>
@@ -232,65 +230,14 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
   .home-fonts .section-head { scroll-margin-top: 80px; }
 
   /* Index search row */
-  /* --- Showpieces: bespoke pages outside the collection --- */
-  .showpieces { margin-bottom: var(--sp-6); }
-  .showpieces__head { color: var(--fg-2); margin-bottom: var(--sp-3); }
-  .showpieces__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
-  .showpiece {
-    container-type: inline-size;
-    display: flex; flex-direction: column; gap: var(--sp-2);
-    padding: clamp(1.25rem, 2.5vw, 2.25rem);
-    border-radius: 6px;
-    overflow: hidden;
-    transition: transform 0.5s var(--ease);
+  /* --- "New edition" tag: faces whose page is built in the newer format --- */
+  .index-row__new {
+    display: inline-block; vertical-align: middle;
+    margin-left: 1.1rem; padding: 0.3em 0.7em;
+    border: 1px solid var(--row-accent); border-radius: 100px;
+    color: var(--row-accent); font-size: 0.66rem; line-height: 1; letter-spacing: 0.08em;
+    white-space: nowrap;
   }
-  .showpiece:hover { transform: translateY(-4px); }
-  .showpiece__name { display: flex; white-space: nowrap; line-height: 1; padding-block: 0.12em; }
-  .showpiece__blurb { font-size: var(--step-0); max-width: 34ch; }
-  .showpiece__cta { margin-top: auto; padding-top: var(--sp-3); }
-  .showpiece--recursive { background: #fbf6e9; color: #1a1723; box-shadow: inset 0 0 0 1px #1a172322; }
-  .showpiece--recursive .showpiece__tag, .showpiece--recursive .showpiece__cta { color: #e8391a; }
-  .showpiece--recursive .showpiece__blurb { color: #4c4759; }
-  .showpiece--recursive .showpiece__name {
-    font-size: 17.5cqi; margin-block: auto; padding-block: 0.25em; text-transform: none;
-  }
-  .showpiece--recursive .showpiece__name span {
-    font-variation-settings: 'MONO' 0, 'CASL' 0, 'wght' 300, 'slnt' 0, 'CRSV' 0.5;
-    transition: font-variation-settings 0.7s var(--ease), color 0.7s var(--ease);
-    transition-delay: calc(var(--i) * 45ms);
-  }
-  .showpiece--recursive:hover .showpiece__name span { font-variation-settings: 'MONO' 0, 'CASL' 1, 'wght' 1000, 'slnt' -15, 'CRSV' 1; color: #e8391a; }
-  .showpiece--nabla { background: radial-gradient(120% 120% at 80% 0%, #3a1a2e, #0a061c 70%); color: #f4eeff; }
-  .showpiece--nabla .showpiece__tag, .showpiece--nabla .showpiece__cta { color: #ffd214; }
-  .showpiece--nabla .showpiece__blurb { color: #bdb1de; }
-  .showpiece--nabla .showpiece__name { font-size: 27cqi; }
-  .showpiece--nabla .showpiece__name span {
-    font-variation-settings: 'EDPT' 60, 'EHLT' 10;
-    transition: font-variation-settings 0.6s var(--ease);
-    transition-delay: calc(var(--i) * 50ms);
-  }
-  .showpiece--nabla:hover .showpiece__name span { font-variation-settings: 'EDPT' 200, 'EHLT' 24; }
-  .showpiece--handjet { background: radial-gradient(#f3efe614 1.2px, transparent 1.6px) 0 0 / 12px 12px, #0a0a0b; color: #f3efe6; }
-  .showpiece--handjet .showpiece__tag, .showpiece--handjet .showpiece__cta { color: #ffb000; }
-  .showpiece--handjet .showpiece__blurb { color: #b8b3a6; }
-  .showpiece--handjet .showpiece__name { font-size: 40cqi; line-height: 0.78; color: #ffb000; text-transform: none; padding-block: 0 0.1em; }
-  .showpiece--handjet .showpiece__name span {
-    font-variation-settings: 'wght' 500, 'ELGR' 1, 'ELSH' 8;
-    transition: font-variation-settings 0.9s var(--ease);
-    transition-delay: calc(var(--i) * 50ms);
-  }
-  .showpiece--handjet:hover .showpiece__name span { font-variation-settings: 'wght' 800, 'ELGR' 1, 'ELSH' 16; }
-  .showpiece--climate-crisis { background: linear-gradient(180deg, #04141f, #0b2c40); color: #eaf6fb; }
-  .showpiece--climate-crisis .showpiece__tag, .showpiece--climate-crisis .showpiece__cta { color: #8fd8f0; }
-  .showpiece--climate-crisis .showpiece__blurb { color: #a9c6d4; }
-  .showpiece--climate-crisis .showpiece__name {
-    font-size: 8.1cqi; margin-block: auto; padding-block: 0.9em;
-    font-variation-settings: 'YEAR' 1979;
-    transition: font-variation-settings 1.6s var(--ease-out);
-  }
-  .showpiece--climate-crisis:hover .showpiece__name { font-variation-settings: 'YEAR' 2050; }
-  @media (max-width: 760px) { .showpieces__grid { grid-template-columns: 1fr; } }
-
   .index-search {
     display: flex; align-items: center; gap: var(--sp-4);
     margin-bottom: var(--sp-3);
@@ -351,6 +298,11 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
      can be a bright lime/amber that's unreadable on the neutral home. */
   .index-row:hover .index-row__name { color: var(--accent); }
   .index-row:hover .index-row__num { color: var(--accent); }
+  /* faces whose default instance needs a nudge to sit well in the list */
+  .index-row--nabla .index-row__name { font-variation-settings: 'EDPT' 80, 'EHLT' 12; }
+  .index-row--handjet .index-row__name { font-variation-settings: 'wght' 500, 'ELGR' 1, 'ELSH' 8; font-size: clamp(2.9rem, 7.6vw, 6.4rem); line-height: 0.8; letter-spacing: 0; }
+  .index-row--climate-crisis .index-row__name { font-variation-settings: 'YEAR' 1979; font-size: clamp(1.25rem, 3.3vw, 2.8rem); letter-spacing: 0; }
+  .index-row__new { font-variation-settings: normal; }
   .index-row:hover .index-row__link { padding-left: 1rem; }
   .index-row:hover .index-row__arrow { opacity: 1; transform: none; }
 
