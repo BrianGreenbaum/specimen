@@ -1,0 +1,946 @@
+---
+// NABLA — a showpiece specimen, built by hand outside the collection template.
+// The whole page is an arcade at night: the letters are the only lamps.
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+
+const FAMILY = 'Nabla Variable';
+
+// The seven palettes that ship inside the font (CPAL), plus two mixed here
+// with `override-colors`. Nicknames are ours — the font only numbers them.
+const palettes = [
+  { id: 'coin',      name: 'Coin',       base: 0, accent: '#ffd214', glow: '#ff6a1f', note: 'Palette 0 · the default' },
+  { id: 'bubblegum', name: 'Bubblegum',  base: 1, accent: '#ff5c97', glow: '#a012b4', note: 'Palette 1' },
+  { id: 'cabinet',   name: 'Cabinet',    base: 2, accent: '#1ee1ff', glow: '#2a1cf5', note: 'Palette 2' },
+  { id: 'graphite',  name: 'Graphite',   base: 3, accent: '#a3a3c4', glow: '#3a3a66', note: 'Palette 3' },
+  { id: 'chrome',    name: 'Chrome',     base: 4, accent: '#d7d7f5', glow: '#6a6a9c', note: 'Palette 4' },
+  { id: 'tropic',    name: 'Tropic',     base: 5, accent: '#00dcdc', glow: '#00a050', note: 'Palette 5' },
+  { id: 'afterdark', name: 'After Dark', base: 6, accent: '#ff5ac8', glow: '#d20050', note: 'Palette 6' },
+  {
+    id: 'mint', name: 'Mint', base: 0, accent: '#5dfac0', glow: '#0c8f7a', note: 'Mixed here · override-colors',
+    over: ['#3df5b0', '#064e55', '#0c8f7a', '#0a7a70', '#3df5b0', '#8dffd2', '#3df5b0', '#8dffd2', '#d6fff0', '#ffffff'],
+  },
+  {
+    id: 'ember', name: 'Ember', base: 0, accent: '#ff7a5c', glow: '#b3122e', note: 'Mixed here · override-colors',
+    over: ['#ff5a3c', '#4d0016', '#b3122e', '#99102c', '#ff5a3c', '#ff9a7a', '#ff5a3c', '#ff9a7a', '#ffd9c9', '#ffffff'],
+  },
+];
+
+const paletteCss = (p: (typeof palettes)[number]) =>
+  `@font-palette-values --nb-${p.id} {\n  font-family: '${FAMILY}';\n  base-palette: ${p.base};` +
+  (p.over ? `\n  override-colors:\n${p.over.map((c, i) => `    ${i} ${c}`).join(',\n')};` : '') +
+  `\n}`;
+
+// "Exploded view": the same glyph with every colour slot but one group made
+// transparent — the layers of a COLRv1 letter, pulled apart with nothing but CSS.
+const layers = [
+  { id: 'sides', label: 'Shaded sides',   keep: [1, 2, 3] },
+  { id: 'front', label: 'Front face',     keep: [0, 4, 6, 7] },
+  { id: 'tops',  label: 'Lit tops',       keep: [5, 8] },
+  { id: 'edges', label: 'Edge highlight', keep: [9] },
+];
+const layerCss = layers
+  .map((l) => {
+    const off = Array.from({ length: 10 }, (_, i) => i).filter((i) => !l.keep.includes(i));
+    return `@font-palette-values --nb-layer-${l.id}{font-family:'${FAMILY}';base-palette:0;override-colors:${off.map((i) => `${i} transparent`).join(',')}}`;
+  })
+  .join('\n');
+
+const globalPaletteCss =
+  palettes.map(paletteCss).join('\n') + '\n' + layerCss + '\n' +
+  palettes.map((p) => `.nb-page[data-pal='${p.id}']{--pal:--nb-${p.id};--accent:${p.accent};--glow:${p.glow}}`).join('\n');
+
+const depthSteps = [0, 50, 100, 150, 200];
+const lightSteps = [0, 6, 12, 18, 24];
+
+const glyphs = [
+  ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  ...'abcdefghijklmnopqrstuvwxyz',
+  ...'0123456789',
+  ...'!?&@#$%*+=/()[]{}€£¥§©',
+];
+
+const scores = [
+  { rank: '1ST', who: 'ARF', pts: '999990' },
+  { rank: '2ND', who: 'JVR', pts: '875300' },
+  { rank: '3RD', who: 'GFS', pts: '640250' },
+  { rank: '4TH', who: 'YOU', pts: '000000' },
+];
+
+const themeStyle = [
+  '--bg:#0a061c', '--bg-2:#140c30', '--fg:#f4eeff', '--fg-2:#bdb1de', '--fg-3:#8478ad',
+  '--accent:#ffd214', '--accent-contrast:#0a061c', '--line:#f4eeff24', '--line-soft:#f4eeff12',
+  'color-scheme:dark',
+].join(';');
+---
+<Layout
+  title="Nabla — Specimen"
+  description="Nabla, a colour font with a third dimension: extrusion depth, edge highlight and seven palettes, shown live."
+  themeStyle={themeStyle}
+  mode="dark"
+  fixedTheme
+>
+  <SiteHeader current="Nabla" showToggle={false} />
+  <style is:global set:html={globalPaletteCss}></style>
+
+  <div class="nb-page" data-nb data-pal="coin">
+
+    <!-- ============ HERO: the letters rise to meet the pointer ============ -->
+    <header class="nb-hero" data-nb-hero>
+      <div class="nb-hero__floor" aria-hidden="true"></div>
+      <div class="nb-hero__lamp" aria-hidden="true"></div>
+
+      <div class="nb-hud nb-hud--tl">
+        <span>1UP</span><b data-hud-score>000000</b>
+      </div>
+      <div class="nb-hud nb-hud--tr">
+        <span>Google Fonts · 2022</span><b>Colour · COLRv1</b>
+      </div>
+
+      <h1 class="nb-hero__word nb" aria-label="Nabla">
+        {[...'NABLA'].map((ch, i) => <span class="nb-hero__l" data-l style={`--i:${i}`} aria-hidden="true">{ch}</span>)}
+      </h1>
+
+      <div class="nb-hero__foot">
+        <p class="nb-hero__lede">
+          A colour font with a third dimension — and a light switch.
+          <span class="nb-hero__hint" data-hint-fine>Move across the letters. They rise to meet you.</span>
+          <span class="nb-hero__hint" data-hint-coarse>Drag a finger across the letters. They rise to meet you.</span>
+        </p>
+        <dl class="nb-readout" aria-live="off">
+          <div><dt>EDPT · depth</dt><dd data-hud-d>100</dd></div>
+          <div><dt>EHLT · light</dt><dd data-hud-h>12</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ TWO AXES ============ -->
+      <section class="nb-sec nb-axes">
+        <div class="nb-kicker"><span>01</span> Two axes, nothing else</div>
+        <h2 class="nb-h2">No weights. No italics.<br />Just <em>how tall</em> and <em>how bright</em>.</h2>
+
+        <div class="nb-axes__grid">
+          <figure class="nb-stair" data-nb-inview>
+            <div class="nb-stair__word nb">
+              {[...'DEPTH'].map((ch, i) => (
+                <span class="nb-stair__l" style={`--d:${depthSteps[i]};--h:12;--i:${i}`}>
+                  {ch}<i>{depthSteps[i]}</i>
+                </span>
+              ))}
+            </div>
+            <figcaption>
+              <b>Extrusion Depth</b> <code>EDPT 0 – 200</code>
+              <p>At zero the letter is a flat neon outline. Every unit after that pulls it up off the page, until each stroke is a little tower block.</p>
+            </figcaption>
+          </figure>
+
+          <figure class="nb-stair" data-nb-inview>
+            <div class="nb-stair__word nb">
+              {[...'LIGHT'].map((ch, i) => (
+                <span class="nb-stair__l" style={`--d:130;--h:${lightSteps[i]};--i:${i}`}>
+                  {ch}<i>{lightSteps[i]}</i>
+                </span>
+              ))}
+            </div>
+            <figcaption>
+              <b>Edge Highlight</b> <code>EHLT 0 – 24</code>
+              <p>A bevel of pure light along every front edge. Off, the blocks are matte. Wide open, they look freshly dipped in lacquer.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ EXPLODED VIEW ============ -->
+      <section class="nb-sec nb-layers">
+        <div class="nb-kicker"><span>02</span> Under the paint</div>
+        <h2 class="nb-h2">One letter is four drawings<br />stacked in the same spot.</h2>
+        <p class="nb-lede">
+          Nabla is a COLRv1 font: each glyph is a pile of shapes, each filled with a gradient from a shared palette.
+          Hide all but a few palette slots — which CSS can do — and the letter comes apart in your hands.
+        </p>
+
+        <div class="nb-explode" data-nb-inview>
+          {layers.map((l, i) => (
+            <>
+              <figure class="nb-explode__piece" style={`--i:${i}`}>
+                <span class="nb nb-explode__g" style={`font-palette:--nb-layer-${l.id}`} aria-hidden="true">R</span>
+                <figcaption>{l.label}</figcaption>
+              </figure>
+              <span class="nb-explode__op" aria-hidden="true">{i < layers.length - 1 ? '+' : '='}</span>
+            </>
+          ))}
+          <figure class="nb-explode__piece nb-explode__piece--sum" style="--i:4">
+            <span class="nb nb-explode__g" aria-hidden="true">R</span>
+            <figcaption>R</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ PALETTES ============ -->
+      <section class="nb-sec nb-pals" id="palettes">
+        <div class="nb-kicker"><span>03</span> Seven coats of paint, and room for yours</div>
+        <h2 class="nb-h2">Pick one. The whole page<br />gets repainted.</h2>
+
+        <div class="nb-pals__grid">
+          <div class="nb-pals__left">
+          <div class="nb-pals__chips" role="radiogroup" aria-label="Colour palette">
+            {palettes.map((p, i) => (
+              <button
+                class="nb-chip"
+                type="button"
+                role="radio"
+                aria-checked={i === 0 ? 'true' : 'false'}
+                data-pal-btn={p.id}
+                data-css={paletteCss(p)}
+                style={`--chip:${p.accent}`}
+              >
+                <span class="nb nb-chip__g" style={`font-palette:--nb-${p.id}`} aria-hidden="true">N</span>
+                <span class="nb-chip__name">{p.name}</span>
+                <span class="nb-chip__note">{p.note}</span>
+              </button>
+            ))}
+          </div>
+          <p class="nb nb-pals__demo" aria-hidden="true">
+            {[...'NEW'].map((c, i) => <span style={`--i:${i}`}>{c}</span>)}
+            <span class="nb-pals__gap"></span>
+            {[...'GAME'].map((c, i) => <span style={`--i:${i + 3}`}>{c}</span>)}
+          </p>
+          </div>
+
+          <div class="nb-pals__code">
+            <div class="nb-pals__codehead"><span>palette.css</span><span data-pal-name>Coin</span></div>
+            <pre><code data-pal-code>{paletteCss(palettes[0])}
+
+h1 {'{'}
+  font-family: 'Nabla';
+  font-palette: --nb-{palettes[0].id};
+{'}'}</code></pre>
+            <p class="nb-pals__codenote">
+              This is the real rule driving the page. The two “mixed here” palettes aren’t in the font at all —
+              they’re ten colours typed into <code>override-colors</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ IN USE ============ -->
+      <section class="nb-sec nb-use">
+        <div class="nb-kicker"><span>04</span> In the wild</div>
+        <h2 class="nb-h2">It was born for a screen<br />that glows in the dark.</h2>
+
+        <div class="nb-bento">
+          <article class="nb-crt" data-nb-inview>
+            <div class="nb-crt__screen">
+              <p class="nb-crt__title nb">HIGH SCORES</p>
+              <ol class="nb-crt__table">
+                {scores.map((s, i) => (
+                  <li class:list={['nb-crt__row', s.who === 'YOU' && 'nb-crt__row--you']} style={`--i:${i}`}>
+                    <span class="nb">{s.rank}</span>
+                    <span class="nb">{s.who}</span>
+                    <span class="nb nb-crt__pts">{s.pts}</span>
+                  </li>
+                ))}
+              </ol>
+              <p class="nb-crt__coin nb">INSERT COIN</p>
+            </div>
+            <p class="nb-cap">Attract mode — a cabinet that never got built</p>
+          </article>
+
+          <article class="nb-poster">
+            <div class="nb-poster__sheet">
+              <p class="nb-poster__top">Sat 21 June · from 8 pm · free</p>
+              <p class="nb-poster__word nb" aria-label="Block Party"><span>BLOCK</span><span>PARTY</span></p>
+              <p class="nb-poster__foot"><span>Rooftop, level 9</span><span>Bring a friend &amp; a jumper</span></p>
+            </div>
+            <p class="nb-cap">Poster — it holds its own on paper white</p>
+          </article>
+
+          <article class="nb-clock" data-nb-clock>
+            <div class="nb-clock__face">
+              <p class="nb-clock__time nb" data-clock aria-label="Current time">
+                <span>0</span><span>0</span><i>:</i><span>0</span><span>0</span><i>:</i><span>0</span><span>0</span>
+              </p>
+              <p class="nb-clock__sub">Your time, right now — every digit jumps as it lands</p>
+            </div>
+            <p class="nb-cap">Clock — figures, live</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="nb-sec nb-test" data-nb-test>
+        <div class="nb-kicker"><span>05</span> Your turn</div>
+        <h2 class="nb-h2">Type something.<br />Watch it get built.</h2>
+
+        <div class="nb-test__stage">
+          <div class="nb-hero__floor nb-hero__floor--stage" aria-hidden="true"></div>
+          <p class="nb-test__out nb" data-test-out aria-hidden="true"></p>
+          <label class="nb-test__field">
+            <span>Your words</span>
+            <input type="text" data-test-in value="PRESS START" maxlength="28" spellcheck="false" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="nb-test__ctl">
+          <label><span>Depth <b data-test-dv>120</b></span><input type="range" min="0" max="200" value="120" data-test-d /></label>
+          <label><span>Light <b data-test-hv>14</b></span><input type="range" min="0" max="24" value="14" data-test-h /></label>
+          <label><span>Size <b data-test-sv>100</b>%</span><input type="range" min="40" max="160" value="100" data-test-s /></label>
+          <button type="button" class="nb-btn" data-test-wave aria-pressed="false">Make a wave</button>
+        </div>
+      </section>
+
+      <!-- ============ GLYPHS ============ -->
+      <section class="nb-sec nb-glyphs">
+        <div class="nb-kicker"><span>06</span> The blocks</div>
+        <h2 class="nb-h2">Every key, a tiny building.</h2>
+        <p class="nb-lede">Run a pointer over the set — or tap a letter to drop it into the tester above.</p>
+        <div class="nb-keys" data-nb-keys data-nb-inview>
+          {glyphs.map((g, i) => (
+            <button type="button" class="nb-key nb" data-key={g} style={`--i:${i % 13 + Math.floor(i / 13)}`} aria-label={`Add ${g} to the tester`}>{g}</button>
+          ))}
+        </div>
+      </section>
+
+      <!-- ============ STORY + SPECS ============ -->
+      <section class="nb-sec nb-story">
+        <div class="nb-kicker"><span>07</span> The story</div>
+        <div class="nb-story__grid">
+          <div class="nb-story__prose">
+            <p class="nb-story__lede">
+              Nabla was drawn by <strong>Arthur Reinders Folmer</strong> of Typearture, with font engineering by
+              <strong>Just van Rossum</strong>, and joined Google Fonts in 2022. Its look comes straight out of
+              isometric computer games: chunky blocks seen from above and to one side, lit from a single corner.
+            </p>
+            <p>
+              What makes it more than a novelty is the format underneath. For decades a font file held one thing
+              per letter: an outline, filled with whatever single colour the page asked for. COLRv1 lets a glyph be
+              a small composition instead — layers, gradients, a palette — and, crucially, lets all of that
+              <em>vary</em>. Nabla was an early showpiece for the idea. Its extrusion is not an effect applied to
+              letters; it is the letters, and it is drawn all the way from flat to towering.
+            </p>
+            <p>
+              The result behaves like type, not like an image. It sets in a line, wraps, selects, scales without
+              blur, and can be searched and read aloud. Change the palette and it is a different object; change one
+              number and it stands up.
+            </p>
+          </div>
+
+          <dl class="nb-specs">
+            <div><dt>Design</dt><dd>Arthur Reinders Folmer (Typearture)</dd></div>
+            <div><dt>Engineering</dt><dd>Just van Rossum</dd></div>
+            <div><dt>Released</dt><dd>2022, Google Fonts</dd></div>
+            <div><dt>Format</dt><dd>Variable colour font · COLRv1</dd></div>
+            <div><dt>Axes</dt><dd><code>EDPT</code> 0–200 (default 100)<br /><code>EHLT</code> 0–24 (default 12)</dd></div>
+            <div><dt>Palettes</dt><dd>7 built in, 10 colours each</dd></div>
+            <div><dt>Scripts</dt><dd>Latin, Latin Extended, Vietnamese, Cyrillic Extended, maths symbols</dd></div>
+            <div><dt>Styles</dt><dd>One. Regular.</dd></div>
+            <div><dt>Licence</dt><dd>SIL Open Font License 1.1</dd></div>
+            <div class="nb-specs__links">
+              <a href="https://fonts.google.com/specimen/Nabla" rel="noopener">Get it on Google Fonts ↗</a>
+              <a href="https://github.com/justvanrossum/nabla" rel="noopener">Source ↗</a>
+            </div>
+          </dl>
+        </div>
+        <p class="nb-compat">Colour and depth need a browser that draws COLRv1 — current Chrome, Edge and Firefox do.</p>
+      </section>
+
+      <!-- ============ NEXT ============ -->
+      <a class="nb-next" href="/fonts/climate-crisis">
+        <span class="nb-next__k">Next showpiece →</span>
+        <span class="nb-next__name">Climate Crisis</span>
+        <span class="nb-next__sub">One axis, measured in years.</span>
+      </a>
+    </main>
+  </div>
+
+  <SiteFooter />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-nb]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // ---------- In-view flags (start CSS choreography when a block arrives) ----------
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.target.classList.toggle('is-in', e.isIntersecting)),
+      { threshold: 0.25 }
+    );
+    page.querySelectorAll('[data-nb-inview]').forEach((el) => io.observe(el));
+
+    // ---------- Hero: per-letter depth follows the pointer; height sets the light ----------
+    const hero = page.querySelector<HTMLElement>('[data-nb-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hudD = hero.querySelector<HTMLElement>('[data-hud-d]')!;
+    const hudH = hero.querySelector<HTMLElement>('[data-hud-h]')!;
+    const hudScore = hero.querySelector<HTMLElement>('[data-hud-score]')!;
+    const cur = letters.map(() => ({ d: 100, h: 12 }));
+    let px = 0.5, py = 0.5, lastMove = -1e9, heroOn = true, score = 0;
+    let centers: number[] = [];
+    const measure = () => {
+      const r = hero.getBoundingClientRect();
+      centers = letters.map((l) => {
+        const b = l.getBoundingClientRect();
+        return (b.left + b.width / 2 - r.left) / r.width;
+      });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure);
+
+    const onMove = (e: PointerEvent) => {
+      const r = hero.getBoundingClientRect();
+      const nx = clamp((e.clientX - r.left) / r.width, 0, 1);
+      const ny = clamp((e.clientY - r.top) / r.height, 0, 1);
+      score += Math.round(Math.hypot(nx - px, ny - py) * 4000);
+      px = nx; py = ny; lastMove = performance.now();
+      hero.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
+      hero.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
+    };
+    hero.addEventListener('pointermove', onMove);
+    hero.addEventListener('pointerdown', onMove);
+    new IntersectionObserver((es) => { heroOn = es[0].isIntersecting; }).observe(hero);
+
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!heroOn) return;
+      const live = now - lastMove < 2600;
+      const t = now / 1000;
+      let sumD = 0, sumH = 0;
+      letters.forEach((l, i) => {
+        let td: number, th: number;
+        if (live) {
+          const dist = Math.abs(centers[i] - px);
+          const near = 1 - clamp(dist / 0.42, 0, 1);
+          td = 12 + 188 * near * near * (3 - 2 * near);
+          th = 24 * (1 - py) * (0.35 + 0.65 * near);
+        } else if (reduce) {
+          td = 60 + i * 30; th = 12;
+        } else {
+          td = 100 + 100 * Math.sin(t * 1.5 - i * 0.75);
+          th = 12 + 12 * Math.sin(t * 0.8 - i * 0.4);
+        }
+        const c = cur[i];
+        c.d += (td - c.d) * 0.14;
+        c.h += (th - c.h) * 0.14;
+        l.style.setProperty('--d', c.d.toFixed(1));
+        l.style.setProperty('--h', c.h.toFixed(2));
+        sumD += c.d; sumH += c.h;
+      });
+      hudD.textContent = String(Math.round(sumD / letters.length)).padStart(3, '0');
+      hudH.textContent = String(Math.round(sumH / letters.length)).padStart(2, '0');
+      hudScore.textContent = String(score % 1000000).padStart(6, '0');
+    };
+    requestAnimationFrame(tick);
+
+    // ---------- Palettes: repaint the page, show the live rule ----------
+    const palBtns = Array.from(page.querySelectorAll<HTMLButtonElement>('[data-pal-btn]'));
+    const palCode = page.querySelector<HTMLElement>('[data-pal-code]')!;
+    const palName = page.querySelector<HTMLElement>('[data-pal-name]')!;
+    palBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        const id = b.dataset.palBtn!;
+        page.dataset.pal = id;
+        palBtns.forEach((o) => o.setAttribute('aria-checked', String(o === b)));
+        palName.textContent = b.querySelector('.nb-chip__name')!.textContent;
+        palCode.textContent = `${b.dataset.css}\n\nh1 {\n  font-family: 'Nabla';\n  font-palette: --nb-${id};\n}`;
+      })
+    );
+
+    // ---------- Clock: each digit pops when it changes ----------
+    const clock = page.querySelector<HTMLElement>('[data-clock]');
+    if (clock) {
+      const digits = Array.from(clock.querySelectorAll('span'));
+      const paint = () => {
+        const n = new Date();
+        const s = [n.getHours(), n.getMinutes(), n.getSeconds()].map((v) => String(v).padStart(2, '0')).join('');
+        digits.forEach((el, i) => {
+          if (el.textContent === s[i]) return;
+          el.textContent = s[i];
+          el.classList.remove('is-pop');
+          void el.offsetWidth;
+          el.classList.add('is-pop');
+        });
+      };
+      paint();
+      setInterval(paint, 250);
+    }
+
+    // ---------- Tester: letters are built one keystroke at a time ----------
+    const test = page.querySelector<HTMLElement>('[data-nb-test]')!;
+    const input = test.querySelector<HTMLInputElement>('[data-test-in]')!;
+    const out = test.querySelector<HTMLElement>('[data-test-out]')!;
+    const stage = test.querySelector<HTMLElement>('.nb-test__stage')!;
+    let prev = '';
+    const render = () => {
+      const val = input.value;
+      let keep = 0;
+      while (keep < prev.length && keep < val.length && prev[keep] === val[keep]) keep++;
+      while (out.children.length > keep) out.lastElementChild!.remove();
+      for (let i = keep; i < val.length; i++) {
+        const s = document.createElement('span');
+        s.textContent = val[i] === ' ' ? ' ' : val[i];
+        s.style.setProperty('--i', String(i));
+        s.className = 'is-pop';
+        out.appendChild(s);
+      }
+      prev = val;
+    };
+    input.addEventListener('input', render);
+    render();
+    stage.addEventListener('click', () => input.focus());
+
+    const bind = (sel: string, valSel: string, apply: (v: number) => void) => {
+      const el = test.querySelector<HTMLInputElement>(sel)!;
+      const v = test.querySelector<HTMLElement>(valSel)!;
+      const run = () => { v.textContent = el.value; apply(+el.value); };
+      el.addEventListener('input', run);
+      run();
+    };
+    bind('[data-test-d]', '[data-test-dv]', (v) => out.style.setProperty('--dset', String(v)));
+    bind('[data-test-h]', '[data-test-hv]', (v) => out.style.setProperty('--hset', String(v)));
+    bind('[data-test-s]', '[data-test-sv]', (v) => out.style.setProperty('--scale', String(v / 100)));
+    const waveBtn = test.querySelector<HTMLButtonElement>('[data-test-wave]')!;
+    waveBtn.addEventListener('click', () => {
+      const on = waveBtn.getAttribute('aria-pressed') !== 'true';
+      waveBtn.setAttribute('aria-pressed', String(on));
+      waveBtn.textContent = on ? 'Hold still' : 'Make a wave';
+      out.classList.toggle('is-wave', on);
+    });
+
+    // ---------- Keys: tap a glyph to drop it into the tester ----------
+    page.querySelector('[data-nb-keys]')!.addEventListener('click', (e) => {
+      const k = (e.target as HTMLElement).closest<HTMLElement>('[data-key]');
+      if (!k) return;
+      if (input.value.length >= input.maxLength) input.value = '';
+      input.value += k.dataset.key!;
+      render();
+      k.classList.remove('is-hit'); void k.offsetWidth; k.classList.add('is-hit');
+    });
+  }
+</script>
+
+<style is:global>
+  /* Registered so depth and light can be transitioned and keyframed like any number. */
+  @property --d { syntax: '<number>'; inherits: true; initial-value: 100; }
+  @property --h { syntax: '<number>'; inherits: true; initial-value: 12; }
+
+  .nb-page {
+    --pal: --nb-coin;
+    --glow: #ff6a1f;
+    --nb-mono: var(--font-mono);
+    position: relative;
+    background:
+      radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--glow) 16%, transparent), transparent 70%),
+      var(--bg);
+    transition: --accent 0.4s;
+  }
+  /* `.nb *` too: font-variation-settings inherits as a computed value, so a
+     child that changes --d must re-declare the property to pick it up. */
+  .nb, .nb * {
+    font-variation-settings: 'EDPT' var(--d), 'EHLT' var(--h);
+    font-palette: var(--pal);
+  }
+  .nb {
+    font-family: 'Nabla Variable', system-ui, sans-serif;
+    font-weight: 400;
+    font-feature-settings: normal;
+    line-height: 1;
+  }
+
+  /* ---------- hero ---------- */
+  .nb-hero {
+    --mx: 50%; --my: 40%;
+    position: relative;
+    min-height: calc(100svh - 64px);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: clamp(1rem, 2.5vw, 2rem) var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+    overflow: hidden;
+    isolation: isolate;
+    touch-action: pan-y;
+  }
+  .nb-hero__floor {
+    position: absolute; inset: -20% -10% 0;
+    z-index: -2;
+    --g: color-mix(in srgb, var(--accent) 22%, transparent);
+    background:
+      repeating-linear-gradient(60deg, var(--g) 0 1px, transparent 1px 56px),
+      repeating-linear-gradient(-60deg, var(--g) 0 1px, transparent 1px 56px);
+    -webkit-mask-image: radial-gradient(70% 60% at 50% 62%, #000 0%, transparent 78%);
+            mask-image: radial-gradient(70% 60% at 50% 62%, #000 0%, transparent 78%);
+    opacity: 0.55;
+  }
+  .nb-hero__floor--stage { inset: 0; opacity: 0.4; z-index: 0; }
+  .nb-hero__lamp {
+    position: absolute; inset: 0; z-index: -1;
+    background: radial-gradient(38vmax 38vmax at var(--mx) var(--my), color-mix(in srgb, var(--glow) 34%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  .nb-hud {
+    font-family: var(--nb-mono);
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fg-3);
+    display: flex; flex-direction: column; gap: 0.2rem;
+    grid-row: 1;
+  }
+  .nb-hud b { font-weight: 500; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .nb-hud--tl { grid-column: 1; justify-self: start; }
+  .nb-hud--tr { position: absolute; top: clamp(1rem, 2.5vw, 2rem); right: var(--gutter); text-align: right; }
+
+  .nb-hero__word {
+    grid-row: 2;
+    align-self: center; justify-self: center;
+    display: flex;
+    font-size: min(29.5vw, 58svh);
+    line-height: 1.02;
+    white-space: nowrap;
+    user-select: none;
+    /* the extrusion grows down-left; nudge so the block reads centred */
+    transform: translateX(1.5%);
+    filter: drop-shadow(0 0.06em 0.09em rgba(0, 0, 0, 0.55));
+  }
+  .nb-hero__l { display: block; }
+
+  .nb-hero__foot {
+    grid-row: 3;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+  }
+  .nb-hero__lede {
+    font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2.1rem);
+    font-weight: 500; letter-spacing: -0.02em; line-height: 1.15;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+  .nb-hero__hint {
+    display: block; margin-top: 0.8rem;
+    font-family: var(--nb-mono); font-size: 0.78rem; font-weight: 400; letter-spacing: 0.02em;
+    color: var(--fg-2);
+  }
+  [data-hint-coarse] { display: none; }
+  @media (hover: none) { [data-hint-fine] { display: none; } [data-hint-coarse] { display: block; } }
+
+  .nb-readout { display: flex; gap: 2.2rem; }
+  .nb-readout dt { font-family: var(--nb-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); }
+  .nb-readout dd {
+    font-family: var(--nb-mono); font-size: clamp(1.8rem, 1.2rem + 2vw, 3rem); font-weight: 300;
+    font-variant-numeric: tabular-nums; color: var(--accent); line-height: 1.1;
+  }
+
+  /* ---------- shared section chrome ---------- */
+  .nb-sec { padding: clamp(4.5rem, 11vw, 10rem) var(--gutter) 0; max-width: var(--maxw); margin-inline: auto; }
+  .nb-kicker {
+    font-family: var(--nb-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fg-2);
+    display: flex; gap: 1rem; align-items: center;
+    padding-top: 1rem; border-top: 1px solid var(--line);
+  }
+  .nb-kicker span { color: var(--accent); }
+  .nb-h2 {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(2rem, 1rem + 4.4vw, 5.2rem);
+    font-weight: 600; letter-spacing: -0.035em; line-height: 0.98;
+    text-wrap: balance;
+  }
+  .nb-h2 em { font-style: normal; color: var(--accent); }
+  .nb-lede { margin-top: 1.5rem; max-width: 56ch; font-size: var(--step-1); line-height: 1.5; color: var(--fg-2); }
+  .nb-lede code, .nb-pals__codenote code, .nb-specs code, .nb-stair code {
+    font-family: var(--nb-mono); font-size: 0.86em; color: var(--accent);
+  }
+  .nb-cap { margin-top: 0.9rem; font-family: var(--nb-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--fg-3); }
+
+  /* ---------- two axes ---------- */
+  .nb-axes__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 3vw, 3rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .nb-stair {
+    background: linear-gradient(180deg, var(--bg-2), color-mix(in srgb, var(--bg-2) 40%, var(--bg)));
+    border: 1px solid var(--line); border-radius: 18px;
+    padding: clamp(1.5rem, 3vw, 3rem);
+    display: flex; flex-direction: column; justify-content: space-between; gap: 2.5rem;
+    overflow: hidden;
+  }
+  .nb-stair__word { display: flex; justify-content: space-between; font-size: clamp(3.2rem, 9.6vw, 11rem); }
+  .nb-stair__l {
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
+    transition: --d 0.5s var(--ease), --h 0.5s var(--ease);
+  }
+  .nb-stair__l i {
+    font: 400 0.72rem/1 var(--nb-mono); letter-spacing: 0.08em; color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .nb-stair figcaption b { font-size: var(--step-1); font-weight: 600; letter-spacing: -0.01em; margin-right: 0.75rem; }
+  .nb-stair figcaption p { margin-top: 0.7rem; color: var(--fg-2); max-width: 44ch; line-height: 1.5; }
+
+  /* ---------- exploded view ---------- */
+  .nb-explode {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    --pal: --nb-coin;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 3vw, 3.5rem);
+    border: 1px solid var(--line); border-radius: 18px;
+    background:
+      radial-gradient(60% 90% at 88% 50%, color-mix(in srgb, var(--glow) 22%, transparent), transparent 70%),
+      var(--bg-2);
+  }
+  .nb-explode__piece { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+  .nb-explode__g {
+    --d: 200; --h: 24;
+    font-size: clamp(3.4rem, 12vw, 13rem);
+    opacity: 0; transform: translateY(-0.35em);
+    transition: opacity 0.6s var(--ease), transform 0.9s var(--ease);
+    transition-delay: calc(var(--i) * 140ms);
+  }
+  .nb-explode.is-in .nb-explode__g { opacity: 1; transform: none; }
+  .nb-explode figcaption { font-family: var(--nb-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); text-align: center; }
+  .nb-explode__op { font-family: var(--nb-mono); font-weight: 300; font-size: clamp(1rem, 2.4vw, 2.2rem); color: var(--fg-3); padding-bottom: 2rem; }
+
+  /* ---------- palettes ---------- */
+  .nb-pals__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(1.5rem, 3vw, 3rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); align-items: start; }
+  .nb-pals__chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+  .nb-chip {
+    display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 0.9rem; align-items: center;
+    text-align: left;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--bg-2);
+    transition: border-color 0.25s, background 0.25s, transform 0.25s var(--ease), --d 0.35s var(--ease);
+    --d: 70; --h: 10;
+  }
+  .nb-chip:hover { --d: 190; --h: 24; transform: translateY(-2px); border-color: color-mix(in srgb, var(--chip) 60%, transparent); }
+  .nb-chip[aria-checked='true'] {
+    --d: 170; --h: 22;
+    border-color: var(--chip);
+    background: color-mix(in srgb, var(--chip) 12%, var(--bg-2));
+  }
+  .nb-chip__g { grid-row: 1 / 3; font-size: 3.4rem; }
+  .nb-chip__name { align-self: end; font-weight: 600; letter-spacing: -0.01em; }
+  .nb-chip__note { align-self: start; font-family: var(--nb-mono); font-size: 0.64rem; letter-spacing: 0.04em; color: var(--fg-3); }
+
+  .nb-pals__demo {
+    display: flex; justify-content: center; align-items: flex-end;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(2.6rem, 7.4vw, 8.2rem);
+    white-space: nowrap;
+  }
+  .nb-pals__demo span { display: block; animation: nb-wave 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * -0.22s); }
+  .nb-pals__gap { width: 0.3em; }
+
+  .nb-pals__code {
+    position: sticky; top: 88px;
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    background: #060312;
+  }
+  .nb-pals__codehead {
+    display: flex; justify-content: space-between;
+    padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--line);
+    font-family: var(--nb-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .nb-pals__codehead span:last-child { color: var(--accent); }
+  .nb-pals__code pre {
+    padding: 1.2rem 1.1rem; min-height: 21.5rem;
+    font-family: var(--nb-mono); font-size: 0.82rem; line-height: 1.6; color: var(--fg);
+    white-space: pre-wrap;
+  }
+  .nb-pals__codenote { padding: 0.9rem 1.1rem 1.1rem; border-top: 1px solid var(--line); color: var(--fg-2); font-size: var(--step--1); line-height: 1.5; }
+
+  /* ---------- in use ---------- */
+  .nb-bento {
+    display: grid; grid-template-columns: 7fr 5fr; grid-template-rows: auto auto;
+    gap: clamp(1rem, 2vw, 2rem); margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .nb-crt { grid-row: 1 / 3; display: flex; flex-direction: column; }
+  .nb-crt__screen {
+    --pal: --nb-cabinet;
+    position: relative; flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.5rem;
+    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 3vw, 3rem);
+    border-radius: 28px;
+    background: radial-gradient(110% 90% at 50% 40%, #0b1146 0%, #04041c 70%, #010109 100%);
+    box-shadow: inset 0 0 0 1px #6f7cff33, inset 0 0 90px #000, 0 30px 80px -30px #2a1cf5aa;
+    overflow: hidden;
+  }
+  .nb-crt__screen::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply;
+  }
+  .nb-crt__title { --pal: --nb-bubblegum; --d: 150; --h: 20; font-size: clamp(2rem, 5.6vw, 6rem); white-space: nowrap; }
+  .nb-crt__table { width: 100%; max-width: 34rem; display: grid; gap: clamp(0.3rem, 1vw, 0.8rem); }
+  .nb-crt__row {
+    display: grid; grid-template-columns: 1fr 1fr 1.6fr; align-items: end;
+    font-size: clamp(1.5rem, 3.7vw, 3.9rem);
+    --d: 90; --h: 12;
+  }
+  .nb-crt__pts { text-align: right; }
+  .nb-crt.is-in .nb-crt__row { animation: nb-row 3.2s var(--ease) infinite; animation-delay: calc(var(--i) * 0.28s); }
+  .nb-crt__row--you { --pal: --nb-coin; }
+  .nb-crt.is-in .nb-crt__row--you { animation: nb-blink 1s steps(2, jump-none) infinite; }
+  .nb-crt__coin { --pal: --nb-coin; --d: 60; --h: 18; font-size: clamp(1.2rem, 2.6vw, 2.6rem); animation: nb-blink 1.1s steps(2, jump-none) infinite; }
+  @keyframes nb-row { 0%, 60%, 100% { --d: 90; --h: 12; } 30% { --d: 200; --h: 24; } }
+  @keyframes nb-blink { 0% { opacity: 1; } 100% { opacity: 0.15; } }
+
+  .nb-poster__sheet {
+    --pal: --nb-bubblegum;
+    background: #f6efe2; color: #1b1030;
+    border-radius: 6px;
+    padding: clamp(1.2rem, 2.4vw, 2.2rem);
+    display: flex; flex-direction: column; gap: 1rem;
+    background-image: radial-gradient(#1b103014 1px, transparent 1.2px); background-size: 9px 9px;
+  }
+  .nb-poster__top, .nb-poster__foot { font-family: var(--nb-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .nb-poster__foot { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; border-top: 1.5px solid #1b1030; padding-top: 0.8rem; }
+  .nb-poster__word { --d: 200; --h: 16; font-size: clamp(3rem, 8.2vw, 9rem); display: flex; flex-direction: column; line-height: 0.92; padding-block: 0.1em; }
+  .nb-poster__word span:last-child { align-self: flex-end; --pal: --nb-cabinet; }
+
+  .nb-clock__face {
+    --pal: --nb-tropic;
+    border: 1px solid var(--line); border-radius: 18px;
+    background: var(--bg-2);
+    padding: clamp(1.2rem, 2.4vw, 2.2rem);
+    display: flex; flex-direction: column; gap: 0.8rem; align-items: center; text-align: center;
+  }
+  .nb-clock__time { display: flex; align-items: baseline; font-size: clamp(2.4rem, 6vw, 6.4rem); --d: 80; --h: 12; }
+  .nb-clock__time span { display: block; width: 0.62em; text-align: center; }
+  .nb-clock__time i { font-style: normal; opacity: 0.9; }
+  .nb-clock__time span.is-pop { animation: nb-pop 0.7s var(--ease); }
+  .nb-clock__sub { color: var(--fg-2); font-size: var(--step--1); max-width: 30ch; }
+  @keyframes nb-pop { 0% { --d: 0; --h: 24; } 45% { --d: 200; --h: 24; } 100% { --d: 80; --h: 12; } }
+
+  /* ---------- tester ---------- */
+  .nb-test__stage {
+    position: relative; margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    min-height: clamp(18rem, 44vw, 34rem);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 3rem clamp(1rem, 3vw, 3rem) 5.5rem;
+    border: 1px solid var(--line); border-radius: 18px;
+    background: radial-gradient(70% 80% at 50% 55%, color-mix(in srgb, var(--glow) 20%, var(--bg-2)), var(--bg-2) 75%);
+    overflow: hidden; cursor: text;
+  }
+  .nb-test__out {
+    --dset: 120; --hset: 14; --scale: 1;
+    position: relative; z-index: 1;
+    display: flex; flex-wrap: wrap; justify-content: center;
+    font-size: calc(clamp(2.6rem, 9.5vw, 10.5rem) * var(--scale));
+    line-height: 1.05; text-align: center;
+    filter: drop-shadow(0 0.05em 0.08em rgba(0, 0, 0, 0.5));
+  }
+  .nb-test__out span { --d: var(--dset); --h: var(--hset); display: block; }
+  .nb-test__out span.is-pop { animation: nb-build 0.75s var(--ease) backwards; }
+  .nb-test__out.is-wave span { animation: nb-wave 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * -0.14s); }
+  @keyframes nb-build { 0% { --d: 0; --h: 0; opacity: 0; transform: translateY(-0.3em); } 55% { --d: 200; --h: 24; opacity: 1; transform: none; } }
+  @keyframes nb-wave { 0%, 100% { --d: 10; --h: 4; } 50% { --d: 200; --h: 24; } }
+  .nb-test__field {
+    position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); z-index: 2;
+    width: min(92%, 26rem);
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.7rem 1.1rem;
+    border: 1px solid var(--line); border-radius: 100px;
+    background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(10px);
+    font-family: var(--nb-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .nb-test__field span { white-space: nowrap; }
+  .nb-test__field input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; font-size: 0.95rem; letter-spacing: 0.04em; color: var(--fg); text-transform: none; }
+  .nb-test__field:focus-within { border-color: var(--accent); }
+
+  .nb-test__ctl { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: clamp(1rem, 3vw, 3rem); align-items: end; margin-top: 1.5rem; }
+  .nb-test__ctl label { display: flex; flex-direction: column; gap: 0.7rem; font-family: var(--nb-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-2); }
+  .nb-test__ctl b { font-weight: 500; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .nb-page input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: none; cursor: pointer; }
+  .nb-page input[type='range']::-webkit-slider-runnable-track { height: 2px; background: var(--line); }
+  .nb-page input[type='range']::-moz-range-track { height: 2px; background: var(--line); }
+  .nb-page input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -8px; border-radius: 4px; background: var(--accent); box-shadow: -3px 3px 0 color-mix(in srgb, var(--glow) 80%, #000); }
+  .nb-page input[type='range']::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 4px; background: var(--accent); box-shadow: -3px 3px 0 color-mix(in srgb, var(--glow) 80%, #000); }
+  .nb-btn {
+    font-family: var(--nb-mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.85rem 1.3rem; border-radius: 8px;
+    background: var(--accent); color: var(--accent-contrast);
+    box-shadow: -4px 4px 0 color-mix(in srgb, var(--glow) 80%, #000);
+    transition: transform 0.15s, box-shadow 0.15s;
+    white-space: nowrap;
+  }
+  .nb-btn:hover { transform: translate(-1px, 1px); box-shadow: -3px 3px 0 color-mix(in srgb, var(--glow) 80%, #000); }
+  .nb-btn:active, .nb-btn[aria-pressed='true'] { transform: translate(-4px, 4px); box-shadow: none; }
+
+  /* ---------- keys ---------- */
+  .nb-keys { display: grid; grid-template-columns: repeat(13, 1fr); gap: clamp(0.2rem, 0.6vw, 0.6rem); margin-top: clamp(2rem, 4vw, 3.5rem); }
+  .nb-key {
+    --d: 40; --h: 6;
+    aspect-ratio: 1; display: grid; place-items: center;
+    font-size: clamp(1.3rem, 4.4vw, 4.6rem);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--bg-2) 70%, transparent);
+    transition: --d 0.6s var(--ease), --h 0.6s var(--ease), background 0.3s;
+  }
+  .nb-key:hover, .nb-key:focus-visible { --d: 200; --h: 24; background: color-mix(in srgb, var(--accent) 12%, var(--bg-2)); transition-duration: 0.12s, 0.12s, 0.3s; }
+  .nb-keys.is-in .nb-key { animation: nb-ripple 1.1s var(--ease) backwards; animation-delay: calc(var(--i) * 45ms); }
+  .nb-key.is-hit { animation: nb-hit 0.5s var(--ease) !important; }
+  @keyframes nb-ripple { 0% { --d: 0; --h: 0; } 40% { --d: 200; --h: 24; } 100% { --d: 40; --h: 6; } }
+  @keyframes nb-hit { 0% { --d: 0; --h: 24; } 100% { --d: 200; --h: 24; } }
+
+  /* ---------- story ---------- */
+  .nb-story__grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 7rem); margin-top: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  .nb-story__prose { font-size: var(--step-1); line-height: 1.6; color: var(--fg-2); max-width: 60ch; }
+  .nb-story__prose p + p { margin-top: 1.1em; }
+  .nb-story__prose strong { color: var(--fg); font-weight: 600; }
+  .nb-story__prose em { font-style: normal; color: var(--accent); }
+  .nb-story__lede { font-size: 1.22em; line-height: 1.42; color: var(--fg); letter-spacing: -0.01em; }
+  .nb-specs { border-top: 1px solid var(--fg); }
+  .nb-specs > div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+  .nb-specs dt { font-family: var(--nb-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); padding-top: 0.2em; }
+  .nb-specs dd { line-height: 1.45; }
+  .nb-specs .nb-specs__links { display: flex; gap: 1.5rem; flex-wrap: wrap; border-bottom: 0; padding-top: 1.3rem; }
+  .nb-specs__links a { font-family: var(--nb-mono); font-size: 0.78rem; letter-spacing: 0.06em; color: var(--accent); border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+  .nb-compat { margin-top: 2.5rem; font-family: var(--nb-mono); font-size: 0.72rem; color: var(--fg-3); }
+
+  /* ---------- next ---------- */
+  .nb-next {
+    display: grid; gap: 0.6rem; justify-items: center; text-align: center;
+    margin-top: clamp(5rem, 11vw, 10rem);
+    padding: clamp(3.5rem, 9vw, 8rem) var(--gutter);
+    background: #04141f; color: #eaf6fb;
+    border-top: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .nb-next__k { font-family: var(--nb-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: #8fd8f0; }
+  .nb-next__name {
+    font-family: 'Climate Crisis Variable', sans-serif; font-size: clamp(2rem, 8.6vw, 9.5rem); line-height: 1;
+    font-variation-settings: 'YEAR' 1979;
+    transition: font-variation-settings 1.4s var(--ease-out);
+    white-space: nowrap;
+  }
+  .nb-next:hover .nb-next__name { font-variation-settings: 'YEAR' 2050; }
+  .nb-next__sub { color: #9fbccb; }
+  .nb-page + .site-footer, .nb-page ~ footer { margin-top: 0; }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 900px) {
+    .nb-axes__grid, .nb-pals__grid, .nb-story__grid, .nb-bento { grid-template-columns: 1fr; }
+    .nb-crt { grid-row: auto; }
+    .nb-pals__code { position: static; }
+    .nb-pals__code pre { min-height: 0; }
+    .nb-explode { flex-wrap: wrap; justify-content: center; gap: 0.75rem 1rem; }
+    .nb-explode__op { padding-bottom: 1.6rem; }
+    .nb-keys { grid-template-columns: repeat(7, 1fr); }
+    .nb-test__ctl { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .nb-hud--tr { display: none; }
+    .nb-hero__word { font-size: min(29.5vw, 40svh); }
+    .nb-pals__chips { grid-template-columns: 1fr 1fr; }
+    .nb-chip { padding: 0.8rem; column-gap: 0.6rem; }
+    .nb-chip__g { font-size: 2.6rem; }
+    .nb-stair__word { font-size: 16.5vw; }
+    .nb-pals__demo { font-size: 12.5vw; }
+    .nb-explode__g { font-size: 22vw; }
+    .nb-explode__piece--sum { flex-basis: 100%; }
+    .nb-explode__piece--sum .nb-explode__g { font-size: 40vw; }
+    .nb-specs > div { grid-template-columns: 6.5rem 1fr; }
+    .nb-test__ctl { grid-template-columns: 1fr; }
+    .nb-crt__screen { border-radius: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nb-explode__g { opacity: 1; transform: none; }
+  }
+</style>

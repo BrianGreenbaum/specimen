@@ -3,6 +3,7 @@
 // section of the site, or glossary term. Results rank by fuzzy-ish subsequence
 // match, keyboard-first, and remember nothing (no state, no network).
 import { getCollection } from 'astro:content';
+import { showpieces } from '../lib/showpieces';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
@@ -14,6 +15,13 @@ const items = [
     hint: `${f.data.category} · ${f.data.designer}`,
     href: `/fonts/${f.id}`,
     fam: f.data.fontFamily,
+  })),
+  ...showpieces.map((s) => ({
+    group: 'Faces',
+    label: s.name,
+    hint: `Showpiece · ${s.designer}`,
+    href: `/fonts/${s.slug}`,
+    fam: '',
   })),
   ...eras.map((e) => ({
     group: 'History',
