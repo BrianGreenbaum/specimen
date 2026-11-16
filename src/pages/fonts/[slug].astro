@@ -22,10 +22,12 @@ import { themeToStyle } from '../../lib/theme';
 import { getOutlines } from '../../lib/outlines';
 import { buildOgCard } from '../../lib/og';
 import { SAMPLES } from '../../lib/languages';
+import { newEditions } from '../../lib/showpieces';
 
 export async function getStaticPaths() {
   const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
   const eras = await getCollection('eras');
+  // Faces with a hand-built page (src/pages/fonts/<slug>.astro) are rendered there.
   return fonts.map((entry, i) => ({
     params: { slug: entry.id },
     props: {
@@ -34,7 +36,7 @@ export async function getStaticPaths() {
       next: fonts[(i + 1) % fonts.length],
       era: eras.find((e) => e.data.slug === entry.data.era) ?? null,
     },
-  }));
+  })).filter((p) => !newEditions.includes(p.params.slug));
 }
 
 const { entry, prev, next, era } = Astro.props;

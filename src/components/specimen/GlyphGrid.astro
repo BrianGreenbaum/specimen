@@ -1,11 +1,11 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { glyphCategories } from '../../lib/glyphs';
+import GlyphInspector from './GlyphInspector.astro';
 export interface Props {
   font: CollectionEntry<'fonts'>['data'];
 }
 const { font } = Astro.props;
-const id = `glyphs-${font.name.replace(/\s+/g, '-').toLowerCase()}`;
 ---
 <div class="glyphs" style={`--fam:${font.fontFamily}`} data-glyphroot>
   {glyphCategories.map((cat) => (
@@ -22,99 +22,7 @@ const id = `glyphs-${font.name.replace(/\s+/g, '-').toLowerCase()}`;
   ))}
 </div>
 
-<div
-  class="glyph-inspector"
-  id={id}
-  data-inspector
-  data-family={font.fontFamily}
-  data-variable={font.isVariable ? 'true' : 'false'}
-  hidden
->
-  <button class="glyph-inspector__backdrop" data-close aria-label="Close"></button>
-  <div class="glyph-inspector__panel" role="dialog" aria-modal="true">
-    <header class="glyph-inspector__bar">
-      <span class="glyph-inspector__fam" style={`font-family:${font.fontFamily}`}>{font.fontFamily.replace(' Variable', '')}</span>
-      <div class="glyph-inspector__nav">
-        <button class="gi-btn" data-prev aria-label="Previous glyph">←</button>
-        <button class="gi-btn" data-next aria-label="Next glyph">→</button>
-        <button class="gi-btn gi-btn--close" data-close aria-label="Close inspector">✕</button>
-      </div>
-    </header>
-
-    <div class="glyph-inspector__readout">
-      <span class="label">Advance</span>
-      <span class="glyph-inspector__advance" data-advance>—</span>
-    </div>
-
-    <div class="glyph-inspector__stage">
-      <svg class="glyph-inspector__diagram" data-diagram preserveAspectRatio="xMidYMid meet" role="img" aria-label="Glyph anatomy diagram"></svg>
-    </div>
-
-    {font.isVariable && (
-      <label class="glyph-inspector__wght">
-        <span class="label">Weight <output data-wval>400</output></span>
-        <input type="range" data-wght min="100" max="900" step="1" value="400" />
-      </label>
-    )}
-  </div>
-</div>
-
-<script>
-  import { renderGlyphDiagram } from '../../lib/diagram';
-  import { measureGlyph } from '../../lib/metrics';
-
-  document.querySelectorAll('[data-glyphroot]').forEach((root) => {
-    const wrap = root.nextElementSibling as HTMLElement;
-    if (!wrap?.matches('[data-inspector]')) return;
-    const family = wrap.dataset.family!;
-    const isVar = wrap.dataset.variable === 'true';
-    const svg = wrap.querySelector('[data-diagram]') as SVGElement;
-    const advanceEl = wrap.querySelector('[data-advance]') as HTMLElement;
-    const wght = wrap.querySelector('[data-wght]') as HTMLInputElement | null;
-    const wval = wrap.querySelector('[data-wval]') as HTMLElement | null;
-
-    const glyphs = Array.from(root.querySelectorAll('[data-glyph]')).map(
-      (c) => (c as HTMLElement).dataset.glyph!
-    );
-    let idx = 0;
-
-    const draw = async () => {
-      const g = glyphs[idx];
-      const weight = wght ? +wght.value : 400;
-      await renderGlyphDiagram(svg, {
-        family, glyph: g, weight,
-        guides: ['ascender', 'cap', 'x', 'baseline', 'descender'],
-        showAdvance: true, advanceLabel: false, showGuideLabels: true, fill: 0.66,
-      });
-      const m = measureGlyph(family, g, weight);
-      advanceEl.textContent = `${Math.round(m.advance * 1000)} units/em`;
-    };
-
-    const open = (g: string) => {
-      idx = Math.max(0, glyphs.indexOf(g));
-      wrap.hidden = false;
-      document.body.style.overflow = 'hidden';
-      draw();
-    };
-    const close = () => { wrap.hidden = true; document.body.style.overflow = ''; };
-    const step = (d: number) => { idx = (idx + d + glyphs.length) % glyphs.length; draw(); };
-
-    root.querySelectorAll('[data-glyph]').forEach((cell) =>
-      cell.addEventListener('click', () => open((cell as HTMLElement).dataset.glyph!))
-    );
-    wrap.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
-    wrap.querySelector('[data-prev]')?.addEventListener('click', () => step(-1));
-    wrap.querySelector('[data-next]')?.addEventListener('click', () => step(1));
-    wght?.addEventListener('input', () => { if (wval) wval.textContent = wght.value; draw(); });
-
-    document.addEventListener('keydown', (e) => {
-      if (wrap.hidden) return;
-      if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') step(-1);
-      if (e.key === 'ArrowRight') step(1);
-    });
-  });
-</script>
+<GlyphInspector family={font.fontFamily} variable={font.isVariable} />
 
 <style>
   .glyphs__cat { margin-bottom: var(--sp-5); }
@@ -144,72 +52,4 @@ const id = `glyphs-${font.name.replace(/\s+/g, '-').toLowerCase()}`;
   .glyphs__cell:hover { background: var(--accent); color: var(--accent-contrast); }
   .glyphs__cell:hover .glyphs__char { transform: scale(1.06); }
 
-  /* Inspector */
-  .glyph-inspector { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; }
-  .glyph-inspector[hidden] { display: none; }
-  .glyph-inspector__backdrop {
-    position: absolute; inset: 0;
-    background: color-mix(in srgb, var(--bg) 70%, #000 30%);
-    backdrop-filter: blur(6px);
-    border: 0;
-  }
-  .glyph-inspector__panel {
-    position: relative;
-    background: var(--bg);
-    border: 1px solid var(--fg);
-    padding: clamp(1rem, 2vw, 1.5rem);
-    width: min(720px, 94vw);
-    box-shadow: 0 40px 120px -30px #00000066;
-  }
-  .glyph-inspector__bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding-bottom: var(--sp-3); border-bottom: 1px solid var(--line);
-  }
-  .glyph-inspector__fam {
-    font-size: var(--step-1);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .glyph-inspector__nav { display: flex; gap: 0.4rem; }
-  .gi-btn {
-    width: 32px; height: 32px; display: grid; place-items: center;
-    border: 1px solid var(--line); border-radius: 2px; color: var(--fg-2);
-    font-family: var(--font-mono); transition: all 0.2s var(--ease);
-  }
-  .gi-btn:hover { border-color: var(--fg); color: var(--fg); }
-  /* breathing room between the next-glyph arrow and the close button */
-  .gi-btn--close { margin-left: 0.7rem; }
-  .gi-btn--close:hover { background: var(--fg); color: var(--bg); }
-
-  /* Advance readout sits above the diagram instead of overlapping it */
-  .glyph-inspector__readout {
-    display: flex; align-items: baseline; gap: 0.6rem;
-    padding-block: var(--sp-2);
-  }
-  .glyph-inspector__advance { font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent); }
-
-  .glyph-inspector__stage {
-    aspect-ratio: 1 / 1;
-    max-height: 72vh;
-    width: 100%;
-    margin-inline: auto;
-    display: grid; place-items: center;
-  }
-  .glyph-inspector__diagram { width: 100%; height: 100%; }
-
-  /* slimmer than the full panel, centred under the glyph */
-  .glyph-inspector__wght { display: flex; flex-direction: column; gap: 0.35rem; margin: 0 auto var(--sp-3); width: min(20rem, 100%); }
-  .glyph-inspector__wght .label { display: flex; justify-content: space-between; }
-  .glyph-inspector__wght output { color: var(--accent); }
-  .glyph-inspector__wght input {
-    -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--fg-3); cursor: pointer;
-  }
-  .glyph-inspector__wght input::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%;
-    background: var(--bg); border: 2px solid var(--accent);
-  }
-
-  @media (max-width: 540px) {
-    .glyph-inspector__stage { max-height: 46vh; }
-  }
 </style>

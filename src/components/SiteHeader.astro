@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ColorModeToggle from './ColorModeToggle.astro';
-import { showpieces } from '../lib/showpieces';
+import { showpieces, newEditions } from '../lib/showpieces';
 export interface Props {
   current?: string; // current font name, shown as breadcrumb
   showToggle?: boolean; // hidden on fixed-theme (font/era) pages
@@ -53,15 +53,14 @@ const lexSections = [
         <div class="dropdown dropdown--grid" role="menu" aria-label="Font specimens">
           {fonts.map((f) => (
             <a class="dropdown__item" role="menuitem" href={`/fonts/${f.id}`}>
-              <span class="dropdown__name" style={`font-family:${f.data.fontFamily}`}>{f.data.name}</span>
+              <span class="dropdown__name" style={`font-family:${f.data.fontFamily}`}>{f.data.name}{newEditions.includes(f.id) && <i class="dropdown__new" title="New edition">✦</i>}</span>
               <span class="dropdown__meta">{f.data.category}</span>
             </a>
           ))}
-          <span class="dropdown__rule label">Showpieces — built by hand</span>
           {showpieces.map((s) => (
             <a class="dropdown__item dropdown__item--show" role="menuitem" href={`/fonts/${s.slug}`}>
-              <span class="dropdown__name" style={s.nameStyle}>{s.name}</span>
-              <span class="dropdown__meta">{s.tag}</span>
+              <span class="dropdown__name"><span style={s.nameStyle}>{s.name}</span><i class="dropdown__new" title="New edition">✦</i></span>
+              <span class="dropdown__meta">{s.category}</span>
             </a>
           ))}
         </div>
@@ -133,15 +132,6 @@ const lexSections = [
       <div class="mnav__block">
         <a class="mnav__primary" href="/#index">Fonts</a>
         <span class="mnav__hint">Browse every specimen</span>
-        <div class="mnav__sub">
-          {showpieces.map((s) => (
-            <a class="mnav__subitem" href={`/fonts/${s.slug}`}>
-              <span class="mnav__idx">✦</span>
-              <span class="mnav__subname">{s.name}</span>
-              <span class="mnav__meta">{s.tag}</span>
-            </a>
-          ))}
-        </div>
       </div>
 
       <div class="mnav__block">
@@ -303,16 +293,9 @@ const lexSections = [
     width: min(92vw, 42rem);
   }
 
-  .dropdown__rule {
-    grid-column: 1 / -1;
-    margin-top: 0.5rem;
-    padding: 0.75rem 0.85rem 0.15rem;
-    border-top: 1px solid var(--line);
-    color: var(--fg-3);
-    font-size: 0.66rem;
-  }
   .dropdown__item--show { align-items: center; }
   .dropdown__item--show .dropdown__name { line-height: 1.1; white-space: nowrap; }
+  .dropdown__new { font: normal 0.7rem/1 var(--font-mono); color: var(--accent); margin-left: 0.5em; vertical-align: 0.2em; }
 
   .dropdown__item {
     display: flex;
