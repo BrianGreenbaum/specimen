@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { showpieces } from '../lib/showpieces';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
@@ -68,6 +69,22 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
         <span class="index-num">✳</span>
         <h2 id="fonts-head">The faces behind the story</h2>
         <span class="label">{fonts.length} specimens · each its own chapter</span>
+      </div>
+
+      <div class="showpieces" data-reveal>
+        <p class="showpieces__head label">✦ Showpieces — two faces given a page built entirely by hand</p>
+        <div class="showpieces__grid">
+          {showpieces.map((s) => (
+            <a class={`showpiece showpiece--${s.slug}`} href={`/fonts/${s.slug}`}>
+              <span class="showpiece__tag label">{s.tag} · {s.year}</span>
+              <span class="showpiece__name" style={`font-family:'${s.family}'`} aria-label={s.name}>
+                {[...(s.slug === 'recursive' ? s.name : s.name.toUpperCase())].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c === ' ' ? '\u00a0' : c}</span>)}
+              </span>
+              <span class="showpiece__blurb">{s.blurb}</span>
+              <span class="showpiece__cta label">Open the specimen →</span>
+            </a>
+          ))}
+        </div>
       </div>
 
       <p class="index-search" data-reveal>
@@ -215,6 +232,45 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
   .home-fonts .section-head { scroll-margin-top: 80px; }
 
   /* Index search row */
+  /* --- Showpieces: bespoke pages outside the collection --- */
+  .showpieces { margin-bottom: var(--sp-6); }
+  .showpieces__head { color: var(--fg-2); margin-bottom: var(--sp-3); }
+  .showpieces__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+  .showpiece {
+    container-type: inline-size;
+    display: flex; flex-direction: column; gap: var(--sp-2);
+    padding: clamp(1.25rem, 2.5vw, 2.25rem);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.5s var(--ease);
+  }
+  .showpiece:hover { transform: translateY(-4px); }
+  .showpiece__name { display: flex; white-space: nowrap; line-height: 1; padding-block: 0.12em; }
+  .showpiece__blurb { font-size: var(--step-0); max-width: 34ch; }
+  .showpiece__cta { margin-top: auto; padding-top: var(--sp-3); }
+  .showpiece--recursive { background: #fbf6e9; color: #1a1723; box-shadow: inset 0 0 0 1px #1a172322; }
+  .showpiece--recursive .showpiece__tag, .showpiece--recursive .showpiece__cta { color: #e8391a; }
+  .showpiece--recursive .showpiece__blurb { color: #4c4759; }
+  .showpiece--recursive .showpiece__name {
+    font-size: 17.5cqi; margin-block: auto; padding-block: 0.25em; text-transform: none;
+  }
+  .showpiece--recursive .showpiece__name span {
+    font-variation-settings: 'MONO' 0, 'CASL' 0, 'wght' 300, 'slnt' 0, 'CRSV' 0.5;
+    transition: font-variation-settings 0.7s var(--ease), color 0.7s var(--ease);
+    transition-delay: calc(var(--i) * 45ms);
+  }
+  .showpiece--recursive:hover .showpiece__name span { font-variation-settings: 'MONO' 0, 'CASL' 1, 'wght' 1000, 'slnt' -15, 'CRSV' 1; color: #e8391a; }
+  .showpiece--climate-crisis { background: linear-gradient(180deg, #04141f, #0b2c40); color: #eaf6fb; }
+  .showpiece--climate-crisis .showpiece__tag, .showpiece--climate-crisis .showpiece__cta { color: #8fd8f0; }
+  .showpiece--climate-crisis .showpiece__blurb { color: #a9c6d4; }
+  .showpiece--climate-crisis .showpiece__name {
+    font-size: 8.1cqi; margin-block: auto; padding-block: 0.9em;
+    font-variation-settings: 'YEAR' 1979;
+    transition: font-variation-settings 1.6s var(--ease-out);
+  }
+  .showpiece--climate-crisis:hover .showpiece__name { font-variation-settings: 'YEAR' 2050; }
+  @media (max-width: 760px) { .showpieces__grid { grid-template-columns: 1fr; } }
+
   .index-search {
     display: flex; align-items: center; gap: var(--sp-4);
     margin-bottom: var(--sp-3);
