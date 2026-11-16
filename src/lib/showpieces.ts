@@ -17,14 +17,14 @@ export interface Showpiece {
 
 export const showpieces: Showpiece[] = [
   {
-    slug: 'nabla',
-    name: 'Nabla',
-    family: 'Nabla Variable',
-    designer: 'Arthur Reinders Folmer',
-    year: 2022,
-    tag: 'Colour · 3D',
-    blurb: 'A colour font with a third dimension — and a light switch.',
-    nameStyle: "font-family:'Nabla Variable';font-size:2.1rem;font-variation-settings:'EDPT' 120,'EHLT' 16",
+    slug: 'recursive',
+    name: 'Recursive',
+    family: 'Recursive Variable',
+    designer: 'Stephen Nixon, Arrow Type',
+    year: 2020,
+    tag: 'Variable · 5 axes',
+    blurb: 'One file, five dials: from code editor to sign-painter’s brush.',
+    nameStyle: "font-family:'Recursive Variable';font-size:1.3rem;font-variation-settings:'CASL' 1,'wght' 850,'slnt' -12,'CRSV' 1",
   },
   {
     slug: 'climate-crisis',

@@ -78,7 +78,7 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
             <a class={`showpiece showpiece--${s.slug}`} href={`/fonts/${s.slug}`}>
               <span class="showpiece__tag label">{s.tag} · {s.year}</span>
               <span class="showpiece__name" style={`font-family:'${s.family}'`} aria-label={s.name}>
-                {[...s.name.toUpperCase()].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c === ' ' ? '\u00a0' : c}</span>)}
+                {[...(s.slug === 'recursive' ? s.name : s.name.toUpperCase())].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c === ' ' ? '\u00a0' : c}</span>)}
               </span>
               <span class="showpiece__blurb">{s.blurb}</span>
               <span class="showpiece__cta label">Open the specimen →</span>
@@ -248,16 +248,18 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
   .showpiece__name { display: flex; white-space: nowrap; line-height: 1; padding-block: 0.12em; }
   .showpiece__blurb { font-size: var(--step-0); max-width: 34ch; }
   .showpiece__cta { margin-top: auto; padding-top: var(--sp-3); }
-  .showpiece--nabla { background: radial-gradient(120% 120% at 80% 0%, #3a1a2e, #0a061c 70%); color: #f4eeff; }
-  .showpiece--nabla .showpiece__tag, .showpiece--nabla .showpiece__cta { color: #ffd214; }
-  .showpiece--nabla .showpiece__blurb { color: #bdb1de; }
-  .showpiece--nabla .showpiece__name { font-size: 27cqi; }
-  .showpiece--nabla .showpiece__name span {
-    font-variation-settings: 'EDPT' 60, 'EHLT' 10;
-    transition: font-variation-settings 0.6s var(--ease);
-    transition-delay: calc(var(--i) * 50ms);
+  .showpiece--recursive { background: #fbf6e9; color: #1a1723; box-shadow: inset 0 0 0 1px #1a172322; }
+  .showpiece--recursive .showpiece__tag, .showpiece--recursive .showpiece__cta { color: #e8391a; }
+  .showpiece--recursive .showpiece__blurb { color: #4c4759; }
+  .showpiece--recursive .showpiece__name {
+    font-size: 17.5cqi; margin-block: auto; padding-block: 0.25em; text-transform: none;
   }
-  .showpiece--nabla:hover .showpiece__name span { font-variation-settings: 'EDPT' 200, 'EHLT' 24; }
+  .showpiece--recursive .showpiece__name span {
+    font-variation-settings: 'MONO' 0, 'CASL' 0, 'wght' 300, 'slnt' 0, 'CRSV' 0.5;
+    transition: font-variation-settings 0.7s var(--ease), color 0.7s var(--ease);
+    transition-delay: calc(var(--i) * 45ms);
+  }
+  .showpiece--recursive:hover .showpiece__name span { font-variation-settings: 'MONO' 0, 'CASL' 1, 'wght' 1000, 'slnt' -15, 'CRSV' 1; color: #e8391a; }
   .showpiece--climate-crisis { background: linear-gradient(180deg, #04141f, #0b2c40); color: #eaf6fb; }
   .showpiece--climate-crisis .showpiece__tag, .showpiece--climate-crisis .showpiece__cta { color: #8fd8f0; }
   .showpiece--climate-crisis .showpiece__blurb { color: #a9c6d4; }

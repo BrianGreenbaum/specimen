@@ -1,0 +1,709 @@
+---
+// RECURSIVE — a showpiece specimen, built by hand outside the collection
+// template. Everything below the site header is set in this one font file:
+// headings, labels, body text, the code editor and the sign.
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+
+const axes = [
+  {
+    tag: 'MONO', name: 'Monospace', min: 0, max: 1, step: 0.01, from: 'Sans', to: 'Mono', word: 'Minimal fill',
+    desc: 'Sans to Mono. Every glyph slides onto a fixed width, so one family sets both the interface and the editor beside it.',
+  },
+  {
+    tag: 'CASL', name: 'Casual', min: 0, max: 1, step: 0.01, from: 'Linear', to: 'Casual', word: 'Casual',
+    desc: 'Linear to Casual. Strokes soften and curl, as if the letters stopped being ruled and started being painted with a brush.',
+  },
+  {
+    tag: 'wght', name: 'Weight', min: 300, max: 1000, step: 1, from: 'Light 300', to: 'ExtraBlack 1000', word: 'Weight',
+    desc: 'Light to ExtraBlack. Watch the ends of the word: it gets heavier without getting any wider.',
+  },
+  {
+    tag: 'slnt', name: 'Slant', min: -15, max: 0, step: 0.1, from: '−15°', to: 'Upright', word: 'Slant',
+    desc: 'Upright to a fifteen-degree lean, and every angle in between.',
+  },
+  {
+    tag: 'CRSV', name: 'Cursive', min: 0, max: 1, step: 0.5, from: 'Roman forms', to: 'Cursive forms', word: 'a quirky fig',
+    desc: 'Swaps letters like a, f, g and i for handwritten shapes. Left at the default 0.5, the font decides for itself as the text slants.',
+  },
+];
+
+const weights = [300, 400, 500, 600, 700, 800, 900, 1000];
+
+const wave =
+  'Most typefaces get wider as they get bolder, so text reflows the moment you emphasise it. Recursive keeps every letter on the same footprint from Light to ExtraBlack. Menus stay put on hover. Columns of figures stay in line. And this paragraph can do the wave without a single word changing lines.'
+    .split(' ');
+
+const presets = [
+  { name: 'Sans Linear',  v: [0, 0, 400, 0, 0.5] },
+  { name: 'Mono Linear',  v: [1, 0, 400, 0, 0.5] },
+  { name: 'Terminal',     v: [1, 0, 300, 0, 0] },
+  { name: 'Friendly UI',  v: [0, 0.6, 600, 0, 0.5] },
+  { name: 'Marker',       v: [1, 1, 750, -9, 1] },
+  { name: 'Sign painter', v: [0, 1, 1000, -13, 1] },
+];
+
+const glyphs = [
+  ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  ...'abcdefghijklmnopqrstuvwxyz',
+  ...'0123456789',
+  ...'!?&@#$%*+=/(){}[]<>€£',
+];
+
+const builds = [
+  { name: 'web-app', branch: 'main', state: 'Passed', time: '1m 42s', size: '312.4 kB' },
+  { name: 'api', branch: 'main', state: 'Passed', time: '0m 58s', size: '88.1 kB' },
+  { name: 'docs', branch: 'type-refresh', state: 'Running', time: '0m 12s', size: '—' },
+  { name: 'design-tokens', branch: 'main', state: 'Passed', time: '0m 07s', size: '4.6 kB' },
+];
+
+const themeStyle = [
+  '--bg:#fbf6e9', '--bg-2:#f1e9d6', '--fg:#1a1723', '--fg-2:#4c4759', '--fg-3:#7a7488',
+  '--accent:#e8391a', '--accent-contrast:#fbf6e9', '--line:#1a172326', '--line-soft:#1a172312',
+  'color-scheme:light',
+].join(';');
+---
+<Layout
+  title="Recursive — Specimen"
+  description="Recursive, a five-axis variable font that runs from monospaced code to a sign-painter’s casual brush, shown live."
+  themeStyle={themeStyle}
+  mode="light"
+  fixedTheme
+>
+  <SiteHeader current="Recursive" showToggle={false} />
+
+  <div class="rc-page" data-rc>
+
+    <!-- ============ HERO ============ -->
+    <header class="rc-hero" data-rc-hero>
+      <div class="rc-hero__grid" aria-hidden="true"></div>
+      <div class="rc-hero__wash" aria-hidden="true"></div>
+
+      <div class="rc-hero__top rc-m">
+        <span>Recursive · Arrow Type · 2020</span>
+        <span>One file · five axes</span>
+      </div>
+
+      <h1 class="rc-hero__word" data-hero-word aria-label="Recursive">
+        {[...'Recursive'].map((ch, i) => <span data-l style={`--i:${i}`} aria-hidden="true">{ch}</span>)}
+      </h1>
+
+      <div class="rc-hero__foot">
+        <p class="rc-hero__lede">
+          From code editor to sign-painter’s brush, without changing font.
+          <span class="rc-hero__hint rc-m" data-hint-fine>Move: sideways for Casual, near a letter for Weight, fast for Slant. Click for Mono.</span>
+          <span class="rc-hero__hint rc-m" data-hint-coarse>Drag across the word. Tap to switch Sans and Mono.</span>
+        </p>
+        <dl class="rc-dials rc-m">
+          <div><dt>MONO</dt><dd data-hud="mono">0.00</dd></div>
+          <div><dt>CASL</dt><dd data-hud="casl">0.00</dd></div>
+          <div><dt>wght</dt><dd data-hud="wght">400</dd></div>
+          <div><dt>slnt</dt><dd data-hud="slnt">0.0</dd></div>
+          <div><dt>CRSV</dt><dd>auto</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ FIVE DIALS ============ -->
+      <section class="rc-sec">
+        <div class="rc-kicker rc-m"><span>01</span> Five dials</div>
+        <h2 class="rc-h2">Most fonts give you a weight slider.<br />This one gives you <em>a mixing desk</em>.</h2>
+
+        <div class="rc-axes">
+          {axes.map((a) => (
+            <article class={`rc-axis rc-axis--${a.tag.toLowerCase()}`} data-axis={a.tag.toLowerCase()} data-rc-inview>
+              <div class="rc-axis__meta">
+                <p class="rc-axis__tag rc-m">{a.tag}</p>
+                <h3>{a.name}</h3>
+                <p class="rc-axis__desc">{a.desc}</p>
+              </div>
+              <div class="rc-axis__demo">
+                <p class="rc-axis__word" data-axis-word aria-hidden="true">{a.word}</p>
+                <label class="rc-axis__slider rc-m">
+                  <span>{a.from}</span>
+                  <input type="range" min={a.min} max={a.max} step={a.step} value={a.tag === 'slnt' ? 0 : a.min} aria-label={`${a.name} axis`} data-axis-input />
+                  <span>{a.to}</span>
+                </label>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- ============ SAME WIDTH ============ -->
+      <section class="rc-sec">
+        <div class="rc-kicker rc-m"><span>02</span> The trick</div>
+        <h2 class="rc-h2">Make it bold.<br /><em>Nothing moves.</em></h2>
+
+        <div class="rc-plex">
+          <div class="rc-plex__stack" aria-label="The same line at eight weights, all exactly the same width">
+            {weights.map((w) => (
+              <p style={`--wght:${w}`} aria-hidden="true"><span>Eight weights, one width</span><i class="rc-m">{w}</i></p>
+            ))}
+          </div>
+          <div class="rc-plex__para" data-rc-inview>
+            <p aria-label={wave.join(' ')}>
+              {wave.map((w, i) => <><span style={`--i:${i}`} aria-hidden="true">{w}</span>{' '}</>)}
+            </p>
+            <p class="rc-plex__note rc-m">↑ live text, weight animating from 300 to 1000 — watch the line breaks</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ IN USE ============ -->
+      <section class="rc-sec">
+        <div class="rc-kicker rc-m"><span>03</span> In use</div>
+        <h2 class="rc-h2">Built for the screen you work in,<br />borrowed from <em>the shop window</em>.</h2>
+
+        <div class="rc-bento">
+          <article class="rc-code" data-rc-code>
+            <header class="rc-code__bar rc-m">
+              <span class="rc-code__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>fib.js</span>
+              <span class="rc-code__switch" role="group" aria-label="Editor voice">
+                <button type="button" data-code-casl="0" aria-pressed="true">Linear</button>
+                <button type="button" data-code-casl="1" aria-pressed="false">Casual</button>
+              </span>
+            </header>
+<pre class="rc-code__pre"><code><span class="c">// To understand recursion,</span>
+<span class="c">// first understand recursion.</span>
+<span class="k">function</span> <span class="f">fib</span>(n) {'{'}
+  <span class="k">if</span> (n &lt; <span class="n">2</span>) <span class="k">return</span> n;
+  <span class="k">return</span> <span class="f">fib</span>(n - <span class="n">1</span>) + <span class="f">fib</span>(n - <span class="n">2</span>);
+{'}'}
+
+<span class="k">const</span> weights = [<span class="n">300</span>, <span class="n">400</span>, <span class="n">700</span>, <span class="n">1000</span>];
+<span class="k">const</span> label = <span class="s">'same width, every weight'</span>;
+
+weights.<span class="f">map</span>((w) =&gt; <span class="f">fib</span>(w / <span class="n">100</span>)); <span class="c">// [2, 3, 13, 55]</span><span class="rc-code__caret" aria-hidden="true"></span></code></pre>
+            <p class="rc-cap rc-m">Editor — comments in Casual cursive, keywords in Bold, and the columns never drift</p>
+          </article>
+
+          <article class="rc-sign">
+            <div class="rc-sign__board">
+              <p class="rc-sign__small">Fresh daily</p>
+              <p class="rc-sign__big"><span>Open</span><span>Late!</span></p>
+              <p class="rc-sign__row"><span>Coffee</span><i>✦</i><span>Pie</span><i>✦</i><span>Wi-Fi</span></p>
+            </div>
+            <p class="rc-cap rc-m">Shop sign — Casual ExtraBlack, slanted, cursive on</p>
+          </article>
+
+          <article class="rc-ui">
+            <div class="rc-ui__card">
+              <header><b>Builds</b><span class="rc-m">today</span></header>
+              <table>
+                <tbody>
+                  {builds.map((b) => (
+                    <tr>
+                      <td><b>{b.name}</b><small class="rc-m">{b.branch}</small></td>
+                      <td><span class:list={['rc-ui__chip', b.state === 'Running' && 'is-run']}>{b.state}</span></td>
+                      <td class="rc-m rc-ui__num">{b.time}</td>
+                      <td class="rc-m rc-ui__num">{b.size}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="rc-cap rc-m">Interface — Sans for names, Mono for figures, one family</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="rc-sec" data-rc-test>
+        <div class="rc-kicker rc-m"><span>04</span> Your turn</div>
+        <h2 class="rc-h2">Take the desk.</h2>
+
+        <div class="rc-test">
+          <div class="rc-test__stage">
+            <div class="rc-test__text" contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Sample text — editable" data-test-text>Type here, then turn the dials</div>
+          </div>
+          <div class="rc-test__panel">
+            <div class="rc-test__presets">
+              {presets.map((p, i) => (
+                <button type="button" class="rc-m" data-preset={JSON.stringify(p.v)} aria-pressed={i === 0 ? 'true' : 'false'}>{p.name}</button>
+              ))}
+            </div>
+            <div class="rc-test__sliders">
+              {axes.map((a, i) => (
+                <label class="rc-m">
+                  <span>{a.tag} <b data-test-val={i}></b></span>
+                  <input type="range" min={a.min} max={a.max} step={a.tag === 'CRSV' ? 0.5 : a.step} data-test-ax={i} />
+                </label>
+              ))}
+            </div>
+            <pre class="rc-test__css rc-m"><code data-test-css></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ GLYPHS ============ -->
+      <section class="rc-sec">
+        <div class="rc-kicker rc-m"><span>05</span> The set</div>
+        <h2 class="rc-h2">Every key has <em>a wild side</em>.</h2>
+        <p class="rc-lede">Shown here in Mono Linear Light. Run a pointer over the grid, or tap a letter.</p>
+        <div class="rc-keys">
+          {glyphs.map((g) => <button type="button" class="rc-key" aria-label={`Glyph ${g}`}>{g}</button>)}
+        </div>
+      </section>
+
+      <!-- ============ STORY + SPECS ============ -->
+      <section class="rc-sec">
+        <div class="rc-kicker rc-m"><span>06</span> The story</div>
+        <div class="rc-story">
+          <div class="rc-story__prose">
+            <p class="rc-story__lede">
+              Recursive is led by <strong>Stephen Nixon</strong> at Arrow Type, a foundry in Brooklyn, and came to
+              Google Fonts in 2020. Its starting point is not another typeface but a trade: <em>single-stroke
+              casual</em>, the quick, warm brush lettering sign painters use for shop windows and price cards.
+            </p>
+            <p>
+              The idea was to bring that energy to the least hand-made places type lives — code editors, dashboards,
+              technical documentation. So the family has two poles. <strong>Linear</strong> is crisp and regular,
+              the voice of a well-kept terminal. <strong>Casual</strong> lets the brush back in. Both exist as a
+              proportional Sans and a fixed-width Mono, and all of it sits in one file, with every point between
+              the poles available.
+            </p>
+            <p>
+              The quiet engineering feat is the one you saw above: across weight, the letters keep the same width.
+              In an interface that means emphasis never nudges a layout; in code it means a bold keyword can’t
+              knock a column out of line.
+            </p>
+            <p>
+              The cut on Google Fonts is a slimmed-down one. The full family, with code ligatures and a drawer of
+              alternate letters, lives at recursive.design.
+            </p>
+          </div>
+
+          <dl class="rc-specs">
+            <div><dt class="rc-m">Design</dt><dd>Stephen Nixon, Arrow Type</dd></div>
+            <div><dt class="rc-m">On Google Fonts</dt><dd>Since May 2020</dd></div>
+            <div><dt class="rc-m">Format</dt><dd>Variable font, five axes</dd></div>
+            <div><dt class="rc-m">Axes</dt><dd class="rc-m rc-specs__axes">MONO 0–1<br />CASL 0–1<br />wght 300–1000<br />slnt −15–0<br />CRSV 0 · 0.5 · 1</dd></div>
+            <div><dt class="rc-m">Scripts</dt><dd>Latin, Latin Extended, Vietnamese, Cyrillic Extended</dd></div>
+            <div><dt class="rc-m">Good at</dt><dd>Code, interfaces, documentation — and signs</dd></div>
+            <div><dt class="rc-m">Licence</dt><dd>SIL Open Font License 1.1</dd></div>
+            <div class="rc-specs__links rc-m">
+              <a href="https://fonts.google.com/specimen/Recursive" rel="noopener">Get it on Google Fonts ↗</a>
+              <a href="https://github.com/arrowtype/recursive" rel="noopener">Source ↗</a>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <a class="rc-next" href="/fonts/climate-crisis">
+        <span class="rc-next__k">Next showpiece →</span>
+        <span class="rc-next__name">Climate Crisis</span>
+        <span class="rc-next__sub">One axis, measured in years.</span>
+      </a>
+    </main>
+  </div>
+
+  <SiteFooter />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-rc]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // ---------- In-view flags start the CSS choreography ----------
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.target.classList.toggle('is-in', e.isIntersecting)),
+      { threshold: 0.2 }
+    );
+    page.querySelectorAll('[data-rc-inview]').forEach((el) => io.observe(el));
+
+    // ---------- Hero: the pointer plays four axes at once ----------
+    const hero = page.querySelector<HTMLElement>('[data-rc-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-hero-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(
+      Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((el) => [el.dataset.hud!, el])
+    );
+    const w = letters.map(() => 400);
+    let px = 0.5, speed = 0, lastMove = -1e9, lastT = 0, on = true;
+    let casl = 0, slnt = 0, mono = 0, monoTarget = 0;
+    let centers: number[] = [];
+    const measure = () => {
+      const r = hero.getBoundingClientRect();
+      centers = letters.map((l) => { const b = l.getBoundingClientRect(); return (b.left + b.width / 2 - r.left) / r.width; });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure);
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      const nx = clamp((e.clientX - r.left) / r.width, 0, 1);
+      const now = performance.now();
+      const dt = Math.max(now - lastT, 8);
+      speed = Math.max(speed, Math.abs(nx - px) / dt * 900);
+      px = nx; lastT = now; lastMove = now;
+    });
+    hero.addEventListener('click', () => { monoTarget = monoTarget ? 0 : 1; setTimeout(measure, 700); });
+    new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(hero);
+
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!on) return;
+      const live = now - lastMove < 2600;
+      const t = now / 1000;
+      let tc: number, ts: number, sum = 0;
+      if (live) { tc = px; ts = -15 * clamp(speed, 0, 1); }
+      else if (reduce) { tc = 0.5; ts = 0; }
+      else { tc = 0.5 - 0.5 * Math.cos(t * 0.55); ts = -7.5 + 7.5 * Math.cos(t * 0.8); }
+      speed *= 0.93;
+      casl += (tc - casl) * 0.1;
+      slnt += (ts - slnt) * 0.1;
+      mono += (monoTarget - mono) * 0.12;
+      letters.forEach((l, i) => {
+        let tw: number;
+        if (live) { const near = 1 - clamp(Math.abs(centers[i] - px) / 0.3, 0, 1); tw = 300 + 700 * near * near * (3 - 2 * near); }
+        else if (reduce) tw = 300 + i * 85;
+        else tw = 650 + 350 * Math.sin(t * 1.7 - i * 0.62);
+        w[i] += (tw - w[i]) * 0.16;
+        l.style.setProperty('--wght', w[i].toFixed(0));
+        sum += w[i];
+      });
+      word.style.setProperty('--casl', casl.toFixed(3));
+      word.style.setProperty('--slnt', slnt.toFixed(2));
+      word.style.setProperty('--mono', mono.toFixed(3));
+      hero.style.setProperty('--k', casl.toFixed(3));
+      hud.mono.textContent = mono.toFixed(2);
+      hud.casl.textContent = casl.toFixed(2);
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+      hud.slnt.textContent = slnt.toFixed(1);
+    };
+    requestAnimationFrame(tick);
+
+    // ---------- Axis rows: they animate on their own until you grab the slider ----------
+    page.querySelectorAll<HTMLElement>('[data-axis]').forEach((row) => {
+      const input = row.querySelector<HTMLInputElement>('[data-axis-input]')!;
+      const target = row.querySelector<HTMLElement>('[data-axis-word]')!;
+      input.addEventListener('input', () => {
+        row.classList.add('is-manual');
+        target.style.setProperty(`--${row.dataset.axis}`, input.value);
+      });
+    });
+
+    // ---------- Code editor voice ----------
+    const code = page.querySelector<HTMLElement>('[data-rc-code]')!;
+    const codeBtns = Array.from(code.querySelectorAll<HTMLButtonElement>('[data-code-casl]'));
+    codeBtns.forEach((b) =>
+      b.addEventListener('click', () => {
+        code.style.setProperty('--casl', b.dataset.codeCasl!);
+        codeBtns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      })
+    );
+
+    // ---------- Tester ----------
+    const test = page.querySelector<HTMLElement>('[data-rc-test]')!;
+    const text = test.querySelector<HTMLElement>('[data-test-text]')!;
+    const css = test.querySelector<HTMLElement>('[data-test-css]')!;
+    const sliders = Array.from(test.querySelectorAll<HTMLInputElement>('[data-test-ax]'));
+    const vals = Array.from(test.querySelectorAll<HTMLElement>('[data-test-val]'));
+    const presetBtns = Array.from(test.querySelectorAll<HTMLButtonElement>('[data-preset]'));
+    const names = ['mono', 'casl', 'wght', 'slnt', 'crsv'];
+    const tags = ['MONO', 'CASL', 'wght', 'slnt', 'CRSV'];
+    const apply = () => {
+      sliders.forEach((s, i) => {
+        text.style.setProperty(`--${names[i]}`, s.value);
+        vals[i].textContent = s.value;
+      });
+      css.textContent =
+        `font-family: 'Recursive';\nfont-variation-settings:\n` +
+        sliders.map((s, i) => `  '${tags[i]}' ${s.value}`).join(',\n') + ';';
+    };
+    const set = (v: number[]) => { sliders.forEach((s, i) => (s.value = String(v[i]))); apply(); };
+    sliders.forEach((s) => s.addEventListener('input', () => {
+      presetBtns.forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      apply();
+    }));
+    presetBtns.forEach((b) => b.addEventListener('click', () => {
+      presetBtns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      set(JSON.parse(b.dataset.preset!));
+    }));
+    set(JSON.parse(presetBtns[0].dataset.preset!));
+    if (text.contentEditable !== 'plaintext-only') text.contentEditable = 'true';
+    text.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+    // ---------- Keys: tap toggles the wild side on touch screens ----------
+    page.querySelector('.rc-keys')!.addEventListener('click', (e) => {
+      (e.target as HTMLElement).closest('.rc-key')?.classList.toggle('is-wild');
+    });
+  }
+</script>
+
+<style is:global>
+  /* Registered so each axis can be transitioned and keyframed like any number. */
+  @property --mono { syntax: '<number>'; inherits: true; initial-value: 0; }
+  @property --casl { syntax: '<number>'; inherits: true; initial-value: 0; }
+  @property --wght { syntax: '<number>'; inherits: true; initial-value: 400; }
+  @property --slnt { syntax: '<number>'; inherits: true; initial-value: 0; }
+  @property --crsv { syntax: '<number>'; inherits: true; initial-value: 0.5; }
+
+  .rc-page {
+    --blue: #2743e6;
+    --ink: #1a1723;
+    font-family: 'Recursive Variable', system-ui, sans-serif;
+    font-feature-settings: normal;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  /* font-variation-settings inherits as a computed string, so every element
+     re-declares it and reads the five inherited numbers for itself. */
+  .rc-page, .rc-page * {
+    font-variation-settings: 'MONO' var(--mono), 'CASL' var(--casl), 'wght' var(--wght), 'slnt' var(--slnt), 'CRSV' var(--crsv);
+  }
+  .rc-page code, .rc-page pre, .rc-page button, .rc-page input, .rc-page table { font-family: inherit; }
+  .rc-m { --mono: 1; --casl: 0; --slnt: 0; font-size: 0.74rem; letter-spacing: 0.04em; }
+  .rc-page b, .rc-page strong { --wght: 750; font-weight: inherit; }
+  .rc-page em { font-style: normal; }
+
+  /* ---------- hero ---------- */
+  .rc-hero {
+    --k: 0;
+    position: relative; isolation: isolate; overflow: hidden;
+    min-height: calc(100svh - 64px);
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: clamp(1rem, 2.5vw, 2rem) var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+    cursor: pointer; touch-action: pan-y;
+    border-bottom: 2px solid var(--ink);
+  }
+  .rc-hero__grid {
+    position: absolute; inset: 0; z-index: -2;
+    background:
+      linear-gradient(color-mix(in srgb, var(--blue) 16%, transparent) 1px, transparent 1px) 0 0 / 100% 2.2rem,
+      linear-gradient(90deg, color-mix(in srgb, var(--blue) 16%, transparent) 1px, transparent 1px) 0 0 / 2.2rem 100%;
+    opacity: calc(1 - var(--k) * 0.9);
+  }
+  .rc-hero__wash {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(60% 70% at 78% 60%, #ff8a3d, transparent 70%),
+      radial-gradient(70% 80% at 20% 30%, #ffd166, transparent 70%);
+    opacity: calc(var(--k) * 0.75);
+  }
+  .rc-hero__top { display: flex; justify-content: space-between; gap: 1rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-2); }
+  .rc-hero__word {
+    align-self: center; justify-self: center;
+    display: flex; white-space: nowrap; user-select: none;
+    font-size: min(15.8vw, 46svh); line-height: 1.1; font-weight: 400;
+    color: color-mix(in oklab, var(--blue), var(--accent) calc(var(--k) * 100%));
+  }
+  .rc-hero__word span { display: block; }
+  .rc-hero__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .rc-hero__lede { --casl: 1; --wght: 700; font-size: clamp(1.3rem, 0.9rem + 1.7vw, 2.3rem); line-height: 1.15; max-width: 23ch; text-wrap: balance; }
+  .rc-hero__hint { display: block; margin-top: 0.9rem; --wght: 400; color: var(--fg-2); max-width: 44ch; line-height: 1.5; }
+  [data-hint-coarse] { display: none; }
+  @media (hover: none) { .rc-hero__hint[data-hint-fine] { display: none; } .rc-hero__hint[data-hint-coarse] { display: block; } }
+  .rc-dials { display: flex; gap: clamp(0.9rem, 2vw, 2rem); }
+  .rc-dials dt { text-transform: none; color: var(--fg-3); }
+  .rc-dials dd { --wght: 300; font-size: clamp(1.1rem, 0.8rem + 1.3vw, 2rem); letter-spacing: 0; line-height: 1.2; min-width: 4.2ch; }
+
+  /* ---------- shared section chrome ---------- */
+  .rc-sec { padding: clamp(4.5rem, 10vw, 9rem) var(--gutter) 0; max-width: var(--maxw); margin-inline: auto; }
+  .rc-kicker { display: flex; gap: 1rem; padding-top: 1rem; border-top: 2px solid var(--ink); text-transform: uppercase; letter-spacing: 0.12em; color: var(--fg-2); }
+  .rc-kicker span { color: var(--accent); --wght: 700; }
+  .rc-h2 {
+    --casl: 1; --wght: 850; --slnt: -4;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(2rem, 1rem + 4.2vw, 5rem); letter-spacing: -0.02em; line-height: 1.02; font-weight: 400;
+    text-wrap: balance;
+  }
+  .rc-h2 em { color: var(--accent); --slnt: -15; --crsv: 1; }
+  .rc-lede { margin-top: 1.4rem; max-width: 58ch; font-size: var(--step-1); line-height: 1.5; color: var(--fg-2); }
+  .rc-cap { margin-top: 0.9rem; color: var(--fg-3); line-height: 1.5; }
+
+  /* ---------- five dials ---------- */
+  .rc-axes { margin-top: clamp(2.5rem, 5vw, 4.5rem); border-top: 1px solid var(--line); }
+  .rc-axis {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center;
+    padding-block: clamp(1.5rem, 3vw, 2.6rem); border-bottom: 1px solid var(--line);
+  }
+  .rc-axis__tag { color: var(--accent); --wght: 700; letter-spacing: 0.1em; }
+  .rc-axis h3 { --wght: 700; font-size: var(--step-2); font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; margin-top: 0.3rem; }
+  .rc-axis__desc { margin-top: 0.7rem; color: var(--fg-2); max-width: 40ch; line-height: 1.5; }
+  .rc-axis__word { font-size: clamp(2.8rem, 9vw, 9.5rem); line-height: 1.1; white-space: nowrap; --wght: 600; }
+  .rc-axis__slider { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center; margin-top: 1rem; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; }
+  .rc-axis--wght .rc-axis__word { --wght: 300; width: fit-content; box-shadow: -1px 0 0 var(--accent), 1px 0 0 var(--accent); }
+  .rc-axis--crsv .rc-axis__word { --slnt: -15; --casl: 1; --crsv: 0; }
+  .rc-axis.is-in:not(.is-manual) .rc-axis__word { animation: 3.4s ease-in-out infinite alternate; }
+  .rc-axis--mono.is-in:not(.is-manual) .rc-axis__word { animation-name: rc-mono; }
+  .rc-axis--casl.is-in:not(.is-manual) .rc-axis__word { animation-name: rc-casl; }
+  .rc-axis--wght.is-in:not(.is-manual) .rc-axis__word { animation-name: rc-wght; }
+  .rc-axis--slnt.is-in:not(.is-manual) .rc-axis__word { animation-name: rc-slnt; }
+  .rc-axis--crsv.is-in:not(.is-manual) .rc-axis__word { animation: rc-crsv 2.4s steps(1) infinite; }
+  @keyframes rc-mono { 0%, 12% { --mono: 0; } 88%, 100% { --mono: 1; } }
+  @keyframes rc-casl { 0%, 12% { --casl: 0; } 88%, 100% { --casl: 1; } }
+  @keyframes rc-wght { 0%, 8% { --wght: 300; } 92%, 100% { --wght: 1000; } }
+  @keyframes rc-slnt { 0%, 12% { --slnt: 0; } 88%, 100% { --slnt: -15; } }
+  @keyframes rc-crsv { 0% { --crsv: 0; } 50% { --crsv: 1; } }
+
+  .rc-page input[type='range'] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: none; cursor: pointer; }
+  .rc-page input[type='range']::-webkit-slider-runnable-track { height: 2px; background: var(--ink); }
+  .rc-page input[type='range']::-moz-range-track { height: 2px; background: var(--ink); }
+  .rc-page input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -9px; border-radius: 50%; background: var(--accent); border: 2px solid var(--ink); }
+  .rc-page input[type='range']::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--ink); }
+
+  /* ---------- same width ---------- */
+  .rc-plex { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); align-items: start; }
+  .rc-plex__stack {
+    width: fit-content; max-width: 100%;
+    border-inline: 1.5px dashed var(--accent);
+    font-size: clamp(1.25rem, 3.7vw, 3.9rem); line-height: 1.22;
+  }
+  .rc-plex__stack p { position: relative; white-space: nowrap; }
+  .rc-plex__stack i { position: absolute; left: calc(100% + 0.9rem); top: 50%; transform: translateY(-50%); font-style: normal; color: var(--fg-3); --wght: 400; }
+  .rc-plex__para { font-size: clamp(1.15rem, 0.9rem + 1vw, 1.7rem); line-height: 1.5; }
+  .rc-plex__para > p:first-child { padding: clamp(1.2rem, 2.4vw, 2rem); background: var(--bg-2); border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); }
+  .rc-plex__para.is-in span { animation: rc-wave 3.6s ease-in-out infinite; animation-delay: calc(var(--i) * 70ms); }
+  @keyframes rc-wave { 0%, 55%, 100% { --wght: 300; --casl: 0; color: var(--fg); } 25% { --wght: 1000; --casl: 1; color: var(--accent); } }
+  .rc-plex__note { margin-top: 1.4rem; color: var(--fg-3); }
+
+  /* ---------- in use ---------- */
+  .rc-bento { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(1.2rem, 2.4vw, 2.4rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); }
+  .rc-code { grid-row: 1 / 3; display: flex; flex-direction: column; --casl: 0; transition: --casl 0.7s var(--ease); }
+  .rc-code__bar {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.8rem 1.1rem; background: #0e0c18; color: #a9a3c2;
+    border-radius: 12px 12px 0 0; border-bottom: 1px solid #ffffff1a;
+  }
+  .rc-code__dots { display: flex; gap: 6px; }
+  .rc-code__dots i { width: 10px; height: 10px; border-radius: 50%; background: #ffffff2e; }
+  .rc-code__switch { margin-left: auto; display: flex; border: 1px solid #ffffff33; border-radius: 100px; overflow: hidden; }
+  .rc-code__switch button { padding: 0.35rem 0.85rem; color: #a9a3c2; --mono: 1; font-size: 0.72rem; }
+  .rc-code__switch button[aria-pressed='true'] { background: #ffd166; color: #14111f; --wght: 700; }
+  .rc-code__pre {
+    --mono: 1; flex: 1;
+    margin: 0; padding: clamp(1.1rem, 2.6vw, 2.2rem);
+    background: #14111f; color: #ece8f8; border-radius: 0 0 12px 12px;
+    font-size: clamp(0.8rem, 0.4rem + 1.2vw, 1.34rem); line-height: 1.85;
+    overflow-x: auto; white-space: pre; box-shadow: 10px 10px 0 var(--ink);
+  }
+  .rc-code__pre .c { color: #8f88ad; --casl: 1; --slnt: -15; --crsv: 1; }
+  .rc-code__pre .k { color: #ff8a6b; --wght: 800; }
+  .rc-code__pre .f { color: #8fb4ff; --wght: 600; }
+  .rc-code__pre .n { color: #ffd166; }
+  .rc-code__pre .s { color: #9be39b; }
+  .rc-code__caret { display: inline-block; width: 0.55em; height: 1.1em; margin-left: 0.2em; vertical-align: text-bottom; background: #ffd166; animation: rc-blink 1.1s steps(2, jump-none) infinite; }
+  @keyframes rc-blink { to { opacity: 0; } }
+
+  .rc-sign__board {
+    --casl: 1; --slnt: -13; --crsv: 1;
+    background: var(--accent); color: #fff6df;
+    padding: clamp(1.4rem, 3vw, 2.6rem);
+    border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--ink);
+    display: grid; gap: 0.4rem; text-align: center;
+    transform: rotate(-1.5deg);
+    container-type: inline-size;
+  }
+  .rc-sign__small { --wght: 700; font-size: clamp(1rem, 5cqi, 1.6rem); color: #ffd166; }
+  .rc-sign__big { --wght: 1000; font-size: 25cqi; line-height: 0.88; display: flex; flex-direction: column; text-shadow: 0.04em 0.04em 0 var(--ink); }
+  .rc-sign__big span:last-child { color: #ffd166; }
+  .rc-sign__row { --wght: 800; display: flex; justify-content: center; gap: 0.7em; font-size: clamp(0.95rem, 5.4cqi, 1.7rem); margin-top: 0.6rem; }
+  .rc-sign__row i { font-style: normal; color: #ffd166; }
+
+  .rc-ui__card { background: #fff; border: 2px solid var(--ink); border-radius: 12px; overflow: hidden; }
+  .rc-ui__card header { display: flex; justify-content: space-between; align-items: baseline; padding: 0.9rem 1.1rem; border-bottom: 2px solid var(--ink); font-size: 1.05rem; }
+  .rc-ui__card header span { color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.1em; }
+  .rc-ui__card table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .rc-ui__card td { padding: 0.7rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .rc-ui__card td:first-child { padding-left: 1.1rem; }
+  .rc-ui__card td:last-child { padding-right: 1.1rem; }
+  .rc-ui__card tr:last-child td { border-bottom: 0; }
+  .rc-ui__card small { display: block; color: var(--fg-3); font-size: 0.68rem; }
+  .rc-ui__num { text-align: right; white-space: nowrap; font-size: 0.82rem; letter-spacing: 0; }
+  .rc-ui__chip { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 100px; background: #d9f2d9; color: #17602a; --wght: 650; font-size: 0.78rem; }
+  .rc-ui__chip.is-run { background: #dfe5ff; color: var(--blue); animation: rc-run 1.4s ease-in-out infinite alternate; }
+  @keyframes rc-run { from { --wght: 400; } to { --wght: 900; } }
+
+  /* ---------- tester ---------- */
+  .rc-test { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1.2rem, 2.4vw, 2.4rem); margin-top: clamp(2.5rem, 5vw, 4.5rem); align-items: stretch; }
+  .rc-test__stage { display: grid; place-items: center; min-height: clamp(16rem, 34vw, 30rem); padding: clamp(1.2rem, 3vw, 3rem); background: var(--bg-2); border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); overflow: hidden; }
+  .rc-test__text {
+    font-size: clamp(2.2rem, 6.4vw, 6.6rem); line-height: 1.08; text-align: center; outline: none; max-width: 100%; overflow-wrap: anywhere;
+    caret-color: var(--accent);
+    transition: --mono 0.6s var(--ease), --casl 0.6s var(--ease), --wght 0.6s var(--ease), --slnt 0.6s var(--ease), --crsv 0.6s var(--ease);
+  }
+  .rc-test__panel { display: flex; flex-direction: column; gap: 1.4rem; }
+  .rc-test__presets { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .rc-test__presets button { padding: 0.5rem 0.85rem; border: 1.5px solid var(--ink); border-radius: 100px; text-transform: uppercase; letter-spacing: 0.06em; transition: background 0.2s, color 0.2s; }
+  .rc-test__presets button:hover { background: var(--bg-2); }
+  .rc-test__presets button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+  .rc-test__sliders { display: grid; gap: 0.5rem; }
+  .rc-test__sliders label { display: grid; grid-template-columns: 7.5rem 1fr; align-items: center; gap: 1rem; color: var(--fg-2); }
+  .rc-test__sliders b { color: var(--accent); margin-left: 0.4em; }
+  .rc-test__css { margin: auto 0 0; padding: 1rem 1.1rem; background: #14111f; color: #ece8f8; border-radius: 10px; font-size: 0.8rem; line-height: 1.6; white-space: pre-wrap; }
+
+  /* ---------- keys ---------- */
+  .rc-keys { display: grid; grid-template-columns: repeat(13, 1fr); margin-top: clamp(2rem, 4vw, 3.5rem); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .rc-key {
+    --mono: 1; --wght: 300;
+    aspect-ratio: 1; display: grid; place-items: center;
+    font-size: clamp(1.2rem, 3.6vw, 3.6rem);
+    border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    transition: --casl 0.7s var(--ease), --wght 0.7s var(--ease), --slnt 0.7s var(--ease), color 0.7s, background 0.7s;
+  }
+  .rc-key:hover, .rc-key:focus-visible, .rc-key.is-wild {
+    --casl: 1; --wght: 1000; --slnt: -15; --crsv: 1;
+    color: var(--accent); background: #fff;
+    transition-duration: 0.12s;
+  }
+
+  /* ---------- story ---------- */
+  .rc-story { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 7rem); margin-top: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  .rc-story__prose { font-size: var(--step-1); line-height: 1.6; color: var(--fg-2); max-width: 60ch; }
+  .rc-story__prose p + p { margin-top: 1.1em; }
+  .rc-story__prose strong { color: var(--fg); }
+  .rc-story__prose em { --casl: 1; --slnt: -15; --crsv: 1; --wght: 600; color: var(--accent); }
+  .rc-story__lede { font-size: 1.2em; line-height: 1.42; color: var(--fg); }
+  .rc-specs { border-top: 2px solid var(--ink); }
+  .rc-specs > div { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+  .rc-specs dt { text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); padding-top: 0.25em; }
+  .rc-specs dd { line-height: 1.45; }
+  .rc-specs__axes { font-size: 0.86rem; line-height: 1.7 !important; letter-spacing: 0; }
+  .rc-specs .rc-specs__links { display: flex; gap: 1.5rem; flex-wrap: wrap; border-bottom: 0; padding-top: 1.3rem; }
+  .rc-specs__links a { color: var(--accent); --wght: 700; border-bottom: 1.5px solid currentColor; padding-bottom: 2px; font-size: 0.8rem; }
+
+  /* ---------- next ---------- */
+  .rc-next {
+    display: grid; gap: 0.6rem; justify-items: center; text-align: center;
+    margin-top: clamp(5rem, 10vw, 9rem);
+    padding: clamp(3.5rem, 9vw, 8rem) var(--gutter);
+    background: #04141f; color: #eaf6fb; overflow: hidden;
+  }
+  .rc-next__k { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: #8fd8f0; }
+  .rc-next__name {
+    font-family: 'Climate Crisis Variable', sans-serif; font-size: clamp(1.7rem, 7.6vw, 8.5rem); line-height: 1; text-transform: uppercase; white-space: nowrap;
+    font-variation-settings: 'YEAR' 1979;
+    transition: font-variation-settings 1.4s var(--ease-out);
+  }
+  .rc-next:hover .rc-next__name { font-variation-settings: 'YEAR' 2050; }
+  .rc-next__sub { font-family: var(--font-ui); font-variation-settings: normal; color: #9fbccb; }
+
+  /* ---------- small screens ---------- */
+  @media (max-width: 900px) {
+    .rc-axis, .rc-plex, .rc-bento, .rc-test, .rc-story { grid-template-columns: minmax(0, 1fr); }
+    .rc-code { grid-row: auto; }
+    .rc-keys { grid-template-columns: repeat(8, 1fr); }
+    .rc-sign__board { transform: none; }
+    .rc-plex__stack i { display: none; }
+  }
+  @media (max-width: 560px) {
+    .rc-hero__top span:last-child { display: none; }
+    .rc-dials { gap: 0.7rem; width: 100%; justify-content: space-between; }
+    .rc-dials dd { min-width: 0; }
+    .rc-plex__stack { font-size: 6.7vw; }
+    .rc-axis__word { font-size: 14vw; }
+    .rc-axis--crsv .rc-axis__word, .rc-axis--mono .rc-axis__word { font-size: 11.5vw; }
+    .rc-axis__slider { gap: 0.6rem; font-size: 0.62rem; }
+    .rc-code__pre { font-size: 0.68rem; box-shadow: 6px 6px 0 var(--ink); }
+    .rc-specs > div { grid-template-columns: 7rem 1fr; }
+    .rc-ui__card td:nth-child(4) { display: none; }
+    .rc-test__sliders label { grid-template-columns: 6.5rem 1fr; }
+  }
+</style>
