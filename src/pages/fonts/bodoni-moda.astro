@@ -8,8 +8,15 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import EditionTester from '../../components/edition/EditionTester.astro';
 import EditionTail from '../../components/edition/EditionTail.astro';
 import { getEdition } from '../../lib/edition';
+import { strokeContrast } from '../../lib/ink';
 
 const { entry, font, prev, next, themeStyle } = await getEdition('bodoni-moda');
+
+// Real stem and hairline widths of the H at every optical size, read from the font file.
+const strokes = await strokeContrast({
+  pkg: '@fontsource-variable/bodoni-moda', file: 'bodoni-moda-latin-opsz-normal.woff2',
+  axis: 'opsz', min: 6, max: 96, fixed: { wght: 400 },
+});
 
 const covers = [
   { id: 'rouge', issue: 'No. 96', season: 'Autumn', word: 'Rouge', lines: ['The return of red', 'Forty coats, one colour', 'Milan after midnight'] },
@@ -53,12 +60,12 @@ const runway = [
 
     <main>
       <!-- ============ CONTRAST ============ -->
-      <section class="ed-sec" data-contrast>
+      <section class="ed-sec" data-contrast data-strokes={JSON.stringify(strokes.map((s) => [Math.round(s.thick), Math.round(s.thin)]))}>
         <div class="ed-kicker"><span>01</span> The whole idea</div>
         <h2 class="ed-h2">A stem like a column.<br />A hairline like <em>a thread</em>.</h2>
         <p class="ed-lede">
           Drag the size. As the type grows, its optical-size axis thins the hairlines further, because large letters
-          can carry it. The two bars measure what you see: the thick stroke and the thin one, to scale.
+          can carry it. The two bars are the stem and the crossbar of this H, measured from the font file and drawn to scale.
         </p>
 
         <div class="ed-body bm-contrast">
@@ -217,47 +224,23 @@ const runway = [
     const sec = page.querySelector<HTMLElement>('[data-contrast]')!;
     const input = sec.querySelector<HTMLInputElement>('[data-c-input]')!;
     const letter = sec.querySelector<HTMLElement>('[data-c-letter]')!;
-    const cv = document.createElement('canvas'); cv.width = 400; cv.height = 400;
-    const ctx = cv.getContext('2d', { willReadFrequently: true })!;
-    const measure = (o: number) => {
-      // Draw an H at 300px and count ink runs: across the middle of a stem
-      // (thick) and down the middle of the crossbar (thin).
-      ctx.clearRect(0, 0, 400, 400);
-      const c = document.createElement('span');
-      ctx.font = `400 300px 'Bodoni Moda Variable'`;
-      (ctx as any).fontVariationSettings = `'opsz' ${o}, 'wght' 400`;
-      (cv.style as any).fontVariationSettings = `'opsz' ${o}, 'wght' 400`;
-      ctx.textBaseline = 'alphabetic'; ctx.fillStyle = '#000';
-      const m = ctx.measureText('H');
-      ctx.fillText('H', (400 - m.width) / 2, 320);
-      const img = ctx.getImageData(0, 0, 400, 400).data;
-      const ink = (x: number, y: number) => img[(y * 400 + x) * 4 + 3] > 128;
-      const run = (get: (k: number) => boolean) => { let best = 0, cur = 0; for (let k = 0; k < 400; k++) { if (get(k)) { cur++; best = Math.max(best, cur); } else cur = 0; } return best; };
-      // stem: horizontal scan a quarter of the way up the letter, first run only
-      const yStem = Math.round(320 - m.actualBoundingBoxAscent * 0.25);
-      let thick = 0; for (let x = 0; x < 400; x++) { if (ink(x, yStem)) thick++; else if (thick) break; }
-      // crossbar: vertical scan through the centre of the letter
-      const thin = run((y) => ink(200, y));
-      void c;
-      return { thick, thin };
-    };
-    // canvas text needs the element in the DOM for variation settings to apply
-    cv.style.cssText = 'position:absolute;left:-9999px;top:0;width:400px;height:400px';
-    document.body.appendChild(cv);
+    const strokes: number[][] = JSON.parse(sec.dataset.strokes!);
     const thickEl = sec.querySelector<HTMLElement>('[data-c-thick]')!, thinEl = sec.querySelector<HTMLElement>('[data-c-thin]')!;
     const paint = () => {
       const o = +input.value;
+      const [thick, thin] = strokes[o - 6];
       letter.style.fontVariationSettings = `'opsz' ${o}, 'wght' 400`;
       sec.querySelector('[data-c-val]')!.textContent = String(o);
       sec.querySelector('[data-c-opsz]')!.textContent = String(o);
-      const { thick, thin } = measure(o);
-      if (thick && thin) {
-        thickEl.style.width = `${thick * 0.9}px`; thinEl.style.width = `${Math.max(1, thin * 0.9)}px`;
-        sec.querySelector('[data-c-ratio]')!.textContent = (thick / thin).toFixed(1);
-      }
+      // bars share the letter's scale: font units → px at the letter's size
+      const k = parseFloat(getComputedStyle(letter).fontSize) / 1000;
+      thickEl.style.width = `${thick * k}px`;
+      thinEl.style.width = `${Math.max(1, thin * k)}px`;
+      sec.querySelector('[data-c-ratio]')!.textContent = (thick / thin).toFixed(1);
     };
     input.addEventListener('input', paint);
-    document.fonts.load(`400 300px 'Bodoni Moda Variable'`, 'H').then(paint);
+    window.addEventListener('resize', paint);
+    paint();
 
     // ---------- Covers: tap to bring one forward on touch screens ----------
     const covers = Array.from(page.querySelectorAll<HTMLElement>('[data-cover]'));
@@ -327,9 +310,9 @@ const runway = [
   .bm-amp__scene { container-type: inline-size; position: relative; min-height: clamp(26rem, 46vw, 40rem); background: #f2ece1; color: #0e0d0c; display: grid; grid-template-columns: 1fr 1fr; align-content: center; align-items: center; overflow: hidden; }
   .bm-amp__g { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -54%); font-size: 78cqi; line-height: 1; font-style: italic; font-variation-settings: 'wght' 400; color: #e8384f; transition: font-variation-settings 1.2s var(--ease), transform 1.2s var(--ease); }
   .bm-amp:hover .bm-amp__g { font-variation-settings: 'wght' 900; transform: translate(-50%, -54%) rotate(-6deg); }
-  .bm-amp__a, .bm-amp__b { position: relative; z-index: 1; font-size: 11cqi; text-transform: uppercase; letter-spacing: 0.14em; font-variation-settings: 'opsz' 40, 'wght' 600; mix-blend-mode: multiply; }
-  .bm-amp__a { text-align: right; padding-right: 15cqi; }
-  .bm-amp__b { padding-left: 15cqi; }
+  .bm-amp__a, .bm-amp__b { position: relative; z-index: 1; font-size: 6.4cqi; text-transform: uppercase; letter-spacing: 0.14em; font-variation-settings: 'opsz' 40, 'wght' 600; mix-blend-mode: multiply; }
+  .bm-amp__a { text-align: right; padding-right: 17cqi; }
+  .bm-amp__b { padding-left: 17cqi; }
   .bm-amp__sub { position: absolute; left: 0; right: 0; bottom: 6cqi; text-align: center; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: #6a6257; }
 
   /* ---------- runway ---------- */
@@ -337,11 +320,11 @@ const runway = [
   .bm-runway__date { display: flex; align-items: center; font-size: clamp(6rem, 19vw, 20rem); line-height: 0.8; font-variation-settings: 'opsz' 96, 'wght' 400; letter-spacing: -0.03em; }
   .bm-runway__date i { font-style: normal; color: var(--accent); font-size: 0.4em; padding-inline: 0.15em; }
   .bm-runway__date span:last-child { font-style: italic; font-variation-settings: 'wght' 400; color: var(--accent); }
-  .bm-runway__list li { display: grid; grid-template-columns: 5.5ch minmax(0, 1fr) auto; align-items: baseline; gap: 1.2rem; padding: 0.9rem 0; border-top: 1px solid var(--line); opacity: 0; transform: translateY(14px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); transition-delay: calc(var(--i) * 110ms); }
+  .bm-runway__list li { display: grid; grid-template-columns: 6.5ch minmax(0, 1fr) auto; align-items: baseline; gap: 1.2rem; padding: 0.9rem 0; border-top: 1px solid var(--line); opacity: 0; transform: translateY(14px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); transition-delay: calc(var(--i) * 110ms); }
   .bm-runway.is-in li { opacity: 1; transform: none; }
   .bm-runway__list li:first-child { border-top: 0; }
   .bm-runway__t { font-size: var(--step-1); font-variation-settings: 'opsz' 20, 'wght' 600; color: var(--accent); }
-  .bm-runway__who { font-size: clamp(1.5rem, 3.2vw, 3.2rem); line-height: 1; font-variation-settings: 'opsz' 96, 'wght' 400; transition: font-variation-settings 0.5s var(--ease), letter-spacing 0.5s var(--ease); }
+  .bm-runway__who { font-size: clamp(1.4rem, 2.7vw, 2.8rem); line-height: 1; font-variation-settings: 'opsz' 96, 'wght' 400; transition: font-variation-settings 0.5s var(--ease), letter-spacing 0.5s var(--ease); }
   .bm-runway__list li:hover .bm-runway__who { font-style: italic; font-variation-settings: 'wght' 800; }
   .bm-runway__where { font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); text-align: right; }
 
