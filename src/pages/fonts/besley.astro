@@ -1,0 +1,293 @@
+---
+// BESLEY — new edition. A Clarendon gone West: a wanted poster you shoot full
+// of holes, a saloon sign that won't stop swinging, a tin of beans and a
+// telegram. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('besley');
+---
+<Layout title="Besley — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Besley" showToggle={false} />
+  <div class="ed bz" data-bz>
+    <header class="ed-hero bz-hero" data-hero>
+      <div class="bz-hero__sun" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Besley · {font.designer} · {font.year}</span><span>Regular to Black, roman & italic</span></div>
+      <div class="bz-poster" data-poster aria-label="Wanted poster. Click to fire.">
+        <div class="bz-poster__paper">
+          <p class="bz-f bz-poster__w" data-wanted>Wanted</p>
+          <p class="bz-f bz-poster__da">Dead or Alive</p>
+          <div class="bz-poster__face" aria-hidden="true">
+            <svg viewBox="0 0 100 100"><path d="M18 46 Q50 4 82 46 L90 50 L10 50 Z" /><rect x="34" y="18" width="32" height="20" rx="3" /><circle cx="50" cy="72" r="20" /><rect x="34" y="66" width="12" height="4" /><rect x="54" y="66" width="12" height="4" /><path d="M38 80 Q50 88 62 80" fill="none" stroke-width="3" /></svg>
+          </div>
+          <p class="bz-f bz-poster__name">Besley “Slab” Clarendon</p>
+          <p class="bz-f bz-poster__for">for crimes against thin serifs</p>
+          <p class="bz-f bz-poster__r">Reward <b data-reward>$500</b></p>
+        </div>
+        <div class="bz-holes" data-holes aria-hidden="true"></div>
+      </div>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Thick slabs, ball terminals and <em>a reputation</em>.
+          <span class="ed-hero__hint" data-fine>Click the poster to shoot. Every hole raises the bounty and the lettering gets angrier.</span>
+          <span class="ed-hero__hint" data-coarse>Tap the poster to shoot. Every hole raises the bounty.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>shots</dt><dd data-hud="n">0</dd></div><div><dt>wght</dt><dd data-hud="w">700</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-saloon>
+        <div class="ed-kicker"><span>01</span> Main street</div>
+        <h2 class="ed-h2">Hang it from a chain.<br /><em>Give it a shove.</em></h2>
+        <div class="ed-body bz-street">
+          <div class="bz-sign" data-sign tabindex="0" aria-label="Swinging saloon sign. Drag or click to push.">
+            <span class="bz-sign__chains" aria-hidden="true"><i></i><i></i></span>
+            <span class="bz-sign__board">
+              <span class="bz-f bz-sign__est">Est. 1870</span>
+              <span class="bz-f bz-sign__name">The Last Chance</span>
+              <span class="bz-f bz-sign__sub">Saloon · Rooms · Baths</span>
+            </span>
+          </div>
+          <p class="ed-cap">Drag the sign sideways, or click it, and let go. An invented saloon.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> General store</div>
+        <h2 class="ed-h2">Every label in the shop<br />was set <em>in something like this</em>.</h2>
+        <div class="ed-body bz-shelf">
+          <article class="bz-tin" data-tin>
+            <div class="bz-tin__can">
+              <span class="bz-tin__rim" aria-hidden="true"></span>
+              <span class="bz-tin__label">
+                <span class="bz-tin__strip" data-strip>
+                  {[0, 1].map(() => <span class="bz-tin__face"><span class="bz-f bz-tin__brand">Prairie</span><span class="bz-f bz-tin__kind">Baked Beans</span><span class="bz-f bz-tin__note">in rich tomato sauce · net wt 16 oz · est. 1882</span><span class="bz-f bz-tin__big">No. 7</span></span>)}
+                </span>
+              </span>
+              <span class="bz-tin__rim bz-tin__rim--b" aria-hidden="true"></span>
+            </div>
+            <p class="ed-cap">A tin of invented beans. Drag it to turn it.</p>
+          </article>
+
+          <article class="bz-wire" data-wire>
+            <div class="bz-wire__form">
+              <p class="bz-f bz-wire__co">Western Wire Telegraph Co.</p>
+              <p class="bz-wire__meta"><span>Received at Dry Creek</span><span data-wire-time>4.12 pm</span></p>
+              <p class="bz-f bz-wire__body" data-wire-body></p>
+              <p class="bz-wire__fee">Words: <b data-wire-n>0</b> · Charge: <b data-wire-c>$0.00</b></p>
+            </div>
+            <label class="bz-wire__in"><span>Send your own (STOP ends a sentence)</span><input type="text" value="Arrived safe stop Town smaller than expected stop Send boots stop" maxlength="120" data-wire-in /></label>
+          </article>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> From polite to ornery</div>
+        <h2 class="ed-h2">Six weights,<br />one <em>temper</em>.</h2>
+        <div class="ed-body bz-temper" data-inview>
+          {[[400, 'Howdy.'], [500, 'Afternoon, stranger.'], [600, 'Wipe your boots.'], [700, 'That’s my horse.'], [800, 'Get off my land!'], [900, 'DRAW!']].map(([w, t], i) => <p style={`--w:${w};--i:${i}`}><i>{w}</i><span class="bz-f">{t}</span></p>)}
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Put it <em>on a poster</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Besley Variable" sample="Ten-gallon hat" italic upper axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 900 }]}
+            presets={[{ name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [500], italic: true }, { name: 'Black italic', v: [900], italic: true }]} start={2} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-bz]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // =================== WANTED POSTER ===================
+    const poster = page.querySelector<HTMLElement>('[data-poster]')!;
+    const holes = poster.querySelector<HTMLElement>('[data-holes]')!;
+    const wanted = poster.querySelector<HTMLElement>('[data-wanted]')!;
+    const reward = poster.querySelector<HTMLElement>('[data-reward]')!;
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    let shots = 0, tilt = 0, vt = 0;
+    const fire = (cx: number, cy: number) => {
+      const r = poster.getBoundingClientRect(), x = cx - r.left, y = cy - r.top;
+      shots++;
+      const h = document.createElement('i');
+      h.style.left = `${x}px`; h.style.top = `${y}px`; h.style.setProperty('--r', `${Math.random() * 360}deg`); h.style.setProperty('--s', String(0.8 + Math.random() * 0.5));
+      holes.appendChild(h);
+      if (holes.children.length > 40) holes.firstElementChild!.remove();
+      // muzzle flash + recoil
+      const f = document.createElement('b'); f.style.left = `${x}px`; f.style.top = `${y}px`; holes.appendChild(f); setTimeout(() => f.remove(), 260);
+      vt += (x / r.width - 0.5) * 9;
+      poster.classList.remove('is-hit'); void poster.offsetWidth; poster.classList.add('is-hit');
+      // the bounty climbs, the lettering gets angrier
+      const amt = 500 + shots * 250 + Math.floor(shots * shots * 12.5) * 10;
+      reward.textContent = `$${amt.toLocaleString('en-US')}`;
+      reward.classList.remove('is-bump'); void reward.offsetWidth; reward.classList.add('is-bump');
+      const w = clamp(700 + shots * 25, 700, 900);
+      wanted.style.fontVariationSettings = `'wght' ${w}`;
+      wanted.style.letterSpacing = `${clamp(-0.01 - shots * 0.002, -0.04, 0)}em`;
+      hud.n.textContent = String(shots); hud.w.textContent = String(w);
+    };
+    poster.addEventListener('pointerdown', (e) => { e.preventDefault(); fire(e.clientX, e.clientY); });
+    // the poster swings a little on its nail after each shot
+    const swing = () => { requestAnimationFrame(swing); vt += -tilt * 0.06; vt *= 0.9; tilt += vt * 0.16; poster.style.setProperty('--tilt', `${tilt.toFixed(2)}deg`); };
+    if (!reduce) requestAnimationFrame(swing);
+
+    // =================== SWINGING SIGN ===================
+    const sign = page.querySelector<HTMLElement>('[data-sign]')!;
+    let ang = 0, va = 0, dragging = false, lastX = 0, signOn = false;
+    new IntersectionObserver((es) => { signOn = es[0].isIntersecting; if (signOn && !reduce && Math.abs(va) < 0.1) va = 3.4; }, { threshold: 0.4 }).observe(sign);
+    sign.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; sign.setPointerCapture(e.pointerId); sign.classList.add('is-drag'); });
+    sign.addEventListener('pointermove', (e) => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; va = dx * 0.35; ang = clamp(ang + dx * 0.12, -55, 55); });
+    const drop = () => { if (!dragging) return; dragging = false; sign.classList.remove('is-drag'); if (Math.abs(va) < 0.5) va = (Math.random() < 0.5 ? -1 : 1) * 6; };
+    sign.addEventListener('pointerup', drop); sign.addEventListener('pointercancel', drop);
+    sign.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { va += 7; e.preventDefault(); } });
+    const signTick = () => {
+      requestAnimationFrame(signTick);
+      if (!signOn) return;
+      if (!dragging) { va += -Math.sin((ang * Math.PI) / 180) * 1.1; va *= 0.988; ang += va * 0.5; }
+      sign.style.setProperty('--ang', `${ang.toFixed(2)}deg`);
+      // the lettering creaks heavier at the extremes of the swing
+      sign.style.setProperty('--sw', String(Math.round(clamp(700 + Math.abs(ang) * 5, 700, 900))));
+    };
+    requestAnimationFrame(signTick);
+
+    // =================== TIN: drag to rotate the label ===================
+    const tin = page.querySelector<HTMLElement>('[data-tin]')!, strip = tin.querySelector<HTMLElement>('[data-strip]')!;
+    let off = 0, vo = 0.4, td = false, tx = 0;
+    const can = tin.querySelector<HTMLElement>('.bz-tin__can')!;
+    can.addEventListener('pointerdown', (e) => { td = true; tx = e.clientX; can.setPointerCapture(e.pointerId); });
+    can.addEventListener('pointermove', (e) => { if (!td) return; vo = (e.clientX - tx) * 0.8; tx = e.clientX; });
+    const tup = () => { td = false; }; can.addEventListener('pointerup', tup); can.addEventListener('pointercancel', tup);
+    const tinTick = () => { requestAnimationFrame(tinTick); if (!td) vo += (0.35 - vo) * 0.02; if (reduce) vo = 0; off -= vo; const half = strip.scrollWidth / 2; if (half) { off = ((off % half) + half) % half * -1; } strip.style.transform = `translateX(${off.toFixed(1)}px)`; };
+    requestAnimationFrame(tinTick);
+
+    // =================== TELEGRAM ===================
+    const wire = page.querySelector<HTMLElement>('[data-wire]')!, body = wire.querySelector<HTMLElement>('[data-wire-body]')!, win = wire.querySelector<HTMLInputElement>('[data-wire-in]')!;
+    let job = 0, wireOn = false;
+    new IntersectionObserver((es) => { const was = wireOn; wireOn = es[0].isIntersecting; if (wireOn && !was) send(); }, { threshold: 0.4 }).observe(wire);
+    const send = () => {
+      const txt = win.value.trim().toUpperCase().replace(/\s+/g, ' ').replace(/[.!?]/g, ' STOP').replace(/\s+/g, ' ');
+      const words = txt.split(' ').filter(Boolean);
+      wire.querySelector('[data-wire-n]')!.textContent = String(words.length);
+      wire.querySelector('[data-wire-c]')!.textContent = `$${(0.25 + Math.max(0, words.length - 10) * 0.02).toFixed(2)}`;
+      const me = ++job; body.innerHTML = ''; let i = 0;
+      const out = txt.split(/( STOP ?)/).filter(Boolean);
+      const html = out.map((p) => (p.trim() === 'STOP' ? '<b> STOP </b>' : p.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!))).join('');
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      const flat: [string, boolean][] = []; tmp.childNodes.forEach((n) => { for (const c of n.textContent!) flat.push([c, n.nodeType === 1]); });
+      const type = () => { if (me !== job) return; if (i >= flat.length) return; const [c, stop] = flat[i++]; const s = document.createElement(stop ? 'b' : 'span'); s.textContent = c; body.appendChild(s); setTimeout(type, reduce ? 0 : c === ' ' ? 40 : 22 + Math.random() * 30); };
+      type();
+      wire.querySelector('[data-wire-time]')!.textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+    };
+    let t = 0; win.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(send, 450); });
+  }
+</script>
+
+<style is:global>
+  .bz { --ed-head: 'Besley Variable', 'Clarendon', serif; --ed-head-vf: 'wght' 800; --ed-em-vf: 'wght' 500; --ed-lede-vf: 'wght' 600; --ed-radius: 2px; --paper: #ead9b5; --ink: #2a1a0d; --red: #b0301c; }
+  .bz .ed-h2 em, .bz .ed-hero__lede em { font-style: italic; color: var(--accent); }
+  .bz .ed-h2 { letter-spacing: -0.02em; line-height: 0.98; }
+  .bz-f { font-family: 'Besley Variable', 'Clarendon', serif; font-weight: 400; font-feature-settings: normal; }
+  .bz .ed-story__prose { font-family: 'Besley Variable', serif; font-variation-settings: 'wght' 420; }
+  .bz .ed-story__prose em { font-style: italic; } .bz .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 750; }
+
+  /* ---------- hero / wanted poster ---------- */
+  .bz-hero { background: linear-gradient(180deg, #2a1608 0%, #5a2b12 55%, #b5612a 100%); color: #f1e2c4; --fg: #f1e2c4; --fg-2: #d8bf98; --fg-3: #a8875f; }
+  .bz-hero__sun { position: absolute; left: 50%; bottom: -30vmin; width: 80vmin; height: 80vmin; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, #ffd27a, #e8732e 55%, transparent 70%); opacity: 0.55; z-index: -1; }
+  .bz-poster { --tilt: 0deg; position: relative; justify-self: center; align-self: center; width: min(78vw, 25rem, 58svh); transform: rotate(var(--tilt)); transform-origin: 50% 0; cursor: crosshair; touch-action: manipulation; user-select: none; filter: drop-shadow(0 30px 30px #0008); }
+  .bz-poster::before { content: ''; position: absolute; left: 50%; top: -0.6rem; width: 0.9rem; height: 0.9rem; margin-left: -0.45rem; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #c8c2b5, #5a544a); z-index: 2; box-shadow: 0 2px 3px #0008; }
+  .bz-poster.is-hit { animation: bz-recoil 0.18s; }
+  @keyframes bz-recoil { 50% { transform: rotate(var(--tilt)) translateY(4px) scale(0.99); } }
+  .bz-poster__paper { container-type: inline-size; padding: 7cqi 7cqi 6cqi; text-align: center; color: var(--ink); display: grid; gap: 2cqi;
+    background: radial-gradient(120% 90% at 50% 40%, #f2e3c2, #dcc395 70%, #b99560), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .2 0 0 0 0 .08 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-blend-mode: multiply; clip-path: polygon(0 1%, 4% 0, 30% 1.4%, 62% 0.2%, 96% 1%, 100% 0, 99% 30%, 100% 62%, 99.2% 99%, 70% 100%, 34% 98.8%, 3% 100%, 0 97%, 1% 60%, 0 30%); }
+  .bz-poster__w { font-size: 24cqi; line-height: 0.85; text-transform: uppercase; font-variation-settings: 'wght' 700; letter-spacing: -0.01em; transition: font-variation-settings 0.25s, letter-spacing 0.25s; }
+  .bz-poster__da { font-size: 7cqi; font-style: italic; font-variation-settings: 'wght' 600; padding-block: 1.4cqi; border-block: 0.6cqi solid var(--ink); }
+  .bz-poster__face { margin: 1cqi auto; width: 52cqi; aspect-ratio: 1; border: 0.8cqi solid var(--ink); background: #c9ab7a; display: grid; place-items: center; overflow: hidden; }
+  .bz-poster__face svg { width: 92%; fill: var(--ink); stroke: var(--ink); opacity: 0.88; }
+  .bz-poster__name { font-size: 6.4cqi; line-height: 1.1; font-variation-settings: 'wght' 800; text-transform: uppercase; letter-spacing: 0.02em; }
+  .bz-poster__for { font-size: 4.6cqi; font-style: italic; font-variation-settings: 'wght' 450; }
+  .bz-poster__r { font-size: 7cqi; text-transform: uppercase; font-variation-settings: 'wght' 600; letter-spacing: 0.08em; }
+  .bz-poster__r b { display: block; font-weight: 400; font-size: 2.3em; line-height: 1; letter-spacing: -0.02em; color: var(--red); font-variation-settings: 'wght' 900; }
+  .bz-poster__r b.is-bump { animation: bz-bump 0.4s cubic-bezier(0.34, 1.7, 0.64, 1); }
+  @keyframes bz-bump { 40% { transform: scale(1.18) rotate(-3deg); } }
+  .bz-holes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .bz-holes i { position: absolute; width: 1.1rem; height: 1.1rem; margin: -0.55rem; border-radius: 50%; transform: rotate(var(--r)) scale(var(--s)); background: radial-gradient(circle, #0c0703 0 34%, #3a2210 38%, #7a5530 50%, transparent 62%); animation: bz-hole 0.25s cubic-bezier(0.34, 1.7, 0.64, 1); }
+  .bz-holes i::after { content: ''; position: absolute; inset: -55%; background: conic-gradient(from 10deg, transparent 0 8%, #3a2210aa 9% 11%, transparent 12% 30%, #3a2210aa 31% 33%, transparent 34% 58%, #3a2210aa 59% 61%, transparent 62% 84%, #3a2210aa 85% 87%, transparent 88%); border-radius: 50%; -webkit-mask: radial-gradient(circle, transparent 30%, #000 32%, transparent 70%); mask: radial-gradient(circle, transparent 30%, #000 32%, transparent 70%); }
+  @keyframes bz-hole { from { transform: rotate(var(--r)) scale(0); } }
+  .bz-holes b { position: absolute; width: 4rem; height: 4rem; margin: -2rem; border-radius: 50%; background: radial-gradient(circle, #fff7d6, #ffb43a 30%, #ff6a1a55 55%, transparent 70%); animation: bz-flash 0.26s ease-out forwards; }
+  @keyframes bz-flash { from { transform: scale(0.4); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+  .bz-hero .ed-readout dd { color: #ffd27a; }
+
+  /* ---------- swinging sign ---------- */
+  .bz-street { display: grid; justify-items: center; gap: 1rem; padding: 4rem 1rem 2rem; background: linear-gradient(180deg, transparent, #2a1a0d55), repeating-linear-gradient(90deg, #3a2414 0 9%, #432a17 9% 18%); border-top: 1.2rem solid #2a1a0d; }
+  .bz-sign { --ang: 0deg; --sw: 700; position: relative; display: grid; justify-items: center; transform: rotate(var(--ang)); transform-origin: 50% -3rem; cursor: grab; touch-action: none; outline: none; user-select: none; margin-top: 3rem; }
+  .bz-sign.is-drag { cursor: grabbing; }
+  .bz-sign:focus-visible .bz-sign__board { box-shadow: 0 0 0 3px #ffd27a; }
+  .bz-sign__chains { position: absolute; top: -3rem; left: 12%; right: 12%; height: 3rem; display: flex; justify-content: space-between; }
+  .bz-sign__chains i { width: 6px; height: 100%; background: repeating-linear-gradient(180deg, #8d8577 0 7px, #4a453d 7px 10px); border-radius: 3px; }
+  .bz-sign__board { container-type: inline-size; display: grid; justify-items: center; gap: 0.4rem; width: min(84vw, 40rem); padding: 1.6rem 2rem 1.4rem; color: #f3dfb4; text-align: center;
+    background: linear-gradient(180deg, #7a3e1c, #5d2d13), repeating-linear-gradient(180deg, transparent 0 22px, #00000022 22px 24px); background-blend-mode: multiply; border: 6px solid #2a1a0d; border-radius: 6px; box-shadow: inset 0 0 0 3px #b8873d, 0 24px 30px -10px #000a; }
+  .bz-sign__est { font-size: 3.4cqi; letter-spacing: 0.3em; text-transform: uppercase; font-variation-settings: 'wght' 600; color: #e7b866; }
+  .bz-sign__name { font-size: 11.5cqi; line-height: 0.95; font-variation-settings: 'wght' var(--sw); font-style: italic; text-shadow: 0.03em 0.04em 0 #2a1a0d; white-space: nowrap; }
+  .bz-sign__sub { font-size: 3.8cqi; text-transform: uppercase; letter-spacing: 0.16em; font-variation-settings: 'wght' 700; }
+
+  /* ---------- tin + telegram ---------- */
+  .bz-shelf { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+  .bz-tin { display: grid; justify-items: center; gap: 1rem; }
+  .bz-tin__can { position: relative; width: min(64vw, 17rem); aspect-ratio: 0.72; cursor: grab; touch-action: pan-y; user-select: none; filter: drop-shadow(0 30px 24px #0009); }
+  .bz-tin__can:active { cursor: grabbing; }
+  .bz-tin__rim { position: absolute; left: 0; right: 0; top: 0; height: 8%; border-radius: 50%; background: linear-gradient(90deg, #6f6a62, #e7e2d8 35%, #8a857c 70%, #4c4842); z-index: 2; }
+  .bz-tin__rim--b { top: auto; bottom: 0; z-index: 0; }
+  .bz-tin__label { position: absolute; left: 0; right: 0; top: 4%; bottom: 4%; overflow: hidden; z-index: 1; border-radius: 0 0 4% 4% / 0 0 3% 3%; }
+  .bz-tin__label::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #000a 0%, transparent 18%, #fff3 34%, transparent 50%, transparent 70%, #000b 100%); pointer-events: none; }
+  .bz-tin__strip { position: absolute; top: 0; bottom: 0; left: 0; display: flex; will-change: transform; }
+  .bz-tin__face { container-type: inline-size; width: min(64vw, 17rem); flex: none; display: grid; align-content: center; justify-items: center; gap: 2cqi; padding: 6cqi; text-align: center; background: #b0301c; color: #f6e7c8; border-left: 3px solid #f2c94c; }
+  .bz-tin__face:nth-child(2) { background: #1f4e5f; }
+  .bz-tin__brand { font-size: 13cqi; letter-spacing: 0.2em; text-transform: uppercase; font-variation-settings: 'wght' 700; color: #f2c94c; }
+  .bz-tin__kind { font-size: 24cqi; line-height: 0.9; font-variation-settings: 'wght' 900; font-style: italic; text-shadow: 0.04em 0.05em 0 #0006; }
+  .bz-tin__note { font-size: 4.4cqi; font-variation-settings: 'wght' 500; padding: 1.4cqi 0; border-block: 1px solid #f6e7c877; }
+  .bz-tin__big { font-size: 16cqi; font-variation-settings: 'wght' 800; color: #f2c94c; }
+
+  .bz-wire { display: grid; gap: 1rem; }
+  .bz-wire__form { background: #efe3c4; color: #2a1a0d; padding: clamp(1.2rem, 3vw, 2.2rem); box-shadow: 0 20px 40px -20px #000a; transform: rotate(0.8deg); background-image: repeating-linear-gradient(180deg, transparent 0 2.1em, #2a1a0d14 2.1em calc(2.1em + 1px)); }
+  .bz-wire__co { font-size: clamp(1rem, 2vw, 1.5rem); text-transform: uppercase; letter-spacing: 0.08em; font-variation-settings: 'wght' 800; border-bottom: 2px solid #2a1a0d; padding-bottom: 0.5rem; }
+  .bz-wire__meta { display: flex; justify-content: space-between; font: 400 0.7rem/2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #6a5236; }
+  .bz-wire__body { min-height: 6.5em; font-size: clamp(1.2rem, 2.4vw, 1.9rem); line-height: 1.35; font-variation-settings: 'wght' 600; letter-spacing: 0.04em; padding-block: 0.6rem; }
+  .bz-wire__body b { font-weight: 400; font-variation-settings: 'wght' 900; color: var(--red); }
+  .bz-wire__fee { font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.06em; color: #6a5236; padding-top: 0.6rem; border-top: 1px dashed #2a1a0d55; }
+  .bz-wire__fee b { font-weight: 400; color: #2a1a0d; }
+  .bz-wire__in { display: grid; gap: 0.4rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
+  .bz input[type='text'] { font: 600 1.2rem/1.3 'Besley Variable', serif; padding: 0.4rem 0; background: none; border: 0; border-bottom: 2px solid var(--fg-3); color: var(--fg); outline: none; text-transform: none; letter-spacing: 0; }
+  .bz input[type='text']:focus { border-color: var(--accent); }
+
+  /* ---------- temper ---------- */
+  .bz-temper p { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: center; border-top: 1px solid var(--line); overflow: hidden; }
+  .bz-temper i { font: normal 400 0.72rem/1 var(--font-mono); color: var(--fg-3); }
+  .bz-temper span { font-size: clamp(1.8rem, 5.4vw, 5.6rem); line-height: 1.15; white-space: nowrap; font-variation-settings: 'wght' var(--w); }
+  .bz-temper p:last-child span { color: var(--accent); font-size: clamp(2.6rem, 9vw, 9rem); }
+  .bz-temper.is-in p:last-child span { animation: bz-draw 1.4s cubic-bezier(0.34, 1.6, 0.64, 1) 0.8s backwards; }
+  @keyframes bz-draw { from { transform: translateX(-30%) skewX(-12deg); opacity: 0; } }
+
+  .bz .ed-test__stage { background: var(--paper); color: var(--ink); }
+  .bz .ed-test__text { font-size: clamp(2.2rem, 5.6vw, 6rem); }
+
+  @media (max-width: 900px) { .bz-shelf { grid-template-columns: minmax(0, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { .bz-poster.is-hit { animation: none; } }
+</style>
