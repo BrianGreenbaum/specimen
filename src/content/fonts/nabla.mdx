@@ -1,0 +1,48 @@
+---
+name: Nabla
+order: 39
+era: digital
+historyNote: A colour font with built-in depth — an early showpiece for the COLRv1 format.
+designer: Arthur Reinders Folmer
+foundry: Typearture
+year: 2022
+classification: Colour Display (COLRv1)
+category: Display
+blurb: A colour font with a third dimension — and a light switch.
+googleFontsUrl: https://fonts.google.com/specimen/Nabla
+sourceUrl: https://github.com/justvanrossum/nabla
+license: SIL Open Font License 1.1
+fontFamily: 'Nabla Variable'
+isVariable: true
+hasItalic: false
+axes:
+  - { tag: 'EDPT', name: 'Extrusion Depth', min: 0, max: 200, default: 100, step: 1 }
+  - { tag: 'EHLT', name: 'Edge Highlight', min: 0, max: 24, default: 12, step: 1 }
+weights:
+  - { name: 'Regular', weight: 400 }
+headline: Press start
+sampleText: PRESS START
+pangram: JUMP QUICKLY, WIZARD FOX!
+feelings: ['Playful', 'Bold', 'Retro', 'Colourful', 'Dimensional']
+languages: ['Latin', 'Latin Extended', 'Vietnamese']
+pairsWith:
+  - { name: 'Martian Mono', role: 'Scoreboard small print' }
+callouts:
+  - { glyph: 'R', title: 'Four drawings in one', body: 'Each letter is a stack of shaded sides, a front face, lit tops and an edge highlight, all painted from one palette.', guides: ['cap', 'baseline'] }
+  - { glyph: 'A', title: 'Depth is an axis', body: 'At zero the letter is a flat outline. Every unit after that pulls it up off the page.', guides: ['cap', 'baseline'] }
+theme:
+  mode: dark
+  bg: '#0a061c'
+  bg2: '#140c30'
+  fg: '#f4eeff'
+  fg2: '#bdb1de'
+  fg3: '#8478ad'
+  accent: '#ffd214'
+  accentContrast: '#0a061c'
+  line: '#f4eeff24'
+  lineSoft: '#f4eeff12'
+---
+
+Nabla was drawn by **Arthur Reinders Folmer** of Typearture, with font engineering by **Just van Rossum**, and joined Google Fonts in 2022. Its look comes out of isometric computer games: chunky blocks seen from above and to one side, lit from a single corner.
+
+For decades a font file held one outline per letter, filled with a single colour. COLRv1 lets a glyph be a small composition instead — layers, gradients, a palette — and lets all of that *vary*. Nabla's extrusion is not an effect applied to letters; it is the letters, drawn all the way from flat to towering.

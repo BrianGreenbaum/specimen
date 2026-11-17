@@ -3,24 +3,16 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { showpieces, newEditions, NEW_EDITION_LABEL } from '../lib/showpieces';
+import { isEdition, NEW_EDITION_LABEL } from '../lib/editions';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
 
-// One index: collection faces first, then the faces that live outside it.
-const rows = [
-  ...fonts.map((f) => ({
-    slug: f.id, name: f.data.name, order: f.data.order, category: f.data.category,
-    designer: f.data.designer, year: f.data.year, accent: f.data.theme.accent,
-    family: f.data.fontFamily, isNew: newEditions.includes(f.id),
-  })),
-  ...showpieces.map((s, i) => ({
-    slug: s.slug, name: s.name, order: fonts.length + i + 1, category: s.category,
-    designer: s.designer, year: s.year, accent: s.accent,
-    family: `'${s.family}'`, isNew: true,
-  })),
-];
+const rows = fonts.map((f) => ({
+  slug: f.id, name: f.data.name, order: f.data.order, category: f.data.category,
+  designer: f.data.designer, year: f.data.year, accent: f.data.theme.accent,
+  family: f.data.fontFamily, isNew: isEdition(f.id),
+}));
 ---
 <Layout title="Specimen — A living library of type">
   <SiteHeader />

@@ -1,0 +1,63 @@
+---
+// Generic type tester for the hand-built pages: editable text, one slider per
+// axis, named presets and an optional italic switch.
+export interface Props {
+  family: string;
+  axes: { tag: string; name: string; min: number; max: number; step?: number }[];
+  presets: { name: string; v: number[]; italic?: boolean }[];
+  start?: number;          // index of the preset to start on
+  sample: string;
+  italic?: boolean;
+  upper?: boolean;
+}
+const { family, axes, presets, start = 0, sample, italic = false, upper = false } = Astro.props;
+---
+<div class="ed-test" data-ed-test data-tags={JSON.stringify(axes.map((a) => a.tag))}>
+  <div class="ed-test__stage">
+    <div class="ed-test__text" style={`font-family:'${family}';${upper ? 'text-transform:uppercase' : ''}`} contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Sample text — editable" data-text>{sample}</div>
+  </div>
+  <div class="ed-test__panel">
+    <div class="ed-test__presets">
+      {presets.map((p, n) => (
+        <button type="button" data-preset={JSON.stringify(p.v)} data-italic={p.italic ? '1' : '0'} aria-pressed={n === start ? 'true' : 'false'}>{p.name}</button>
+      ))}
+    </div>
+    <div class="ed-test__sliders">
+      {axes.map((a, n) => (
+        <label class="ed-slider">
+          <span>{a.name} <b data-val={n}></b></span>
+          <input type="range" min={a.min} max={a.max} step={a.step ?? 1} data-ax={n} />
+        </label>
+      ))}
+    </div>
+    {italic && <button type="button" class="ed-test__italic" data-italic-btn aria-pressed="false">Italic</button>}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ed-test]').forEach((root) => {
+    const tags: string[] = JSON.parse(root.dataset.tags!);
+    const text = root.querySelector<HTMLElement>('[data-text]')!;
+    const sliders = Array.from(root.querySelectorAll<HTMLInputElement>('[data-ax]'));
+    const vals = Array.from(root.querySelectorAll<HTMLElement>('[data-val]'));
+    const presets = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-preset]'));
+    const ital = root.querySelector<HTMLButtonElement>('[data-italic-btn]');
+    const apply = () => {
+      text.style.fontVariationSettings = sliders.map((s, n) => `'${tags[n]}' ${s.value}`).join(', ');
+      sliders.forEach((s, n) => (vals[n].textContent = s.value));
+    };
+    const setItalic = (v: boolean) => { ital?.setAttribute('aria-pressed', String(v)); text.style.fontStyle = v ? 'italic' : 'normal'; };
+    const use = (b: HTMLButtonElement) => {
+      presets.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      (JSON.parse(b.dataset.preset!) as number[]).forEach((v, n) => (sliders[n].value = String(v)));
+      setItalic(b.dataset.italic === '1');
+      apply();
+    };
+    sliders.forEach((s) => s.addEventListener('input', () => { presets.forEach((b) => b.setAttribute('aria-pressed', 'false')); apply(); }));
+    presets.forEach((b) => b.addEventListener('click', () => use(b)));
+    ital?.addEventListener('click', () => setItalic(ital.getAttribute('aria-pressed') !== 'true'));
+    use(presets.find((b) => b.getAttribute('aria-pressed') === 'true') ?? presets[0]);
+    if (text.contentEditable !== 'plaintext-only') text.contentEditable = 'true';
+    text.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+  });
+</script>

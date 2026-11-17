@@ -1,0 +1,41 @@
+---
+// The closing sections every hand-built page shares: the story (from the
+// collection entry's body), the fact sheet, and the full character set with
+// the click-to-inspect modal.
+import { render, type CollectionEntry } from 'astro:content';
+import GlyphGrid from '../specimen/GlyphGrid.astro';
+export interface Props {
+  entry: CollectionEntry<'fonts'>;
+  from: number;                       // section number of "The story"
+  extra?: { k: string; v: string }[]; // extra fact-sheet rows
+}
+const { entry, from, extra = [] } = Astro.props;
+const font = entry.data;
+const { Content } = await render(entry);
+const n = (i: number) => String(from + i).padStart(2, '0');
+---
+<section class="ed-sec">
+  <div class="ed-kicker"><span>{n(0)}</span> The story</div>
+  <div class="ed-story">
+    <div class="ed-story__prose"><Content /></div>
+    <dl class="ed-specs">
+      <div><dt>Design</dt><dd>{font.designer}</dd></div>
+      {font.foundry && <div><dt>Foundry</dt><dd>{font.foundry}</dd></div>}
+      <div><dt>Released</dt><dd>{font.year}</dd></div>
+      <div><dt>Classification</dt><dd>{font.classification}</dd></div>
+      {font.axes.length > 0 && <div><dt>Axes</dt><dd>{font.axes.map((a) => <><code>{a.tag}</code> {a.min}–{a.max}<br /></>)}</dd></div>}
+      {extra.map((r) => <div><dt>{r.k}</dt><dd>{r.v}</dd></div>)}
+      <div><dt>Licence</dt><dd>{font.license}</dd></div>
+      <div class="ed-specs__links">
+        <a href={font.googleFontsUrl} rel="noopener">Get it on Google Fonts ↗</a>
+        {font.sourceUrl && <a href={font.sourceUrl} rel="noopener">Source ↗</a>}
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="ed-sec ed-sec--last">
+  <div class="ed-kicker"><span>{n(1)}</span> The set</div>
+  <h2 class="ed-h2">Every character. <em>Click one.</em></h2>
+  <div class="ed-body"><GlyphGrid font={font} /></div>
+</section>
