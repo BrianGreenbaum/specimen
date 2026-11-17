@@ -1,0 +1,244 @@
+---
+// SPACE GROTESK — new edition. Orbit: a solar system of type, a boarding
+// pass, a synth and a mission patch. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('space-grotesk');
+const rings = [
+  { t: 'LIGHT 300 · LIGHT 300 · LIGHT 300 · LIGHT 300 · ', w: 300, r: 22, s: 50 },
+  { t: 'REGULAR 400 · MEDIUM 500 · REGULAR 400 · MEDIUM 500 · ', w: 450, r: 33, s: -70 },
+  { t: 'SEMIBOLD 600 · BOLD 700 · SEMIBOLD 600 · BOLD 700 · SEMIBOLD 600 · ', w: 700, r: 44, s: 95 },
+];
+const knobs = [{ k: 'Cutoff', v: 64 }, { k: 'Reso', v: 28 }, { k: 'Attack', v: 12 }, { k: 'Decay', v: 71 }, { k: 'Drive', v: 45 }, { k: 'Mix', v: 88 }];
+---
+<Layout title="Space Grotesk — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Space Grotesk" showToggle={false} />
+  <div class="ed sg" data-sg>
+    <header class="ed-hero sg-hero" data-hero>
+      <div class="sg-hero__sky" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Space Grotesk · {font.designer} · {font.year}</span><span>Light 300 to Bold 700</span></div>
+      <h1 class="ed-hero__word sg-hero__word" data-word aria-label="Space Grotesk">
+        <span class="sg-hero__row">{[...'Space'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</span>
+        <span class="sg-hero__row">{[...'Grotesk'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</span>
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A monospace that <em>slipped its grid</em> and kept the accent.
+          <span class="ed-hero__hint" data-fine>Your pointer has gravity. Letters lean toward it and put on weight as they get close.</span>
+          <span class="ed-hero__hint" data-coarse>Your finger has gravity. Letters lean toward it and put on weight as they get close.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>wght</dt><dd data-hud="wght">400</dd></div><div><dt>pull</dt><dd data-hud="g">0.0 g</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>01</span> In orbit</div>
+        <h2 class="ed-h2">Five weights,<br />each on <em>its own orbit</em>.</h2>
+        <div class="ed-body sg-orbit" data-orbit>
+          <svg viewBox="0 0 100 100" role="img" aria-label="Rings of text orbiting a centre, one ring per weight">
+            <defs>{rings.map((r, i) => <path id={`sg-ring-${i}`} d={`M50,50 m-${r.r},0 a${r.r},${r.r} 0 1,1 ${r.r * 2},0 a${r.r},${r.r} 0 1,1 -${r.r * 2},0`} />)}</defs>
+            {rings.map((r, i) => (
+              <g class="sg-orbit__ring" style={`--s:${Math.abs(r.s)}s;--dir:${r.s < 0 ? 'reverse' : 'normal'}`}>
+                <circle cx="50" cy="50" r={r.r} />
+                <text style={`font-variation-settings:'wght' ${r.w}`}><textPath href={`#sg-ring-${i}`} textLength={2 * Math.PI * r.r - 0.5}>{r.t}</textPath></text>
+              </g>
+            ))}
+            <text class="sg-orbit__sun" x="50" y="50" text-anchor="middle" dominant-baseline="central">G</text>
+          </svg>
+          <p class="ed-cap">Live text set on circles. Hover to slow time.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> At the gate</div>
+        <h2 class="ed-h2">Technical enough to trust.<br />Odd enough <em>to remember</em>.</h2>
+        <div class="ed-body sg-duo">
+          <figure class="sg-pass" data-inview>
+            <div class="sg-pass__card sg-f">
+              <div class="sg-pass__main">
+                <p class="sg-pass__line"><span>Lunar Transit</span><span>Boarding pass</span></p>
+                <p class="sg-pass__route"><b>EAR</b><i aria-hidden="true"><em></em></i><b>LUN</b></p>
+                <p class="sg-pass__names"><span>Earth, Low Orbit</span><span>Luna, Tycho Port</span></p>
+                <dl><div><dt>Passenger</dt><dd>R. Okafor</dd></div><div><dt>Seat</dt><dd>14C</dd></div><div><dt>Gate</dt><dd>Q7</dd></div><div><dt>Departs</dt><dd data-pass-time>22:40</dd></div></dl>
+              </div>
+              <div class="sg-pass__stub"><p>EAR→LUN</p><p class="sg-pass__code" aria-hidden="true"></p><p>14C</p></div>
+            </div>
+            <figcaption class="ed-cap">Boarding pass for an invented carrier</figcaption>
+          </figure>
+          <figure class="sg-patch" data-inview>
+            <svg viewBox="0 0 100 100" aria-label="Mission patch">
+              <defs><path id="sg-patch-top" d="M50,50 m-37,0 a37,37 0 1,1 74,0" /><path id="sg-patch-bot" d="M50,50 m-41,0 a41,41 0 1,0 82,0" /></defs>
+              <circle cx="50" cy="50" r="48" class="rim" /><circle cx="50" cy="50" r="31" class="core" />
+              <text class="arc"><textPath href="#sg-patch-top" startOffset="50%" text-anchor="middle">GROTESK · VII</textPath></text>
+              <text class="arc small"><textPath href="#sg-patch-bot" startOffset="50%" text-anchor="middle">PER ASPERA AD GLYPHOS</textPath></text>
+              <text class="g" x="50" y="52" text-anchor="middle" dominant-baseline="central">a</text>
+              <circle class="moon" cx="50" cy="50" r="2.4" />
+            </svg>
+            <figcaption class="ed-cap">Mission patch — an invented crew, an invented motto</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> On the panel</div>
+        <h2 class="ed-h2">Labels for things<br />with <em>knobs on</em>.</h2>
+        <div class="ed-body sg-synth sg-f" data-synth>
+          <header><b>GROTESK-7</b><span>Polyphonic letter synthesiser</span><i data-synth-led></i></header>
+          <div class="sg-synth__knobs">
+            {knobs.map((k) => <label class="sg-knob" style={`--v:${k.v}`}><span class="sg-knob__dial"><i></i></span><b data-kv>{k.v}</b><span>{k.k}</span><input type="range" min="0" max="100" value={k.v} aria-label={k.k} /></label>)}
+          </div>
+          <p class="sg-synth__out" data-synth-out>Aa</p>
+        </div>
+        <p class="ed-cap">Drag a knob. Cutoff sets the weight of the readout, Mix its size, Drive its spacing.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> The tells</div>
+        <h2 class="ed-h2">Four letters give it away.</h2>
+        <div class="ed-body sg-tells">
+          {[['G', 'A flat spur and a square jaw'], ['a', 'A bowl with a corner in it'], ['y', 'A tail that stops dead'], ['&', 'Drawn like a circuit']].map(([g, n]) => <p><span class="sg-f">{g}</span><i>{n}</i></p>)}
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Transmit <em>something</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Space Grotesk Variable" sample="Ground control" axes={[{ tag: 'wght', name: 'Weight', min: 300, max: 700 }]}
+            presets={[{ name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-sg]');
+  if (page) {
+    watchInView(page);
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const S = letters.map(() => ({ x: 0, y: 0, w: 400 }));
+    runHero(hero, (f) => {
+      const r = hero.getBoundingClientRect();
+      const gx = f.live ? f.px : 0.5 + 0.34 * Math.cos(f.t * 0.5), gy = f.live ? f.py : 0.45 + 0.2 * Math.sin(f.t * 0.7);
+      hero.style.setProperty('--gx', `${(gx * 100).toFixed(1)}%`); hero.style.setProperty('--gy', `${(gy * 100).toFixed(1)}%`);
+      let sum = 0, max = 0;
+      letters.forEach((l, i) => {
+        const b = l.getBoundingClientRect(), s = S[i];
+        // rest position = current box minus the offset we applied last frame
+        const cx = b.left + b.width / 2 - s.x - r.left, cy = b.top + b.height / 2 - s.y - r.top;
+        const dx = gx * r.width - cx, dy = gy * r.height - cy, d = Math.hypot(dx, dy) / r.width;
+        const pull = f.reduce ? 0 : clamp(1 - d / 0.42, 0, 1); max = Math.max(max, pull);
+        const k = pull * pull * 0.16;
+        s.x += (dx * k - s.x) * 0.12; s.y += (dy * k - s.y) * 0.12; s.w += (300 + 400 * pull - s.w) * 0.14;
+        l.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px)`;
+        l.style.fontVariationSettings = `'wght' ${s.w.toFixed(0)}`; sum += s.w;
+      });
+      hud.wght.textContent = String(Math.round(sum / letters.length)); hud.g.textContent = `${(max * 9.8).toFixed(1)} g`;
+    });
+
+    // Boarding pass: departs 25 minutes from now
+    const t = new Date(Date.now() + 25 * 60000);
+    page.querySelector('[data-pass-time]')!.textContent = t.toTimeString().slice(0, 5);
+
+    // Synth
+    const synth = page.querySelector<HTMLElement>('[data-synth]')!, out = synth.querySelector<HTMLElement>('[data-synth-out]')!;
+    const knobs = Array.from(synth.querySelectorAll<HTMLElement>('.sg-knob'));
+    const val = (i: number) => +knobs[i].querySelector<HTMLInputElement>('input')!.value;
+    const paint = () => {
+      knobs.forEach((k) => { const v = k.querySelector<HTMLInputElement>('input')!.value; k.style.setProperty('--v', v); k.querySelector('[data-kv]')!.textContent = v; });
+      out.style.fontVariationSettings = `'wght' ${300 + val(0) * 4}`;
+      out.style.fontSize = `${3 + val(5) * 0.09}em`; out.style.letterSpacing = `${(val(4) - 30) * 0.004}em`;
+      out.style.setProperty('--glow', String(val(1) / 100)); out.style.transform = `skewX(${-(val(2) * 0.18).toFixed(1)}deg)`; out.style.opacity = String(0.35 + val(3) * 0.0065);
+      synth.querySelector<HTMLElement>('[data-synth-led]')!.style.opacity = String(0.3 + val(5) / 140);
+    };
+    knobs.forEach((k) => k.querySelector('input')!.addEventListener('input', paint)); paint();
+  }
+</script>
+
+<style is:global>
+  .sg { --ed-head: 'Space Grotesk Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 300; --ed-lede-vf: 'wght' 500; --ed-radius: 10px; }
+  .sg em { font-style: normal; } .sg .ed-h2 { letter-spacing: -0.04em; line-height: 1.02; }
+  .sg-f { font-family: 'Space Grotesk Variable', system-ui, sans-serif; font-weight: 400; font-feature-settings: normal; }
+  .sg .ed-story__prose { font-family: 'Space Grotesk Variable', sans-serif; font-variation-settings: 'wght' 400; }
+  .sg .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 700; }
+
+  .sg-hero { --gx: 50%; --gy: 45%; }
+  .sg-hero__sky { position: absolute; inset: 0; z-index: -1; background:
+    radial-gradient(22vmax 22vmax at var(--gx) var(--gy), #caff4833, transparent 70%),
+    radial-gradient(1.5px 1.5px at 8% 30%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 22% 72%, #fff9 50%, transparent 51%), radial-gradient(1.5px 1.5px at 41% 14%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 63% 82%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 79% 24%, #fff 50%, transparent 51%), radial-gradient(1.5px 1.5px at 92% 58%, #fff9 50%, transparent 51%), radial-gradient(1px 1px at 54% 48%, #fff6 50%, transparent 51%); }
+  .sg-hero__word { font-family: 'Space Grotesk Variable', sans-serif; display: grid; justify-items: center; font-size: min(17vw, 30svh); line-height: 0.95; letter-spacing: -0.05em; }
+  .sg-hero__row { display: flex; } .sg-hero__row:last-child { color: var(--accent); }
+  .sg-hero__word [data-l] { will-change: transform; }
+
+  .sg-orbit { display: grid; justify-items: center; }
+  .sg-orbit svg { width: min(100%, 46rem); aspect-ratio: 1; overflow: visible; font-family: 'Space Grotesk Variable', sans-serif; }
+  .sg-orbit__ring { transform-origin: 50px 50px; animation: sg-spin var(--s) linear infinite; animation-direction: var(--dir); }
+  .sg-orbit svg:hover .sg-orbit__ring { animation-play-state: paused; }
+  .sg-orbit__ring circle { fill: none; stroke: var(--line); stroke-width: 0.15; }
+  .sg-orbit__ring text { font-size: 4.3px; fill: var(--fg); letter-spacing: 0.04em; }
+  .sg-orbit__ring:nth-child(3) text { fill: var(--accent); }
+  .sg-orbit__sun { font-size: 22px; fill: var(--accent); font-variation-settings: 'wght' 700; }
+  @keyframes sg-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .sg-orbit__ring { animation: none; } }
+
+  .sg-duo { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; }
+  .sg-pass__card { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) 22%; background: #e9efe9; color: #0b0d0c; border-radius: 3cqi; overflow: hidden; }
+  .sg-pass__main { padding: 5cqi; display: grid; gap: 2.4cqi; }
+  .sg-pass__line { display: flex; justify-content: space-between; font-size: 2.3cqi; text-transform: uppercase; letter-spacing: 0.1em; font-variation-settings: 'wght' 600; }
+  .sg-pass__route { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 3cqi; }
+  .sg-pass__route b { font-size: 16cqi; line-height: 0.9; font-weight: 400; letter-spacing: -0.05em; font-variation-settings: 'wght' 700; }
+  .sg-pass__route i { position: relative; height: 0; border-top: 0.5cqi dashed #0b0d0c; }
+  .sg-pass__route em { position: absolute; top: -1.6cqi; left: 0; width: 2.8cqi; height: 2.8cqi; border-radius: 50%; background: #0b0d0c; box-shadow: 0 0 0 1cqi #caff48; }
+  .sg-pass.is-in .sg-pass__route em { animation: sg-fly 4s ease-in-out infinite; }
+  @keyframes sg-fly { 0%, 10% { left: 0; } 90%, 100% { left: calc(100% - 2.8cqi); } }
+  .sg-pass__names { display: flex; justify-content: space-between; font-size: 2.4cqi; color: #4d574f; }
+  .sg-pass__main dl { display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr; gap: 2cqi; padding-top: 2.6cqi; border-top: 1px solid #0b0d0c33; }
+  .sg-pass__main dt { font-size: 1.8cqi; text-transform: uppercase; letter-spacing: 0.1em; color: #4d574f; }
+  .sg-pass__main dd { font-size: 4.4cqi; font-variation-settings: 'wght' 600; letter-spacing: -0.02em; font-feature-settings: 'tnum'; }
+  .sg-pass__stub { background: #caff48; padding: 5cqi 3cqi; display: grid; align-content: space-between; justify-items: center; border-left: 0.5cqi dashed #0b0d0c; font-size: 3cqi; font-variation-settings: 'wght' 700; }
+  .sg-pass__code { width: 100%; height: 22cqi; background: repeating-linear-gradient(90deg, #0b0d0c 0 0.6cqi, transparent 0.6cqi 1cqi, #0b0d0c 1cqi 1.3cqi, transparent 1.3cqi 2.4cqi, #0b0d0c 2.4cqi 3.4cqi, transparent 3.4cqi 3.9cqi); }
+  .sg-patch svg { width: 100%; max-width: 22rem; margin-inline: auto; display: block; font-family: 'Space Grotesk Variable', sans-serif; }
+  .sg-patch .rim { fill: #15201c; stroke: var(--accent); stroke-width: 1.2; } .sg-patch .core { fill: #0b0d0c; stroke: #e9efe9; stroke-width: 0.4; }
+  .sg-patch .arc { font-size: 7.4px; fill: #e9efe9; font-variation-settings: 'wght' 700; letter-spacing: 0.12em; } .sg-patch .arc.small { font-size: 4.2px; font-variation-settings: 'wght' 500; fill: var(--accent); }
+  .sg-patch .g { font-size: 44px; fill: var(--accent); font-variation-settings: 'wght' 700; }
+  .sg-patch .moon { fill: #e9efe9; transform-origin: 50px 50px; transform: rotate(0) translateX(31px); }
+  .sg-patch.is-in .moon { animation: sg-moon 6s linear infinite; }
+  @keyframes sg-moon { from { transform: rotate(0) translateX(31px); } to { transform: rotate(360deg) translateX(31px); } }
+
+  .sg-synth { background: linear-gradient(180deg, #1c2622, #101613); border: 1px solid var(--line); border-radius: 16px; padding: clamp(1.2rem, 3vw, 2.6rem); display: grid; gap: clamp(1.2rem, 3vw, 2.4rem); box-shadow: inset 0 1px 0 #ffffff1a, 0 40px 70px -40px #caff4855; overflow: hidden; }
+  .sg-synth header { display: flex; align-items: baseline; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+  .sg-synth header b { font-weight: 400; font-variation-settings: 'wght' 700; font-size: var(--step-1); letter-spacing: 0.02em; }
+  .sg-synth header span { color: var(--fg-3); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; margin-right: auto; }
+  .sg-synth header i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); align-self: center; }
+  .sg-synth__knobs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(0.5rem, 2vw, 2rem); }
+  .sg-knob { --v: 50; position: relative; display: grid; justify-items: center; gap: 0.4rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--fg-2); }
+  .sg-knob__dial { width: min(100%, 5.2rem); aspect-ratio: 1; border-radius: 50%; background: conic-gradient(from 225deg, var(--accent) calc(var(--v) * 2.7deg), #ffffff14 0 270deg, transparent 0), radial-gradient(circle, #0b0d0c 58%, transparent 60%); display: grid; place-items: center; -webkit-mask: radial-gradient(circle, #000 0, #000 100%); }
+  .sg-knob__dial i { width: 66%; height: 66%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #3a4a43, #151c19); transform: rotate(calc(-135deg + var(--v) * 2.7deg)); box-shadow: 0 4px 10px #0008; }
+  .sg-knob__dial i::after { content: ''; display: block; width: 3px; height: 32%; margin: 6% auto 0; background: var(--accent); border-radius: 2px; }
+  .sg-knob b { font-weight: 400; font-size: 1.3rem; letter-spacing: -0.02em; color: var(--fg); font-variation-settings: 'wght' 600; font-feature-settings: 'tnum'; }
+  .sg-knob input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; }
+  .sg-synth__out { --glow: 0.3; justify-self: center; font-size: 8em; line-height: 1; color: var(--accent); text-shadow: 0 0 calc(var(--glow) * 60px) var(--accent); transition: font-variation-settings 0.15s, font-size 0.15s, letter-spacing 0.15s; min-height: 1.6em; display: grid; align-items: center; }
+
+  .sg-tells { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .sg-tells p { container-type: inline-size; background: var(--bg); padding: 1.2rem; display: grid; gap: 0.6rem; justify-items: center; text-align: center; transition: background 0.3s; }
+  .sg-tells span { font-size: 62cqi; line-height: 1; font-variation-settings: 'wght' 300; transition: font-variation-settings 0.6s var(--ease), color 0.4s; }
+  .sg-tells p:hover span { font-variation-settings: 'wght' 700; color: var(--accent); }
+  .sg-tells i { font: normal 400 0.72rem/1.5 var(--font-mono); color: var(--fg-3); }
+  .sg .ed-test__text { letter-spacing: -0.04em; }
+
+  @media (max-width: 900px) { .sg-duo { grid-template-columns: minmax(0, 1fr); } .sg-synth__knobs { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 1.4rem; } .sg-tells { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sg-synth header span { display: none; } }
+</style>
