@@ -1,0 +1,187 @@
+---
+// SYNE — new edition. A face made for an art centre, where getting bolder
+// means getting wider. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('syne');
+const prog = [['Thu', 'Opening night', 'Doors, drinks, a short speech', 400], ['Fri', 'Loud room', 'Six speakers and a fog machine', 800], ['Sat', 'Slow walk', 'A tour with nothing explained', 500], ['Sun', 'Take it down', 'Bring a screwdriver', 700]] as const;
+---
+<Layout title="Syne — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Syne" showToggle={false} />
+  <div class="ed sy" data-sy>
+    <header class="ed-hero sy-hero" data-hero>
+      <div class="ed-hero__top"><span>Syne · {font.designer} · {font.year}</span><span>Regular 400 to Extra Bold 800</span></div>
+      <h1 class="ed-hero__word sy-hero__word" data-word aria-label="Syne">{[...'Syne'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          It doesn’t get bolder. It gets <em>bigger</em>.
+          <span class="ed-hero__hint" data-fine>Move across the word. The letter under the pointer goes Extra Bold and shoves its neighbours aside.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the word. The letter under your finger shoves its neighbours aside.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>wght</dt><dd data-hud="wght">400</dd></div><div><dt>word width</dt><dd data-hud="wd">100%</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-stretch>
+        <div class="ed-kicker"><span>01</span> The odd thing about it</div>
+        <h2 class="ed-h2">One slider.<br />Almost <em>twice the width</em>.</h2>
+        <p class="ed-lede">In most typefaces bold is a little wider than regular. In Syne the top weight is a different animal: the letters spread out until the word needs nearly double the room. The ruler below measures it live.</p>
+        <div class="ed-body sy-stretch">
+          <div class="sy-stretch__row"><p class="sy-f sy-stretch__w" data-st-word>Exposition</p></div>
+          <div class="sy-stretch__ruler"><i data-st-bar></i><span data-st-pct>100%</span></div>
+          <label class="ed-slider"><span>Weight <b data-st-val>400</b></span><input type="range" min="400" max="800" step="1" value="400" data-st-in /></label>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On the gallery wall</div>
+        <h2 class="ed-h2">Made for posters that<br />refuse to <em>sit still</em>.</h2>
+        <div class="ed-body sy-duo">
+          <figure class="sy-poster" data-inview>
+            <div class="sy-poster__sheet">
+              <p class="sy-f sy-poster__top"><span>Hall B</span><span>09.03 — 27.04</span></p>
+              <p class="sy-f sy-poster__t">{['Soft', 'Power', 'Hard', 'Light'].map((l, i) => <span style={`--i:${i}`}>{l}</span>)}</p>
+              <p class="sy-f sy-poster__foot">Nine artists · one room · free on Thursdays</p>
+            </div>
+            <figcaption class="ed-cap">Poster for an invented show. Each line breathes between Regular and Extra Bold on its own beat.</figcaption>
+          </figure>
+          <figure class="sy-label">
+            <div class="sy-label__card">
+              <p class="sy-f sy-label__n">Maren Oduya</p>
+              <p class="sy-label__b">b. 1987, Marseille</p>
+              <p class="sy-f sy-label__t">Untitled (the weather indoors)</p>
+              <p class="sy-label__b">2024 · steel, fog, borrowed radio<br />Courtesy the artist</p>
+              <p class="sy-label__x">Please do touch.</p>
+            </div>
+            <figcaption class="ed-cap">Wall label — an invented artist and work</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> This week</div>
+        <h2 class="ed-h2">A programme you can<br />read <em>by weight</em>.</h2>
+        <ol class="ed-body sy-prog">
+          {prog.map(([d, t, s, w]) => <li style={`--w:${w}`}><span class="sy-prog__d">{d}</span><b class="sy-f">{t}</b><i>{s}</i></li>)}
+        </ol>
+        <p class="ed-cap">Hover a row and it swells to fill the line.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Five steps</div>
+        <h2 class="ed-h2">From <em>polite</em> to enormous.</h2>
+        <div class="ed-body sy-steps">{[400, 500, 600, 700, 800].map((w) => <p style={`--w:${w}`}><i>{w}</i><span class="sy-f">Synergy</span></p>)}</div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Take up <em>space</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Syne Variable" sample="Make room" axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 800 }]}
+            presets={[{ name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }, { name: 'Extra Bold', v: [800] }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-sy]');
+  if (page) {
+    watchInView(page);
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = letters.map(() => 400); let base = 0;
+    const measureBase = () => { letters.forEach((l) => (l.style.fontVariationSettings = `'wght' 400`)); base = word.getBoundingClientRect().width; };
+    document.fonts.ready.then(measureBase); window.addEventListener('resize', measureBase);
+    runHero(hero, (f) => {
+      // slices of equal share, so the target doesn't run away as letters widen
+      const pos = clamp((f.px - 0.1) / 0.8, 0, 1) * (letters.length - 1); let sum = 0;
+      letters.forEach((l, i) => {
+        const tw = f.live ? 400 + 400 * near(i, pos, 1.3) : f.reduce ? 600 : 600 + 200 * Math.sin(f.t * 1.4 - i * 1.5);
+        w[i] += (tw - w[i]) * 0.14; l.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}`; sum += w[i];
+      });
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+      if (base) hud.wd.textContent = `${Math.round((word.getBoundingClientRect().width / base) * 100)}%`;
+    });
+
+    // Stretch meter: measure the word at the current weight against Regular
+    const st = page.querySelector<HTMLElement>('[data-stretch]')!;
+    const sin = st.querySelector<HTMLInputElement>('[data-st-in]')!, sw = st.querySelector<HTMLElement>('[data-st-word]')!;
+    const bar = st.querySelector<HTMLElement>('[data-st-bar]')!;
+    let w400 = 0;
+    const paint = () => {
+      sw.style.fontVariationSettings = `'wght' ${sin.value}`;
+      const wNow = sw.getBoundingClientRect().width;
+      if (!w400) { sw.style.fontVariationSettings = `'wght' 400`; w400 = sw.getBoundingClientRect().width; sw.style.fontVariationSettings = `'wght' ${sin.value}`; }
+      st.querySelector('[data-st-val]')!.textContent = sin.value;
+      st.querySelector('[data-st-pct]')!.textContent = `${Math.round((wNow / w400) * 100)}% of Regular`;
+      bar.style.width = `${wNow}px`;
+    };
+    let touched = false, on = false;
+    sin.addEventListener('input', () => { touched = true; paint(); });
+    window.addEventListener('resize', () => { w400 = 0; paint(); });
+    new IntersectionObserver((es) => { on = es[0].isIntersecting; }, { threshold: 0.3 }).observe(st);
+    const sweep = (now: number) => { if (touched) return; requestAnimationFrame(sweep); if (!on) return; sin.value = String(Math.round(600 - 200 * Math.cos(now / 1300))); paint(); };
+    document.fonts.ready.then(() => { w400 = 0; paint(); if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) requestAnimationFrame(sweep); });
+  }
+</script>
+
+<style is:global>
+  .sy { --ed-head: 'Syne Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 800; --ed-lede-vf: 'wght' 600; --ed-radius: 0px; }
+  .sy em { font-style: normal; } .sy .ed-h2 { letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(1.8rem, 0.9rem + 3.8vw, 4.6rem); }
+  .sy-f { font-family: 'Syne Variable', system-ui, sans-serif; font-weight: 400; font-feature-settings: normal; }
+  .sy .ed-story__prose strong { font-family: 'Syne Variable', sans-serif; font-weight: 400; font-variation-settings: 'wght' 700; }
+
+  .sy-hero { background: radial-gradient(50% 60% at 80% 20%, #d6ff3f22, transparent 70%), var(--bg); }
+  .sy-hero__word { font-family: 'Syne Variable', sans-serif; font-size: min(23vw, 54svh); line-height: 1; letter-spacing: -0.04em; color: var(--accent); }
+
+  .sy-stretch { display: grid; gap: 1rem; }
+  .sy-stretch__row { overflow: hidden; border-bottom: 1px solid var(--line); }
+  .sy-stretch__w { display: inline-block; font-size: clamp(2.2rem, 9.2vw, 9.6rem); line-height: 1.15; letter-spacing: -0.03em; white-space: nowrap; }
+  .sy-stretch__ruler { position: relative; height: 2.2rem; background: repeating-linear-gradient(90deg, var(--fg-3) 0 1px, transparent 1px 2.5%); background-size: 100% 40%; background-repeat: no-repeat; background-position: 0 100%; }
+  .sy-stretch__ruler i { position: absolute; left: 0; top: 0; height: 60%; background: var(--accent); }
+  .sy-stretch__ruler span { position: absolute; right: 0; top: 0; font: 400 0.74rem/1.3 var(--font-mono); color: var(--accent); background: var(--bg); padding-left: 0.6rem; }
+
+  .sy-duo { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 3rem); align-items: start; }
+  .sy-poster__sheet { container-type: inline-size; background: #d6ff3f; color: #0d0d0e; padding: 5cqi; display: grid; gap: 3cqi; overflow: hidden; }
+  .sy-poster__top, .sy-poster__foot { display: flex; justify-content: space-between; font-size: 2.6cqi; text-transform: uppercase; letter-spacing: 0.06em; font-variation-settings: 'wght' 600; }
+  .sy-poster__t { display: grid; font-size: 15.5cqi; line-height: 0.86; letter-spacing: -0.05em; text-transform: uppercase; white-space: nowrap; }
+  .sy-poster__t span { font-variation-settings: 'wght' 400; }
+  .sy-poster__t span:nth-child(2n) { justify-self: end; }
+  .sy-poster.is-in .sy-poster__t span { animation: sy-breathe calc(2.6s + var(--i) * 0.7s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * -0.9s); }
+  @keyframes sy-breathe { to { font-variation-settings: 'wght' 800; } }
+  .sy-poster__foot { padding-top: 2.4cqi; border-top: 0.5cqi solid #0d0d0e; }
+  .sy-label__card { background: #f0eee9; color: #0d0d0e; padding: clamp(1.5rem, 3vw, 2.6rem); display: grid; gap: 0.5rem; box-shadow: 0 30px 50px -30px #000; }
+  .sy-label__n { font-size: 1.7rem; line-height: 1.1; font-variation-settings: 'wght' 800; }
+  .sy-label__t { font-size: 1.3rem; line-height: 1.2; font-variation-settings: 'wght' 500; margin-top: 1rem; }
+  .sy-label__b { font-size: 0.86rem; line-height: 1.5; color: #56544e; }
+  .sy-label__x { margin-top: 1.4rem; padding-top: 0.9rem; border-top: 1px solid #0d0d0e33; font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .sy-prog { border-top: 1px solid var(--fg); }
+  .sy-prog li { display: grid; grid-template-columns: 4rem minmax(0, 1fr); align-items: baseline; column-gap: 1rem; padding: 1rem 0 1.1rem; border-bottom: 1px solid var(--line); overflow: hidden; }
+  .sy-prog__d { font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .sy-prog b { font-weight: 400; font-size: clamp(1.8rem, 5.6vw, 5.6rem); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; font-variation-settings: 'wght' var(--w); transition: font-variation-settings 0.7s var(--ease), color 0.4s; }
+  .sy-prog li:hover b { font-variation-settings: 'wght' 800; color: var(--accent); }
+  .sy-prog i { grid-column: 2; font-style: normal; color: var(--fg-2); padding-top: 0.4rem; }
+
+  .sy-steps p { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: center; border-top: 1px solid var(--line); padding: 0.3rem 0 0.6rem; overflow: hidden; }
+  .sy-steps i { font: normal 400 0.72rem/1 var(--font-mono); color: var(--fg-3); }
+  .sy-steps span { font-size: clamp(2rem, 8vw, 8.4rem); line-height: 1.1; letter-spacing: -0.03em; white-space: nowrap; font-variation-settings: 'wght' var(--w); }
+  .sy-steps p:last-child span { color: var(--accent); }
+  .sy .ed-test__text { letter-spacing: -0.03em; }
+
+  @media (max-width: 900px) { .sy-duo { grid-template-columns: minmax(0, 1fr); } }
+</style>

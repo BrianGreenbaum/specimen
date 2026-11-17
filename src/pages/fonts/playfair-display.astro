@@ -1,0 +1,188 @@
+---
+// PLAYFAIR DISPLAY — new edition. Curtain up: a playbill, three paperbacks,
+// a drop-cap machine and a wine list. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('playfair-display');
+const books = [
+  { t: ['The', 'Glass', 'Orchard'], a: 'Imogen Vale', bg: '#8a2433', fg: '#f6e7d2', pop: '#f2b45a' },
+  { t: ['Late', 'Summer', 'Letters'], a: 'T. R. Ashby', bg: '#1f3a34', fg: '#f1ead9', pop: '#e88f6f' },
+  { t: ['A Quiet', 'Sort of', 'Thunder'], a: 'Noor Hadley', bg: '#f1e2c4', fg: '#2a1c16', pop: '#8a2433' },
+];
+const wines = [['Champagne, Brut Réserve', 'NV', '14'], ['Sancerre, Les Caillottes', '2022', '12'], ['Chablis Premier Cru', '2020', '16'], ['Barolo, Serralunga', '2018', '19'], ['Sauternes, half bottle', '2016', '11']];
+---
+<Layout title="Playfair Display — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Playfair Display" showToggle={false} />
+  <div class="ed pf" data-pf>
+    <header class="ed-hero pf-hero" data-hero>
+      <div class="pf-hero__curtain" aria-hidden="true"><i></i><i></i></div>
+      <div class="ed-hero__top"><span>Playfair Display · {font.designer} · {font.year}</span><span>Roman & italic, Regular to Black</span></div>
+      <h1 class="ed-hero__word pf-hero__word" data-word aria-label="Playfair">{[...'Playfair'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Every headline deserves <em>an entrance</em>.
+          <span class="ed-hero__hint" data-fine>Move across the name and the spotlight follows; letters in the light go to Black. Click for the italic.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the name to move the spotlight. Tap for the italic.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>wght</dt><dd data-hud="wght">400</dd></div><div><dt>style</dt><dd data-hud="style">roman</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>01</span> At the theatre</div>
+        <h2 class="ed-h2">It was drawn for the <em>big line</em><br />at the top of the bill.</h2>
+        <div class="ed-body pf-bill" data-inview>
+          <div class="pf-bill__sheet">
+            <p class="pf-f pf-bill__co">The Lantern Players present</p>
+            <p class="pf-f pf-bill__t"><span>Much</span><i>&amp;</i><span>Nothing</span></p>
+            <p class="pf-f pf-bill__sub">a comedy in three acts, with an interval and a dog</p>
+            <ul class="pf-f"><li><b>Beatrix</b> Miss O. Fenwick</li><li><b>The Colonel</b> Mr. D. Abara</li><li><b>A Dog</b> Biscuit</li></ul>
+            <p class="pf-f pf-bill__foot">Nightly at eight · Matinées Thursday &amp; Saturday · Stalls from 4/6</p>
+          </div>
+        </div>
+        <p class="ed-cap">Playbill for an invented company. The ampersand swings between Regular and Black.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On the bedside table</div>
+        <h2 class="ed-h2">The face of every novel<br />you bought <em>for the cover</em>.</h2>
+        <div class="ed-body pf-books">
+          {books.map((b, i) => (
+            <article class="pf-book" style={`--bg:${b.bg};--fg:${b.fg};--pop:${b.pop};--i:${i}`}>
+              <p class="pf-f pf-book__t">{b.t.map((l, n) => <span class={n === 1 ? 'it' : ''}>{l}</span>)}</p>
+              <span class="pf-book__rule"></span>
+              <p class="pf-f pf-book__a">{b.a}</p>
+              <p class="pf-book__s">A novel</p>
+            </article>
+          ))}
+        </div>
+        <p class="ed-cap">Three invented paperbacks. Hover one to pull it off the shelf.</p>
+      </section>
+
+      <section class="ed-sec" data-cap>
+        <div class="ed-kicker"><span>03</span> At the start of the chapter</div>
+        <h2 class="ed-h2">Press any letter.<br />Get <em>a drop cap</em>.</h2>
+        <div class="ed-body pf-cap" tabindex="0" data-cap-box>
+          <p class="pf-cap__text"><span class="pf-f pf-cap__l" data-cap-l>O</span><span data-cap-rest>nce the curtain was up there was no going back. The house lights fell, somebody coughed, and the first line arrived exactly where it was meant to, large enough to be heard from the cheap seats.</span></p>
+          <div class="pf-cap__keys">{[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((c) => <button type="button" class="pf-f" data-cap-k={c}>{c}</button>)}</div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> At dinner</div>
+        <h2 class="ed-h2">Figures and italics<br />that <em>know their place</em>.</h2>
+        <div class="ed-body pf-wine">
+          <p class="pf-f pf-wine__h">Wines <i>by the glass</i></p>
+          <ol>{wines.map(([n, y, p]) => <li class="pf-f"><span>{n}</span><i>{y}</i><b>{p}</b></li>)}</ol>
+          <p class="pf-wine__f">An invented list. Ask about the Barolo.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>your own</em> headline.</h2>
+        <div class="ed-body">
+          <EditionTester family="Playfair Display Variable" sample="A triumph, darling" italic
+            axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 900 }]}
+            presets={[{ name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }, { name: 'Black italic', v: [900], italic: true }]} start={4} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-pf]');
+  if (page) {
+    watchInView(page);
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = letters.map(() => 400); let sx = 0.5;
+    runHero(hero, (f) => {
+      const tx = f.live ? f.px : f.reduce ? 0.5 : 0.5 + 0.38 * Math.sin(f.t * 0.6);
+      sx += (tx - sx) * 0.1;
+      hero.style.setProperty('--spot', `${(sx * 100).toFixed(1)}%`);
+      const italic = f.clicks % 2 === 1; word.style.fontStyle = italic ? 'italic' : 'normal';
+      const pos = clamp((sx - 0.12) / 0.76, 0, 1) * (letters.length - 1); let sum = 0;
+      letters.forEach((l, i) => { const tw = 400 + 500 * near(i, pos, 2.2); w[i] += (tw - w[i]) * 0.14; l.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}`; sum += w[i]; });
+      hud.wght.textContent = String(Math.round(sum / letters.length)); hud.style.textContent = italic ? 'italic' : 'roman';
+    });
+    // Drop cap: any letter key, or the buttons
+    const box = page.querySelector<HTMLElement>('[data-cap-box]')!;
+    const L = box.querySelector<HTMLElement>('[data-cap-l]')!, rest = box.querySelector<HTMLElement>('[data-cap-rest]')!;
+    const words: Record<string, string> = { A: 'fter', B: 'efore', C: 'ome', D: 'own', E: 'very', F: 'rom', G: 'iven', H: 'ere', I: 'n time,', J: 'ust as', K: 'nowing', L: 'ong after', M: 'uch later', N: 'ow that', O: 'nce', P: 'erhaps', Q: 'uite soon', R: 'ight when', S: 'oon after', T: 'hen', U: 'ntil', V: 'ery soon', W: 'hen', X: 'anadu aside,', Y: 'et when', Z: 'ero hour:' };
+    const tail = ' the curtain was up there was no going back. The house lights fell, somebody coughed, and the first line arrived exactly where it was meant to, large enough to be heard from the cheap seats.';
+    const set = (c: string) => { if (!words[c]) return; L.textContent = c; rest.textContent = words[c] + tail; L.classList.remove('is-new'); void L.offsetWidth; L.classList.add('is-new'); box.querySelectorAll<HTMLElement>('[data-cap-k]').forEach((b) => b.classList.toggle('is-on', b.dataset.capK === c)); };
+    box.addEventListener('keydown', (e) => { if (e.key.length === 1 && /[a-z]/i.test(e.key)) set(e.key.toUpperCase()); });
+    box.querySelectorAll<HTMLElement>('[data-cap-k]').forEach((b) => b.addEventListener('click', () => set(b.dataset.capK!)));
+    set('O');
+  }
+</script>
+
+<style is:global>
+  .pf { --ed-head: 'Playfair Display Variable', Georgia, serif; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 500; --ed-lede-vf: 'wght' 500; --ed-radius: 2px; }
+  .pf .ed-h2 em, .pf .ed-hero__lede em { font-style: italic; }
+  .pf .ed-story__prose { font-family: 'Playfair Display Variable', serif; font-variation-settings: 'wght' 420; }
+  .pf .ed-story__prose em { font-style: italic; }
+  .pf-f { font-family: 'Playfair Display Variable', Georgia, serif; font-weight: 400; font-feature-settings: normal; }
+
+  .pf-hero { --spot: 50%; background: #1b0d10; color: #f4e6d2; --fg: #f4e6d2; --fg-2: #cdb9a3; --fg-3: #94806d; --accent: #f2b45a; }
+  .pf-hero__curtain { position: absolute; inset: 0; z-index: -1; background: radial-gradient(34vmax 60vmax at var(--spot) 46%, #fff3d544, transparent 70%); }
+  .pf-hero__curtain i { position: absolute; top: 0; bottom: 0; width: 11vw; background: repeating-linear-gradient(90deg, #6d1422 0 1.4vw, #8a2433 1.4vw 2.6vw, #4d0d18 2.6vw 3.6vw); box-shadow: 0 0 60px #000a; }
+  .pf-hero__curtain i:last-child { right: 0; } .pf-hero__curtain i:first-child { left: 0; }
+  .pf-hero__word { font-family: 'Playfair Display Variable', serif; font-size: min(19.5vw, 50svh); line-height: 1.05; letter-spacing: -0.01em; }
+  .pf-hero .ed-hero__top, .pf-hero .ed-hero__foot { padding-inline: 11vw; }
+
+  .pf-bill__sheet { container-type: inline-size; max-width: 46rem; margin-inline: auto; background: #f1e2c4; color: #2a1c16; padding: 7cqi 6cqi; text-align: center; display: grid; gap: 2.6cqi; border: 1.2cqi solid #2a1c16; outline: 1px solid #2a1c16; outline-offset: -2.6cqi; background-image: radial-gradient(#2a1c1612 1px, transparent 1.3px); background-size: 6px 6px; }
+  .pf-bill__co { font-size: 3.1cqi; letter-spacing: 0.24em; text-transform: uppercase; font-variation-settings: 'wght' 600; }
+  .pf-bill__t { display: grid; justify-items: center; font-size: 19cqi; line-height: 0.92; font-variation-settings: 'wght' 900; }
+  .pf-bill__t i { font-size: 1.15em; line-height: 0.75; color: #8a2433; font-variation-settings: 'wght' 400; }
+  .pf-bill.is-in .pf-bill__t i { animation: pf-amp 2.8s ease-in-out infinite alternate; }
+  @keyframes pf-amp { to { font-variation-settings: 'wght' 900; transform: rotate(-5deg); } }
+  .pf-bill__sub { font-size: 4.2cqi; font-style: italic; }
+  .pf-bill__sheet ul { display: grid; gap: 0.8cqi; padding-block: 3cqi; border-block: 3px double #2a1c16; font-size: 3.6cqi; font-style: italic; }
+  .pf-bill__sheet li b { font-style: normal; font-weight: 400; font-variation-settings: 'wght' 800; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.82em; margin-right: 0.8em; }
+  .pf-bill__foot { font-size: 2.5cqi; letter-spacing: 0.1em; text-transform: uppercase; font-variation-settings: 'wght' 600; }
+
+  .pf-books { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 3.2rem); align-items: end; padding-bottom: 14px; border-bottom: 14px solid #c9b48e; }
+  .pf-book { container-type: inline-size; aspect-ratio: 2 / 3; background: var(--bg); color: var(--fg); padding: 11cqi 9cqi 8cqi; display: grid; grid-template-rows: 1fr auto auto auto; gap: 3cqi; border-radius: 1cqi 3cqi 3cqi 1cqi; box-shadow: inset 3cqi 0 0 #00000022, inset 3.4cqi 0 0 #ffffff14, 0 30px 40px -24px #0008; transition: transform 0.6s var(--ease); transform: rotate(calc((var(--i) - 1) * 1.2deg)); }
+  .pf-book:hover { transform: translateY(-18px) rotate(calc((var(--i) - 1) * -1.5deg)); }
+  .pf-book__t { display: grid; align-content: center; font-size: 23cqi; line-height: 0.98; font-variation-settings: 'wght' 800; transition: font-variation-settings 0.6s var(--ease); }
+  .pf-book__t .it { font-style: italic; font-variation-settings: 'wght' 400; color: var(--pop); }
+  .pf-book:hover .pf-book__t .it { font-variation-settings: 'wght' 900; }
+  .pf-book__rule { height: 1px; background: currentColor; opacity: 0.5; }
+  .pf-book__a { font-size: 6.4cqi; font-variation-settings: 'wght' 600; letter-spacing: 0.04em; }
+  .pf-book__s { font: 400 3cqi/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
+
+  .pf-cap { background: #fffaf0; color: #2a1c16; padding: clamp(1.5rem, 5vw, 5rem); outline: none; display: grid; gap: 2rem; border: 1px solid var(--line); }
+  .pf-cap:focus-visible { border-color: var(--accent); }
+  .pf-cap__text { font-family: 'Playfair Display Variable', serif; font-variation-settings: 'wght' 420; font-size: clamp(1.15rem, 0.8rem + 1.4vw, 2rem); line-height: 1.5; max-width: 34em; margin-inline: auto; }
+  .pf-cap__l { float: left; font-size: 5.6em; line-height: 0.78; padding: 0.06em 0.08em 0 0; color: #8a2433; font-variation-settings: 'wght' 900; }
+  .pf-cap__l.is-new { animation: pf-drop 0.7s var(--ease); }
+  @keyframes pf-drop { from { font-variation-settings: 'wght' 400; transform: translateY(-0.2em) rotate(-8deg); opacity: 0; } }
+  .pf-cap__keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; }
+  .pf-cap__keys button { width: 2.3rem; height: 2.3rem; font-size: 1.2rem; font-variation-settings: 'wght' 600; border: 1px solid #2a1c1633; color: #2a1c16; transition: all 0.2s; }
+  .pf-cap__keys button:hover, .pf-cap__keys button.is-on { background: #8a2433; border-color: #8a2433; color: #fffaf0; font-style: italic; }
+
+  .pf-wine { max-width: 44rem; margin-inline: auto; background: #1f2a24; color: #efe6d3; padding: clamp(1.5rem, 5vw, 4rem); }
+  .pf-wine__h { font-size: clamp(2.2rem, 6vw, 4.6rem); line-height: 1; font-variation-settings: 'wght' 800; padding-bottom: 1.2rem; border-bottom: 1px solid #efe6d355; }
+  .pf-wine__h i { font-variation-settings: 'wght' 400; color: #f2b45a; }
+  .pf-wine li { display: grid; grid-template-columns: minmax(0, 1fr) auto 2.6ch; align-items: baseline; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px dotted #efe6d355; font-size: clamp(1rem, 0.8rem + 1vw, 1.6rem); transition: font-variation-settings 0.4s var(--ease), padding 0.4s var(--ease); font-variation-settings: 'wght' 450; }
+  .pf-wine li:hover { font-variation-settings: 'wght' 800; padding-left: 0.6rem; }
+  .pf-wine li i { color: #b7ab93; font-size: 0.85em; } .pf-wine li b { font-weight: 400; text-align: right; color: #f2b45a; font-variation-settings: 'wght' 700; }
+  .pf-wine__f { padding-top: 1.2rem; font: 400 0.7rem/1.5 var(--font-mono); letter-spacing: 0.08em; color: #b7ab93; }
+
+  @media (max-width: 700px) { .pf-books { gap: 0.6rem; } .pf-hero__curtain i { width: 5vw; } .pf-hero .ed-hero__top, .pf-hero .ed-hero__foot { padding-inline: 5vw; } .pf-hero__word { font-size: 18vw; } }
+</style>
