@@ -1,0 +1,216 @@
+---
+// UNBOUNDED — new edition. Wide, round and loud: bands that never stop, a
+// festival bill and a launch countdown. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('unbounded');
+const bands = [
+  { t: 'No edges', w: 900, dir: 1, s: 46 }, { t: 'Only curves', w: 200, dir: -1, s: 58 },
+  { t: 'Wide open', w: 600, dir: 1, s: 40 }, { t: 'Keep going', w: 400, dir: -1, s: 52 },
+];
+const acts = [['Soft Machines', 900], ['Aurora Club', 700], ['Kilo Kilo', 500], ['The Long Weekend', 400], ['Mono No Aware · Dusk Choir · Halfmoon', 300]] as const;
+---
+<Layout title="Unbounded — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Unbounded" showToggle={false} />
+
+  <div class="ed ub" data-ub>
+    <header class="ed-hero ub-hero" data-hero>
+      <div class="ub-hero__orb" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Unbounded · {font.year}</span><span>Light 200 to Black 900</span></div>
+      <h1 class="ed-hero__word ub-hero__word" data-word aria-label="Unbounded">
+        {[...'Unbounded'].map((c) => <span data-l aria-hidden="true">{c}</span>)}
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Too wide for the page. <em>On purpose.</em>
+          <span class="ed-hero__hint" data-fine>Move sideways to drag the word through the frame. Letters under the pointer swell to Black.</span>
+          <span class="ed-hero__hint" data-coarse>Drag sideways to pull the word through the frame.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>wght</dt><dd data-hud="wght">400</dd></div><div><dt>width used</dt><dd data-hud="over">140%</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ub-bands" aria-hidden="true">
+        {bands.map((b) => (
+          <div class="ub-band" style={`--w:${b.w};--dir:${b.dir};--s:${b.s}s`}>
+            <div class="ub-band__track ub-f">{Array.from({ length: 8 }, () => <span>{b.t}<i>●</i></span>)}</div>
+          </div>
+        ))}
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>01</span> On the bill</div>
+        <h2 class="ed-h2">The headliner is <em>Black</em>.<br />The small print is Light.</h2>
+        <div class="ed-body ub-fest" data-inview>
+          <div class="ub-fest__sheet">
+            <p class="ub-f ub-fest__top"><span>Open Air</span><span>12 — 14 July</span></p>
+            <ol>{acts.map(([a, w], i) => <li class="ub-f" style={`--w:${w};--i:${i}`}>{a}</li>)}</ol>
+            <p class="ub-f ub-fest__foot"><span>Three days</span><span>Two stages</span><span>One field</span></p>
+          </div>
+        </div>
+        <p class="ed-cap">An invented festival. One family sets the whole hierarchy; only the weight and size change.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On launch day</div>
+        <h2 class="ed-h2">Numbers with <em>shoulders</em>.</h2>
+        <div class="ed-body ub-duo">
+          <figure class="ub-count" data-count>
+            <div class="ub-count__face">
+              <p class="ub-f ub-count__k">Next drop in</p>
+              <p class="ub-f ub-count__t"><span data-c="m">00</span><i>:</i><span data-c="s">00</span></p>
+              <p class="ub-f ub-count__sub">Drop <b data-c="n">07</b> · on the hour, every hour</p>
+              <div class="ub-count__bar"><i data-c="bar"></i></div>
+            </div>
+            <figcaption class="ed-cap">A real countdown to the top of the hour. It gets heavier as it gets closer.</figcaption>
+          </figure>
+          <figure class="ub-wallet">
+            <div class="ub-wallet__card ub-f">
+              <p class="ub-wallet__k">Balance</p>
+              <p class="ub-wallet__v"><span data-bal>2,481.07</span></p>
+              <p class="ub-wallet__row"><span>+ 12.40</span><span>Staking reward</span></p>
+              <p class="ub-wallet__row"><span>− 3.00</span><span>Coffee</span></p>
+              <div class="ub-wallet__btns"><button type="button">Send</button><button type="button">Receive</button></div>
+            </div>
+            <figcaption class="ed-cap">Wallet — invented figures, tabular so the digits hold still</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> Shape</div>
+        <h2 class="ed-h2">Every letter starts<br />as <em>a rounded box</em>.</h2>
+        <div class="ed-body ub-shape">
+          {[...'ODSGae08'].map((c) => <p><span class="ub-f">{c}</span><i aria-hidden="true"></i></p>)}
+        </div>
+        <p class="ed-cap">Hover a letter to see the box it is built in.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Say it <em>wider</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Unbounded Variable" sample="No limits" axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 900 }]}
+            presets={[{ name: 'Light', v: [200] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }]} start={3} />
+        </div>
+      </section>
+
+      <EditionTail entry={entry} from={5} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-ub]');
+  if (page) {
+    watchInView(page);
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = letters.map(() => 400);
+    let x = 0.5;
+    runHero(hero, (f) => {
+      const tx = f.live ? f.px : f.reduce ? 0.5 : 0.5 + 0.5 * Math.sin(f.t * 0.3);
+      x += (tx - x) * 0.07;
+      const over = Math.max(0, word.scrollWidth - hero.clientWidth * 0.9);
+      word.style.transform = `translateX(${(-x * over).toFixed(1)}px)`;
+      const pos = x * (letters.length - 1);
+      let sum = 0;
+      letters.forEach((l, i) => { const tw = 200 + 700 * near(i, pos, 2.6); w[i] += (tw - w[i]) * 0.14; l.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}`; sum += w[i]; });
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+      hud.over.textContent = `${Math.round((word.scrollWidth / hero.clientWidth) * 100)}%`;
+    });
+
+    // Countdown to the top of the hour
+    const c = page.querySelector<HTMLElement>('[data-count]')!;
+    const get = (k: string) => c.querySelector<HTMLElement>(`[data-c="${k}"]`)!;
+    const tick = () => {
+      const d = new Date(), left = 3600 - (d.getMinutes() * 60 + d.getSeconds());
+      const m = Math.floor(left / 60) % 60, s = left % 60, done = 1 - left / 3600;
+      get('m').textContent = String(m).padStart(2, '0'); get('s').textContent = String(s).padStart(2, '0');
+      get('n').textContent = String(d.getHours() + 1).padStart(2, '0');
+      get('bar').style.width = `${(done * 100).toFixed(1)}%`;
+      c.style.setProperty('--cw', String(Math.round(200 + 700 * done)));
+      c.classList.toggle('is-close', left <= 60);
+    };
+    tick(); setInterval(tick, 1000);
+
+    // Wallet balance drifts
+    const bal = page.querySelector<HTMLElement>('[data-bal]')!;
+    let v = 2481.07;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { v += Math.random() * 0.09; bal.textContent = v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }, 900);
+  }
+</script>
+
+<style is:global>
+  .ub { --ed-head: 'Unbounded Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 800; --ed-em-vf: 'wght' 300; --ed-lede-vf: 'wght' 600; --ed-radius: 28px; --lime: #c8ff3d; --pink: #ff5cc8; }
+  .ub em { font-style: normal; }
+  .ub .ed-h2 { font-size: clamp(1.6rem, 0.8rem + 3.4vw, 4.2rem); letter-spacing: -0.03em; line-height: 1.05; }
+  .ub .ed-hero__lede { font-size: clamp(1.05rem, 0.7rem + 1.3vw, 1.9rem); letter-spacing: -0.02em; line-height: 1.2; max-width: 20ch; }
+  .ub-f { font-family: 'Unbounded Variable', system-ui, sans-serif; font-weight: 400; font-feature-settings: normal; }
+
+  .ub-hero__orb { position: absolute; z-index: -1; width: 70vmax; height: 70vmax; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; background: conic-gradient(from 0deg, #7c5cfc, var(--pink), #ff9a3d, var(--lime), #3de0ff, #7c5cfc); filter: blur(90px); opacity: 0.32; animation: ub-spin 30s linear infinite; }
+  @keyframes ub-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  .ub-hero__word { justify-self: start; font-family: 'Unbounded Variable', sans-serif; font-size: min(26vw, 46svh); line-height: 1; letter-spacing: -0.04em; color: var(--fg); will-change: transform; padding-inline: 0.04em; }
+
+  .ub-bands { display: grid; overflow: hidden; border-block: 1px solid var(--line); margin-top: 1px; }
+  .ub-band { overflow: hidden; border-top: 1px solid var(--line); padding-block: 0.35rem; }
+  .ub-band:nth-child(1) { background: var(--lime); color: #10140a; } .ub-band:nth-child(3) { background: var(--accent); color: #fff; }
+  .ub-band__track { display: flex; width: max-content; font-size: clamp(2rem, 6.4vw, 6.6rem); line-height: 1.1; font-variation-settings: 'wght' var(--w); letter-spacing: -0.03em; text-transform: uppercase; animation: ub-run var(--s) linear infinite; animation-direction: normal; }
+  .ub-band[style*='--dir:-1'] .ub-band__track { animation-direction: reverse; }
+  .ub-band__track span { white-space: nowrap; padding-right: 0.5em; }
+  .ub-band__track i { font-style: normal; font-size: 0.4em; vertical-align: middle; padding-left: 1.2em; opacity: 0.6; }
+  @keyframes ub-run { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ub-band__track, .ub-hero__orb { animation: none; } }
+
+  .ub-fest__sheet { container-type: inline-size; padding: 5cqi 4.5cqi; border-radius: 3cqi; color: #10140a; background: radial-gradient(90% 80% at 15% 10%, var(--lime), transparent 60%), radial-gradient(80% 90% at 90% 90%, var(--pink), transparent 60%), #ffd23f; display: grid; gap: 3cqi; overflow: hidden; }
+  .ub-fest__top, .ub-fest__foot { display: flex; justify-content: space-between; gap: 2cqi; font-size: 2.1cqi; text-transform: uppercase; letter-spacing: 0.04em; font-variation-settings: 'wght' 500; }
+  .ub-fest__top span:first-child { font-variation-settings: 'wght' 900; }
+  .ub-fest__sheet li { font-size: calc(8.3cqi - var(--i) * 1.4cqi); line-height: 1.02; letter-spacing: -0.04em; text-transform: uppercase; font-variation-settings: 'wght' var(--w); white-space: nowrap; opacity: 0; transform: translateX(-6cqi); transition: opacity 0.7s var(--ease), transform 0.9s var(--ease), font-variation-settings 0.5s var(--ease); transition-delay: calc(var(--i) * 110ms), calc(var(--i) * 110ms), 0s; }
+  .ub-fest.is-in li { opacity: 1; transform: none; }
+  .ub-fest__sheet li:hover { font-variation-settings: 'wght' 900; }
+  .ub-fest__foot { padding-top: 2.4cqi; border-top: 0.4cqi solid #10140a; }
+
+  .ub-duo { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(1rem, 2.4vw, 2.4rem); align-items: start; }
+  .ub-count { --cw: 400; }
+  .ub-count__face { container-type: inline-size; border-radius: 28px; padding: 6cqi; background: var(--bg-2); border: 1px solid var(--line); display: grid; gap: 2cqi; }
+  .ub-count__k { font-size: 3cqi; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-2); font-variation-settings: 'wght' 500; }
+  .ub-count__t { display: flex; align-items: baseline; font-size: 25cqi; line-height: 0.95; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; font-variation-settings: 'wght' var(--cw); color: var(--lime); transition: font-variation-settings 1s linear; }
+  .ub-count__t i { font-style: normal; opacity: 0.5; padding-inline: 0.04em; }
+  .ub-count.is-close .ub-count__t { color: var(--pink); }
+  .ub-count__sub { font-size: 2.8cqi; color: var(--fg-2); font-variation-settings: 'wght' 400; }
+  .ub-count__sub b { font-weight: 400; font-variation-settings: 'wght' 800; color: var(--fg); }
+  .ub-count__bar { height: 1.6cqi; border-radius: 100px; background: var(--line); overflow: hidden; }
+  .ub-count__bar i { display: block; height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), var(--pink), var(--lime)); transition: width 1s linear; }
+  .ub-wallet__card { container-type: inline-size; border-radius: 28px; padding: 8cqi 7cqi 7cqi; color: #fff; background: linear-gradient(140deg, #7c5cfc, #4b2fd6 55%, #ff5cc8 130%); display: grid; gap: 2.4cqi; box-shadow: 0 40px 70px -40px #7c5cfc; }
+  .ub-wallet__k { font-size: 3.6cqi; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; font-variation-settings: 'wght' 400; }
+  .ub-wallet__v { font-size: 13.5cqi; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; font-variation-settings: 'wght' 700; white-space: nowrap; padding-bottom: 3cqi; }
+  .ub-wallet__row { display: flex; justify-content: space-between; gap: 2cqi; font-size: 3.6cqi; padding-top: 2.4cqi; border-top: 1px solid #ffffff33; font-variation-settings: 'wght' 300; font-variant-numeric: tabular-nums; }
+  .ub-wallet__row span:first-child { font-variation-settings: 'wght' 600; }
+  .ub-wallet__btns { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4cqi; padding-top: 3cqi; }
+  .ub-wallet__btns button { font: inherit; font-size: 4cqi; font-variation-settings: 'wght' 600; padding: 3.4cqi; border-radius: 100px; background: #fff; color: #2a1a8a; transition: font-variation-settings 0.3s var(--ease), transform 0.3s var(--ease); }
+  .ub-wallet__btns button:last-child { background: #ffffff26; color: #fff; }
+  .ub-wallet__btns button:hover { font-variation-settings: 'wght' 900; transform: scale(1.03); }
+
+  .ub-shape { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: clamp(0.3rem, 1vw, 1rem); }
+  .ub-shape p { position: relative; container-type: inline-size; aspect-ratio: 1; display: grid; place-items: center; }
+  .ub-shape span { font-size: 78cqi; line-height: 1; font-variation-settings: 'wght' 600; transition: font-variation-settings 0.5s var(--ease), color 0.4s; }
+  .ub-shape i { position: absolute; inset: 14% 8%; border: 2px dashed var(--pink); border-radius: 30%; opacity: 0; transform: scale(0.8); transition: opacity 0.3s, transform 0.5s var(--ease); pointer-events: none; }
+  .ub-shape p:hover i { opacity: 1; transform: none; }
+  .ub-shape p:hover span { font-variation-settings: 'wght' 900; color: var(--lime); }
+
+  .ub .ed-test__text { font-size: clamp(2.2rem, 7vw, 7.4rem); letter-spacing: -0.04em; }
+  .ub .ed-story__prose strong { font-family: 'Unbounded Variable', sans-serif; font-size: 0.82em; font-variation-settings: 'wght' 600; }
+
+  @media (max-width: 900px) { .ub-duo { grid-template-columns: minmax(0, 1fr); } .ub-shape { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+</style>

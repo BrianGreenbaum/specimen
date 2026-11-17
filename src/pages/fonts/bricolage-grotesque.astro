@@ -1,0 +1,210 @@
+---
+// BRICOLAGE GROTESQUE — new edition. Cut, paste, photocopy: a collage hero,
+// a zine cover and a loupe on the ink traps. Every example here is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('bricolage-grotesque');
+const papers = ['#ff4d2e', '#ffd23f', '#161310', '#2f6bff', '#f3efe8', '#19a974', '#ff8fb1', '#161310', '#ffd23f'];
+const menu = [['Flat white', '3.40'], ['Oat cortado with a little cinnamon', '3.90'], ['Toast', '2.00'], ['Eggs, any way you like them', '6.50'], ['Yesterday’s cake (still good)', '2.50']];
+---
+<Layout title="Bricolage Grotesque — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Bricolage Grotesque" showToggle={false} />
+
+  <div class="ed bg" data-bg>
+    <header class="ed-hero bg-hero" data-hero>
+      <div class="ed-hero__top"><span>Bricolage Grotesque · {font.designer} · {font.year}</span><span>Weight × width × optical size</span></div>
+      <h1 class="ed-hero__word bg-hero__word" data-word aria-label="Bricolage">
+        {[...'Bricolage'].map((c, i) => <span data-l style={`--p:${papers[i]};--k:${papers[i] === '#161310' || papers[i] === '#2f6bff' || papers[i] === '#ff4d2e' || papers[i] === '#19a974' ? '#f3efe8' : '#161310'}`} aria-hidden="true">{c}</span>)}
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A typeface made of <em>spare parts</em>, on purpose.
+          <span class="ed-hero__hint" data-fine>Every letter is its own scrap of paper. Move over them to press them flat; click to shuffle the pile.</span>
+          <span class="ed-hero__hint" data-coarse>Every letter is its own scrap of paper. Tap to shuffle the pile.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>shuffles</dt><dd data-hud="n">0</dd></div><div><dt>wght</dt><dd data-hud="wght">600</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-loupe>
+        <div class="ed-kicker"><span>01</span> Look closer</div>
+        <h2 class="ed-h2">The odd notches are there<br />for <em>when it gets small</em>.</h2>
+        <p class="ed-lede">
+          At text sizes the joins are cut open so they don’t clog. At display sizes those cuts close up and the
+          letter smooths out. Same letter, same weight: drag the optical size and watch the corners.
+        </p>
+        <div class="ed-body bg-loupe">
+          <div class="bg-loupe__stage">
+            <p class="bg-f bg-loupe__g" data-loupe-g aria-hidden="true">a</p>
+            <p class="bg-f bg-loupe__g" data-loupe-g aria-hidden="true">r</p>
+            <p class="bg-f bg-loupe__g" data-loupe-g aria-hidden="true">y</p>
+            <span class="bg-loupe__tag"><b data-loupe-val>12</b> opsz</span>
+          </div>
+          <label class="ed-slider"><span>Optical size <b data-loupe-out>12</b></span><input type="range" min="12" max="96" step="1" value="12" data-loupe-in /></label>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> Off the photocopier</div>
+        <h2 class="ed-h2">It looks best a bit <em>crooked</em>.</h2>
+        <div class="ed-body bg-duo">
+          <figure class="bg-zine" data-inview>
+            <div class="bg-zine__cover">
+              <p class="bg-f bg-zine__no">Issue 14 · free / swap</p>
+              <p class="bg-f bg-zine__t"><span>Make</span><span>do &amp;</span><span>mend</span></p>
+              <p class="bg-f bg-zine__strip">how to fix a zip · bread from a jar · a map of every bench in town</p>
+              <span class="bg-zine__tape" aria-hidden="true"></span><span class="bg-zine__dot bg-f" aria-hidden="true">50p<br />if you can</span>
+            </div>
+            <figcaption class="ed-cap">Zine cover — an invented title</figcaption>
+          </figure>
+          <figure class="bg-menu">
+            <div class="bg-menu__board bg-f">
+              <p class="bg-menu__h">Today</p>
+              <ul>{menu.map(([a, b]) => <li><span data-fit>{a}</span><b>{b}</b></li>)}</ul>
+              <p class="bg-menu__f">cash is fine · card is fine · smiling is free</p>
+            </div>
+            <figcaption class="ed-cap">Café board — long names squeeze on the width axis instead of wrapping</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> Three dials</div>
+        <h2 class="ed-h2">Thin to heavy, wide to tight,<br />text to <em>headline</em>.</h2>
+        <div class="ed-body bg-dials" data-inview>
+          <p class="bg-f bg-dials__w">Weight</p>
+          <p class="bg-f bg-dials__d">Width</p>
+          <p class="bg-f bg-dials__o">Optical size</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Stick <em>something</em> together.</h2>
+        <div class="ed-body">
+          <EditionTester family="Bricolage Grotesque Variable" sample="Odds and ends"
+            axes={[{ tag: 'opsz', name: 'Optical size', min: 12, max: 96 }, { tag: 'wght', name: 'Weight', min: 200, max: 800 }, { tag: 'wdth', name: 'Width', min: 75, max: 100, step: 0.5 }]}
+            presets={[{ name: 'Headline', v: [96, 800, 100] }, { name: 'Tight', v: [96, 700, 75] }, { name: 'Text', v: [12, 400, 100] }, { name: 'Thin', v: [96, 200, 100] }, { name: 'Caption', v: [12, 600, 80] }]} />
+        </div>
+      </section>
+
+      <EditionTail entry={entry} from={5} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-bg]');
+  if (page) {
+    watchInView(page);
+    // Hero: a pile of paper scraps. Each has a resting tilt/offset; hovering presses it flat and bold.
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const rnd = (a: number, b: number) => a + Math.random() * (b - a);
+    const state = letters.map(() => ({ r: 0, y: 0, w: 600, d: 100, tr: 0, ty: 0, tw: 600, td: 100, flat: 0 }));
+    const shuffle = () => state.forEach((s) => { s.tr = rnd(-9, 9); s.ty = rnd(-7, 7); s.tw = rnd(250, 800); s.td = rnd(75, 100); });
+    shuffle(); state.forEach((s) => { s.r = s.tr; s.y = s.ty; s.w = s.tw; s.d = s.td; });
+    let seen = 0, lastAuto = 0;
+    runHero(hero, (f) => {
+      if (f.clicks !== seen) { seen = f.clicks; shuffle(); hud.n.textContent = String(seen); }
+      if (!f.live && !f.reduce && f.t - lastAuto > 3.2) { lastAuto = f.t; shuffle(); }
+      const r = hero.getBoundingClientRect();
+      let sum = 0;
+      letters.forEach((l, i) => {
+        const b = l.getBoundingClientRect(), cx = (b.left + b.width / 2 - r.left) / r.width, s = state[i];
+        const press = f.live ? clamp(1 - Math.abs(cx - f.px) / 0.1, 0, 1) : 0;
+        s.flat += (press - s.flat) * 0.18;
+        s.r += (s.tr - s.r) * 0.08; s.y += (s.ty - s.y) * 0.08; s.w += (s.tw - s.w) * 0.08; s.d += (s.td - s.d) * 0.08;
+        const k = 1 - s.flat, wg = s.w + (800 - s.w) * s.flat, wd = s.d + (100 - s.d) * s.flat;
+        l.style.transform = `translateY(${(s.y * k).toFixed(2)}%) rotate(${(s.r * k).toFixed(2)}deg) scale(${(1 + s.flat * 0.06).toFixed(3)})`;
+        l.style.fontVariationSettings = `'opsz' 96, 'wght' ${wg.toFixed(0)}, 'wdth' ${wd.toFixed(1)}`;
+        sum += wg;
+      });
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+    });
+
+    // Loupe
+    const lp = page.querySelector<HTMLElement>('[data-loupe]')!;
+    const lin = lp.querySelector<HTMLInputElement>('[data-loupe-in]')!;
+    const paint = () => { lp.querySelectorAll<HTMLElement>('[data-loupe-g]').forEach((g) => (g.style.fontVariationSettings = `'opsz' ${lin.value}, 'wght' 700, 'wdth' 100`)); lp.querySelector('[data-loupe-val]')!.textContent = lin.value; lp.querySelector('[data-loupe-out]')!.textContent = lin.value; };
+    let touched = false, lpOn = false;
+    lin.addEventListener('input', () => { touched = true; paint(); });
+    new IntersectionObserver((es) => { lpOn = es[0].isIntersecting; }, { threshold: 0.3 }).observe(lp);
+    const sweep = (now: number) => { if (touched) return; requestAnimationFrame(sweep); if (!lpOn) return; lin.value = String(Math.round(54 - 42 * Math.cos(now / 1500))); paint(); };
+    paint(); if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) requestAnimationFrame(sweep);
+
+    // Menu: squeeze long names with the width axis until they fit their cell
+    const fit = () => page.querySelectorAll<HTMLElement>('[data-fit]').forEach((el) => {
+      let lo = 75, hi = 100; const max = el.parentElement!.clientWidth - (el.nextElementSibling as HTMLElement).offsetWidth - 14;
+      const set = (v: number) => { el.style.fontVariationSettings = `'opsz' 40, 'wght' 600, 'wdth' ${v}`; return el.scrollWidth; };
+      if (set(100) <= max) return;
+      for (let k = 0; k < 7; k++) { const m = (lo + hi) / 2; if (set(m) > max) hi = m; else lo = m; }
+      set(lo);
+    });
+    document.fonts.ready.then(fit); window.addEventListener('resize', fit);
+  }
+</script>
+
+<style is:global>
+  .bg { --ed-head: 'Bricolage Grotesque Variable', system-ui, sans-serif; --ed-head-vf: 'opsz' 96, 'wght' 800, 'wdth' 88; --ed-em-vf: 'opsz' 96, 'wght' 300, 'wdth' 100; --ed-lede-vf: 'opsz' 40, 'wght' 650, 'wdth' 95; --ed-radius: 4px; }
+  .bg em { font-style: normal; }
+  .bg .ed-h2 { letter-spacing: -0.035em; line-height: 0.98; }
+  .bg .ed-kicker { border-top: 2px solid var(--fg); }
+  .bg-f { font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif; font-weight: 400; font-feature-settings: normal; }
+  .bg .ed-story__prose { font-family: 'Bricolage Grotesque Variable', sans-serif; font-variation-settings: 'opsz' 14, 'wght' 400, 'wdth' 100; }
+  .bg .ed-story__prose strong { font-weight: inherit; font-variation-settings: 'opsz' 14, 'wght' 700, 'wdth' 100; }
+
+  .bg-hero { background: repeating-linear-gradient(0deg, transparent 0 31px, #1613100f 31px 32px), repeating-linear-gradient(90deg, transparent 0 31px, #1613100f 31px 32px), var(--bg); }
+  .bg-hero__word { font-family: 'Bricolage Grotesque Variable', sans-serif; display: flex; align-items: center; font-size: min(15.4vw, 42svh); line-height: 1; gap: 0.02em; }
+  .bg-hero__word [data-l] { background: var(--p); color: var(--k); padding: 0.06em 0.1em 0.12em; box-shadow: 0.02em 0.04em 0 #16131033, 0 0.12em 0.2em -0.08em #1613108c; will-change: transform; }
+  .bg-hero__word [data-l]:nth-child(3n) { clip-path: polygon(2% 4%, 98% 0, 100% 96%, 0 100%); }
+  .bg-hero__word [data-l]:nth-child(3n + 1) { clip-path: polygon(0 0, 100% 3%, 97% 100%, 3% 97%); }
+
+  .bg-loupe { display: grid; gap: 1.5rem; }
+  .bg-loupe__stage { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--fg); color: var(--bg); overflow: hidden; }
+  .bg-loupe__g { font-size: clamp(9rem, 27vw, 28rem); line-height: 0.95; text-align: center; padding-bottom: 0.08em; border-left: 1px solid #ffffff1f; }
+  .bg-loupe__g:first-child { border-left: 0; color: var(--accent); }
+  .bg-loupe__tag { position: absolute; left: 1rem; top: 1rem; font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #f3efe8aa; }
+  .bg-loupe__tag b { font-weight: 500; color: #ffd23f; }
+
+  .bg-duo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(1.2rem, 3vw, 3rem); align-items: start; }
+  .bg-zine__cover { container-type: inline-size; position: relative; aspect-ratio: 1 / 1.3; background: #ffd23f; color: #161310; padding: 7cqi 6cqi; display: grid; grid-template-rows: auto 1fr auto; transform: rotate(-2deg); box-shadow: 0 30px 50px -30px #161310aa; background-image: radial-gradient(#16131022 1px, transparent 1.4px); background-size: 6px 6px; }
+  .bg-zine__no { font-size: 4cqi; font-variation-settings: 'opsz' 14, 'wght' 600, 'wdth' 100; text-transform: uppercase; letter-spacing: 0.06em; }
+  .bg-zine__t { align-self: center; display: grid; font-size: 33cqi; line-height: 0.8; letter-spacing: -0.05em; font-variation-settings: 'opsz' 96, 'wght' 800, 'wdth' 75; }
+  .bg-zine__t span:nth-child(2) { justify-self: end; background: #161310; color: #ffd23f; padding: 0 0.08em 0.06em; transform: rotate(3deg); font-variation-settings: 'opsz' 96, 'wght' 300, 'wdth' 100; }
+  .bg-zine__t span:nth-child(3) { color: #ff4d2e; transform: rotate(-2deg); }
+  .bg-zine.is-in .bg-zine__t span:nth-child(3) { animation: bg-wob 2.4s ease-in-out infinite alternate; }
+  @keyframes bg-wob { from { font-variation-settings: 'opsz' 96, 'wght' 800, 'wdth' 75; } to { font-variation-settings: 'opsz' 96, 'wght' 500, 'wdth' 100; } }
+  .bg-zine__strip { font-size: 3.7cqi; line-height: 1.25; font-variation-settings: 'opsz' 12, 'wght' 500, 'wdth' 85; background: #f3efe8; padding: 2cqi 3cqi; transform: rotate(1.5deg); }
+  .bg-zine__tape { position: absolute; top: -3cqi; left: 34%; width: 30cqi; height: 8cqi; background: #f3efe8aa; transform: rotate(-4deg); box-shadow: 0 1px 2px #0002; }
+  .bg-zine__dot { position: absolute; right: -5cqi; top: 16cqi; width: 26cqi; height: 26cqi; border-radius: 50%; background: #ff4d2e; color: #f3efe8; display: grid; place-content: center; text-align: center; font-size: 5.4cqi; line-height: 1; font-variation-settings: 'opsz' 20, 'wght' 800, 'wdth' 80; transform: rotate(12deg); }
+
+  .bg-menu__board { container-type: inline-size; background: #161310; color: #f3efe8; padding: 6cqi 5cqi 5cqi; border-radius: 4px; }
+  .bg-menu__h { font-size: 19cqi; line-height: 0.85; letter-spacing: -0.04em; font-variation-settings: 'opsz' 96, 'wght' 800, 'wdth' 80; color: #ffd23f; padding-bottom: 3cqi; }
+  .bg-menu__board li { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 1.8cqi 0; border-top: 1px dashed #f3efe855; font-size: 5.6cqi; line-height: 1.1; overflow: hidden; }
+  .bg-menu__board li span { white-space: nowrap; font-variation-settings: 'opsz' 40, 'wght' 600, 'wdth' 100; }
+  .bg-menu__board li b { font-weight: 400; font-variation-settings: 'opsz' 40, 'wght' 300, 'wdth' 100; font-variant-numeric: tabular-nums; color: #ffd23f; }
+  .bg-menu__f { font-size: 3cqi; padding-top: 3cqi; margin-top: 1cqi; border-top: 1px dashed #f3efe855; font-variation-settings: 'opsz' 12, 'wght' 400, 'wdth' 100; color: #f3efe8aa; }
+
+  .bg-dials { display: grid; gap: 0; border-block: 2px solid var(--fg); }
+  .bg-dials p { font-size: clamp(3rem, 12.5vw, 13rem); line-height: 1; letter-spacing: -0.04em; padding: 0.06em 0 0.12em; border-top: 1px solid var(--line); white-space: nowrap; overflow: hidden; }
+  .bg-dials p:first-child { border-top: 0; }
+  .bg-dials.is-in .bg-dials__w { animation: bg-w 3s ease-in-out infinite alternate; }
+  .bg-dials.is-in .bg-dials__d { animation: bg-d 3s ease-in-out infinite alternate; color: var(--accent); }
+  .bg-dials.is-in .bg-dials__o { animation: bg-o 3s ease-in-out infinite alternate; }
+  @keyframes bg-w { from { font-variation-settings: 'opsz' 96, 'wght' 200, 'wdth' 100; } to { font-variation-settings: 'opsz' 96, 'wght' 800, 'wdth' 100; } }
+  @keyframes bg-d { from { font-variation-settings: 'opsz' 96, 'wght' 700, 'wdth' 75; } to { font-variation-settings: 'opsz' 96, 'wght' 700, 'wdth' 100; } }
+  @keyframes bg-o { from { font-variation-settings: 'opsz' 12, 'wght' 700, 'wdth' 100; } to { font-variation-settings: 'opsz' 96, 'wght' 700, 'wdth' 100; } }
+
+  @media (max-width: 900px) { .bg-duo { grid-template-columns: minmax(0, 1fr); } .bg-zine__cover { max-width: 24rem; margin-inline: auto; } .bg-zine__dot { right: 3cqi; } }
+</style>
