@@ -1,0 +1,438 @@
+---
+// OUTFIT — new edition. Geometry with a sense of humour: letters with real
+// physics, a dial you turn, a watch you wear and a startup you invent.
+// Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('outfit');
+const names = ['Thin', 'ExtraLight', 'Light', 'Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold', 'Black'];
+---
+<Layout title="Outfit — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Outfit" showToggle={false} />
+  <div class="ed of" data-of>
+    <header class="ed-hero of-hero" data-hero>
+      <div class="ed-hero__top"><span>Outfit · {font.designer} · {font.year}</span><span>Thin 100 to Black 900</span></div>
+      <div class="of-box" data-box tabindex="0" aria-label="Physics playground: drag letters to throw them, click empty space to blast, type to drop new letters">
+        <p class="of-box__hint" data-box-hint>Grab a letter and throw it · click empty space to blast · type to drop more</p>
+        <div class="of-box__dust" data-dust aria-hidden="true"></div>
+      </div>
+      <h1 class="sr-only">Outfit</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A geometric sans with <em>nothing to prove</em> and plenty of bounce.
+          <span class="ed-hero__hint" data-fine>Every letter is a real object here. Hard landings flash to Black.</span>
+          <span class="ed-hero__hint" data-coarse>Every letter is a real object. Flick them around.</span>
+        </p>
+        <div class="of-hero__right">
+          <dl class="ed-readout"><div><dt>letters</dt><dd data-hud="n">6</dd></div><div><dt>top speed</dt><dd data-hud="v">0</dd></div></dl>
+          <button type="button" class="of-btn" data-reset>Put them back</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-dial>
+        <div class="ed-kicker"><span>01</span> Nine weights on one dial</div>
+        <h2 class="ed-h2">Turn it. It <em>clicks</em><br />at every named weight.</h2>
+        <div class="ed-body of-dial">
+          <div class="of-dial__knob" data-knob role="slider" tabindex="0" aria-valuemin="100" aria-valuemax="900" aria-valuenow="400" aria-label="Weight dial">
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="track" cx="100" cy="100" r="86" />
+              <path class="fill" data-arc d="" />
+              {names.map((_, i) => { const a = (-135 + i * (270 / 8)) * Math.PI / 180; return <line class="tick" data-tick={i} x1={100 + Math.sin(a) * 72} y1={100 - Math.cos(a) * 72} x2={100 + Math.sin(a) * 80} y2={100 - Math.cos(a) * 80} />; })}
+            </svg>
+            <div class="of-dial__cap" data-cap><i></i></div>
+          </div>
+          <div class="of-dial__out">
+            <p class="of-f of-dial__word" data-dial-word>Outfit</p>
+            <p class="of-dial__name"><b data-dial-name>Regular</b> <span data-dial-num>400</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-watch>
+        <div class="ed-kicker"><span>02</span> On your wrist</div>
+        <h2 class="ed-h2">Round numbers for<br />a <em>round screen</em>.</h2>
+        <div class="ed-body of-watch">
+          <button type="button" class="of-watch__body" data-watch-btn aria-label="Change watch face">
+            <span class="of-watch__crown" aria-hidden="true"></span>
+            <span class="of-watch__screen">
+              <span class="of-face of-face--rings is-on" data-face="0">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  {[[52, '#ff5a36', 0.82], [41, '#6e7bff', 0.64], [30, '#f2ead8', 0.91]].map(([r, c, v]) => <><circle cx="60" cy="60" r={r} class="bg" style={`stroke:${c}`} /><circle cx="60" cy="60" r={r} class="fg" style={`stroke:${c};--len:${2 * Math.PI * (r as number)};--v:${v}`} /></>)}
+                </svg>
+                <span class="of-f of-face__big" data-steps>8,412</span><span class="of-face__sm">steps</span>
+              </span>
+              <span class="of-face of-face--time" data-face="1"><span class="of-f of-face__time" data-time>10:09</span><span class="of-face__sm" data-date>Tue 17</span></span>
+              <span class="of-face of-face--temp" data-face="2"><span class="of-f of-face__temp">21<sup>°</sup></span><span class="of-face__sm">Sunny · H 24 L 13</span><span class="of-face__sun" aria-hidden="true"></span></span>
+            </span>
+          </button>
+          <p class="ed-cap">Tap the watch to change faces. The time is yours; the steps are made up.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-brand>
+        <div class="ed-kicker"><span>03</span> Instant startup</div>
+        <h2 class="ed-h2">Every new company<br />needs <em>a logo by Friday</em>.</h2>
+        <div class="ed-body of-brand">
+          <div class="of-brand__card" data-brand-card>
+            <span class="of-brand__mark" data-mark aria-hidden="true"></span>
+            <p class="of-f of-brand__name" data-brand-name>Flowly</p>
+            <p class="of-f of-brand__tag" data-brand-tag>Spreadsheets, but they like you back.</p>
+          </div>
+          <button type="button" class="of-btn of-btn--big" data-brand-go>Invent another</button>
+          <p class="ed-cap">Names, marks and slogans are generated at random. Any resemblance to a real company is a coincidence worth celebrating.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Say it <em>simply</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Outfit Variable" sample="Hello, good looking" axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
+            presets={[{ name: 'Thin', v: [100] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={5} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-of]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+    const FAM = 'Outfit Variable';
+
+    // =================== PHYSICS PLAYGROUND ===================
+    const box = page.querySelector<HTMLElement>('[data-box]')!;
+    const dustBox = box.querySelector<HTMLElement>('[data-dust]')!;
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const COLORS = ['#14140f', '#3b4bd8', '#ff5a36', '#14140f', '#14140f', '#3b4bd8'];
+    type Body = { el: HTMLElement; ch: string; x: number; y: number; vx: number; vy: number; a: number; va: number; r: number; hw: number; hh: number; cx: number; cy: number; w: number; flash: number; sq: number; hx: number; hy: number };
+    const bodies: Body[] = [];
+    const cv = document.createElement('canvas').getContext('2d')!;
+    let W = 0, H = 0, FS = 0;
+    const measure = (ch: string, w: number) => {
+      cv.font = `${w} ${FS}px '${FAM}'`;
+      const m = cv.measureText(ch);
+      const asc = m.fontBoundingBoxAscent, desc = m.fontBoundingBoxDescent;
+      const base = (FS - (asc + desc)) / 2 + asc; // baseline inside a line-height:FS box
+      const iw = m.actualBoundingBoxLeft + m.actualBoundingBoxRight, ih = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+      return { cx: (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2, cy: base + (m.actualBoundingBoxDescent - m.actualBoundingBoxAscent) / 2, r: Math.max(FS * 0.13, (iw * 0.62 + ih * 0.38) / 2), hw: Math.max(iw / 2, FS * 0.05), hh: ih / 2 };
+    };
+    const add = (ch: string, x: number, y: number, w: number, color?: string) => {
+      const el = document.createElement('span');
+      el.className = 'of-body'; el.textContent = ch; el.setAttribute('aria-hidden', 'true');
+      el.style.color = color ?? COLORS[bodies.length % COLORS.length];
+      box.appendChild(el);
+      const m = measure(ch, w);
+      const b: Body = { el, ch, x, y, vx: 0, vy: 0, a: 0, va: 0, r: m.r, hw: m.hw, hh: m.hh, cx: m.cx, cy: m.cy, w, flash: 0, sq: 0, hx: x, hy: y };
+      el.style.transformOrigin = `${m.cx}px ${m.cy}px`;
+      bodies.push(b); return b;
+    };
+    const layout = () => {
+      W = box.clientWidth; H = box.clientHeight; FS = Math.min(W * 0.2, H * 0.62);
+      box.style.setProperty('--ofs', `${FS}px`);
+    };
+    const spell = (drop: boolean) => {
+      bodies.splice(0).forEach((b) => b.el.remove());
+      const word = 'Outfit', ws = [700, 300, 900, 500, 200, 800];
+      const ms = [...word].map((c, i) => measure(c, ws[i]));
+      const gap = FS * 0.02, total = ms.reduce((s, m) => s + m.r * 2 + gap, 0);
+      let x = (W - total) / 2;
+      [...word].forEach((c, i) => {
+        const r = ms[i].r; x += r;
+        const b = add(c, x, drop ? -r - i * FS * 0.5 : H - ms[i].hh, ws[i]);
+        b.hx = x; b.hy = H - ms[i].hh; x += r + gap;
+      });
+    };
+    layout(); document.fonts.load(`700 100px '${FAM}'`, 'Outfit').then(() => { layout(); spell(!reduce); });
+    window.addEventListener('resize', () => { const oW = W, oH = H; layout(); bodies.forEach((b) => { b.x *= W / (oW || W); b.y *= H / (oH || H); }); });
+
+    // dust puffs on hard landings
+    const puff = (x: number, y: number, n: number) => {
+      for (let i = 0; i < n; i++) {
+        const d = document.createElement('i');
+        d.style.left = `${x}px`; d.style.top = `${y}px`;
+        d.style.setProperty('--dx', `${(Math.random() - 0.5) * 120}px`); d.style.setProperty('--dy', `${-20 - Math.random() * 50}px`);
+        dustBox.appendChild(d); setTimeout(() => d.remove(), 700);
+      }
+    };
+
+    // pointer: grab and throw, or blast
+    let grab: Body | null = null, px = 0, py = 0, ppx = 0, ppy = 0;
+    const local = (e: PointerEvent) => { const r = box.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    box.addEventListener('pointerdown', (e) => {
+      [px, py] = local(e); ppx = px; ppy = py;
+      grab = bodies.reduce<Body | null>((best, b) => { const d = Math.hypot(b.x - px, b.y - py); return d < b.r * 1.15 && (!best || d < Math.hypot(best.x - px, best.y - py)) ? b : best; }, null);
+      if (grab) { box.setPointerCapture(e.pointerId); box.classList.add('is-grab'); }
+      else {
+        bodies.forEach((b) => { const dx = b.x - px, dy = b.y - py, d = Math.hypot(dx, dy) || 1, f = Math.max(0, 1 - d / (FS * 3)) * 2400; b.vx += (dx / d) * f; b.vy += (dy / d) * f - f * 0.3; b.va += (Math.random() - 0.5) * 18; b.flash = 1; });
+        puff(px, py, 10); box.classList.remove('is-blast'); void box.offsetWidth; box.classList.add('is-blast');
+      }
+      box.querySelector<HTMLElement>('[data-box-hint]')!.classList.add('is-gone');
+    });
+    box.addEventListener('pointermove', (e) => { [px, py] = local(e); });
+    const release = () => { if (grab) { grab = null; box.classList.remove('is-grab'); } };
+    box.addEventListener('pointerup', release); box.addEventListener('pointercancel', release);
+
+    // keyboard: type to drop letters in
+    // Capture phase on document, so typed letters reach the playground before the
+    // footer's J/K "next specimen" shortcut sees them.
+    document.addEventListener('keydown', (e) => {
+      if (!boxOn || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement;
+      if (t.matches('input, textarea, [contenteditable]') || t.isContentEditable) return;
+      if (e.key === 'Backspace' && bodies.length) { bodies.pop()!.el.remove(); e.preventDefault(); e.stopPropagation(); return; }
+      if (e.key.length !== 1 || !/\S/.test(e.key)) return;
+      e.stopPropagation();
+      if (bodies.length >= 36) bodies.shift()!.el.remove();
+      const b = add(e.key, FS * 0.4 + Math.random() * (W - FS * 0.8), -FS * 0.6, 100 + Math.round(Math.random() * 8) * 100, ['#14140f', '#3b4bd8', '#ff5a36', '#c79bff', '#14140f'][Math.floor(Math.random() * 5)]);
+      b.vx = (Math.random() - 0.5) * 400; b.va = (Math.random() - 0.5) * 6;
+      box.querySelector<HTMLElement>('[data-box-hint]')!.classList.add('is-gone');
+    }, true);
+    page.querySelector('[data-reset]')!.addEventListener('click', () => spell(!reduce));
+
+    let boxOn = false, last = performance.now();
+    new IntersectionObserver((es) => { boxOn = es[0].isIntersecting; }).observe(box);
+    const G = 2600, E = 0.42;
+    const step = (now: number) => {
+      requestAnimationFrame(step);
+      const dt = Math.min(1 / 30, (now - last) / 1000); last = now;
+      if (!boxOn || !bodies.length) return;
+      // sub-steps keep stacks stable
+      for (let s = 0; s < 3; s++) {
+        const h = dt / 3;
+        for (const b of bodies) {
+          if (b === grab) { const tvx = (px - b.x) / h * 0.25, tvy = (py - b.y) / h * 0.25; b.vx = tvx; b.vy = tvy; b.va *= 0.9; }
+          else { b.vy += G * h; b.vx *= 0.999; }
+          b.x += b.vx * h; b.y += b.vy * h; b.a += b.va * h; b.va *= 0.995;
+          // floor & walls use the letter's rotated ink box, so tall letters can't sink
+          const ca = Math.abs(Math.cos(b.a)), sa = Math.abs(Math.sin(b.a));
+          const ey = b.hh * ca + b.hw * sa, ex = b.hw * ca + b.hh * sa;
+          if (b.y > H - ey) { const imp = b.vy; b.y = H - ey; if (imp > 0) { b.vy = -imp * E; if (imp > 900) { b.sq = Math.min(0.32, imp / 6000); b.flash = Math.min(1, imp / 2400); if (imp > 1500) puff(b.x, H, 5); } } b.vx *= 0.985; b.va += (b.vx / Math.max(ey, 1) - b.va) * 0.2; b.va -= Math.sin(2 * b.a) * (ca > sa ? 0.6 : -0.6) * h * 6; }
+          if (b.x < ex) { b.x = ex; b.vx = Math.abs(b.vx) * E; }
+          if (b.x > W - ex) { b.x = W - ex; b.vx = -Math.abs(b.vx) * E; }
+          if (b.y < -H * 2) { b.y = -H * 2; b.vy = 0; }
+        }
+        for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
+          const a = bodies[i], c = bodies[j], dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy), min = a.r + c.r;
+          if (d >= min || d === 0) continue;
+          const nx = dx / d, ny = dy / d, over = (min - d) / 2;
+          const ka = a === grab ? 0 : c === grab ? 2 : 1, kc = c === grab ? 0 : a === grab ? 2 : 1;
+          a.x -= nx * over * ka; a.y -= ny * over * ka; c.x += nx * over * kc; c.y += ny * over * kc;
+          const vn = (c.vx - a.vx) * nx + (c.vy - a.vy) * ny;
+          if (vn < 0) {
+            const j2 = (-(1 + E) * vn) / 2;
+            if (a !== grab) { a.vx -= j2 * nx; a.vy -= j2 * ny; }
+            if (c !== grab) { c.vx += j2 * nx; c.vy += j2 * ny; }
+            const tv = (c.vx - a.vx) * -ny + (c.vy - a.vy) * nx;
+            a.va += tv * 0.002; c.va -= tv * 0.002;
+            if (-vn > 900) { a.flash = c.flash = Math.min(1, -vn / 2400); }
+          }
+        }
+      }
+      if (grab) { ppx = px; ppy = py; }
+      let top = 0;
+      for (const b of bodies) {
+        b.flash *= 0.92; b.sq *= 0.82;
+        const sp = Math.hypot(b.vx, b.vy); top = Math.max(top, sp);
+        const w = clamp(b.w + (900 - b.w) * b.flash, 100, 900);
+        b.el.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`;
+        b.el.style.transform = `translate(${(b.x - b.cx).toFixed(1)}px, ${(b.y - b.cy).toFixed(1)}px) rotate(${b.a.toFixed(3)}rad) scale(${(1 + b.sq * 0.6).toFixed(3)}, ${(1 - b.sq).toFixed(3)})`;
+      }
+      hud.n.textContent = String(bodies.length);
+      hud.v.textContent = String(Math.round(top / 10));
+    };
+    requestAnimationFrame(step);
+
+    // =================== ROTARY DIAL ===================
+    const dial = page.querySelector<HTMLElement>('[data-dial]')!;
+    const knob = dial.querySelector<HTMLElement>('[data-knob]')!;
+    const cap = dial.querySelector<HTMLElement>('[data-cap]')!;
+    const arc = dial.querySelector<SVGPathElement>('[data-arc]')!;
+    const NAMES = ['Thin', 'ExtraLight', 'Light', 'Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold', 'Black'];
+    let wv = 400, snapped = 3;
+    const arcPath = (t: number) => {
+      const a0 = -135 * Math.PI / 180, a1 = a0 + t * 270 * Math.PI / 180, R = 86;
+      const p = (a: number) => `${100 + Math.sin(a) * R} ${100 - Math.cos(a) * R}`;
+      return `M ${p(a0)} A ${R} ${R} 0 ${t * 270 > 180 ? 1 : 0} 1 ${p(a1)}`;
+    };
+    const setW = (v: number) => {
+      // magnetic detents: within 18 units of a named weight, pull onto it
+      const near = Math.round(v / 100) * 100;
+      if (Math.abs(v - near) < 18) v = near;
+      wv = clamp(v, 100, 900);
+      const t = (wv - 100) / 800;
+      cap.style.transform = `rotate(${-135 + t * 270}deg)`;
+      arc.setAttribute('d', arcPath(Math.max(0.001, t)));
+      dial.querySelector<HTMLElement>('[data-dial-word]')!.style.fontVariationSettings = `'wght' ${wv.toFixed(0)}`;
+      dial.querySelector('[data-dial-num]')!.textContent = String(Math.round(wv));
+      const idx = Math.round((wv - 100) / 100);
+      dial.querySelector('[data-dial-name]')!.textContent = wv % 100 === 0 ? NAMES[idx] : `${NAMES[idx]}-ish`;
+      knob.setAttribute('aria-valuenow', String(Math.round(wv)));
+      if (wv % 100 === 0 && idx !== snapped) {
+        snapped = idx;
+        const tick = dial.querySelector<HTMLElement>(`[data-tick="${idx}"]`)!;
+        tick.classList.remove('is-click'); void (tick as any).getBBox(); tick.classList.add('is-click');
+        cap.classList.remove('is-click'); void cap.offsetWidth; cap.classList.add('is-click');
+      }
+      if (wv % 100 !== 0) snapped = -1;
+    };
+    const fromPointer = (e: PointerEvent) => {
+      const r = knob.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      let deg = (Math.atan2(dx, -dy) * 180) / Math.PI; // 0 = up
+      deg = clamp(deg, -135, 135);
+      setW(100 + ((deg + 135) / 270) * 800);
+    };
+    knob.addEventListener('pointerdown', (e) => { knob.setPointerCapture(e.pointerId); knob.classList.add('is-drag'); fromPointer(e); });
+    knob.addEventListener('pointermove', (e) => { if (knob.hasPointerCapture(e.pointerId)) fromPointer(e); });
+    knob.addEventListener('pointerup', () => knob.classList.remove('is-drag'));
+    knob.addEventListener('keydown', (e) => { if (['ArrowUp', 'ArrowRight'].includes(e.key)) { setW(Math.round(wv / 100) * 100 + 100); e.preventDefault(); } if (['ArrowDown', 'ArrowLeft'].includes(e.key)) { setW(Math.round(wv / 100) * 100 - 100); e.preventDefault(); } });
+    knob.addEventListener('wheel', (e) => { e.preventDefault(); setW(wv - Math.sign(e.deltaY) * 25); }, { passive: false });
+    setW(400);
+
+    // =================== WATCH ===================
+    const watch = page.querySelector<HTMLElement>('[data-watch]')!;
+    const faces = Array.from(watch.querySelectorAll<HTMLElement>('[data-face]'));
+    let fi = 0;
+    watch.querySelector('[data-watch-btn]')!.addEventListener('click', () => {
+      faces[fi].classList.remove('is-on'); faces[fi].classList.add('is-leave');
+      const old = faces[fi]; setTimeout(() => old.classList.remove('is-leave'), 500);
+      fi = (fi + 1) % faces.length; faces[fi].classList.add('is-on');
+    });
+    const clock = () => { const d = new Date(); watch.querySelector('[data-time]')!.textContent = d.toTimeString().slice(0, 5); watch.querySelector('[data-date]')!.textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' }); };
+    clock(); setInterval(clock, 5000);
+    let steps = 8412;
+    new IntersectionObserver((es) => watch.classList.toggle('is-in', es[0].isIntersecting), { threshold: 0.3 }).observe(watch);
+    if (!reduce) setInterval(() => { if (!watch.classList.contains('is-in')) return; steps += Math.floor(Math.random() * 4); watch.querySelector('[data-steps]')!.textContent = steps.toLocaleString('en-US'); }, 900);
+
+    // =================== STARTUP GENERATOR ===================
+    const brand = page.querySelector<HTMLElement>('[data-brand]')!;
+    const A = ['Flo', 'Nim', 'Brio', 'Kin', 'Lum', 'Zest', 'Hal', 'Mos', 'Pip', 'Tov', 'Vel', 'Orb', 'Quil', 'Sol', 'Dot', 'Nook'];
+    const B = ['ly', 'ble', 'io', 'ify', 'ster', 'oo', 'ra', 'dash', 'base', 'loop', 'hq', 'kit', 'wise', 'pal'];
+    const T = ['Spreadsheets, but they like you back.', 'Meetings that end early.', 'Your inbox, on a diet.', 'Payroll for people who hate payroll.', 'Calendars with feelings.', 'The to-do list that does some of it.', 'Cloud storage for clouds.', 'Recipes, reviewed by grandmothers.', 'A CRM you can explain to your mum.', 'Fewer tabs. More naps.'];
+    const P = [['#3b4bd8', '#edeae3', '#ff5a36'], ['#14140f', '#c6ff3d', '#c6ff3d'], ['#ff5a36', '#fff4ea', '#14140f'], ['#f3e8ff', '#3a1a6b', '#8b5cf6'], ['#0f766e', '#ecfdf5', '#fde047'], ['#fde047', '#14140f', '#14140f']];
+    const MARKS = ['circle', 'half', 'stack', 'ring', 'pill', 'quarter'];
+    const card = brand.querySelector<HTMLElement>('[data-brand-card]')!, nm = brand.querySelector<HTMLElement>('[data-brand-name]')!;
+    const pick = <X,>(a: X[]) => a[Math.floor(Math.random() * a.length)];
+    const invent = () => {
+      const n = pick(A) + pick(B), [bg, fg, ac] = pick(P), w = pick([200, 300, 500, 700, 900]);
+      card.style.setProperty('--bg', bg); card.style.setProperty('--fg', fg); card.style.setProperty('--ac', ac);
+      brand.querySelector<HTMLElement>('[data-mark]')!.dataset.shape = pick(MARKS);
+      nm.innerHTML = [...n].map((c, i) => `<span style="--i:${i}">${c}</span>`).join('');
+      nm.style.fontVariationSettings = `'wght' ${w}`;
+      nm.style.letterSpacing = w >= 700 ? '-0.05em' : w <= 300 ? '0.01em' : '-0.03em';
+      brand.querySelector('[data-brand-tag]')!.textContent = pick(T);
+      card.classList.remove('is-new'); void card.offsetWidth; card.classList.add('is-new');
+    };
+    brand.querySelector('[data-brand-go]')!.addEventListener('click', invent);
+    invent();
+  }
+</script>
+
+<style is:global>
+  .of { --ed-head: 'Outfit Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 650; --ed-em-vf: 'wght' 200; --ed-lede-vf: 'wght' 450; --ed-radius: 22px; --pop: #ff5a36; }
+  .of em { font-style: normal; } .of .ed-h2 { letter-spacing: -0.035em; line-height: 0.98; }
+  .of-f { font-family: 'Outfit Variable', system-ui, sans-serif; font-weight: 400; font-feature-settings: normal; }
+  .of .ed-story__prose { font-family: 'Outfit Variable', sans-serif; font-variation-settings: 'wght' 350; }
+  .of .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 650; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .of-btn { padding: 0.75rem 1.2rem; border-radius: 100px; background: var(--fg); color: var(--bg); font: 400 0.95rem/1 'Outfit Variable', sans-serif; font-variation-settings: 'wght' 600; transition: transform 0.2s var(--ease), background 0.2s; }
+  .of-btn:hover { transform: translateY(-2px); background: var(--accent); }
+  .of-btn:active { transform: translateY(1px) scale(0.97); }
+  .of-btn--big { font-size: 1.15rem; padding: 1rem 1.6rem; justify-self: start; }
+
+  /* ---------- physics hero ---------- */
+  .of-hero { grid-template-rows: auto 1fr auto; cursor: default; }
+  .of-box { --ofs: 200px; position: relative; overflow: hidden; margin: 1rem calc(var(--gutter) * -1) 1.2rem; border-block: 1px solid var(--line); background:
+    linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0 / 100% 40px, linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0 / 40px 100%; touch-action: none; user-select: none; cursor: grab; outline: none; min-height: 52svh; }
+  .of-box.is-grab { cursor: grabbing; }
+  .of-box.is-blast { animation: of-shake 0.35s; }
+  @keyframes of-shake { 20% { transform: translate(6px, -4px); } 40% { transform: translate(-5px, 3px); } 60% { transform: translate(3px, -2px); } 80% { transform: translate(-2px, 1px); } }
+  .of-box:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+  .of-body { position: absolute; left: 0; top: 0; font-family: 'Outfit Variable', sans-serif; font-size: var(--ofs); line-height: var(--ofs); white-space: pre; will-change: transform; pointer-events: none; letter-spacing: 0; }
+  .of-box__hint { position: absolute; left: 50%; top: 1rem; transform: translateX(-50%); font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); white-space: nowrap; transition: opacity 0.6s; }
+  .of-box__hint.is-gone { opacity: 0; }
+  .of-box__dust { position: absolute; inset: 0; pointer-events: none; }
+  .of-box__dust i { position: absolute; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: var(--fg-3); animation: of-dust 0.7s var(--ease) forwards; }
+  @keyframes of-dust { to { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; } }
+  .of-hero__right { display: flex; align-items: flex-end; gap: 1.6rem; flex-wrap: wrap; }
+
+  /* ---------- dial ---------- */
+  .of-dial { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .of-dial__knob { position: relative; width: clamp(14rem, 28vw, 22rem); aspect-ratio: 1; cursor: grab; touch-action: none; outline: none; border-radius: 50%; }
+  .of-dial__knob.is-drag { cursor: grabbing; }
+  .of-dial__knob:focus-visible { box-shadow: 0 0 0 3px var(--accent); }
+  .of-dial__knob svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .of-dial__knob .track { fill: none; stroke: var(--bg-2); stroke-width: 10; stroke-dasharray: 405 600; transform: rotate(135deg); transform-origin: 100px 100px; stroke-linecap: round; }
+  .of-dial__knob .fill { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; }
+  .of-dial__knob .tick { stroke: var(--fg-3); stroke-width: 2; stroke-linecap: round; transition: stroke 0.3s; }
+  .of-dial__knob .tick.is-click { stroke: var(--pop); animation: of-tick 0.4s var(--ease); }
+  @keyframes of-tick { 0% { stroke-width: 6; } }
+  .of-dial__cap { position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #d9d5ca 70%); box-shadow: 0 14px 24px -10px #14140f66, inset 0 -4px 8px #14140f1a; transition: transform 0.12s; }
+  .of-dial__cap i { position: absolute; left: 50%; top: 9%; width: 6px; height: 22%; margin-left: -3px; border-radius: 3px; background: var(--accent); }
+  .of-dial__cap.is-click { animation: of-cap 0.18s; }
+  @keyframes of-cap { 50% { scale: 0.97; } }
+  .of-dial__word { font-size: clamp(4rem, 15vw, 15rem); line-height: 1; letter-spacing: -0.04em; white-space: nowrap; overflow: hidden; }
+  .of-dial__name { font-size: var(--step-2); letter-spacing: -0.02em; }
+  .of-dial__name b { font-weight: 400; font-family: 'Outfit Variable', sans-serif; font-variation-settings: 'wght' 700; color: var(--accent); }
+  .of-dial__name span { font-family: var(--font-mono); font-size: 0.6em; color: var(--fg-3); }
+
+  /* ---------- watch ---------- */
+  .of-watch { display: grid; justify-items: center; gap: 1rem; padding-block: 2rem; background: radial-gradient(50% 60% at 50% 50%, #3b4bd822, transparent 70%); }
+  .of-watch__body { position: relative; display: block; width: min(78vw, 22rem); aspect-ratio: 0.84; border-radius: 30%; padding: 0; background: linear-gradient(145deg, #2b2b30, #0b0b0d); box-shadow: 0 50px 70px -40px #14140faa, inset 0 0 0 2px #ffffff14, inset 0 2px 0 #ffffff22; transition: transform 0.4s var(--ease); }
+  .of-watch__body:hover { transform: rotate(-2deg) scale(1.02); }
+  .of-watch__body:active { transform: scale(0.98); }
+  .of-watch__crown { position: absolute; right: -4%; top: 30%; width: 5%; height: 14%; border-radius: 3px; background: linear-gradient(90deg, #555, #222); }
+  .of-watch__screen { position: absolute; inset: 6.5%; display: block; border-radius: 27%; background: #000; overflow: hidden; container-type: inline-size; }
+  .of-face { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; color: #fff; opacity: 0; transform: translateX(30%) scale(0.9); transition: opacity 0.45s var(--ease), transform 0.5s var(--ease); }
+  .of-face.is-on { opacity: 1; transform: none; }
+  .of-face.is-leave { opacity: 0; transform: translateX(-30%) scale(0.9); }
+  .of-face--rings svg { position: absolute; inset: 9%; width: 82%; height: 82%; transform: rotate(-90deg); }
+  .of-face--rings circle { fill: none; stroke-width: 9; stroke-linecap: round; }
+  .of-face--rings .bg { opacity: 0.18; }
+  .of-face--rings .fg { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); transition: stroke-dashoffset 1.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  [data-watch].is-in .of-face--rings.is-on .fg { stroke-dashoffset: calc(var(--len) * (1 - var(--v))); }
+  .of-face__big { position: relative; font-size: 15cqi; line-height: 1; font-variation-settings: 'wght' 700; font-feature-settings: 'tnum'; letter-spacing: -0.03em; }
+  .of-face__sm { position: relative; font: 400 5cqi/1.4 'Outfit Variable', sans-serif; font-variation-settings: 'wght' 400; color: #a3a3a8; }
+  .of-face__time { font-size: 34cqi; line-height: 0.9; font-variation-settings: 'wght' 200; letter-spacing: -0.04em; font-feature-settings: 'tnum'; }
+  .of-face--time .of-face__sm { color: #ff5a36; font-variation-settings: 'wght' 600; font-size: 7cqi; }
+  .of-face--temp { background: radial-gradient(90% 70% at 70% 15%, #3b6fd8, #000 75%); }
+  .of-face__temp { font-size: 42cqi; line-height: 0.9; font-variation-settings: 'wght' 800; letter-spacing: -0.05em; }
+  .of-face__temp sup { font-size: 0.4em; vertical-align: 1.1em; font-variation-settings: 'wght' 300; }
+  .of-face__sun { position: absolute; right: 16%; top: 14%; width: 18cqi; height: 18cqi; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 30px #ffd23f; animation: of-sun 4s ease-in-out infinite alternate; }
+  @keyframes of-sun { to { transform: translate(-6px, 4px) scale(1.08); } }
+
+  /* ---------- startup generator ---------- */
+  .of-brand { display: grid; gap: 1.2rem; }
+  .of-brand__card { --bg: #3b4bd8; --fg: #edeae3; --ac: #ff5a36; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(1rem, 3vw, 2.6rem); row-gap: 0.6rem; padding: clamp(2rem, 7vw, 6rem) clamp(1.5rem, 6vw, 6rem); background: var(--bg); color: var(--fg); border-radius: 28px; overflow: hidden; transition: background 0.5s, color 0.5s; min-height: 22rem; align-content: center; }
+  .of-brand__mark { grid-row: 1 / 3; width: clamp(4rem, 12vw, 10rem); aspect-ratio: 1; position: relative; }
+  .of-brand__mark::before, .of-brand__mark::after { content: ''; position: absolute; transition: all 0.6s cubic-bezier(0.34, 1.5, 0.64, 1); background: var(--ac); }
+  .of-brand__mark[data-shape='circle']::before { inset: 0; border-radius: 50%; } .of-brand__mark[data-shape='circle']::after { inset: 34%; border-radius: 50%; background: var(--bg); }
+  .of-brand__mark[data-shape='half']::before { inset: 0 0 50% 0; border-radius: 100px 100px 0 0; } .of-brand__mark[data-shape='half']::after { inset: 50% 0 0 0; border-radius: 0 0 100px 100px; background: var(--fg); }
+  .of-brand__mark[data-shape='stack']::before { inset: 0 0 56% 0; border-radius: 100px; } .of-brand__mark[data-shape='stack']::after { inset: 56% 18% 0 18%; border-radius: 100px; background: var(--fg); }
+  .of-brand__mark[data-shape='ring']::before { inset: 0; border-radius: 50%; background: transparent; border: 1.4rem solid var(--ac); } .of-brand__mark[data-shape='ring']::after { inset: 40%; border-radius: 50%; background: var(--fg); }
+  .of-brand__mark[data-shape='pill']::before { inset: 0 28%; border-radius: 100px; transform: rotate(35deg); } .of-brand__mark[data-shape='pill']::after { inset: 0 28%; border-radius: 100px; transform: rotate(-35deg); background: var(--fg); mix-blend-mode: difference; }
+  .of-brand__mark[data-shape='quarter']::before { inset: 0; border-radius: 0 0 0 100%; } .of-brand__mark[data-shape='quarter']::after { inset: 0 0 50% 50%; border-radius: 50%; background: var(--fg); }
+  .of-brand__name { font-size: clamp(3.4rem, 12vw, 11rem); line-height: 0.9; white-space: nowrap; }
+  .of-brand__name span { display: inline-block; }
+  .of-brand__card.is-new .of-brand__name span { animation: of-pop 0.6s cubic-bezier(0.34, 1.6, 0.64, 1) backwards; animation-delay: calc(var(--i) * 45ms); }
+  .of-brand__card.is-new .of-brand__mark { animation: of-spin 0.7s cubic-bezier(0.34, 1.5, 0.64, 1); }
+  @keyframes of-pop { from { transform: translateY(60%) scale(0.6); opacity: 0; } }
+  @keyframes of-spin { from { transform: rotate(-120deg) scale(0.4); opacity: 0; } }
+  .of-brand__tag { grid-column: 2; font-size: clamp(1.1rem, 2.2vw, 1.8rem); font-variation-settings: 'wght' 350; opacity: 0.85; }
+
+  @media (max-width: 760px) { .of-dial { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; } .of-brand__card { grid-template-columns: minmax(0, 1fr); } .of-brand__mark { grid-row: auto; } .of-brand__tag { grid-column: 1; } .of-box__hint { white-space: normal; text-align: center; width: 90%; } }
+  @media (prefers-reduced-motion: reduce) { .of-box.is-blast { animation: none; } }
+</style>
