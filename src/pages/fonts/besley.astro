@@ -214,16 +214,16 @@ const { entry, font, prev, next, themeStyle } = await getEdition('besley');
   .bz-poster::before { content: ''; position: absolute; left: 50%; top: -0.6rem; width: 0.9rem; height: 0.9rem; margin-left: -0.45rem; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #c8c2b5, #5a544a); z-index: 2; box-shadow: 0 2px 3px #0008; }
   .bz-poster.is-hit { animation: bz-recoil 0.18s; }
   @keyframes bz-recoil { 50% { transform: rotate(var(--tilt)) translateY(4px) scale(0.99); } }
-  .bz-poster__paper { container-type: inline-size; padding: 7cqi 7cqi 6cqi; text-align: center; color: var(--ink); display: grid; gap: 2cqi;
+  .bz-poster__paper { container-type: inline-size; padding: 7% 6% 6%; text-align: center; color: var(--ink); display: grid; gap: 2cqi;
     background: radial-gradient(120% 90% at 50% 40%, #f2e3c2, #dcc395 70%, #b99560), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .2 0 0 0 0 .08 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-blend-mode: multiply; clip-path: polygon(0 1%, 4% 0, 30% 1.4%, 62% 0.2%, 96% 1%, 100% 0, 99% 30%, 100% 62%, 99.2% 99%, 70% 100%, 34% 98.8%, 3% 100%, 0 97%, 1% 60%, 0 30%); }
-  .bz-poster__w { font-size: 24cqi; line-height: 0.85; text-transform: uppercase; font-variation-settings: 'wght' 700; letter-spacing: -0.01em; transition: font-variation-settings 0.25s, letter-spacing 0.25s; }
-  .bz-poster__da { font-size: 7cqi; font-style: italic; font-variation-settings: 'wght' 600; padding-block: 1.4cqi; border-block: 0.6cqi solid var(--ink); }
-  .bz-poster__face { margin: 1cqi auto; width: 52cqi; aspect-ratio: 1; border: 0.8cqi solid var(--ink); background: #c9ab7a; display: grid; place-items: center; overflow: hidden; }
+  .bz-poster__w { font-size: 16.5cqi; line-height: 0.85; text-transform: uppercase; font-variation-settings: 'wght' 700; letter-spacing: -0.01em; transition: font-variation-settings 0.25s, letter-spacing 0.25s; }
+  .bz-poster__da { font-size: 5.6cqi; font-style: italic; font-variation-settings: 'wght' 600; padding-block: 1.4cqi; border-block: 0.6cqi solid var(--ink); }
+  .bz-poster__face { margin: 1cqi auto; width: 46cqi; aspect-ratio: 1; border: 0.8cqi solid var(--ink); background: #c9ab7a; display: grid; place-items: center; overflow: hidden; }
   .bz-poster__face svg { width: 92%; fill: var(--ink); stroke: var(--ink); opacity: 0.88; }
-  .bz-poster__name { font-size: 6.4cqi; line-height: 1.1; font-variation-settings: 'wght' 800; text-transform: uppercase; letter-spacing: 0.02em; }
-  .bz-poster__for { font-size: 4.6cqi; font-style: italic; font-variation-settings: 'wght' 450; }
-  .bz-poster__r { font-size: 7cqi; text-transform: uppercase; font-variation-settings: 'wght' 600; letter-spacing: 0.08em; }
+  .bz-poster__name { font-size: 4.5cqi; line-height: 1.1; font-variation-settings: 'wght' 800; text-transform: uppercase; letter-spacing: 0.02em; }
+  .bz-poster__for { font-size: 4cqi; font-style: italic; font-variation-settings: 'wght' 450; }
+  .bz-poster__r { font-size: 5.6cqi; text-transform: uppercase; font-variation-settings: 'wght' 600; letter-spacing: 0.08em; }
   .bz-poster__r b { display: block; font-weight: 400; font-size: 2.3em; line-height: 1; letter-spacing: -0.02em; color: var(--red); font-variation-settings: 'wght' 900; }
   .bz-poster__r b.is-bump { animation: bz-bump 0.4s cubic-bezier(0.34, 1.7, 0.64, 1); }
   @keyframes bz-bump { 40% { transform: scale(1.18) rotate(-3deg); } }
