@@ -1,0 +1,342 @@
+---
+// EB GARAMOND — new edition. The book face: a press, a page you can turn, a
+// bookplate and a dictionary. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('eb-garamond');
+
+// Three spreads of an invented short book. Each spread: [left page, right page].
+const spreads = [
+  { head: ['The Night Printer', 'Chapter One'], folio: [12, 13], pages: [
+    'The shop stood at the bottom of a street that sloped toward the river, and in winter the damp came up through the floor and settled in the paper. Marguerite kept the stove going all night for that reason, and because the ink would not move when it was cold.\nShe liked the hours after midnight best. The street was quiet then, the river louder, and the only other light came from the baker two doors down, who started work about the time she stopped.',
+    'She set type by lamplight, a line at a time, reading backwards without thinking about it. Her uncle had taught her that a good compositor reads the metal the way other people read faces: quickly, and with a certain amount of forgiveness.\nA bent letter could be forgiven. A letter upside down could be forgiven, once. What could not be forgiven was a line that looked crowded, because a crowded line made the reader tired before they knew why.',
+  ] },
+  { head: ['The Night Printer', 'Chapter One'], folio: [14, 15], pages: [
+    'Customers came in the mornings. A notary wanting a hundred copies of a will. A widow wanting cards. Once, a young man who wanted a single poem printed on a single sheet, and who paid in coins so old she had to weigh them.\nShe asked him what the poem was about. He said it was about a woman he had seen once on a bridge, and that he would never see her again, and that this was the point. She did not ask anything else.',
+    'She printed the poem twice by mistake and kept the second copy. It was not a good poem. But the letters sat on the page so evenly, so calmly, that it looked better than it was, which she supposed was the whole point of her trade.\nHer uncle would have said the same, though more crossly. He had believed that good type was a kind of manners: it did not interrupt, it did not show off, and it held the door for whatever came after.',
+  ] },
+  { head: ['The Night Printer', 'Chapter Two'], folio: [16, 17], pages: [
+    'In spring the river rose and the press had to be lifted onto blocks. Her neighbours helped. Nobody asked what she printed at night, and she did not say, though by then half the street had read it.\nThe baker read them first, still warm from the press, with flour on his thumbs. He said they were the only thing in the city printed more carefully than his bread was baked, and he meant it as a compliment.',
+    'The pamphlets were short and the arguments in them were long, and they were set in the same calm letters as the notary’s will. That was the joke, she thought. The type did not take sides. It only made everything easier to read.\nYears later, when the shop was gone and the press had been sold for scrap, people still kept the pamphlets in drawers and between the pages of other books. Not for the arguments. For the way they looked.',
+  ] },
+];
+
+const words = [
+  { w: 'colophon', p: '/ˈkɒl.ə.fɒn/', pos: 'noun', ety: 'from Greek kolophōn, “summit, finishing touch”', d: ['A note at the end of a book giving details of its printing: the typeface, the paper, the press.', 'A publisher’s emblem, printed on the spine or title page.'] },
+  { w: 'quire', p: '/kwaɪə/', pos: 'noun', ety: 'from Old French quaier, ultimately Latin quaterni, “four each”', d: ['Four sheets of paper folded to make eight leaves, as in a medieval manuscript.', 'Twenty-four or twenty-five sheets of paper; one twentieth of a ream.'] },
+  { w: 'kern', p: '/kɜːn/', pos: 'noun & verb', ety: 'from French carne, “projecting angle”', d: ['The part of a metal letter that overhangs the body of the type, as the tail of an f.', 'To adjust the space between two particular letters so they sit evenly.'] },
+];
+---
+<Layout title="EB Garamond — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="EB Garamond" showToggle={false} />
+  <div class="ed gm" data-gm>
+    <header class="ed-hero gm-hero" data-hero>
+      <div class="ed-hero__top"><span>EB Garamond · {font.designer} · {font.year}</span><span>Roman & italic, Regular to Extra Bold</span></div>
+      <h1 class="ed-hero__word gm-hero__word" data-word aria-label="Garamond">
+        {[...'Garamond'].map((c) => <span data-l aria-hidden="true"><b>{c}</b><i>{c}</i></span>)}
+        <span class="gm-hero__roller" data-roller aria-hidden="true"></span>
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Five hundred years on the page, and <em>still the one</em> to beat.
+          <span class="ed-hero__hint" data-fine>The letters start as mirror-image metal type. Move the roller across them to print.</span>
+          <span class="ed-hero__hint" data-coarse>The letters start as mirror-image metal type. Drag the roller across them to print.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>printed</dt><dd data-hud="n">0/8</dd></div><div><dt>impressions</dt><dd data-hud="imp">0</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-book>
+        <div class="ed-kicker"><span>01</span> In a book</div>
+        <h2 class="ed-h2">What it was made for:<br />page after page, <em>without tiring you</em>.</h2>
+        <div class="ed-body gm-book">
+          <div class="gm-book__spread" data-spread aria-live="polite">
+            {[0, 1].map((side) => (
+              <article class={`gm-page gm-page--${side ? 'r' : 'l'}`} data-page={side}>
+                <p class="gm-page__head" data-head></p>
+                <div class="gm-page__text" data-text></div>
+                <p class="gm-page__folio" data-folio></p>
+              </article>
+            ))}
+            <div class="gm-book__leaf" data-leaf aria-hidden="true"><div class="gm-page gm-page--r"><p class="gm-page__head" data-leaf-head></p><div class="gm-page__text" data-leaf-text></div><p class="gm-page__folio" data-leaf-folio></p></div></div>
+          </div>
+          <div class="gm-book__ctl">
+            <button type="button" data-turn="-1" aria-label="Previous spread">←</button>
+            <span data-book-n>1 / 3</span>
+            <button type="button" data-turn="1" aria-label="Next spread">Turn the page →</button>
+          </div>
+        </div>
+        <p class="ed-cap">An invented short story, set justified with a drop cap on its first page.</p>
+      </section>
+
+      <section class="ed-sec" data-liga>
+        <div class="ed-kicker"><span>02</span> Small courtesies</div>
+        <h2 class="ed-h2">Some letters were cast<br /><em>holding hands</em>.</h2>
+        <p class="ed-lede">When an f meets an i, its hook collides with the dot. Garamond’s punchcutters solved it by casting the pair as one piece of metal. Switch ligatures off and watch the joins come apart.</p>
+        <div class="ed-body gm-liga">
+          <p class="gm-f gm-liga__words" data-liga-words>{['office', 'affluent', 'fjord', 'baffled', 'flourish'].map((w) => <span>{w}</span>)}</p>
+          <button type="button" class="gm-switch" data-liga-btn aria-pressed="true"><i></i><span>Ligatures on</span></button>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-plate>
+        <div class="ed-kicker"><span>03</span> Inside the cover</div>
+        <h2 class="ed-h2">Every good library<br />deserves <em>a name</em>.</h2>
+        <div class="ed-body gm-plate">
+          <div class="gm-plate__card">
+            <p class="gm-f gm-plate__ex">Ex Libris</p>
+            <svg class="gm-plate__orn" viewBox="0 0 120 40" aria-hidden="true"><path d="M5 20 C25 2, 40 38, 60 20 S95 2, 115 20" /><circle cx="60" cy="20" r="3" /></svg>
+            <p class="gm-f gm-plate__name" data-plate-name>Your Name</p>
+            <p class="gm-f gm-plate__motto"><span data-plate-motto>Lege, relege, intellege</span></p>
+            <p class="gm-plate__no">N<sup>o</sup> <span data-plate-no>0001</span></p>
+          </div>
+          <div class="gm-plate__form">
+            <label><span>Your name</span><input type="text" placeholder="Your Name" maxlength="26" data-plate-in="name" /></label>
+            <label><span>A motto</span><input type="text" placeholder="Lege, relege, intellege" maxlength="34" data-plate-in="motto" /></label>
+            <p class="ed-cap">The default motto is Latin for “read, re-read, understand”.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-dict>
+        <div class="ed-kicker"><span>04</span> In the reference section</div>
+        <h2 class="ed-h2">Roman, italic and bold,<br />each with <em>a job to do</em>.</h2>
+        <div class="ed-body gm-dict">
+          <div class="gm-dict__page" data-dict-page></div>
+          <div class="gm-dict__tabs">{words.map((x, i) => <button type="button" class="gm-f" data-dict-i={i} aria-pressed={i === 0 ? 'true' : 'false'}>{x.w}</button>)}</div>
+        </div>
+        <script type="application/json" data-dict-data set:html={JSON.stringify(words)} />
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Set <em>your own</em> first line.</h2>
+        <div class="ed-body">
+          <EditionTester family="EB Garamond Variable" sample="Call me Ishmael." italic
+            axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 800 }]}
+            presets={[{ name: 'Book', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }, { name: 'Italic', v: [400], italic: true }, { name: 'Bold italic', v: [700], italic: true }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script define:vars={{ spreads }}>
+  window.__gmSpreads = spreads;
+</script>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-gm]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Hero: a roller prints the mirrored metal sorts ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const roller = word.querySelector<HTMLElement>('[data-roller]')!;
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const printed = letters.map(() => false);
+    let rx = -0.1, dir = 1, imp = 0, lastLive = false;
+    runHero(hero, (f) => {
+      const wr = word.getBoundingClientRect(), hr = hero.getBoundingClientRect();
+      // pointer position mapped onto the word, so the roller tracks it exactly
+      const target = f.live ? ((f.px * hr.width + hr.left) - wr.left) / wr.width : null;
+      if (target !== null) rx += (clamp(target, -0.08, 1.08) - rx) * 0.25;
+      else if (!f.reduce) { rx += dir * 0.0045; if (rx > 1.15) { dir = -1; } if (rx < -0.15) { dir = 1; } }
+      if (f.live !== lastLive) { lastLive = f.live; }
+      roller.style.left = `${(rx * 100).toFixed(2)}%`;
+      let n = 0;
+      letters.forEach((l, i) => {
+        const lr = l.getBoundingClientRect(), mid = (lr.left + lr.width / 2 - wr.left) / wr.width;
+        // idle sweep: left of the roller on the way out is printed, on the way back it is lifted
+        const want = f.live || f.reduce ? (printed[i] || mid < rx) : (dir > 0 ? mid < rx : mid < rx);
+        if (want !== printed[i]) { printed[i] = want; l.classList.toggle('is-printed', want); if (want) imp++; }
+        if (printed[i]) n++;
+      });
+      if (f.reduce) letters.forEach((l) => l.classList.add('is-printed'));
+      hud.n.textContent = `${n}/${letters.length}`;
+      hud.imp.textContent = String(imp);
+    });
+    hero.addEventListener('dblclick', () => { printed.fill(false); letters.forEach((l) => l.classList.remove('is-printed')); });
+
+    // ---------- Book ----------
+    type Spread = { head: string[]; folio: number[]; pages: string[] };
+    const spreads: Spread[] = (window as any).__gmSpreads;
+    const book = page.querySelector<HTMLElement>('[data-book]')!;
+    const pg = Array.from(book.querySelectorAll<HTMLElement>('[data-page]'));
+    const leaf = book.querySelector<HTMLElement>('[data-leaf]')!;
+    let si = 0, busy = false;
+    const fill = (el: HTMLElement, s: Spread, side: number, first: boolean) => {
+      el.querySelector('[data-head], [data-leaf-head]')!.textContent = s.head[side];
+      const t = el.querySelector<HTMLElement>('[data-text], [data-leaf-text]')!;
+      t.innerHTML = s.pages[side].split('\n').map((para) => `<p>${para.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!)}</p>`).join('');
+      t.classList.toggle('is-first', first && side === 0);
+      el.querySelector('[data-folio], [data-leaf-folio]')!.textContent = String(s.folio[side]);
+    };
+    const show = (i: number) => { const s = spreads[i]; pg.forEach((p, side) => fill(p, s, side, i === 0)); book.querySelector('[data-book-n]')!.textContent = `${i + 1} / ${spreads.length}`; };
+    const turn = (d: number) => {
+      const nx = (si + d + spreads.length) % spreads.length;
+      if (busy) return;
+      if (reduce) { si = nx; show(si); return; }
+      busy = true;
+      // the leaf carries the current right page and swings over the spine
+      fill(leaf, spreads[si], 1, false);
+      leaf.classList.remove('is-turning', 'is-back'); void leaf.offsetWidth;
+      leaf.classList.add(d > 0 ? 'is-turning' : 'is-back');
+      setTimeout(() => { si = nx; show(si); }, 380);
+      setTimeout(() => { leaf.classList.remove('is-turning', 'is-back'); busy = false; }, 820);
+    };
+    book.querySelectorAll<HTMLElement>('[data-turn]').forEach((b) => b.addEventListener('click', () => turn(+b.dataset.turn!)));
+    show(0);
+
+    // ---------- Ligatures ----------
+    const lb = page.querySelector<HTMLButtonElement>('[data-liga-btn]')!;
+    const lw = page.querySelector<HTMLElement>('[data-liga-words]')!;
+    lb.addEventListener('click', () => {
+      const on = lb.getAttribute('aria-pressed') !== 'true';
+      lb.setAttribute('aria-pressed', String(on));
+      lb.querySelector('span')!.textContent = on ? 'Ligatures on' : 'Ligatures off';
+      lw.classList.toggle('is-off', !on);
+    });
+
+    // ---------- Bookplate ----------
+    const plate = page.querySelector<HTMLElement>('[data-plate]')!;
+    const no = plate.querySelector<HTMLElement>('[data-plate-no]')!;
+    plate.querySelectorAll<HTMLInputElement>('[data-plate-in]').forEach((inp) => inp.addEventListener('input', () => {
+      const k = inp.dataset.plateIn!;
+      plate.querySelector<HTMLElement>(`[data-plate-${k}]`)!.textContent = inp.value.trim() || inp.placeholder;
+      // a stable "number" derived from the name, so each name gets its own plate number
+      const name = plate.querySelector<HTMLInputElement>('[data-plate-in="name"]')!.value.trim();
+      let h = 7; for (const c of name) h = (h * 31 + c.charCodeAt(0)) % 9973;
+      no.textContent = String(name ? h : 1).padStart(4, '0');
+    }));
+
+    // ---------- Dictionary ----------
+    type Word = { w: string; p: string; pos: string; ety: string; d: string[] };
+    const dict = page.querySelector<HTMLElement>('[data-dict]')!;
+    const data: Word[] = JSON.parse(dict.querySelector('[data-dict-data]')!.textContent!);
+    const out = dict.querySelector<HTMLElement>('[data-dict-page]')!;
+    const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+    const showWord = (i: number) => {
+      const x = data[i];
+      out.innerHTML = `<p class="gm-dict__hw"><b>${esc(x.w)}</b> <span>${esc(x.p)}</span></p><p class="gm-dict__pos">${esc(x.pos)}</p><ol>${x.d.map((d) => `<li>${esc(d)}</li>`).join('')}</ol><p class="gm-dict__ety"><span>Origin</span> ${esc(x.ety)}</p>`;
+      out.classList.remove('is-in'); void out.offsetWidth; out.classList.add('is-in');
+      dict.querySelectorAll<HTMLElement>('[data-dict-i]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.dictI! === i)));
+    };
+    dict.querySelectorAll<HTMLElement>('[data-dict-i]').forEach((b) => b.addEventListener('click', () => showWord(+b.dataset.dictI!)));
+    showWord(0);
+  }
+</script>
+
+<style is:global>
+  .gm { --ed-head: 'EB Garamond Variable', Garamond, serif; --ed-head-vf: 'wght' 500; --ed-em-vf: 'wght' 400; --ed-lede-vf: 'wght' 450; --ed-radius: 2px; --paper: #f7f1e3; --ink: #1b160f; --lead: #8b8e93; }
+  .gm .ed-h2 { letter-spacing: -0.015em; line-height: 1.05; }
+  .gm .ed-h2 em, .gm .ed-hero__lede em { font-style: italic; }
+  .gm .ed-story__prose { font-family: 'EB Garamond Variable', serif; font-size: calc(var(--step-1) * 1.1); }
+  .gm .ed-story__prose em { font-style: italic; }
+  .gm .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 650; }
+  .gm-f { font-family: 'EB Garamond Variable', Garamond, serif; font-weight: 400; }
+
+  /* ---------- hero: lead sorts, a roller, ink ---------- */
+  .gm-hero { background: radial-gradient(70% 60% at 50% 45%, #fffaf0, transparent 70%), var(--bg); }
+  .gm-hero__word { position: relative; display: flex; font-family: 'EB Garamond Variable', serif; font-size: min(17vw, 44svh); line-height: 1.15; padding: 0.04em 0.06em; }
+  .gm-hero__word [data-l] { position: relative; display: inline-grid; }
+  .gm-hero__word [data-l] > * { grid-area: 1 / 1; font-style: normal; font-weight: 400; transition: opacity 0.35s var(--ease), transform 0.5s var(--ease); }
+  /* the metal sort: mirrored, grey, on a lead body */
+  .gm-hero__word [data-l] b { transform: scaleX(-1); color: transparent; background: linear-gradient(180deg, #b9bcc1, #6f7277 55%, #9a9da2); -webkit-background-clip: text; background-clip: text; font-variation-settings: 'wght' 520; filter: drop-shadow(0 0.012em 0 #fff8) drop-shadow(0 -0.01em 0 #0006); }
+  .gm-hero__word [data-l]::before { content: ''; position: absolute; inset: 0.14em -0.005em 0.04em; background: linear-gradient(180deg, #d5d7da, #a7aaaf); border-radius: 0.02em; box-shadow: inset 0 0 0 1px #0002, inset 0.03em 0 0 #ffffff55; z-index: -1; transition: opacity 0.35s var(--ease), transform 0.4s var(--ease); }
+  .gm-hero__word [data-l] i { opacity: 0; color: var(--ink); font-variation-settings: 'wght' 480; transform: translateY(-0.04em); }
+  .gm-hero__word [data-l].is-printed b { opacity: 0; transform: scaleX(-1) translateY(0.05em); }
+  .gm-hero__word [data-l].is-printed::before { opacity: 0; transform: translateY(0.06em); }
+  .gm-hero__word [data-l].is-printed i { opacity: 1; transform: none; animation: gm-ink 0.6s var(--ease); }
+  @keyframes gm-ink { 0% { font-variation-settings: 'wght' 800; filter: blur(0.6px); } }
+  .gm-hero__roller { position: absolute; top: -6%; bottom: -6%; width: 0.16em; margin-left: -0.08em; border-radius: 0.08em; background: linear-gradient(90deg, #111 0%, #3b3b3b 30%, #1a1a1a 60%, #000 100%); box-shadow: 0 0.04em 0.08em #0006; pointer-events: none; }
+  .gm-hero__roller::before, .gm-hero__roller::after { content: ''; position: absolute; left: 50%; width: 0.03em; height: 0.18em; background: #6b5a44; transform: translateX(-50%); }
+  .gm-hero__roller::before { top: -0.18em; } .gm-hero__roller::after { bottom: -0.18em; }
+
+  /* ---------- book ---------- */
+  .gm-book { display: grid; gap: 1.2rem; justify-items: center; }
+  .gm-book__spread { position: relative; display: grid; grid-template-columns: 1fr 1fr; width: min(100%, 64rem); perspective: 2200px; filter: drop-shadow(0 30px 30px #3a2a1433); }
+  .gm-page { container-type: inline-size; position: relative; aspect-ratio: 0.9; background: var(--paper); color: var(--ink); padding: 9% 10% 7%; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+  .gm-page--l { border-radius: 4px 0 0 4px; background: linear-gradient(90deg, var(--paper) 86%, #e9dfc9); }
+  .gm-page--r { border-radius: 0 4px 4px 0; background: linear-gradient(270deg, var(--paper) 86%, #e9dfc9); }
+  .gm-page__head { text-align: center; font-family: 'EB Garamond Variable', serif; font-style: italic; font-size: 3.4cqi; color: #6b5f4b; }
+  .gm-page__text { font-family: 'EB Garamond Variable', serif; font-size: 4.9cqi; line-height: 1.45; text-align: justify; hyphens: auto; -webkit-hyphens: auto; padding-top: 6cqi; font-variation-settings: 'wght' 420; }
+  .gm-page__text p + p { text-indent: 1.3em; }
+  .gm-page__text.is-first p:first-child::first-letter { float: left; font-size: 3.3em; line-height: 0.82; padding: 0.06em 0.08em 0 0; color: var(--accent); font-variation-settings: 'wght' 500; }
+  .gm-page__folio { text-align: center; font-family: 'EB Garamond Variable', serif; font-size: 3.4cqi; color: #6b5f4b; font-feature-settings: 'pnum'; }
+  .gm-book__leaf { position: absolute; left: 50%; top: 0; width: 50%; height: 100%; transform-origin: 0 50%; pointer-events: none; opacity: 0; backface-visibility: hidden; }
+  .gm-book__leaf .gm-page { height: 100%; box-shadow: -10px 0 30px -10px #3a2a1466; }
+  .gm-book__leaf.is-turning { opacity: 1; animation: gm-turn 0.8s cubic-bezier(0.45, 0.05, 0.3, 1) forwards; }
+  .gm-book__leaf.is-back { opacity: 1; animation: gm-turn 0.8s cubic-bezier(0.45, 0.05, 0.3, 1) reverse forwards; }
+  @keyframes gm-turn { 0% { transform: rotateY(0); } 100% { transform: rotateY(-180deg); } }
+  .gm-book__ctl { display: flex; align-items: center; gap: 1.2rem; font: 400 0.74rem/1 var(--font-mono); letter-spacing: 0.08em; color: var(--fg-2); }
+  .gm-book__ctl button { font: inherit; text-transform: uppercase; padding: 0.7rem 1.1rem; border: 1px solid var(--fg); color: var(--fg); transition: all 0.2s; }
+  .gm-book__ctl button:hover { background: var(--fg); color: var(--bg); }
+
+  /* ---------- ligatures ---------- */
+  .gm-liga { display: grid; gap: 1.6rem; justify-items: start; }
+  .gm-liga__words { display: flex; flex-wrap: wrap; gap: 0 0.5em; font-size: clamp(3rem, 10vw, 10.5rem); line-height: 1.1; font-style: italic; font-feature-settings: 'liga' 1; transition: letter-spacing 0.5s var(--ease); }
+  .gm-liga__words.is-off { font-feature-settings: 'liga' 0; letter-spacing: 0.015em; color: var(--accent); }
+  .gm-switch { display: inline-flex; align-items: center; gap: 0.8rem; font: 400 0.74rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); }
+  .gm-switch i { width: 3rem; height: 1.6rem; border-radius: 100px; background: var(--fg-3); position: relative; transition: background 0.25s; }
+  .gm-switch i::after { content: ''; position: absolute; top: 0.2rem; left: 0.2rem; width: 1.2rem; height: 1.2rem; border-radius: 50%; background: var(--bg); transition: transform 0.3s var(--ease); }
+  .gm-switch[aria-pressed='true'] i { background: var(--accent); }
+  .gm-switch[aria-pressed='true'] i::after { transform: translateX(1.4rem); }
+
+  /* ---------- bookplate ---------- */
+  .gm-plate { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+  .gm-plate__card { container-type: inline-size; justify-self: center; width: min(100%, 26rem); aspect-ratio: 0.74; background: #fbf7ee; color: #2a2116; border: 1px solid #2a2116; outline: 1px solid #2a2116; outline-offset: -14px; padding: 12% 10%; display: grid; align-content: center; justify-items: center; gap: 4cqi; text-align: center; box-shadow: 0 30px 50px -30px #3a2a1488; transform: rotate(-1.2deg); }
+  .gm-plate__ex { font-size: 13cqi; font-style: italic; line-height: 1; color: var(--accent); font-variation-settings: 'wght' 500; }
+  .gm-plate__orn { width: 46cqi; } .gm-plate__orn path { fill: none; stroke: #2a2116; stroke-width: 1.2; } .gm-plate__orn circle { fill: var(--accent); }
+  .gm-plate__name { font-size: 11cqi; line-height: 1.05; font-variation-settings: 'wght' 600; text-transform: uppercase; letter-spacing: 0.08em; overflow-wrap: anywhere; }
+  .gm-plate__motto { font-size: 5.6cqi; font-style: italic; color: #5c4f3c; }
+  .gm-plate__no { font: 400 3.4cqi/1 var(--font-mono); letter-spacing: 0.2em; color: #7d735f; }
+  .gm-plate__form { display: grid; gap: 1.2rem; }
+  .gm-plate__form label { display: grid; gap: 0.4rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .gm input[type='text'] { font: italic 400 1.6rem/1.2 'EB Garamond Variable', serif; padding: 0.4rem 0; background: none; border: 0; border-bottom: 1px solid var(--fg-3); color: var(--fg); outline: none; text-transform: none; letter-spacing: 0; }
+  .gm input[type='text']:focus { border-color: var(--accent); }
+
+  /* ---------- dictionary ---------- */
+  .gm-dict { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(1rem, 3vw, 3rem); align-items: start; }
+  .gm-dict__page { background: #fbf7ee; color: #1b160f; padding: clamp(1.5rem, 4vw, 3.5rem); border-left: 3px solid var(--accent); font-family: 'EB Garamond Variable', serif; font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.6rem); line-height: 1.5; min-height: 22rem; }
+  .gm-dict__page.is-in > * { animation: gm-rise 0.6s var(--ease) backwards; }
+  .gm-dict__page.is-in > *:nth-child(2) { animation-delay: 60ms; } .gm-dict__page.is-in > *:nth-child(3) { animation-delay: 120ms; } .gm-dict__page.is-in > *:nth-child(4) { animation-delay: 180ms; }
+  @keyframes gm-rise { from { opacity: 0; transform: translateY(8px); } }
+  .gm-dict__hw b { font-weight: 400; font-size: 2.6em; line-height: 1; font-variation-settings: 'wght' 700; letter-spacing: -0.01em; }
+  .gm-dict__hw span { font-size: 0.9em; color: #6b5f4b; margin-left: 0.5em; }
+  .gm-dict__pos { font-style: italic; color: var(--accent); margin: 0.2em 0 0.8em; }
+  .gm-dict__page ol { list-style: none; counter-reset: d; display: grid; gap: 0.6em; }
+  .gm-dict__page li { counter-increment: d; padding-left: 1.6em; position: relative; }
+  .gm-dict__page li::before { content: counter(d); position: absolute; left: 0; font-variation-settings: 'wght' 700; }
+  .gm-dict__ety { margin-top: 1.2em; padding-top: 0.9em; border-top: 1px solid #1b160f22; font-style: italic; color: #463d2e; }
+  .gm-dict__ety span { font-style: normal; font-variant: small-caps; letter-spacing: 0.06em; margin-right: 0.4em; font-variation-settings: 'wght' 600; color: #1b160f; }
+  .gm-dict__tabs { display: grid; gap: 0.5rem; }
+  .gm-dict__tabs button { font-size: 1.5rem; font-style: italic; text-align: left; padding: 0.3rem 1rem; border-left: 2px solid transparent; color: var(--fg-2); transition: all 0.2s; }
+  .gm-dict__tabs button:hover { color: var(--fg); }
+  .gm-dict__tabs button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); font-variation-settings: 'wght' 600; }
+
+  .gm .ed-test__stage { background: var(--paper); }
+
+  @media (max-width: 900px) {
+    .gm-plate, .gm-dict { grid-template-columns: minmax(0, 1fr); }
+    .gm-dict__tabs { grid-auto-flow: column; justify-content: start; }
+  }
+  @media (max-width: 600px) {
+    .gm-book__spread { grid-template-columns: 1fr; }
+    .gm-page--l { display: none; }
+    .gm-page--r { border-radius: 4px; }
+    .gm-book__leaf { left: 0; width: 100%; }
+  }
+</style>

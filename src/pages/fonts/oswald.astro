@@ -1,0 +1,302 @@
+---
+// OSWALD — new edition. Headlines under pressure: a front page you write, a
+// shirt with your name on it and an election night. Every example is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('oswald');
+const rows = [0, 1, 2, 3, 4];
+const cands = [
+  { n: 'Harriet Vane', p: 'Lantern Party', c: '#e8482c', v: 0.412 },
+  { n: 'Tomasz Brecht', p: 'Harbour Alliance', c: '#3b82f6', v: 0.377 },
+  { n: 'Ama Okonjo', p: 'Greenway', c: '#22c55e', v: 0.146 },
+  { n: 'Ivo Lund', p: 'Independent', c: '#b3ada3', v: 0.065 },
+];
+---
+<Layout title="Oswald — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Oswald" showToggle={false} />
+  <div class="ed os" data-os>
+    <header class="ed-hero os-hero" data-hero>
+      <div class="ed-hero__top"><span>Oswald · {font.designer} · {font.year}</span><span>ExtraLight 200 to Bold 700</span></div>
+      <h1 class="ed-hero__word os-hero__stack" data-stack aria-label="Oswald">
+        {rows.map((r) => <span class="os-hero__row" data-row style={`--r:${r}`} aria-hidden="true">Oswald</span>)}
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Built for the line that has to <em>shout in a narrow column</em>.
+          <span class="ed-hero__hint" data-fine>Move up and down the stack. The row under the pointer goes Bold; the rest fall back to ExtraLight.</span>
+          <span class="ed-hero__hint" data-coarse>Drag up and down the stack to choose which row goes Bold.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>row</dt><dd data-hud="row">3</dd></div><div><dt>wght</dt><dd data-hud="wght">700</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-paper>
+        <div class="ed-kicker"><span>01</span> Hold the front page</div>
+        <h2 class="ed-h2">Write the headline.<br />It sets itself <em>edge to edge</em>.</h2>
+        <div class="ed-body os-paper">
+          <div class="os-paper__sheet">
+            <header class="os-paper__mast"><span data-paper-date>Tuesday</span><b class="os-f">The Evening Wire</b><span>Late final · 60p</span></header>
+            <div class="os-paper__fit" data-fit-box><p class="os-f os-paper__head" data-paper-head></p></div>
+            <p class="os-f os-paper__deck" data-paper-deck>Experts “stunned” · Neighbours “not surprised” · Full story pages 2–7</p>
+            <div class="os-paper__cols" aria-hidden="true">{[0, 1, 2].map(() => <div><i></i><i></i><i></i><i></i><i></i><i style="width:58%"></i></div>)}</div>
+          </div>
+          <div class="os-paper__form">
+            <label><span>Your headline</span><input type="text" value="Cat elected mayor" maxlength="60" data-paper-in /></label>
+            <div class="os-paper__picks">{['Cat elected mayor', 'Pier falls in sea', 'Town runs out of chips', 'It’s finally Friday'].map((h) => <button type="button" data-paper-pick={h}>{h}</button>)}</div>
+            <p class="ed-cap">Size and weight are solved live: short headlines go huge and Bold, long ones drop in size and lighten so the page doesn’t go black.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-shirt>
+        <div class="ed-kicker"><span>02</span> On the back of a shirt</div>
+        <h2 class="ed-h2">Tall letters fit<br /><em>long names</em> across shoulders.</h2>
+        <div class="ed-body os-shirt">
+          <div class="os-shirt__wrap">
+            <svg class="os-shirt__svg" viewBox="0 0 400 440" aria-label="Football shirt with a name and number">
+              <defs>
+                <path id="os-arc" d="M80,128 Q200,92 320,128" />
+                <pattern id="os-mesh" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="0.9" fill="#00000022" /></pattern>
+              </defs>
+              <path class="body" d="M118 24 L160 10 Q200 34 240 10 L282 24 L380 78 L344 168 L306 150 L306 430 L94 430 L94 150 L56 168 L20 78 Z" />
+              <path d="M118 24 L160 10 Q200 34 240 10 L282 24 L380 78 L344 168 L306 150 L306 430 L94 430 L94 150 L56 168 L20 78 Z" fill="url(#os-mesh)" />
+              <path class="trim" d="M160 10 Q200 34 240 10" />
+              <text class="name"><textPath href="#os-arc" startOffset="50%" text-anchor="middle" data-shirt-name>OKAFOR</textPath></text>
+              <text class="num" x="200" y="330" text-anchor="middle" data-shirt-num>9</text>
+            </svg>
+          </div>
+          <div class="os-shirt__form">
+            <label><span>Name</span><input type="text" value="Okafor" maxlength="14" data-shirt-in="name" /></label>
+            <label><span>Number</span><input type="text" inputmode="numeric" value="9" maxlength="2" data-shirt-in="num" /></label>
+            <div class="os-shirt__kits" role="radiogroup" aria-label="Kit colour">
+              {[['#e8482c', '#fff'], ['#151311', '#e8b02c'], ['#1d4ed8', '#fff'], ['#f3efe6', '#151311'], ['#15803d', '#f3efe6']].map(([a, b], i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-kit={`${a},${b}`} style={`--a:${a};--b:${b}`} aria-label={`Kit ${i + 1}`}></button>)}
+            </div>
+            <p class="ed-cap">Longer names squeeze down in weight to stay on the shoulders.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-poll>
+        <div class="ed-kicker"><span>03</span> Election night</div>
+        <h2 class="ed-h2">Figures you can read<br />from <em>across the room</em>.</h2>
+        <div class="ed-body os-poll">
+          <header class="os-poll__head os-f"><b>Harbourside East</b><span>Votes counted <i data-poll-pct>0</i>%</span><em data-poll-call>Too close to call</em></header>
+          <ol>
+            {cands.map((c, i) => (
+              <li style={`--c:${c.c}`} data-cand={i} data-v={c.v}>
+                <span class="os-poll__n os-f">{c.n}<small>{c.p}</small></span>
+                <span class="os-poll__bar"><i data-bar></i></span>
+                <b class="os-f" data-share>0.0%</b>
+                <span class="os-poll__votes" data-votes>0</span>
+              </li>
+            ))}
+          </ol>
+          <button type="button" class="os-poll__re" data-poll-re>Count again</button>
+        </div>
+        <p class="ed-cap">An invented constituency and invented candidates. The count runs when you scroll here.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Stop <em>the presses</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Oswald Variable" sample="Breaking news" upper axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 700 }]}
+            presets={[{ name: 'ExtraLight', v: [200] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }]} start={4} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={5} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-os]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Hero: the row under the pointer goes Bold ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const stack = hero.querySelector<HTMLElement>('[data-stack]')!;
+    const rows = Array.from(stack.querySelectorAll<HTMLElement>('[data-row]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = rows.map(() => 200);
+    runHero(hero, (f) => {
+      const sr = stack.getBoundingClientRect(), hr = hero.getBoundingClientRect();
+      const y = f.live ? (f.py * hr.height + hr.top - sr.top) / sr.height : f.reduce ? 0.5 : 0.5 + 0.5 * Math.sin(f.t * 0.7);
+      const pos = clamp(y, 0, 1) * (rows.length - 1);
+      let best = 0;
+      rows.forEach((r, i) => {
+        const d = Math.abs(i - pos), tw = 200 + 500 * Math.max(0, 1 - d / 1.4) ** 2;
+        w[i] += (tw - w[i]) * 0.15;
+        r.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}`;
+        r.classList.toggle('is-on', d < 0.5);
+        if (w[i] > w[best]) best = i;
+      });
+      hud.row.textContent = String(best + 1);
+      hud.wght.textContent = String(Math.round(w[best]));
+    });
+
+    // ---------- Fit text: solve size and weight so a line fills a box exactly ----------
+    const fitLine = (el: HTMLElement, box: HTMLElement, maxLines: number, minW: number, maxW: number) => {
+      const words = el.textContent!.trim().split(/\s+/);
+      const W = box.clientWidth;
+      // weight eases off as the headline gets longer, so long ones don't go solid black
+      const len = el.textContent!.length;
+      const wt = Math.round(clamp(maxW - (len - 8) * 14, minW, maxW));
+      el.style.fontVariationSettings = `'wght' ${wt}`;
+      // single line if it is short, otherwise balance onto two lines and fit the longer one
+      const lines = words.length > 2 && len > 14 ? (() => { let best = [words.join(' ')], bestD = 1e9; for (let k = 1; k < words.length; k++) { const a = words.slice(0, k).join(' '), b = words.slice(k).join(' '), d = Math.abs(a.length - b.length); if (d < bestD) { bestD = d; best = [a, b]; } } return best; })() : [words.join(' ')];
+      el.innerHTML = lines.slice(0, maxLines).map((l) => `<span>${l.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!)}</span>`).join('');
+      el.style.fontSize = '100px';
+      const widest = Math.max(...Array.from(el.children).map((c) => (c as HTMLElement).getBoundingClientRect().width));
+      el.style.fontSize = `${Math.min(100 * W / widest, box.clientHeight / (lines.length * 0.98))}px`;
+      return wt;
+    };
+
+    // ---------- Front page ----------
+    const paper = page.querySelector<HTMLElement>('[data-paper]')!;
+    const pin = paper.querySelector<HTMLInputElement>('[data-paper-in]')!;
+    const head = paper.querySelector<HTMLElement>('[data-paper-head]')!;
+    const fitBox = paper.querySelector<HTMLElement>('[data-fit-box]')!;
+    paper.querySelector('[data-paper-date]')!.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    const setHead = () => { head.textContent = (pin.value.trim() || 'Nothing happened').toUpperCase(); fitLine(head, fitBox, 2, 300, 700); };
+    pin.addEventListener('input', setHead);
+    paper.querySelectorAll<HTMLElement>('[data-paper-pick]').forEach((b) => b.addEventListener('click', () => { pin.value = b.dataset.paperPick!; setHead(); }));
+    document.fonts.ready.then(setHead); window.addEventListener('resize', setHead); setHead();
+
+    // ---------- Shirt ----------
+    const shirt = page.querySelector<HTMLElement>('[data-shirt]')!;
+    const nameEl = shirt.querySelector<SVGTextPathElement>('[data-shirt-name]')!;
+    const numEl = shirt.querySelector<SVGTextElement>('[data-shirt-num]')!;
+    const svg = shirt.querySelector<SVGSVGElement>('svg')!;
+    const paintShirt = () => {
+      const n = (shirt.querySelector<HTMLInputElement>('[data-shirt-in="name"]')!.value.trim() || 'Player').toUpperCase();
+      const num = shirt.querySelector<HTMLInputElement>('[data-shirt-in="num"]')!.value.replace(/\D/g, '').slice(0, 2) || '0';
+      nameEl.textContent = n; numEl.textContent = num;
+      // squeeze weight down as the name gets longer
+      (nameEl.parentNode as SVGTextElement).style.fontVariationSettings = `'wght' ${Math.round(clamp(700 - (n.length - 6) * 45, 300, 700))}`;
+    };
+    shirt.querySelectorAll<HTMLInputElement>('[data-shirt-in]').forEach((i) => i.addEventListener('input', paintShirt));
+    const kits = Array.from(shirt.querySelectorAll<HTMLElement>('[data-kit]'));
+    kits.forEach((k) => k.addEventListener('click', () => {
+      const [a, b] = k.dataset.kit!.split(',');
+      svg.style.setProperty('--kit', a); svg.style.setProperty('--ink', b);
+      kits.forEach((o) => o.setAttribute('aria-checked', String(o === k)));
+    }));
+    paintShirt();
+
+    // ---------- Election count ----------
+    const poll = page.querySelector<HTMLElement>('[data-poll]')!;
+    const items = Array.from(poll.querySelectorAll<HTMLElement>('[data-cand]'));
+    const TOTAL = 48210;
+    let raf = 0;
+    const count = () => {
+      cancelAnimationFrame(raf);
+      const start = performance.now(), dur = reduce ? 1 : 7000;
+      const step = (now: number) => {
+        const t = clamp((now - start) / dur, 0, 1), counted = 1 - (1 - t) ** 2.2;
+        // early returns wobble before settling on the true shares
+        const wob = (1 - counted) * 0.12;
+        const raw = items.map((el, i) => Math.max(0.01, +el.dataset.v! + wob * Math.sin(i * 2.1 + counted * 9)));
+        const sum = raw.reduce((a, b) => a + b, 0);
+        let lead = 0;
+        items.forEach((el, i) => {
+          const share = raw[i] / sum; if (share > raw[lead] / sum) lead = i;
+          el.querySelector<HTMLElement>('[data-bar]')!.style.width = `${(share * 100 * counted / 0.5).toFixed(2)}%`;
+          el.querySelector('[data-share]')!.textContent = `${(share * 100).toFixed(1)}%`;
+          el.querySelector('[data-votes]')!.textContent = Math.round(share * TOTAL * counted).toLocaleString('en-GB');
+        });
+        items.forEach((el, i) => el.classList.toggle('is-lead', i === lead));
+        poll.querySelector('[data-poll-pct]')!.textContent = String(Math.round(counted * 100));
+        poll.querySelector('[data-poll-call]')!.textContent = counted > 0.92 ? `${items[lead].querySelector('.os-poll__n')!.firstChild!.textContent} wins` : counted > 0.6 ? 'Leaning' : 'Too close to call';
+        poll.classList.toggle('is-called', counted > 0.92);
+        if (t < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+    new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { count(); o.disconnect(); } }, { threshold: 0.4 }).observe(poll);
+    poll.querySelector('[data-poll-re]')!.addEventListener('click', count);
+  }
+</script>
+
+<style is:global>
+  .os { --ed-head: 'Oswald Variable', 'Arial Narrow', sans-serif; --ed-head-vf: 'wght' 600; --ed-em-vf: 'wght' 250; --ed-lede-vf: 'wght' 500; --ed-radius: 0; }
+  .os em { font-style: normal; }
+  .os .ed-h2, .os .ed-hero__lede { text-transform: uppercase; letter-spacing: 0.005em; line-height: 0.98; }
+  .os .ed-h2 { font-size: clamp(2.3rem, 1rem + 5.2vw, 6.4rem); }
+  .os .ed-hero__lede { font-size: clamp(1.4rem, 0.9rem + 2vw, 2.6rem); max-width: 17ch; }
+  .os-f { font-family: 'Oswald Variable', 'Arial Narrow', sans-serif; font-weight: 400; font-feature-settings: normal; }
+  .os .ed-story__prose strong { font-family: 'Oswald Variable', sans-serif; font-weight: 400; font-variation-settings: 'wght' 600; text-transform: uppercase; letter-spacing: 0.02em; font-size: 0.92em; }
+
+  .os-hero { background: linear-gradient(90deg, transparent 49.9%, var(--line) 50%, transparent 50.1%), var(--bg); }
+  .os-hero__stack { display: grid; justify-items: center; font-family: 'Oswald Variable', sans-serif; font-size: min(15vw, 14svh); line-height: 0.86; text-transform: uppercase; letter-spacing: 0.01em; user-select: none; }
+  .os-hero__row { color: var(--fg-3); transition: color 0.3s; }
+  .os-hero__row.is-on { color: var(--accent); }
+
+  /* ---------- front page ---------- */
+  .os-paper { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+  .os-paper__sheet { background: #ecebe4; color: #121212; padding: clamp(1rem, 2.6vw, 2.2rem); display: grid; gap: 1rem; box-shadow: 0 30px 60px -30px #000; transform: rotate(-0.8deg); background-image: radial-gradient(#12121214 0.8px, transparent 1px); background-size: 4px 4px; }
+  .os-paper__mast { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; padding-bottom: 0.7rem; border-bottom: 4px double #121212; font: 400 0.68rem/1.3 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  .os-paper__mast b { font-weight: 400; font-size: clamp(1.4rem, 3.2vw, 2.6rem); font-variation-settings: 'wght' 700; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; }
+  .os-paper__mast span:last-child { text-align: right; }
+  .os-paper__fit { height: clamp(11rem, 24vw, 22rem); display: grid; align-items: center; overflow: hidden; }
+  .os-paper__head { display: grid; line-height: 0.92; text-align: center; white-space: nowrap; }
+  .os-paper__head span { display: block; width: max-content; justify-self: center; }
+  .os-paper__deck { text-align: center; text-transform: uppercase; font-size: clamp(0.9rem, 1.6vw, 1.3rem); font-variation-settings: 'wght' 500; padding: 0.6rem 0; border-block: 1px solid #121212; letter-spacing: 0.02em; }
+  .os-paper__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .os-paper__cols div { display: grid; gap: 0.45rem; } .os-paper__cols i { height: 4px; background: #12121230; }
+  .os-paper__form, .os-shirt__form { display: grid; gap: 1.2rem; align-content: start; }
+  .os-paper__form label, .os-shirt__form label { display: grid; gap: 0.4rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .os input[type='text'] { font: 400 2rem/1.1 'Oswald Variable', sans-serif; font-variation-settings: 'wght' 500; text-transform: uppercase; padding: 0.3rem 0; background: none; border: 0; border-bottom: 2px solid var(--fg-3); color: var(--fg); outline: none; letter-spacing: 0.01em; }
+  .os input[type='text']:focus { border-color: var(--accent); }
+  .os-paper__picks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .os-paper__picks button { padding: 0.5rem 0.8rem; border: 1px solid var(--line); font: 400 0.95rem/1 'Oswald Variable', sans-serif; font-variation-settings: 'wght' 500; text-transform: uppercase; color: var(--fg-2); transition: all 0.2s; }
+  .os-paper__picks button:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- shirt ---------- */
+  .os-shirt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+  .os-shirt__wrap { display: grid; place-items: center; background: radial-gradient(60% 60% at 50% 40%, #2e2924, #151311 70%); padding: clamp(1rem, 4vw, 3rem); }
+  .os-shirt__svg { --kit: #e8482c; --ink: #fff; width: min(100%, 26rem); filter: drop-shadow(0 30px 30px #0009); font-family: 'Oswald Variable', sans-serif; }
+  .os-shirt__svg .body { fill: var(--kit); transition: fill 0.4s; }
+  .os-shirt__svg .trim { fill: none; stroke: var(--ink); stroke-width: 6; transition: stroke 0.4s; }
+  .os-shirt__svg .name { font-size: 40px; fill: var(--ink); letter-spacing: 0.04em; transition: fill 0.4s; }
+  .os-shirt__svg .num { font-size: 190px; fill: var(--ink); font-variation-settings: 'wght' 700; transition: fill 0.4s; }
+  .os-shirt__kits { display: flex; gap: 0.6rem; }
+  .os-shirt__kits button { width: 2.4rem; height: 2.4rem; border-radius: 50%; background: linear-gradient(90deg, var(--a) 50%, var(--b) 50%); border: 1px solid #f3efe655; box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px transparent; transition: box-shadow 0.2s; }
+  .os-shirt__kits button[aria-checked='true'] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+
+  /* ---------- poll ---------- */
+  .os-poll { background: #0d1b2a; color: #f3efe6; padding: clamp(1.2rem, 3.4vw, 3rem); display: grid; gap: 1.4rem; border-top: 6px solid var(--accent); }
+  .os-poll__head { display: flex; align-items: baseline; gap: 1.5rem; flex-wrap: wrap; text-transform: uppercase; }
+  .os-poll__head b { font-weight: 400; font-size: clamp(1.8rem, 4.6vw, 4rem); line-height: 1; font-variation-settings: 'wght' 700; margin-right: auto; }
+  .os-poll__head span { font-size: 1.1rem; font-variation-settings: 'wght' 400; color: #9fb2c8; }
+  .os-poll__head i { font-style: normal; font-variation-settings: 'wght' 700; color: #f3efe6; font-feature-settings: 'tnum'; }
+  .os-poll__head em { padding: 0.35rem 0.8rem; background: #f3efe61a; font-size: 1rem; font-variation-settings: 'wght' 600; letter-spacing: 0.04em; }
+  .os-poll.is-called .os-poll__head em { background: var(--accent); color: #fff; animation: os-call 0.6s var(--ease); }
+  @keyframes os-call { from { transform: scale(1.2); } }
+  .os-poll ol { display: grid; gap: 0.9rem; }
+  .os-poll li { --c: #fff; display: grid; grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr) auto 6.5rem; align-items: center; gap: 1rem; }
+  .os-poll__n { text-transform: uppercase; font-size: clamp(1.1rem, 2.2vw, 1.8rem); line-height: 1; font-variation-settings: 'wght' 500; display: grid; }
+  .os-poll__n small { font: 400 0.68rem/1.6 var(--font-mono); letter-spacing: 0.08em; color: #9fb2c8; }
+  .os-poll__bar { height: clamp(1.6rem, 3vw, 2.6rem); background: #ffffff10; }
+  .os-poll__bar i { display: block; height: 100%; width: 0; max-width: 100%; background: var(--c); }
+  .os-poll li b { min-width: 4.4ch; font-weight: 400; text-align: right; font-size: clamp(1.4rem, 3vw, 2.6rem); font-variation-settings: 'wght' 600; font-feature-settings: 'tnum'; }
+  .os-poll__votes { text-align: right; font: 400 0.8rem/1 var(--font-mono); color: #9fb2c8; }
+  .os-poll li.is-lead .os-poll__n { font-variation-settings: 'wght' 700; color: var(--c); }
+  .os-poll__re { justify-self: start; padding: 0.6rem 1rem; border: 1px solid #f3efe655; font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #f3efe6; }
+  .os-poll__re:hover { background: #f3efe6; color: #0d1b2a; }
+
+  .os .ed-test__text { letter-spacing: 0.01em; }
+
+  @media (max-width: 900px) { .os-paper, .os-shirt { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 600px) { .os-poll li { grid-template-columns: minmax(0, 1fr) auto; } .os-poll__bar { grid-column: 1 / -1; grid-row: 2; } .os-poll__votes { display: none; } .os-paper__mast span { display: none; } .os-paper__mast { grid-template-columns: 1fr; text-align: center; } }
+</style>

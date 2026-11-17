@@ -1,0 +1,272 @@
+---
+// JOST — new edition. Circle, square, triangle: a composition you rearrange,
+// letters with their construction drawn on, a poster and a shelf of records.
+// Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('jost');
+const records = [
+  { t: 'Circles', a: 'Ensemble Kreis', side: 'LP · 33⅓', bg: '#d7392b', fg: '#f1ece1', shape: 'circle', w: 300 },
+  { t: 'Square One', a: 'The Grid Quartet', side: 'LP · 33⅓', bg: '#2440b8', fg: '#f1ece1', shape: 'square', w: 700 },
+  { t: 'Three Sides', a: 'Delta Delta', side: 'EP · 45', bg: '#f2c230', fg: '#15130d', shape: 'triangle', w: 500 },
+  { t: 'Monochrome', a: 'Nora Weiss', side: 'LP · 33⅓', bg: '#15130d', fg: '#f1ece1', shape: 'line', w: 200 },
+];
+---
+<Layout title="Jost — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Jost" showToggle={false} />
+  <div class="ed js" data-js>
+    <header class="ed-hero js-hero" data-hero>
+      <div class="js-hero__shapes" aria-hidden="true"><i class="c"></i><i class="s"></i><i class="t"></i><i class="b"></i></div>
+      <div class="ed-hero__top"><span>Jost · {font.designer} · {font.year}</span><span>Thin 100 to Black 900, roman & italic</span></div>
+      <h1 class="ed-hero__word js-hero__word" data-word aria-label="Jost">{[...'Jost*'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Drawn with a compass and a ruler, <em>then softened</em> just enough to read.
+          <span class="ed-hero__hint" data-fine>Move sideways for weight; the shapes drift with you. Click to rearrange the composition.</span>
+          <span class="ed-hero__hint" data-coarse>Drag sideways for weight. Tap to rearrange the composition.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>wght</dt><dd data-hud="wght">400</dd></div><div><dt>layout</dt><dd data-hud="n">01</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-build>
+        <div class="ed-kicker"><span>01</span> Under the ink</div>
+        <h2 class="ed-h2">An o is a circle. An A<br />is a triangle. <em>Almost</em>.</h2>
+        <p class="ed-lede">The guides are drawn from each letter’s measured edges. Drag the weight and watch how the strokes thicken inward and outward around the same geometry.</p>
+        <div class="ed-body js-build">
+          <div class="js-build__row" data-build-row>
+            {['o', 'A', 't', 'V'].map((g) => (
+              <figure class="js-build__cell">
+                <span class="js-build__g" data-g={g}>{g}</span>
+                <svg class="js-build__svg" data-guide={g} aria-hidden="true"></svg>
+              </figure>
+            ))}
+          </div>
+          <label class="ed-slider"><span>Weight <b data-build-val>400</b></span><input type="range" min="100" max="900" step="1" value="400" data-build-in /></label>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On the noticeboard</div>
+        <h2 class="ed-h2">Primary colours,<br />primary <em>shapes</em>.</h2>
+        <div class="ed-body js-poster" data-inview>
+          <div class="js-poster__sheet">
+            <i class="js-poster__circle" aria-hidden="true"></i><i class="js-poster__bar" aria-hidden="true"></i><i class="js-poster__tri" aria-hidden="true"></i>
+            <p class="js-f js-poster__v">Summer school of form</p>
+            <p class="js-f js-poster__t"><span>Form</span><span>follows</span><span>fun.</span></p>
+            <p class="js-f js-poster__info"><b>Open workshop</b>Six weeks · wood, metal, paper, type<br />Mornings: drawing · Afternoons: making<br />Applications close 1 June</p>
+          </div>
+        </div>
+        <p class="ed-cap">An invented school and course.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> In the crates</div>
+        <h2 class="ed-h2">Four records,<br />one family, <em>four voices</em>.</h2>
+        <div class="ed-body js-crate">
+          {records.map((r, i) => (
+            <button type="button" class="js-rec" style={`--bg:${r.bg};--fg:${r.fg};--w:${r.w};--i:${i}`} aria-label={`${r.t} by ${r.a}`}>
+              <span class="js-rec__disc" aria-hidden="true"><i></i></span>
+              <span class={`js-rec__sleeve js-rec__sleeve--${r.shape}`}>
+                <i class="js-rec__art" aria-hidden="true"></i>
+                <span class="js-f js-rec__t">{r.t}</span>
+                <span class="js-f js-rec__a">{r.a}<small>{r.side}</small></span>
+              </span>
+            </button>
+          ))}
+        </div>
+        <p class="ed-cap">Invented artists and albums. Hover a sleeve (or tap it) to pull the record.</p>
+      </section>
+
+      <section class="ed-sec" data-nine>
+        <div class="ed-kicker"><span>04</span> Nine weights</div>
+        <h2 class="ed-h2">From a hairline<br />to <em>a slab of ink</em>.</h2>
+        <div class="ed-body js-nine" data-inview>
+          {[100, 200, 300, 400, 500, 600, 700, 800, 900].map((w, i) => <p style={`--w:${w};--i:${i}`}><i>{w}</i><span class="js-f">Geometry</span></p>)}
+        </div>
+        <button type="button" class="js-ital" data-ital aria-pressed="false">Show the italics</button>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Make it <em>modern</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Jost Variable" sample="Less, but better" italic
+            axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
+            presets={[{ name: 'Thin', v: [100] }, { name: 'Book', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Black', v: [900] }, { name: 'Light italic', v: [300], italic: true }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-js]');
+  if (page) {
+    watchInView(page);
+
+    // ---------- Hero ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const shapes = Array.from(hero.querySelectorAll<HTMLElement>('.js-hero__shapes i'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const layouts = [
+      [[12, 18, 0], [70, 8, 12], [78, 58, 0], [8, 64, -18]],
+      [[64, 14, 0], [10, 52, -8], [22, 6, 180], [60, 70, 32]],
+      [[38, 54, 0], [80, 24, 45], [6, 20, 90], [30, 10, 0]],
+      [[80, 60, 0], [32, 4, -20], [52, 62, 30], [4, 40, 90]],
+    ];
+    const w = letters.map(() => 400);
+    let seen = 0, li = 0, sx = 0.5, sy = 0.5;
+    const place = () => shapes.forEach((s, i) => { const [x, y, r] = layouts[li][i]; s.style.setProperty('--x', `${x}%`); s.style.setProperty('--y', `${y}%`); s.style.setProperty('--r', `${r}deg`); });
+    place();
+    runHero(hero, (f) => {
+      if (f.clicks !== seen) { seen = f.clicks; li = (li + 1) % layouts.length; place(); hud.n.textContent = String(li + 1).padStart(2, '0'); }
+      const tx = f.live ? f.px : 0.5 + 0.4 * Math.sin(f.t * 0.45), ty = f.live ? f.py : 0.5 + 0.2 * Math.cos(f.t * 0.6);
+      sx += (tx - sx) * 0.08; sy += (ty - sy) * 0.08;
+      hero.style.setProperty('--px', ((sx - 0.5) * 2).toFixed(3)); hero.style.setProperty('--py', ((sy - 0.5) * 2).toFixed(3));
+      const pos = clamp((sx - 0.15) / 0.7, 0, 1) * (letters.length - 1); let sum = 0;
+      letters.forEach((l, i) => { const tw = f.reduce ? 500 : 100 + 800 * near(i, pos, 1.9); w[i] += (tw - w[i]) * 0.14; l.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}`; sum += w[i]; });
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+    });
+
+    // ---------- Construction guides from measured ink bounds ----------
+    const build = page.querySelector<HTMLElement>('[data-build]')!;
+    const bin = build.querySelector<HTMLInputElement>('[data-build-in]')!;
+    const cv = document.createElement('canvas'); const ctx = cv.getContext('2d')!;
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag: string, a: Record<string, string | number>) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, String(a[k])); return e; };
+    const drawGuides = () => {
+      const wt = +bin.value;
+      build.querySelector('[data-build-val]')!.textContent = String(wt);
+      build.querySelectorAll<HTMLElement>('[data-g]').forEach((span) => {
+        span.style.fontVariationSettings = `'wght' ${wt}`;
+        const g = span.dataset.g!, svg = build.querySelector<SVGSVGElement>(`[data-guide="${g}"]`)!;
+        const cs = getComputedStyle(span), size = parseFloat(cs.fontSize);
+        ctx.font = `${wt} ${size}px 'Jost Variable'`;
+        const m = ctx.measureText(g);
+        const sr = span.getBoundingClientRect(), cell = svg.getBoundingClientRect();
+        // baseline position inside the span: half-leading + ascent of the font box
+        const asc = m.fontBoundingBoxAscent, desc = m.fontBoundingBoxDescent;
+        const base = sr.top - cell.top + (sr.height - (asc + desc)) / 2 + asc;
+        const left = sr.left - cell.left + (sr.width - m.width) / 2;
+        const x0 = left - m.actualBoundingBoxLeft, x1 = left + m.actualBoundingBoxRight;
+        const y0 = base - m.actualBoundingBoxAscent, y1 = base + m.actualBoundingBoxDescent;
+        svg.setAttribute('viewBox', `0 0 ${cell.width} ${cell.height}`);
+        svg.replaceChildren();
+        const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+        svg.append(el('line', { x1: 0, y1: base, x2: cell.width, y2: base, class: 'base' }));
+        if (g === 'o') {
+          const r = (x1 - x0 + (y1 - y0)) / 4;
+          svg.append(el('circle', { cx, cy, r, class: 'g' }), el('line', { x1: cx, y1: y0 - 20, x2: cx, y2: y1 + 20, class: 'aux' }), el('line', { x1: x0 - 20, y1: cy, x2: x1 + 20, y2: cy, class: 'aux' }));
+        } else if (g === 'A') {
+          svg.append(el('polygon', { points: `${cx},${y0} ${x1},${y1} ${x0},${y1}`, class: 'g' }), el('line', { x1: x0 - 10, y1: y0, x2: x1 + 10, y2: y0, class: 'aux' }));
+        } else if (g === 'V') {
+          svg.append(el('polygon', { points: `${x0},${y0} ${x1},${y0} ${cx},${y1}`, class: 'g' }));
+        } else {
+          svg.append(el('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, class: 'g' }), el('line', { x1: x0, y1: y0, x2: x1, y2: y1, class: 'aux' }));
+        }
+      });
+    };
+    bin.addEventListener('input', drawGuides); window.addEventListener('resize', drawGuides);
+    document.fonts.load(`400 100px 'Jost Variable'`, 'oAtV').then(drawGuides);
+
+    // ---------- Records: tap to pull ----------
+    page.querySelectorAll<HTMLElement>('.js-rec').forEach((r) => r.addEventListener('click', () => r.classList.toggle('is-out')));
+
+    // ---------- Italics ----------
+    const ib = page.querySelector<HTMLButtonElement>('[data-ital]')!;
+    ib.addEventListener('click', () => {
+      const on = ib.getAttribute('aria-pressed') !== 'true';
+      ib.setAttribute('aria-pressed', String(on)); ib.textContent = on ? 'Show the romans' : 'Show the italics';
+      page.querySelector('[data-nine] .js-nine')!.classList.toggle('is-ital', on);
+    });
+  }
+</script>
+
+<style is:global>
+  .js { --ed-head: 'Jost Variable', 'Futura', sans-serif; --ed-head-vf: 'wght' 600; --ed-em-vf: 'wght' 200; --ed-lede-vf: 'wght' 450; --ed-radius: 0; --red: #d7392b; --blue: #2440b8; --yellow: #f2c230; }
+  .js em { font-style: normal; } .js .ed-h2 { letter-spacing: -0.02em; line-height: 1; }
+  .js-f { font-family: 'Jost Variable', 'Futura', sans-serif; font-weight: 400; font-feature-settings: normal; }
+  .js .ed-story__prose { font-family: 'Jost Variable', sans-serif; font-variation-settings: 'wght' 400; }
+  .js .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 650; }
+
+  /* ---------- hero ---------- */
+  .js-hero { --px: 0; --py: 0; }
+  .js-hero__shapes { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+  .js-hero__shapes i { position: absolute; left: var(--x); top: var(--y); transform: translate(calc(var(--px) * var(--k) * 1px), calc(var(--py) * var(--k) * 1px)) rotate(var(--r)); transition: left 1s var(--ease), top 1s var(--ease), transform 0.25s linear, rotate 1s var(--ease); }
+  .js-hero__shapes .c { --k: 40; width: 26vmin; height: 26vmin; border-radius: 50%; background: var(--red); }
+  .js-hero__shapes .s { --k: -30; width: 20vmin; height: 20vmin; background: var(--blue); }
+  .js-hero__shapes .t { --k: 55; width: 0; height: 0; border-left: 13vmin solid transparent; border-right: 13vmin solid transparent; border-bottom: 22vmin solid var(--yellow); }
+  .js-hero__shapes .b { --k: -18; width: 40vmin; height: 2.4vmin; background: var(--fg); }
+  .js-hero__word { font-family: 'Jost Variable', sans-serif; font-size: min(30vw, 58svh); line-height: 1; letter-spacing: -0.03em; mix-blend-mode: multiply; }
+  .js-hero__word [data-l]:last-child { color: var(--red); }
+
+  /* ---------- construction ---------- */
+  .js-build { display: grid; gap: 1.4rem; }
+  .js-build__row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: #f6f3ec; }
+  .js-build__cell { position: relative; display: grid; place-items: center; aspect-ratio: 0.85; border-left: 1px solid var(--line); overflow: hidden; }
+  .js-build__cell:first-child { border-left: 0; }
+  .js-build__g { font-family: 'Jost Variable', sans-serif; font-size: clamp(6rem, 17vw, 17rem); line-height: 1.1; color: var(--fg); transition: font-variation-settings 0.1s; }
+  .js-build__svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .js-build__svg .g { fill: none; stroke: var(--red); stroke-width: 1.5; }
+  .js-build__svg .aux { stroke: var(--blue); stroke-width: 1; stroke-dasharray: 4 4; }
+  .js-build__svg .base { stroke: var(--fg-3); stroke-width: 1; stroke-dasharray: 2 6; }
+
+  /* ---------- poster ---------- */
+  .js-poster__sheet { container-type: inline-size; position: relative; max-width: 44rem; margin-inline: auto; aspect-ratio: 0.72; background: #f1ece1; color: #15130d; overflow: hidden; box-shadow: 0 40px 60px -40px #15130daa; }
+  .js-poster__circle { position: absolute; width: 62cqi; height: 62cqi; border-radius: 50%; background: var(--red); right: -14cqi; top: 10cqi; }
+  .js-poster__bar { position: absolute; left: 0; top: 74cqi; width: 78cqi; height: 9cqi; background: var(--blue); transform-origin: 0 50%; }
+  .js-poster__tri { position: absolute; left: 8cqi; bottom: 6cqi; width: 0; height: 0; border-left: 16cqi solid transparent; border-right: 16cqi solid transparent; border-bottom: 26cqi solid var(--yellow); }
+  .js-poster.is-in .js-poster__circle { animation: js-roll 9s ease-in-out infinite alternate; }
+  .js-poster.is-in .js-poster__bar { animation: js-tilt 7s ease-in-out infinite alternate; }
+  @keyframes js-roll { to { transform: translate(-8cqi, 6cqi); } }
+  @keyframes js-tilt { from { transform: rotate(-4deg); } to { transform: rotate(3deg); } }
+  .js-poster__v { position: absolute; left: 6cqi; top: 6cqi; writing-mode: vertical-rl; white-space: nowrap; font-size: 3cqi; letter-spacing: 0.3em; text-transform: uppercase; font-variation-settings: 'wght' 500; }
+  .js-poster__t { position: absolute; left: 14cqi; top: 22cqi; display: grid; font-size: 21cqi; line-height: 0.9; letter-spacing: -0.03em; mix-blend-mode: multiply; }
+  .js-poster__t span:nth-child(1) { font-variation-settings: 'wght' 900; }
+  .js-poster__t span:nth-child(2) { font-variation-settings: 'wght' 200; font-style: italic; padding-left: 10cqi; }
+  .js-poster__t span:nth-child(3) { font-variation-settings: 'wght' 600; color: var(--blue); }
+  .js-poster__info { position: absolute; right: 7cqi; bottom: 8cqi; text-align: right; font-size: 3.2cqi; line-height: 1.45; font-variation-settings: 'wght' 400; }
+  .js-poster__info b { display: block; font-weight: 400; font-variation-settings: 'wght' 800; font-size: 1.5em; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4em; }
+
+  /* ---------- records ---------- */
+  .js-crate { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 2.4vw, 2.4rem); padding-top: 3rem; }
+  .js-rec { position: relative; aspect-ratio: 1; text-align: left; container-type: inline-size; }
+  .js-rec__disc { position: absolute; inset: 3%; border-radius: 50%; background: repeating-radial-gradient(circle, #111 0 1.5px, #1d1d1d 1.5px 3px); transition: transform 0.7s var(--ease); display: grid; place-items: center; }
+  .js-rec__disc i { width: 34%; height: 34%; border-radius: 50%; background: var(--bg); box-shadow: inset 0 0 0 3cqi var(--fg); }
+  .js-rec:hover .js-rec__disc, .js-rec.is-out .js-rec__disc { transform: translateY(-34%) rotate(140deg); }
+  .js-rec__sleeve { position: absolute; inset: 0; background: var(--bg); color: var(--fg); padding: 8cqi; display: grid; grid-template-rows: 1fr auto auto; overflow: hidden; box-shadow: 0 20px 30px -20px #0008; transition: transform 0.6s var(--ease); }
+  .js-rec:hover .js-rec__sleeve, .js-rec.is-out .js-rec__sleeve { transform: translateY(8%); }
+  .js-rec__art { position: absolute; }
+  .js-rec__sleeve--circle .js-rec__art { width: 70cqi; height: 70cqi; border-radius: 50%; border: 6cqi solid var(--fg); right: -18cqi; top: -14cqi; }
+  .js-rec__sleeve--square .js-rec__art { width: 40cqi; height: 40cqi; background: var(--fg); right: 10cqi; top: 33cqi; transform: rotate(14deg); }
+  .js-rec__sleeve--triangle .js-rec__art { width: 0; height: 0; border-left: 24cqi solid transparent; border-right: 24cqi solid transparent; border-bottom: 40cqi solid var(--fg); right: 8cqi; top: 28cqi; }
+  .js-rec__sleeve--line .js-rec__art { inset: 0; background: repeating-linear-gradient(90deg, transparent 0 9cqi, #f1ece122 9cqi 10cqi); }
+  .js-rec__t { position: relative; font-size: 15cqi; line-height: 0.95; letter-spacing: -0.03em; font-variation-settings: 'wght' var(--w); }
+  .js-rec__a { position: relative; display: flex; justify-content: space-between; align-items: baseline; gap: 2cqi; margin-top: 3cqi; padding-top: 3cqi; border-top: 1px solid currentColor; font-size: 5cqi; font-variation-settings: 'wght' 500; }
+  .js-rec__a small { font: 400 3.4cqi/1 var(--font-mono); letter-spacing: 0.06em; opacity: 0.75; }
+
+  /* ---------- nine weights ---------- */
+  .js-nine p { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: center; border-top: 1px solid var(--line); overflow: hidden; }
+  .js-nine i { font: normal 400 0.72rem/1 var(--font-mono); color: var(--fg-3); }
+  .js-nine span { font-size: clamp(2.2rem, 7vw, 7rem); line-height: 1.12; letter-spacing: -0.02em; white-space: nowrap; font-variation-settings: 'wght' var(--w); transition: transform 0.6s var(--ease); transition-delay: calc(var(--i) * 40ms); }
+  .js-nine.is-ital span { font-style: italic; }
+  .js-nine.is-in span { animation: js-in 0.9s var(--ease) backwards; animation-delay: calc(var(--i) * 70ms); }
+  @keyframes js-in { from { transform: translateX(-6%); opacity: 0; } }
+  .js-nine p:nth-child(5) span { color: var(--red); }
+  .js-ital { margin-top: 1.4rem; padding: 0.7rem 1.1rem; border: 1px solid var(--fg); font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .js-ital[aria-pressed='true'], .js-ital:hover { background: var(--fg); color: var(--bg); }
+
+  @media (max-width: 900px) { .js-crate { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 4rem; } .js-build__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .js-build__cell:nth-child(3) { border-left: 0; } .js-build__cell:nth-child(n + 3) { border-top: 1px solid var(--line); } }
+</style>
