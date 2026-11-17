@@ -1,0 +1,214 @@
+---
+// CINZEL — new edition. Stone, bronze and the cinema: every example on this
+// page is new and built for this face.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('cinzel');
+const slab = ['To the makers', 'of letters', 'who cut them in stone', 'so that we might', 'read them still'];
+---
+<Layout title="Cinzel — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Cinzel" showToggle={false} />
+
+  <div class="ed cz" data-cz>
+    <header class="ed-hero cz-hero" data-hero>
+      <div class="ed-hero__top"><span>Cinzel · {font.designer} · {font.year}</span><span>Capitals and small capitals only</span></div>
+      <h1 class="ed-hero__word cz-hero__word" data-word aria-label="Cinzel">
+        {[...'CINZEL'].map((c) => <span data-l aria-hidden="true">{c}</span>)}
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Two thousand years old, and <em>still the headline</em>.
+          <span class="ed-hero__hint" data-fine>Your pointer is the sun. Move it and the carving’s shadows turn; letters nearest the light cut deeper.</span>
+          <span class="ed-hero__hint" data-coarse>Your finger is the sun. Drag it and the carving’s shadows turn.</span>
+        </p>
+        <dl class="ed-readout">
+          <div><dt>sun</dt><dd data-hud="sun">045°</dd></div>
+          <div><dt>wght</dt><dd data-hud="wght">400</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>01</span> In stone</div>
+        <h2 class="ed-h2">These shapes were worked out<br />with <em>a brush and a chisel</em>.</h2>
+        <p class="ed-lede">Roman letter-cutters painted each capital on the stone first, then cut along the paint. Watch a slab get made.</p>
+        <div class="ed-body cz-slab" data-slab>
+          <div class="cz-slab__stone">
+            {slab.map((l, r) => <p class="cz-f" style={`--r:${r}`}>{[...l].map((c, i) => <span style={`--n:${i}`}>{c === ' ' ? ' ' : c}</span>)}</p>)}
+            <p class="cz-f cz-slab__date">MMXII</p>
+          </div>
+          <button type="button" class="cz-btn" data-slab-again>Cut it again</button>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On the hour</div>
+        <h2 class="ed-h2">Even the time looks<br /><em>important</em>.</h2>
+        <div class="ed-body cz-clock" data-clock>
+          <p class="cz-f cz-clock__time" aria-live="off"><span data-ck="h">XII</span><i>·</i><span data-ck="m">XXX</span><i>·</i><span data-ck="s">XLV</span></p>
+          <p class="cz-clock__sub"><span data-ck-plain>12:30:45</span> — your time, right now, in Roman numerals</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> At the pictures</div>
+        <h2 class="ed-h2">Every epic you have seen<br />opened <em>like this</em>.</h2>
+        <div class="ed-body cz-duo">
+          <figure class="cz-film" data-inview>
+            <div class="cz-film__frame">
+              <p class="cz-f cz-film__pre">A Northlight Picture</p>
+              <p class="cz-f cz-film__title"><span>The Last</span><span>Lighthouse</span></p>
+              <p class="cz-f cz-film__credits">Directed by Ines Marlow · Music by T. Okafor · In cinemas this winter</p>
+            </div>
+            <figcaption class="ed-cap">Title card for an invented film — tracking opens as it fades up</figcaption>
+          </figure>
+          <figure class="cz-label">
+            <div class="cz-label__card">
+              <p class="cz-f cz-label__est">Est. MDCCCXCVI</p>
+              <p class="cz-f cz-label__name">Glen Ardoch</p>
+              <p class="cz-f cz-label__kind">Single Malt · Aged XVIII Years</p>
+              <p class="cz-f cz-label__no">Cask N<sup>o</sup> 412 · 46% vol</p>
+            </div>
+            <figcaption class="ed-cap">Bottle label for an invented distillery</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> The catch</div>
+        <h2 class="ed-h2">There is <em>no lowercase</em>.</h2>
+        <p class="ed-lede">The Romans had none, so neither does Cinzel. Type small letters and you get small capitals instead — which is why it sets a title so well and a paragraph so badly.</p>
+        <div class="ed-body cz-case">
+          <p class="cz-f"><b>You type</b><span style="font-family:var(--font-ui);text-transform:none">Julius Caesar</span></p>
+          <p class="cz-f"><b>You get</b><span>Julius Caesar</span></p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Carve <em>your own</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Cinzel Variable" sample="Veni, Vidi, Vici"
+            axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 900 }]}
+            presets={[{ name: 'Inscription', v: [400] }, { name: 'Title', v: [600] }, { name: 'Monument', v: [900] }]} start={1} />
+        </div>
+      </section>
+
+      <EditionTail entry={entry} from={6} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-cz]');
+  if (page) {
+    watchInView(page);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = letters.map(() => 400);
+    let sx = 0.3, sy = 0.2;
+    runHero(hero, (f) => {
+      const tx = f.live ? f.px : 0.5 + 0.42 * Math.cos(f.t * 0.35), ty = f.live ? f.py : 0.32 + 0.22 * Math.sin(f.t * 0.35);
+      sx += (tx - sx) * 0.08; sy += (ty - sy) * 0.08;
+      // shadow falls away from the light
+      const dx = (0.5 - sx) * 2, dy = (0.5 - sy) * 2;
+      word.style.setProperty('--sx', dx.toFixed(3)); word.style.setProperty('--sy', dy.toFixed(3));
+      hero.style.setProperty('--lx', `${(sx * 100).toFixed(1)}%`); hero.style.setProperty('--ly', `${(sy * 100).toFixed(1)}%`);
+      const pos = clamp((sx - 0.1) / 0.8, 0, 1) * (letters.length - 1);
+      let sum = 0;
+      letters.forEach((l, i) => { const tw = 400 + 500 * near(i, pos, 2.2); w[i] += (tw - w[i]) * 0.12; l.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}`; sum += w[i]; });
+      hud.sun.textContent = String(Math.round(((Math.atan2(-dy, -dx) * 180) / Math.PI + 360) % 360)).padStart(3, '0') + '°';
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+    });
+
+    // Slab: paint, then cut — replays on demand
+    const slab = page.querySelector<HTMLElement>('[data-slab]')!;
+    const cut = () => { slab.classList.remove('is-cut'); void slab.offsetWidth; slab.classList.add('is-cut'); };
+    new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { cut(); o.disconnect(); } }, { threshold: 0.4 }).observe(slab);
+    slab.querySelector('[data-slab-again]')!.addEventListener('click', cut);
+    if (reduce) slab.classList.add('is-cut');
+
+    // Roman clock
+    const roman = (n: number) => { if (n === 0) return 'N'; const t: [number, string][] = [[50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let s = ''; for (const [v, r] of t) while (n >= v) { s += r; n -= v; } return s; };
+    const ck = page.querySelector<HTMLElement>('[data-clock]')!;
+    const tick = () => {
+      const d = new Date(), v = { h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() };
+      (Object.keys(v) as (keyof typeof v)[]).forEach((k) => {
+        const el = ck.querySelector<HTMLElement>(`[data-ck="${k}"]`)!, r = roman(v[k]);
+        if (el.textContent !== r) { el.textContent = r; el.classList.remove('is-new'); void el.offsetWidth; el.classList.add('is-new'); }
+      });
+      ck.querySelector('[data-ck-plain]')!.textContent = d.toTimeString().slice(0, 8);
+    };
+    tick(); setInterval(tick, 1000);
+  }
+</script>
+
+<style is:global>
+  .cz { --ed-head: 'Cinzel Variable', 'Trajan Pro', serif; --ed-head-vf: 'wght' 600; --ed-em-vf: 'wght' 900; --ed-lede-vf: 'wght' 500; --ed-radius: 2px; --stone: #cfc6b4; }
+  .cz em { font-style: normal; }
+  .cz .ed-h2 { font-size: clamp(1.7rem, 0.9rem + 3.3vw, 4rem); letter-spacing: 0.01em; line-height: 1.08; }
+  .cz .ed-hero__lede { font-size: clamp(1.15rem, 0.8rem + 1.4vw, 2rem); letter-spacing: 0.02em; max-width: 20ch; }
+  .cz-f { font-family: 'Cinzel Variable', 'Trajan Pro', serif; font-weight: 400; font-feature-settings: normal; }
+
+  .cz-hero { --lx: 30%; --ly: 20%; background:
+    radial-gradient(60vmax 60vmax at var(--lx) var(--ly), #fff8e6cc, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .17 0 0 0 0 .12 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--stone); }
+  .cz-hero__word { --sx: 0.4; --sy: 0.6; font-family: 'Cinzel Variable', serif; font-size: min(19.5vw, 50svh); line-height: 1; letter-spacing: 0.04em; color: #b3a892;
+    text-shadow: calc(var(--sx) * -0.022em) calc(var(--sy) * -0.022em) 0 #4a402e, calc(var(--sx) * 0.02em) calc(var(--sy) * 0.02em) 0 #fffbee, calc(var(--sx) * -0.05em) calc(var(--sy) * -0.05em) 0.04em #2a221466; }
+
+  .cz-slab { display: grid; gap: 1.2rem; justify-items: start; }
+  .cz-slab__stone { container-type: inline-size; width: 100%; padding: 7cqi 5cqi 5cqi; text-align: center; color: #3a3226; background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .17 0 0 0 0 .12 0 0 0 .3 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(170deg, #ddd5c4, #b9ae98); box-shadow: inset 0 0 0 1px #fff8, inset 0 0 80px #0002, 0 30px 50px -30px #0008; }
+  .cz-slab__stone p { font-size: 6.3cqi; line-height: 1.32; letter-spacing: 0.1em; text-transform: uppercase; font-variation-settings: 'wght' 500; white-space: nowrap; }
+  .cz-slab__stone span { display: inline-block; color: #a8402a; opacity: 0; }
+  .cz-slab.is-cut .cz-slab__stone span { animation: cz-paint 0.3s linear forwards, cz-cut 0.6s ease-out forwards; animation-delay: calc(var(--r) * 0.55s + var(--n) * 0.035s), calc(2.9s + var(--r) * 0.55s + var(--n) * 0.035s); }
+  @keyframes cz-paint { to { opacity: 1; } }
+  @keyframes cz-cut { to { color: #8d826c; text-shadow: -0.02em -0.025em 0 #3a3226, 0.02em 0.025em 0 #fffbee; } }
+  .cz-slab__date { margin-top: 3cqi; font-size: 3.4cqi !important; letter-spacing: 0.4em !important; color: #6d624e; }
+  .cz-btn { font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 0.8rem 1.2rem; border: 1px solid var(--fg); color: var(--fg); transition: all 0.2s; }
+  .cz-btn:hover { background: var(--fg); color: var(--bg); }
+
+  .cz-clock { background: #211b12; color: #e9dcc0; padding: clamp(2rem, 6vw, 6rem) clamp(1rem, 3vw, 3rem); text-align: center; display: grid; gap: 1.2rem; overflow: hidden; }
+  .cz-clock__time { display: flex; justify-content: center; align-items: baseline; gap: 0.25em; font-size: clamp(2.2rem, 8.6vw, 9rem); line-height: 1; letter-spacing: 0.04em; font-variation-settings: 'wght' 500; color: #d9b36a; white-space: nowrap; }
+  .cz-clock__time i { font-style: normal; color: #6d5a34; }
+  .cz-clock__time span { display: inline-block; min-width: 2.2ch; }
+  .cz-clock__time span.is-new { animation: cz-strike 0.7s var(--ease); }
+  @keyframes cz-strike { from { font-variation-settings: 'wght' 900; color: #fff3d0; letter-spacing: 0.14em; } }
+  .cz-clock__sub { font: 400 0.74rem/1.5 var(--font-mono); letter-spacing: 0.08em; color: #9a8c6f; }
+
+  .cz-duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1rem, 2.4vw, 2.4rem); align-items: start; }
+  .cz-film__frame { container-type: inline-size; aspect-ratio: 2.1; display: grid; align-content: center; justify-items: center; gap: 2.6cqi; text-align: center; color: #f1e3c2; background: radial-gradient(70% 90% at 50% 110%, #c9772f, #3b1a12 45%, #07060a 80%); overflow: hidden; }
+  .cz-film__pre { font-size: 1.9cqi; letter-spacing: 0.5em; text-transform: uppercase; opacity: 0.8; }
+  .cz-film__title { display: grid; font-size: 9.6cqi; line-height: 1.02; text-transform: uppercase; font-variation-settings: 'wght' 700; letter-spacing: 0.02em; background: linear-gradient(180deg, #fff3d0, #d9a24a 60%, #8a5a1c); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: 0; }
+  .cz-film__title span:first-child { font-size: 0.5em; font-variation-settings: 'wght' 400; letter-spacing: 0.5em; margin-right: -0.5em; }
+  .cz-film.is-in .cz-film__title { animation: cz-title 5s ease-out infinite; }
+  @keyframes cz-title { 0% { opacity: 0; letter-spacing: -0.02em; filter: blur(6px); } 25%, 80% { opacity: 1; filter: none; } 80% { letter-spacing: 0.12em; } 100% { opacity: 0; letter-spacing: 0.16em; } }
+  .cz-film__credits { font-size: 1.5cqi; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.7; padding-inline: 4cqi; }
+  .cz-label__card { container-type: inline-size; background: #f3ead6; color: #2a2118; padding: 10cqi 7cqi; text-align: center; display: grid; gap: 3cqi; border: 1.5cqi double #8a6a34; outline: 1px solid #8a6a34; outline-offset: -4.5cqi; }
+  .cz-label__est { font-size: 4cqi; letter-spacing: 0.35em; color: #8a6a34; }
+  .cz-label__name { font-size: 15cqi; line-height: 1; font-variation-settings: 'wght' 800; }
+  .cz-label__kind { font-size: 4.6cqi; letter-spacing: 0.12em; padding-block: 3cqi; border-block: 1px solid #2a2118; font-variation-settings: 'wght' 600; }
+  .cz-label__no { font-size: 3.6cqi; letter-spacing: 0.25em; }
+  .cz-label__no sup { font-size: 0.6em; }
+
+  .cz-case { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .cz-case p { background: var(--bg); padding: clamp(1.2rem, 3vw, 3rem); display: grid; gap: 0.8rem; }
+  .cz-case b { font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .cz-case span { font-size: clamp(1.6rem, 4.6vw, 4.6rem); line-height: 1.1; font-variation-settings: 'wght' 500; }
+  .cz .ed-test__text { font-size: clamp(2rem, 6vw, 6.2rem); }
+
+  @media (max-width: 900px) { .cz-duo, .cz-case { grid-template-columns: minmax(0, 1fr); } }
+</style>
