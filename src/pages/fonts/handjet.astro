@@ -1,6 +1,6 @@
 ---
-// HANDJET — a showpiece specimen, built by hand outside the collection
-// template. Every letter is a grid of identical elements; the page is a wall
+// HANDJET — new edition. A hand-built page; the face is also in the `fonts`
+// collection. Every letter is a grid of identical elements; the page is a wall
 // of displays that lets you choose what that element is.
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
@@ -268,7 +268,7 @@ const themeStyle = [
       </section>
 
       <a class="hj-next" href="/fonts/recursive">
-        <span class="hj-next__k">Next showpiece →</span>
+        <span class="hj-next__k">Next →</span>
         <span class="hj-next__name" aria-label="Recursive">{[...'Recursive'].map((c, i) => <span style={`--i:${i}`} aria-hidden="true">{c}</span>)}</span>
         <span class="hj-next__sub">One file, five dials.</span>
       </a>

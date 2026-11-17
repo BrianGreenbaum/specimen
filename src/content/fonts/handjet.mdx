@@ -1,0 +1,54 @@
+---
+name: Handjet
+order: 40
+era: digital
+historyNote: A pixel font where the pixel itself — its shape, size and count — is variable.
+designer: David Březina
+foundry: Rosetta
+year: 2020
+classification: Element-based Display
+category: Display
+blurb: Every letter is a grid of one small shape. You choose the shape.
+googleFontsUrl: https://fonts.google.com/specimen/Handjet
+sourceUrl: https://github.com/rosettatype/handjet
+license: SIL Open Font License 1.1
+fontFamily: 'Handjet Variable'
+isVariable: true
+hasItalic: false
+axes:
+  - { tag: 'wght', name: 'Weight', min: 100, max: 900, default: 400, step: 1 }
+  - { tag: 'ELSH', name: 'Element Shape', min: 0, max: 16, default: 2, step: 0.1 }
+  - { tag: 'ELGR', name: 'Element Grid', min: 1, max: 2, default: 1, step: 0.1 }
+weights:
+  - { name: 'Thin', weight: 100 }
+  - { name: 'Light', weight: 300 }
+  - { name: 'Regular', weight: 400 }
+  - { name: 'Medium', weight: 500 }
+  - { name: 'Bold', weight: 700 }
+  - { name: 'Black', weight: 900 }
+headline: Pick your pixel
+sampleText: Mind the gap
+pangram: Sixteen pixels, zero bitmaps.
+feelings: ['Technical', 'Playful', 'Retro', 'Modular', 'Multilingual']
+languages: ['Latin', 'Latin Extended', 'Greek', 'Cyrillic', 'Vietnamese']
+pairsWith:
+  - { name: 'Space Grotesk', role: 'Readable text beside the display board' }
+callouts:
+  - { glyph: 'a', title: 'One element, repeated', body: 'Every glyph is built from copies of a single mark. Change the mark and the whole alphabet changes with it.', guides: ['x', 'baseline'] }
+  - { glyph: 'g', title: 'Weight is element size', body: 'The letter never gets wider. Its elements swell on the grid until they touch.', guides: ['x', 'baseline', 'descender'] }
+theme:
+  mode: dark
+  bg: '#0a0a0b'
+  bg2: '#141416'
+  fg: '#f3efe6'
+  fg2: '#b8b3a6'
+  fg3: '#7f7a6e'
+  accent: '#ffb000'
+  accentContrast: '#0a0a0b'
+  line: '#f3efe624'
+  lineSoft: '#f3efe612'
+---
+
+Handjet comes from **Rosetta**, the foundry of **David Březina**. A pixel font is normally frozen: someone decides the grid, fills in the squares, and that is the typeface. Handjet keeps the grid and unfreezes everything else.
+
+Every glyph is built from copies of a single element, and the element is a variable: its shape, its size, and how many of it fill a unit are all axes you can set or animate. Johannes Neumeier, Borna Izadpanah, Khajag Apelian and Meir Sadan contributed to it, and it covers six scripts.

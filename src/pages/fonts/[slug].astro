@@ -22,7 +22,7 @@ import { themeToStyle } from '../../lib/theme';
 import { getOutlines } from '../../lib/outlines';
 import { buildOgCard } from '../../lib/og';
 import { SAMPLES } from '../../lib/languages';
-import { newEditions } from '../../lib/showpieces';
+import { isEdition } from '../../lib/editions';
 
 export async function getStaticPaths() {
   const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
@@ -36,7 +36,7 @@ export async function getStaticPaths() {
       next: fonts[(i + 1) % fonts.length],
       era: eras.find((e) => e.data.slug === entry.data.era) ?? null,
     },
-  })).filter((p) => !newEditions.includes(p.params.slug));
+  })).filter((p) => !isEdition(p.params.slug));
 }
 
 const { entry, prev, next, era } = Astro.props;

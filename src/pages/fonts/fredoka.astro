@@ -1,0 +1,328 @@
+---
+// FREDOKA — new edition. Jelly letters, a snack box, a sticker sheet and a
+// chat that types back. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('fredoka');
+
+const stickers = [
+  { t: 'Yay!', bg: '#ff5d8f', fg: '#fff', r: -8, shape: 'burst' },
+  { t: 'Nice one', bg: '#ffd23f', fg: '#3b2a00', r: 5, shape: 'pill' },
+  { t: 'OK', bg: '#3ecf8e', fg: '#06321f', r: -4, shape: 'circle' },
+  { t: 'Oops', bg: '#5b8def', fg: '#fff', r: 9, shape: 'blob' },
+  { t: 'Nap time', bg: '#b28dff', fg: '#fff', r: -6, shape: 'pill' },
+  { t: '100', bg: '#ff8a3d', fg: '#fff', r: 7, shape: 'circle' },
+  { t: 'Be kind', bg: '#fff', fg: '#ff5d8f', r: -3, shape: 'blob' },
+  { t: 'Wow', bg: '#17c3b2', fg: '#fff', r: 11, shape: 'burst' },
+];
+
+const chat = [
+  { who: 'them', text: 'are we still on for pancakes?' },
+  { who: 'me', text: 'ALWAYS' },
+  { who: 'them', text: 'bringing blueberries' },
+  { who: 'me', text: 'you are the best person I know' },
+  { who: 'them', text: 'see you at 9!' },
+];
+---
+<Layout title="Fredoka — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Fredoka" showToggle={false} />
+
+  <div class="ed fk" data-fk>
+    <!-- ============ HERO ============ -->
+    <header class="ed-hero fk-hero" data-hero>
+      <div class="fk-hero__blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="ed-hero__top"><span>Fredoka · {font.year}</span><span>Weight × width, all corners round</span></div>
+
+      <h1 class="ed-hero__word fk-hero__word" data-word aria-label="Fredoka">
+        {[...'Fredoka'].map((c, i) => <span data-l style={`--c:${['#ff5d8f', '#ff8a3d', '#ffc107', '#3ecf8e', '#17c3b2', '#5b8def', '#b28dff'][i]}`} aria-hidden="true">{c}</span>)}
+      </h1>
+
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Not a single <em>sharp corner</em> in the whole alphabet.
+          <span class="ed-hero__hint" data-fine>Poke the letters. They squash, wobble and spring back. Click to make them jump.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the letters to squash them. Tap to make them jump.</span>
+        </p>
+        <dl class="ed-readout">
+          <div><dt>wght</dt><dd data-hud="wght">500</dd></div>
+          <div><dt>wdth</dt><dd data-hud="wdth">100</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ SNACK BOX ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>01</span> On the shelf</div>
+        <h2 class="ed-h2">It makes anything look<br />like <em>it tastes good</em>.</h2>
+
+        <div class="ed-body fk-shelf" data-inview>
+          {[
+            { id: 'berry', name: 'Puffs!', flav: 'Very Berry', n: '12', bg: '#ff5d8f', ink: '#fff7e6', pop: '#ffd23f' },
+            { id: 'honey', name: 'Loops', flav: 'Honey Oat', n: '8', bg: '#ffc107', ink: '#4a2a00', pop: '#ff5d8f' },
+            { id: 'mint', name: 'Crunch', flav: 'Choco Mint', n: '10', bg: '#17c3b2', ink: '#04302c', pop: '#fff7e6' },
+          ].map((b, i) => (
+            <article class="fk-box" style={`--bg:${b.bg};--ink:${b.ink};--pop:${b.pop};--i:${i}`}>
+              <p class="fk-f fk-box__brand">Morning</p>
+              <p class="fk-f fk-box__name">{b.name}</p>
+              <p class="fk-f fk-box__flav">{b.flav}</p>
+              <div class="fk-box__bowl" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <p class="fk-f fk-box__badge"><b>{b.n}</b><span>vitamins</span></p>
+              <p class="fk-box__small">Net wt 340 g · an invented cereal</p>
+            </article>
+          ))}
+        </div>
+        <p class="ed-cap">Three invented cereal boxes. Hover one and its name puffs up.</p>
+      </section>
+
+      <!-- ============ STICKERS ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On your laptop lid</div>
+        <h2 class="ed-h2">Round letters <em>love</em><br />round shapes.</h2>
+        <div class="ed-body fk-stickers">
+          {stickers.map((s) => (
+            <button type="button" class={`fk-sticker fk-sticker--${s.shape}`} style={`--bg:${s.bg};--fg:${s.fg};--r:${s.r}deg`}><span class="fk-f">{s.t}</span></button>
+          ))}
+        </div>
+        <p class="ed-cap">A sticker sheet. Each one peels, wobbles and fattens when you touch it.</p>
+      </section>
+
+      <!-- ============ CHAT ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> In your pocket</div>
+        <h2 class="ed-h2">The friendliest voice<br />in <em>the group chat</em>.</h2>
+
+        <div class="ed-body fk-pocket">
+          <div class="fk-phone" data-chat data-msgs={JSON.stringify(chat)}>
+            <header class="fk-f"><span class="fk-phone__av">B</span><span><b>Bea</b><i data-chat-status>online</i></span></header>
+            <div class="fk-phone__feed fk-f" data-chat-feed></div>
+            <footer class="fk-f"><span>Message</span><i>↑</i></footer>
+          </div>
+
+          <div class="fk-count" data-count>
+            <p class="fk-f fk-count__k">Tap the number</p>
+            <button type="button" class="fk-f fk-count__n" data-count-btn aria-label="Add one">0</button>
+            <p class="fk-f fk-count__sub" data-count-sub>Go on. It likes it.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ WIDTH ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Two dials</div>
+        <h2 class="ed-h2">Skinny or chubby.<br />Light or <em>extra jammy</em>.</h2>
+        <div class="ed-body fk-grid" data-inview>
+          {[300, 500, 700].map((w) => [75, 100, 125].map((d) => (
+            <p class="fk-f" style={`--w:${w};--wd:${d}`}><span>Bubble</span><i>{w} · {d}</i></p>
+          )))}
+        </div>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Say something <em>nice</em>.</h2>
+        <div class="ed-body">
+          <EditionTester
+            family="Fredoka Variable"
+            sample="You’re doing great"
+            axes={[{ tag: 'wght', name: 'Weight', min: 300, max: 700 }, { tag: 'wdth', name: 'Width', min: 75, max: 125 }]}
+            presets={[
+              { name: 'Friendly', v: [500, 100] },
+              { name: 'Chubby', v: [700, 125] },
+              { name: 'Skinny', v: [300, 75] },
+              { name: 'Label', v: [600, 80] },
+              { name: 'Whisper', v: [300, 120] },
+            ]}
+            start={1}
+          />
+        </div>
+      </section>
+
+      <EditionTail entry={entry} from={6} />
+    </main>
+  </div>
+
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-fk]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('is-in', e.isIntersecting)), { threshold: 0.2 })
+      .observe(page.querySelector('[data-inview]')!);
+    page.querySelectorAll('[data-inview]').forEach((el) => new IntersectionObserver((es) => el.classList.toggle('is-in', es[0].isIntersecting), { threshold: 0.2 }).observe(el));
+
+    // ---------- Hero: each letter is a spring ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const S = letters.map(() => ({ s: 0, v: 0, y: 0, vy: 0 }));
+    let seen = 0;
+    runHero(hero, (f) => {
+      const r = hero.getBoundingClientRect();
+      if (f.clicks !== seen) { seen = f.clicks; S.forEach((p, i) => { p.vy = -(0.16 + 0.05 * Math.sin(i * 1.7)); p.v += 0.25; }); }
+      let sw = 0, sd = 0;
+      letters.forEach((l, i) => {
+        const b = l.getBoundingClientRect();
+        const cx = (b.left + b.width / 2 - r.left) / r.width;
+        const push = f.live ? Math.max(0, 1 - Math.abs(cx - f.px) / 0.13) : f.reduce ? 0.4 : 0.5 + 0.5 * Math.sin(f.t * 2.2 - i * 0.8);
+        const p = S[i];
+        // squash spring (under-damped, so it wobbles)
+        p.v += (push - p.s) * 0.16; p.v *= 0.82; p.s += p.v;
+        // jump spring
+        p.vy += -p.y * 0.12; p.vy *= 0.86; p.y += p.vy;
+        const s = clamp(p.s, -0.25, 1.3);
+        const wght = clamp(300 + 400 * s, 300, 700), wdth = clamp(75 + 50 * s, 75, 125);
+        l.style.fontVariationSettings = `'wght' ${wght.toFixed(0)}, 'wdth' ${wdth.toFixed(1)}`;
+        l.style.transform = `translateY(${(p.y * 100 - s * 3).toFixed(2)}%) scaleY(${(1 - s * 0.06 - p.y * 0.4).toFixed(3)}) rotate(${(p.v * 14).toFixed(2)}deg)`;
+        sw += wght; sd += wdth;
+      });
+      hud.wght.textContent = String(Math.round(sw / letters.length));
+      hud.wdth.textContent = String(Math.round(sd / letters.length));
+    });
+
+    // ---------- Stickers: tap peels them ----------
+    page.querySelectorAll<HTMLElement>('.fk-sticker').forEach((s) => s.addEventListener('click', () => { s.classList.remove('is-pop'); void s.offsetWidth; s.classList.add('is-pop'); }));
+
+    // ---------- Chat: messages arrive with a typing bubble ----------
+    const chat = page.querySelector<HTMLElement>('[data-chat]')!;
+    const feed = chat.querySelector<HTMLElement>('[data-chat-feed]')!;
+    const status = chat.querySelector<HTMLElement>('[data-chat-status]')!;
+    const msgs: { who: string; text: string }[] = JSON.parse(chat.dataset.msgs!);
+    let ci = 0, chatOn = false;
+    new IntersectionObserver((es) => { chatOn = es[0].isIntersecting; }, { threshold: 0.3 }).observe(chat);
+    const add = (m: { who: string; text: string }) => { const p = document.createElement('p'); p.className = `is-${m.who}`; p.textContent = m.text; feed.appendChild(p); };
+    const next = () => {
+      if (!chatOn) return setTimeout(next, 400);
+      if (ci >= msgs.length) { ci = 0; return setTimeout(() => { feed.textContent = ''; next(); }, 3600); }
+      const m = msgs[ci++];
+      if (m.who === 'them') {
+        status.textContent = 'typing…';
+        const dots = document.createElement('p'); dots.className = 'is-them is-dots'; dots.innerHTML = '<i></i><i></i><i></i>'; feed.appendChild(dots);
+        setTimeout(() => { dots.remove(); add(m); status.textContent = 'online'; setTimeout(next, 1100); }, 1300);
+      } else { add(m); setTimeout(next, 1300); }
+    };
+    if (reduce) msgs.forEach(add); else next();
+
+    // ---------- Counter ----------
+    const cnt = page.querySelector<HTMLElement>('[data-count]')!;
+    const btn = cnt.querySelector<HTMLElement>('[data-count-btn]')!;
+    const sub = cnt.querySelector<HTMLElement>('[data-count-sub]')!;
+    const cheers = ['Go on. It likes it.', 'One!', 'Again!', 'Three’s a party', 'Keep going', 'High five', 'Now you’re cooking', 'Lucky seven', 'Great', 'So close…', 'TEN! You did it.'];
+    let n = 0;
+    btn.addEventListener('click', () => {
+      n++; btn.textContent = String(n); sub.textContent = cheers[Math.min(n, cheers.length - 1)];
+      cnt.style.setProperty('--hue', String((n * 47) % 360));
+      btn.classList.remove('is-pop'); void btn.offsetWidth; btn.classList.add('is-pop');
+    });
+  }
+</script>
+
+<style is:global>
+  .fk { --ed-head: 'Fredoka Variable', 'Arial Rounded MT Bold', sans-serif; --ed-head-vf: 'wght' 650, 'wdth' 100; --ed-em-vf: 'wght' 700, 'wdth' 125; --ed-lede-vf: 'wght' 550, 'wdth' 100; --ed-radius: 28px; }
+  .fk em { font-style: normal; }
+  .fk .ed-h2 { letter-spacing: -0.015em; line-height: 1.02; }
+  .fk .ed-kicker { border-top: 3px dotted var(--fg-3); }
+  .fk .ed-story__prose { font-family: 'Fredoka Variable', sans-serif; font-variation-settings: 'wght' 400, 'wdth' 100; }
+  .fk .ed-story__prose strong { font-weight: inherit; font-variation-settings: 'wght' 600, 'wdth' 100; }
+  .fk .ed-test__stage { background: #ffd23f; color: #3b2a00; border: 0; }
+  .fk-f { font-family: 'Fredoka Variable', 'Arial Rounded MT Bold', sans-serif; font-weight: 400; font-feature-settings: normal; }
+
+  /* ---------- hero ---------- */
+  .fk-hero__blobs { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+  .fk-hero__blobs i { position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.5; animation: fk-drift 16s ease-in-out infinite alternate; }
+  .fk-hero__blobs i:nth-child(1) { width: 42vw; height: 42vw; left: -8vw; top: 10%; background: #ffd23f; }
+  .fk-hero__blobs i:nth-child(2) { width: 36vw; height: 36vw; right: -6vw; top: -8%; background: #ff9ebb; animation-delay: -5s; }
+  .fk-hero__blobs i:nth-child(3) { width: 40vw; height: 40vw; right: 16vw; bottom: -30%; background: #9be7de; animation-delay: -9s; }
+  @keyframes fk-drift { to { transform: translate(6vw, -4vh) scale(1.15); } }
+  .fk-hero__word { font-family: 'Fredoka Variable', sans-serif; display: flex; align-items: flex-end; font-size: min(23vw, 52svh); line-height: 1; padding-bottom: 0.08em; }
+  .fk-hero__word [data-l] { color: var(--c); transform-origin: 50% 85%; will-change: transform; }
+
+  /* ---------- shelf ---------- */
+  .fk-shelf { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.6vw, 2.6rem); padding-bottom: 18px; border-bottom: 18px solid #e9cfa0; border-radius: 0 0 6px 6px; align-items: end; }
+  .fk-box { container-type: inline-size; position: relative; aspect-ratio: 3 / 4.1; background: var(--bg); color: var(--ink); border-radius: 5cqi 5cqi 2cqi 2cqi; padding: 7cqi 6cqi 5cqi; display: grid; grid-template-rows: auto auto auto 1fr auto; justify-items: center; text-align: center; overflow: hidden; box-shadow: inset -3cqi 0 0 #0000001a, 0 20px 30px -18px #0006; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transform: rotate(calc((var(--i) - 1) * 1.6deg)); }
+  .fk-box:hover { transform: translateY(-14px) rotate(calc((var(--i) - 1) * -2deg)) scale(1.02); }
+  .fk-box__brand { font-size: 6.5cqi; font-variation-settings: 'wght' 500, 'wdth' 125; letter-spacing: 0.2em; text-transform: uppercase; }
+  .fk-box__name { font-size: 31cqi; line-height: 0.95; font-variation-settings: 'wght' 600, 'wdth' 85; color: var(--pop); text-shadow: 0.035em 0.045em 0 #0003; transition: font-variation-settings 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); white-space: nowrap; }
+  .fk-box:hover .fk-box__name { font-variation-settings: 'wght' 700, 'wdth' 112; }
+  .fk-box__flav { font-size: 8.4cqi; font-variation-settings: 'wght' 600, 'wdth' 100; background: var(--ink); color: var(--bg); padding: 0.1em 0.8em 0.16em; border-radius: 100px; margin-top: 1cqi; }
+  .fk-box__bowl { position: relative; align-self: end; width: 74cqi; height: 37cqi; border-radius: 0 0 37cqi 37cqi; background: #fff7e6; box-shadow: inset 0 -4cqi 0 #0000001a; margin-bottom: 3cqi; }
+  .fk-box__bowl i { position: absolute; width: 13cqi; height: 13cqi; border-radius: 50%; border: 3.6cqi solid var(--pop); top: -7cqi; left: calc(4cqi + var(--n) * 9.6cqi); box-shadow: 0 0.6cqi 0 #0002; }
+  .fk-box__bowl i:nth-child(1) { --n: 0; } .fk-box__bowl i:nth-child(2) { --n: 1; top: -11cqi; } .fk-box__bowl i:nth-child(3) { --n: 2; } .fk-box__bowl i:nth-child(4) { --n: 3; top: -12cqi; }
+  .fk-box__bowl i:nth-child(5) { --n: 4; } .fk-box__bowl i:nth-child(6) { --n: 5; top: -10cqi; } .fk-box__bowl i:nth-child(7) { --n: 2.5; top: -18cqi; }
+  .fk-shelf.is-in .fk-box__bowl i { animation: fk-bob 2.4s ease-in-out infinite; animation-delay: calc(var(--n) * -0.35s); }
+  @keyframes fk-bob { 50% { transform: translateY(-2.4cqi) rotate(12deg); } }
+  .fk-box__badge { position: absolute; right: 5cqi; top: 44cqi; width: 23cqi; height: 23cqi; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-content: center; transform: rotate(12deg); line-height: 0.9; }
+  .fk-box__badge b { font-size: 11cqi; font-weight: 400; font-variation-settings: 'wght' 700, 'wdth' 100; }
+  .fk-box__badge span { font-size: 3.4cqi; font-variation-settings: 'wght' 500, 'wdth' 100; text-transform: uppercase; letter-spacing: 0.06em; }
+  .fk-box__small { font: 400 2.6cqi/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+
+  /* ---------- stickers ---------- */
+  .fk-stickers { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(1rem, 2.6vw, 2.6rem); padding: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem); background: #2b2440; border-radius: 28px; background-image: radial-gradient(#ffffff14 1.5px, transparent 2px); background-size: 22px 22px; }
+  .fk-sticker { background: var(--bg); color: var(--fg); padding: 0.5em 1em 0.6em; font-size: clamp(1.8rem, 4.6vw, 4.6rem); line-height: 1; transform: rotate(var(--r)); box-shadow: 0 0 0 0.12em #fff, 0.1em 0.16em 0 0.12em #0005; transition: transform 0.5s cubic-bezier(0.34, 1.7, 0.64, 1); }
+  .fk-sticker span { display: block; font-variation-settings: 'wght' 600, 'wdth' 100; transition: font-variation-settings 0.45s cubic-bezier(0.34, 1.7, 0.64, 1); white-space: nowrap; }
+  .fk-sticker:hover { transform: rotate(calc(var(--r) * -0.6)) scale(1.12) translateY(-6px); }
+  .fk-sticker:hover span { font-variation-settings: 'wght' 700, 'wdth' 125; }
+  .fk-sticker--pill { border-radius: 100px; }
+  .fk-sticker--circle { border-radius: 50%; aspect-ratio: 1; display: grid; place-items: center; padding: 0.6em; min-width: 3.2em; }
+  .fk-sticker--blob { border-radius: 58% 42% 55% 45% / 48% 60% 40% 52%; padding: 0.7em 1.1em 0.8em; }
+  .fk-sticker--burst { border-radius: 30% 70% 34% 66% / 62% 36% 64% 38%; padding: 0.7em 1.2em 0.8em; }
+  .fk-sticker.is-pop { animation: fk-peel 0.7s cubic-bezier(0.34, 1.7, 0.64, 1); }
+  @keyframes fk-peel { 30% { transform: rotate(calc(var(--r) + 24deg)) scale(1.3) translateY(-20px); } }
+
+  /* ---------- phone + counter ---------- */
+  .fk-pocket { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1rem, 2.6vw, 2.6rem); align-items: stretch; }
+  .fk-phone { justify-self: center; width: min(100%, 23rem); background: #fff; color: #23180a; border-radius: 40px; border: 10px solid #23180a; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; min-height: 34rem; box-shadow: 0 40px 60px -30px #0007; }
+  .fk-phone header { display: flex; align-items: center; gap: 0.8rem; padding: 1.1rem 1.1rem 0.9rem; border-bottom: 2px solid #f1e6d2; }
+  .fk-phone__av { width: 2.6rem; height: 2.6rem; border-radius: 50%; background: #ff5d8f; color: #fff; display: grid; place-items: center; font-size: 1.4rem; font-variation-settings: 'wght' 700, 'wdth' 100; }
+  .fk-phone header b { display: block; font-weight: 400; font-variation-settings: 'wght' 600, 'wdth' 100; font-size: 1.15rem; line-height: 1.1; }
+  .fk-phone header i { font-style: normal; font-size: 0.85rem; color: #3ecf8e; font-variation-settings: 'wght' 500, 'wdth' 100; }
+  .fk-phone__feed { display: flex; flex-direction: column; justify-content: flex-end; gap: 0.5rem; padding: 1rem; background: #fff9ee; }
+  .fk-phone__feed p { max-width: 82%; padding: 0.55rem 0.95rem 0.65rem; border-radius: 22px; font-size: 1.12rem; line-height: 1.25; font-variation-settings: 'wght' 450, 'wdth' 100; animation: fk-in 0.5s cubic-bezier(0.34, 1.7, 0.64, 1) backwards; transform-origin: 0 100%; }
+  .fk-phone__feed .is-them { align-self: flex-start; background: #fff; border: 2px solid #f1e6d2; border-bottom-left-radius: 6px; }
+  .fk-phone__feed .is-me { align-self: flex-end; background: #5b8def; color: #fff; border-bottom-right-radius: 6px; transform-origin: 100% 100%; font-variation-settings: 'wght' 550, 'wdth' 100; }
+  @keyframes fk-in { from { transform: scale(0.4); opacity: 0; } }
+  .fk-phone__feed .is-dots { display: flex; gap: 5px; padding: 0.85rem 0.95rem; }
+  .fk-phone__feed .is-dots i { width: 8px; height: 8px; border-radius: 50%; background: #c9b79b; animation: fk-dot 0.9s ease-in-out infinite; }
+  .fk-phone__feed .is-dots i:nth-child(2) { animation-delay: 0.15s; } .fk-phone__feed .is-dots i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes fk-dot { 40% { transform: translateY(-6px); } }
+  .fk-phone footer { display: flex; justify-content: space-between; align-items: center; margin: 0.8rem; padding: 0.6rem 0.6rem 0.6rem 1.1rem; border-radius: 100px; background: #f1e6d2; color: #9a8667; font-variation-settings: 'wght' 450, 'wdth' 100; }
+  .fk-phone footer i { font-style: normal; width: 2rem; height: 2rem; border-radius: 50%; background: #5b8def; color: #fff; display: grid; place-items: center; font-variation-settings: 'wght' 700, 'wdth' 100; }
+
+  .fk-count { --hue: 28; display: grid; place-content: center; justify-items: center; gap: 0.5rem; text-align: center; border-radius: 28px; background: hsl(var(--hue) 95% 62%); color: #fff; transition: background 0.5s; padding: 2rem; min-height: 22rem; overflow: hidden; }
+  .fk-count__k { font-size: 1.1rem; font-variation-settings: 'wght' 500, 'wdth' 125; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; }
+  .fk-count__n { font-size: clamp(9rem, 24vw, 24rem); line-height: 0.85; color: #fff; font-variation-settings: 'wght' 600, 'wdth' 100; text-shadow: 0.03em 0.05em 0 #0003; cursor: pointer; }
+  .fk-count__n.is-pop { animation: fk-count 0.6s cubic-bezier(0.34, 1.7, 0.64, 1); }
+  @keyframes fk-count { 0% { font-variation-settings: 'wght' 300, 'wdth' 75; transform: scale(0.7); } 55% { font-variation-settings: 'wght' 700, 'wdth' 125; transform: scale(1.1) rotate(-4deg); } }
+  .fk-count__sub { font-size: var(--step-1); font-variation-settings: 'wght' 500, 'wdth' 100; min-height: 1.4em; }
+
+  /* ---------- two dials ---------- */
+  .fk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
+  .fk-grid p { container-type: inline-size; background: var(--bg-2); border-radius: 22px; padding: 1.4rem 1rem 1rem; display: grid; justify-items: center; gap: 0.5rem; overflow: hidden; transition: background 0.3s; }
+  .fk-grid p span { font-size: 21cqi; line-height: 1; font-variation-settings: 'wght' var(--w), 'wdth' var(--wd); white-space: nowrap; }
+  .fk-grid p i { font: 400 0.66rem/1 var(--font-mono); font-style: normal; color: var(--fg-3); letter-spacing: 0.08em; }
+  .fk-grid p:hover { background: var(--accent); color: var(--accent-contrast); }
+  .fk-grid p:hover i { color: inherit; }
+  .fk-grid.is-in p span { animation: fk-settle 0.9s cubic-bezier(0.34, 1.7, 0.64, 1) backwards; }
+  @keyframes fk-settle { from { font-variation-settings: 'wght' 500, 'wdth' 100; } }
+
+  @media (max-width: 900px) {
+    .fk-shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    .fk-pocket { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .fk-grid { gap: 0.4rem; }
+    .fk-grid p { padding: 1rem 0.3rem 0.7rem; border-radius: 14px; }
+    .fk-grid p i { font-size: 0.5rem; }
+    .fk-phone { min-height: 30rem; }
+  }
+</style>

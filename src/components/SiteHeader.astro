@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ColorModeToggle from './ColorModeToggle.astro';
-import { showpieces, newEditions } from '../lib/showpieces';
+import { isEdition } from '../lib/editions';
 export interface Props {
   current?: string; // current font name, shown as breadcrumb
   showToggle?: boolean; // hidden on fixed-theme (font/era) pages
@@ -53,14 +53,8 @@ const lexSections = [
         <div class="dropdown dropdown--grid" role="menu" aria-label="Font specimens">
           {fonts.map((f) => (
             <a class="dropdown__item" role="menuitem" href={`/fonts/${f.id}`}>
-              <span class="dropdown__name" style={`font-family:${f.data.fontFamily}`}>{f.data.name}{newEditions.includes(f.id) && <i class="dropdown__new" title="New edition">✦</i>}</span>
+              <span class="dropdown__name"><span class={`dropdown__face dropdown__face--${f.id}`} style={`font-family:${f.data.fontFamily}`}>{f.data.name}</span>{isEdition(f.id) && <i class="dropdown__new" title="New edition">✦</i>}</span>
               <span class="dropdown__meta">{f.data.category}</span>
-            </a>
-          ))}
-          {showpieces.map((s) => (
-            <a class="dropdown__item dropdown__item--show" role="menuitem" href={`/fonts/${s.slug}`}>
-              <span class="dropdown__name"><span style={s.nameStyle}>{s.name}</span><i class="dropdown__new" title="New edition">✦</i></span>
-              <span class="dropdown__meta">{s.category}</span>
             </a>
           ))}
         </div>
@@ -293,8 +287,10 @@ const lexSections = [
     width: min(92vw, 42rem);
   }
 
-  .dropdown__item--show { align-items: center; }
-  .dropdown__item--show .dropdown__name { line-height: 1.1; white-space: nowrap; }
+  /* faces whose default instance needs a nudge to read at menu size */
+  .dropdown__face--nabla { font-size: 2.1rem; line-height: 1; font-variation-settings: 'EDPT' 120, 'EHLT' 16; }
+  .dropdown__face--handjet { font-size: 2.3rem; line-height: 0.8; font-variation-settings: 'wght' 600, 'ELGR' 1, 'ELSH' 8; }
+  .dropdown__face--climate-crisis { font-size: 1.05rem; font-variation-settings: 'YEAR' 2005; }
   .dropdown__new { font: normal 0.7rem/1 var(--font-mono); color: var(--accent); margin-left: 0.5em; vertical-align: 0.2em; }
 
   .dropdown__item {

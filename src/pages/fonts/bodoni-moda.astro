@@ -1,0 +1,341 @@
+---
+// BODONI MODA — new edition. Hairlines, fashion and theatre: every example on
+// this page is new and built for this face.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+import { strokeContrast } from '../../lib/ink';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('bodoni-moda');
+
+// Real stem and hairline widths of the H at every optical size, read from the font file.
+const strokes = await strokeContrast({
+  pkg: '@fontsource-variable/bodoni-moda', file: 'bodoni-moda-latin-opsz-normal.woff2',
+  axis: 'opsz', min: 6, max: 96, fixed: { wght: 400 },
+});
+
+const covers = [
+  { id: 'rouge', issue: 'No. 96', season: 'Autumn', word: 'Rouge', lines: ['The return of red', 'Forty coats, one colour', 'Milan after midnight'] },
+  { id: 'noir',  issue: 'No. 97', season: 'Winter', word: 'Noir',  lines: ['Black, again & always', 'The tuxedo problem', 'Paris in the rain'] },
+  { id: 'ivoire', issue: 'No. 98', season: 'Spring', word: 'Ivoire', lines: ['A season in white', 'Linen, lace & light', 'Capri by ferry'] },
+];
+
+const runway = [
+  { t: '19:00', who: 'Maison Aurelio', where: 'Palazzo Reale' },
+  { t: '20:15', who: 'Vesper & Vane', where: 'Teatro alla Scala' },
+  { t: '21:30', who: 'Ottavia Ricci', where: 'Via Montenapoleone, 9' },
+  { t: '23:00', who: 'Studio Nero', where: 'Stazione Centrale' },
+];
+---
+<Layout title="Bodoni Moda — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Bodoni Moda" showToggle={false} />
+
+  <div class="ed bm" data-bm>
+    <!-- ============ HERO ============ -->
+    <header class="ed-hero bm-hero" data-hero>
+      <div class="bm-hero__beam" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Bodoni Moda · {font.designer} · {font.year}</span><span>Optical size × weight, roman & italic</span></div>
+
+      <h1 class="ed-hero__word bm-hero__word" data-word aria-label="Bodoni">
+        {[...'Bodoni'].map((c) => <span data-l aria-hidden="true">{c}</span>)}
+      </h1>
+
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          The thickest thicks. The thinnest thins. <em>Nothing</em> in between.
+          <span class="ed-hero__hint" data-fine>Move sideways to sharpen the contrast, near a letter to fatten it. Click for italic.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the word to sharpen and fatten it. Tap for italic.</span>
+        </p>
+        <dl class="ed-readout">
+          <div><dt>opsz</dt><dd data-hud="opsz">96</dd></div>
+          <div><dt>wght</dt><dd data-hud="wght">400</dd></div>
+          <div><dt>style</dt><dd data-hud="style">roman</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ CONTRAST ============ -->
+      <section class="ed-sec" data-contrast data-strokes={JSON.stringify(strokes.map((s) => [Math.round(s.thick), Math.round(s.thin)]))}>
+        <div class="ed-kicker"><span>01</span> The whole idea</div>
+        <h2 class="ed-h2">A stem like a column.<br />A hairline like <em>a thread</em>.</h2>
+        <p class="ed-lede">
+          Drag the size. As the type grows, its optical-size axis thins the hairlines further, because large letters
+          can carry it. The two bars are the stem and the crossbar of this H, measured from the font file and drawn to scale.
+        </p>
+
+        <div class="ed-body bm-contrast">
+          <div class="bm-contrast__stage">
+            <p class="bm-f bm-contrast__letter" data-c-letter aria-hidden="true">H</p>
+            <div class="bm-contrast__bars" aria-hidden="true">
+              <i data-c-thick></i><i data-c-thin></i>
+              <span>thick</span><span>thin</span>
+            </div>
+            <dl class="bm-contrast__read">
+              <div><dt>Contrast</dt><dd><b data-c-ratio>—</b> : 1</dd></div>
+              <div><dt>Optical size</dt><dd data-c-opsz>96</dd></div>
+            </dl>
+          </div>
+          <label class="ed-slider"><span>Optical size <b data-c-val>96</b></span><input type="range" min="6" max="96" step="1" value="96" data-c-input /></label>
+        </div>
+      </section>
+
+      <!-- ============ COVERS ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>02</span> On the newsstand</div>
+        <h2 class="ed-h2">Every issue is the same face<br />in <em>a different dress</em>.</h2>
+
+        <div class="ed-body bm-covers" data-covers>
+          {covers.map((c, i) => (
+            <button type="button" class={`bm-cover bm-cover--${c.id}`} data-cover={i} aria-label={`Cover ${c.issue}`}>
+              <span class="bm-cover__mast bm-f">MODA</span>
+              <span class="bm-cover__meta"><span>{c.issue}</span><span>{c.season}</span></span>
+              <span class="bm-cover__word bm-f">{c.word}</span>
+              <span class="bm-cover__lines bm-f">{c.lines.map((l) => <span>{l}</span>)}</span>
+              <span class="bm-cover__foot"><span>Milano · Paris · New York</span><span>€ 12</span></span>
+            </button>
+          ))}
+        </div>
+        <p class="ed-cap">A fictional magazine. Hover a cover: the masthead tightens to full display contrast and the cover word turns italic.</p>
+      </section>
+
+      <!-- ============ PERFUME + AMPERSAND ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> On the dressing table</div>
+        <h2 class="ed-h2">Small, expensive<br />and <em>perfectly centred</em>.</h2>
+
+        <div class="ed-body bm-duo">
+          <figure class="bm-flacon" data-inview>
+            <div class="bm-flacon__scene">
+              <div class="bm-flacon__bottle">
+                <span class="bm-flacon__cap"></span>
+                <div class="bm-flacon__glass">
+                  <div class="bm-flacon__label bm-f">
+                    <span class="l1">Eau de</span>
+                    <span class="l2">Parma</span>
+                    <span class="l3">No. 96</span>
+                    <span class="l4">Extrait de parfum · 50 ml</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <figcaption class="ed-cap">Label — the text cut at the bottom, the display cut at the top, one file</figcaption>
+          </figure>
+
+          <figure class="bm-amp" data-inview>
+            <div class="bm-amp__scene">
+              <span class="bm-f bm-amp__a">Vesper</span>
+              <span class="bm-f bm-amp__g" aria-hidden="true">&amp;</span>
+              <span class="bm-f bm-amp__b">Vane</span>
+              <span class="bm-amp__sub">Couture · est. 1896</span>
+            </div>
+            <figcaption class="ed-cap">Wordmark — the italic ampersand does all the talking</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ RUNWAY ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> On the night</div>
+        <h2 class="ed-h2">Figures that look<br />like <em>jewellery</em>.</h2>
+
+        <div class="ed-body bm-runway" data-inview>
+          <p class="bm-runway__date bm-f"><span>24</span><i>—</i><span>09</span></p>
+          <ol class="bm-runway__list">
+            {runway.map((r, i) => (
+              <li style={`--i:${i}`}>
+                <span class="bm-f bm-runway__t">{r.t}</span>
+                <span class="bm-f bm-runway__who">{r.who}</span>
+                <span class="bm-runway__where">{r.where}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <p class="ed-cap">Show schedule — hover a row</p>
+      </section>
+
+      <!-- ============ TESTER ============ -->
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Dress <em>your own</em> words.</h2>
+        <div class="ed-body">
+          <EditionTester
+            family="Bodoni Moda Variable"
+            sample="Darling, it’s couture"
+            axes={[{ tag: 'opsz', name: 'Optical size', min: 6, max: 96 }, { tag: 'wght', name: 'Weight', min: 400, max: 900 }]}
+            presets={[
+              { name: 'Cover line', v: [96, 400] },
+              { name: 'Masthead', v: [96, 900] },
+              { name: 'Caption', v: [8, 500] },
+              { name: 'Italic whisper', v: [96, 400], italic: true },
+              { name: 'Italic shout', v: [96, 850], italic: true },
+            ]}
+            start={3}
+            italic
+          />
+        </div>
+      </section>
+
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp, watchInView } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-bm]');
+  if (page) {
+    watchInView(page);
+
+    // ---------- Hero ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const letters = Array.from(word.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = letters.map(() => 400);
+    let opsz = 96;
+    runHero(hero, (f) => {
+      const to = f.live ? 6 + 90 * clamp((f.px - 0.08) / 0.84, 0, 1) : f.reduce ? 96 : 51 + 45 * Math.sin(f.t * 0.5);
+      opsz += (to - opsz) * 0.1;
+      const italic = f.clicks % 2 === 1;
+      word.style.fontStyle = italic ? 'italic' : 'normal';
+      const pos = clamp((f.px - 0.1) / 0.8, 0, 1) * (letters.length - 1);
+      let sum = 0;
+      letters.forEach((l, i) => {
+        const tw = f.live ? 400 + 500 * near(i, pos, 1.8) : f.reduce ? 500 : 650 + 250 * Math.sin(f.t * 1.2 - i * 0.8);
+        w[i] += (tw - w[i]) * 0.14;
+        // the italic file has no optical-size axis
+        l.style.fontVariationSettings = italic ? `'wght' ${w[i].toFixed(0)}` : `'opsz' ${opsz.toFixed(1)}, 'wght' ${w[i].toFixed(0)}`;
+        sum += w[i];
+      });
+      hero.style.setProperty('--beam', `${(f.live ? f.px : 0.5 + 0.3 * Math.sin(f.t * 0.4)) * 100}%`);
+      hud.opsz.textContent = italic ? '—' : String(Math.round(opsz));
+      hud.wght.textContent = String(Math.round(sum / letters.length));
+      hud.style.textContent = italic ? 'italic' : 'roman';
+    });
+
+    // ---------- Contrast meter: measure the real thick and thin strokes ----------
+    const sec = page.querySelector<HTMLElement>('[data-contrast]')!;
+    const input = sec.querySelector<HTMLInputElement>('[data-c-input]')!;
+    const letter = sec.querySelector<HTMLElement>('[data-c-letter]')!;
+    const strokes: number[][] = JSON.parse(sec.dataset.strokes!);
+    const thickEl = sec.querySelector<HTMLElement>('[data-c-thick]')!, thinEl = sec.querySelector<HTMLElement>('[data-c-thin]')!;
+    const paint = () => {
+      const o = +input.value;
+      const [thick, thin] = strokes[o - 6];
+      letter.style.fontVariationSettings = `'opsz' ${o}, 'wght' 400`;
+      sec.querySelector('[data-c-val]')!.textContent = String(o);
+      sec.querySelector('[data-c-opsz]')!.textContent = String(o);
+      // bars share the letter's scale: font units → px at the letter's size
+      const k = parseFloat(getComputedStyle(letter).fontSize) / 1000;
+      thickEl.style.width = `${thick * k}px`;
+      thinEl.style.width = `${Math.max(1, thin * k)}px`;
+      sec.querySelector('[data-c-ratio]')!.textContent = (thick / thin).toFixed(1);
+    };
+    input.addEventListener('input', paint);
+    window.addEventListener('resize', paint);
+    paint();
+
+    // ---------- Covers: tap to bring one forward on touch screens ----------
+    const covers = Array.from(page.querySelectorAll<HTMLElement>('[data-cover]'));
+    covers.forEach((c) => c.addEventListener('click', () => covers.forEach((o) => o.classList.toggle('is-on', o === c && !c.classList.contains('is-on')))));
+  }
+</script>
+
+<style is:global>
+  .bm { --ed-head: 'Bodoni Moda Variable', 'Didot', serif; --ed-head-vf: 'opsz' 96, 'wght' 500; --ed-em-vf: 'wght' 400; --ed-lede-vf: 'opsz' 40, 'wght' 450; --ed-radius: 0px; }
+  .bm .ed-h2 em, .bm .ed-hero__lede em { font-style: italic; }
+  .bm .ed-story__prose { font-family: 'Bodoni Moda Variable', serif; font-variation-settings: 'opsz' 14, 'wght' 420; }
+  .bm .ed-story__prose em { font-style: italic; }
+  .bm .ed-story__prose p:first-child { font-variation-settings: 'opsz' 36, 'wght' 420; }
+  .bm-f { font-family: 'Bodoni Moda Variable', 'Didot', serif; font-weight: 400; font-feature-settings: normal; }
+
+  /* ---------- hero ---------- */
+  .bm-hero { --beam: 50%; }
+  .bm-hero__beam { position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, transparent calc(var(--beam) - 22%), color-mix(in srgb, var(--accent) 22%, transparent) var(--beam), transparent calc(var(--beam) + 22%)); }
+  .bm-hero__word { font-family: 'Bodoni Moda Variable', serif; font-size: min(25vw, 58svh); line-height: 1; letter-spacing: -0.03em; color: var(--fg); padding-inline: 0.06em; }
+
+  /* ---------- contrast ---------- */
+  .bm-contrast { display: grid; gap: 1.5rem; }
+  .bm-contrast__stage { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto; align-items: center; gap: clamp(1.5rem, 4vw, 5rem); padding: clamp(1.5rem, 4vw, 4rem); background: #f2ece1; color: #0e0d0c; }
+  .bm-contrast__letter { font-size: clamp(11rem, 30vw, 30rem); line-height: 0.8; text-align: center; }
+  .bm-contrast__bars { display: grid; grid-template-columns: auto auto; justify-content: start; align-items: end; gap: 0.8rem clamp(1.5rem, 4vw, 4rem); height: clamp(9rem, 20vw, 20rem); }
+  .bm-contrast__bars i { align-self: stretch; background: #0e0d0c; transition: width 0.25s var(--ease); min-width: 1px; }
+  .bm-contrast__bars i:nth-child(2) { background: #e8384f; }
+  .bm-contrast__bars span { font: 400 0.68rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #6a6257; }
+  .bm-contrast__read { display: grid; gap: 1.5rem; }
+  .bm-contrast__read dt { font: 400 0.68rem/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #6a6257; }
+  .bm-contrast__read dd { font-family: 'Bodoni Moda Variable', serif; font-variation-settings: 'opsz' 96, 'wght' 400; font-size: clamp(2.4rem, 5vw, 5rem); line-height: 1; white-space: nowrap; }
+  .bm-contrast__read b { font-weight: inherit; color: #e8384f; }
+
+  /* ---------- covers ---------- */
+  .bm-covers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.4vw, 2.4rem); }
+  .bm-cover {
+    container-type: inline-size; position: relative; aspect-ratio: 3 / 4; overflow: hidden; text-align: left;
+    display: grid; grid-template-rows: auto auto 1fr auto auto; padding: 6cqi;
+    transition: transform 0.6s var(--ease);
+  }
+  .bm-cover:hover, .bm-cover.is-on { transform: translateY(-8px) rotate(-0.6deg); }
+  .bm-cover--rouge { background: radial-gradient(120% 90% at 70% 30%, #ff5a4d, #b3122e 60%, #5d0718); color: #fff1ea; }
+  .bm-cover--noir { background: radial-gradient(120% 90% at 30% 20%, #3a3a40, #0b0b0d 65%); color: #f2ece1; }
+  .bm-cover--ivoire { background: radial-gradient(120% 90% at 60% 80%, #fffaf0, #e9dfcc 70%); color: #17130f; }
+  .bm-cover__mast { font-size: 34cqi; line-height: 0.82; letter-spacing: -0.02em; text-align: center; font-variation-settings: 'opsz' 28, 'wght' 700; transition: font-variation-settings 0.8s var(--ease); }
+  .bm-cover:hover .bm-cover__mast, .bm-cover.is-on .bm-cover__mast { font-variation-settings: 'opsz' 96, 'wght' 900; }
+  .bm-cover__meta, .bm-cover__foot { display: flex; justify-content: space-between; font: 400 2.5cqi/1.6 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; padding-top: 2cqi; margin-top: 2cqi; border-top: 1px solid currentColor; }
+  .bm-cover__word { align-self: end; font-size: 25cqi; line-height: 0.9; font-variation-settings: 'opsz' 96, 'wght' 400; transition: font-variation-settings 0.6s var(--ease); }
+  .bm-cover:hover .bm-cover__word, .bm-cover.is-on .bm-cover__word { font-style: italic; font-variation-settings: 'wght' 500; }
+  .bm-cover__lines { display: grid; gap: 0.4cqi; font-size: 5.2cqi; line-height: 1.15; font-style: italic; font-variation-settings: 'wght' 450; padding-top: 3cqi; }
+  .bm-cover__lines span:first-child { font-style: normal; font-variation-settings: 'opsz' 30, 'wght' 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.72em; }
+
+  /* ---------- flacon + ampersand ---------- */
+  .bm-duo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(1rem, 2.4vw, 2.4rem); }
+  .bm-flacon__scene { display: grid; place-items: center; min-height: clamp(26rem, 46vw, 40rem); background: radial-gradient(70% 60% at 50% 45%, #f6d9b8, #d9a877 55%, #8a5a34); overflow: hidden; }
+  .bm-flacon__bottle { display: grid; justify-items: center; width: min(62%, 18rem); filter: drop-shadow(0 40px 30px #3a1d0a88); }
+  .bm-flacon__cap { width: 34%; aspect-ratio: 1 / 0.8; background: linear-gradient(90deg, #1a1512, #57483c 45%, #0e0b09); border-radius: 4px 4px 0 0; }
+  .bm-flacon__glass { container-type: inline-size; width: 100%; aspect-ratio: 1 / 1.25; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(105deg, #ffffff66, #ffd9a044 30%, #c9772f55 70%, #ffffff44); border: 1px solid #ffffff99; backdrop-filter: blur(2px); }
+  .bm-flacon__label { width: 76%; background: #fbf6ec; color: #17130f; padding: 9cqi 5cqi; display: grid; justify-items: center; gap: 1.2cqi; text-align: center; box-shadow: 0 1px 0 #0002; }
+  .bm-flacon__label .l1 { font-size: 7cqi; font-style: italic; font-variation-settings: 'wght' 450; }
+  .bm-flacon__label .l2 { font-size: 22cqi; line-height: 0.9; font-variation-settings: 'opsz' 96, 'wght' 500; letter-spacing: -0.01em; }
+  .bm-flacon__label .l3 { font-size: 8cqi; font-variation-settings: 'opsz' 60, 'wght' 400; color: #b3122e; padding-block: 2cqi; border-block: 1px solid #17130f; margin-block: 2cqi; width: 70%; }
+  .bm-flacon__label .l4 { font-size: 3.2cqi; font-variation-settings: 'opsz' 6, 'wght' 550; text-transform: uppercase; letter-spacing: 0.16em; }
+  .bm-flacon.is-in .bm-flacon__bottle { animation: bm-float 6s ease-in-out infinite; }
+  @keyframes bm-float { 50% { transform: translateY(-10px) rotate(0.6deg); } }
+
+  .bm-amp__scene { container-type: inline-size; position: relative; min-height: clamp(26rem, 46vw, 40rem); background: #f2ece1; color: #0e0d0c; display: grid; grid-template-columns: 1fr 1fr; align-content: center; align-items: center; overflow: hidden; }
+  .bm-amp__g { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -54%); font-size: 78cqi; line-height: 1; font-style: italic; font-variation-settings: 'wght' 400; color: #e8384f; transition: font-variation-settings 1.2s var(--ease), transform 1.2s var(--ease); }
+  .bm-amp:hover .bm-amp__g { font-variation-settings: 'wght' 900; transform: translate(-50%, -54%) rotate(-6deg); }
+  .bm-amp__a, .bm-amp__b { position: relative; z-index: 1; font-size: 6.4cqi; text-transform: uppercase; letter-spacing: 0.14em; font-variation-settings: 'opsz' 40, 'wght' 600; mix-blend-mode: multiply; }
+  .bm-amp__a { text-align: right; padding-right: 17cqi; }
+  .bm-amp__b { padding-left: 17cqi; }
+  .bm-amp__sub { position: absolute; left: 0; right: 0; bottom: 6cqi; text-align: center; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: #6a6257; }
+
+  /* ---------- runway ---------- */
+  .bm-runway { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 6rem); align-items: center; border-block: 1px solid var(--fg); padding-block: clamp(1.5rem, 3vw, 3rem); }
+  .bm-runway__date { display: flex; align-items: center; font-size: clamp(6rem, 19vw, 20rem); line-height: 0.8; font-variation-settings: 'opsz' 96, 'wght' 400; letter-spacing: -0.03em; }
+  .bm-runway__date i { font-style: normal; color: var(--accent); font-size: 0.4em; padding-inline: 0.15em; }
+  .bm-runway__date span:last-child { font-style: italic; font-variation-settings: 'wght' 400; color: var(--accent); }
+  .bm-runway__list li { display: grid; grid-template-columns: 6.5ch minmax(0, 1fr) auto; align-items: baseline; gap: 1.2rem; padding: 0.9rem 0; border-top: 1px solid var(--line); opacity: 0; transform: translateY(14px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); transition-delay: calc(var(--i) * 110ms); }
+  .bm-runway.is-in li { opacity: 1; transform: none; }
+  .bm-runway__list li:first-child { border-top: 0; }
+  .bm-runway__t { font-size: var(--step-1); font-variation-settings: 'opsz' 20, 'wght' 600; color: var(--accent); }
+  .bm-runway__who { font-size: clamp(1.4rem, 2.7vw, 2.8rem); line-height: 1; font-variation-settings: 'opsz' 96, 'wght' 400; transition: font-variation-settings 0.5s var(--ease), letter-spacing 0.5s var(--ease); }
+  .bm-runway__list li:hover .bm-runway__who { font-style: italic; font-variation-settings: 'wght' 800; }
+  .bm-runway__where { font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); text-align: right; }
+
+  .bm .ed-test__stage { background: #f2ece1; color: #0e0d0c; }
+
+  @media (max-width: 900px) {
+    .bm-covers { grid-template-columns: minmax(0, 1fr); max-width: 26rem; }
+    .bm-duo, .bm-runway { grid-template-columns: minmax(0, 1fr); }
+    .bm-contrast__stage { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .bm-contrast__read { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
+    .bm-runway__list li { grid-template-columns: 5.5ch minmax(0, 1fr); }
+    .bm-runway__where { grid-column: 2; text-align: left; }
+  }
+</style>
