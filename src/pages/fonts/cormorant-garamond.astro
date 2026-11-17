@@ -1,0 +1,263 @@
+---
+// CORMORANT GARAMOND — new edition. Hairlines that only show up when you get
+// close: ink blooming in water, a scroll-driven zoom into one letter, and a
+// monogram maker. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('cormorant-garamond');
+// Wreath leaves around the monogram ring.
+const leaves = Array.from({ length: 28 }, (_, i) => {
+  const a = (i / 28) * Math.PI * 2;
+  return { x: +(100 + Math.cos(a) * 66).toFixed(2), y: +(100 + Math.sin(a) * 66).toFixed(2), r: +((a * 180) / Math.PI + 60).toFixed(1) };
+});
+const inks = [['Sepia', '#5b3a1e'], ['Bottle green', '#2f5a42'], ['Indigo', '#2b3a7a'], ['Oxblood', '#6e1a22'], ['Lamp black', '#16130f']];
+---
+<Layout title="Cormorant Garamond — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Cormorant Garamond" showToggle={false} />
+  <div class="ed cg" data-cg>
+    <svg class="cg-defs" width="0" height="0" aria-hidden="true">
+      <filter id="cg-water" x="-10%" y="-20%" width="120%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="4" result="n"><animate attributeName="baseFrequency" dur="18s" values="0.012 0.03;0.016 0.026;0.012 0.03" repeatCount="indefinite" /></feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" data-disp />
+      </filter>
+      <filter id="cg-bloom" x="-50%" y="-50%" width="200%" height="200%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="9" result="t" />
+        <feDisplacementMap in="SourceGraphic" in2="t" scale="34" xChannelSelector="R" yChannelSelector="G" result="d" />
+        <feGaussianBlur in="d" stdDeviation="3" />
+      </filter>
+    </svg>
+
+    <header class="ed-hero cg-hero" data-hero>
+      <div class="cg-blooms" data-blooms aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Cormorant Garamond · {font.designer} · {font.year}</span><span>Light to Bold, roman & italic</span></div>
+      <h1 class="ed-hero__word cg-hero__word" data-word aria-label="Cormorant"><span class="cg-hero__in" data-ink>Cormorant</span></h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Drawn for display, where its hairlines have <em>room to breathe</em>.
+          <span class="ed-hero__hint" data-fine>Stir the water with your pointer; the faster you move, the more the ink wavers. Click to drop ink.</span>
+          <span class="ed-hero__hint" data-coarse>Drag to stir the water. Tap to drop ink.</span>
+        </p>
+        <div class="cg-inks" role="radiogroup" aria-label="Ink colour">
+          {inks.map(([n, c], i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-ink-c={c} style={`--c:${c}`} title={n} aria-label={n}></button>)}
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="cg-zoom" data-zoom>
+        <div class="cg-zoom__stick">
+          <div class="cg-zoom__kick ed-kicker"><span>01</span> Closer</div>
+          <p class="cg-zoom__g" data-zoom-g aria-hidden="true">g</p>
+          <p class="cg-zoom__note" data-zoom-note>Scroll. We are going inside one letter.</p>
+          <p class="cg-zoom__scale"><span data-zoom-x>1</span>× · <span data-zoom-px>200</span> px tall</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-mono>
+        <div class="ed-kicker"><span>02</span> For the linen</div>
+        <h2 class="ed-h2">Two initials, <em>woven together</em>.</h2>
+        <div class="ed-body cg-mono">
+          <div class="cg-mono__seal" data-seal>
+            <svg class="cg-mono__wreath" viewBox="0 0 200 200" aria-hidden="true">
+              <defs><path id="cg-ring" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
+              <circle cx="100" cy="100" r="94" class="o" /><circle cx="100" cy="100" r="88" class="i" />
+              <text><textPath href="#cg-ring" startOffset="25%" text-anchor="middle" data-mono-ring>EST · MMXXVI</textPath></text>
+              {leaves.map((l) => <ellipse cx={l.x} cy={l.y} rx="5.5" ry="2.2" transform={`rotate(${l.r} ${l.x} ${l.y})`} class="leaf" />)}
+            </svg>
+            <span class="cg-mono__a" data-mono-a>E</span><span class="cg-mono__amp" aria-hidden="true">&amp;</span><span class="cg-mono__b" data-mono-b>R</span>
+          </div>
+          <div class="cg-mono__form">
+            <label><span>First initial</span><input type="text" maxlength="1" value="E" data-mono-in="a" /></label>
+            <label><span>Second initial</span><input type="text" maxlength="1" value="R" data-mono-in="b" /></label>
+            <label><span>Year</span><input type="text" inputmode="numeric" maxlength="4" value="2026" data-mono-in="y" /></label>
+            <div class="cg-mono__styles" role="radiogroup" aria-label="Monogram style">
+              <button type="button" role="radio" aria-checked="true" data-mono-style="weave">Woven</button>
+              <button type="button" role="radio" aria-checked="false" data-mono-style="stack">Stacked</button>
+              <button type="button" role="radio" aria-checked="false" data-mono-style="amp">With &amp;</button>
+            </div>
+            <p class="ed-cap">The year is set in Roman numerals around the ring.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-verse>
+        <div class="ed-kicker"><span>03</span> On the page</div>
+        <h2 class="ed-h2">Light enough to <em>whisper</em>.</h2>
+        <div class="ed-body cg-verse" data-inview>
+          <p class="cg-verse__t">A Short Song for the Tide</p>
+          <div class="cg-verse__lines">
+            {['The sea comes in with nothing in its hands,', 'and goes back out the way a guest goes out:', 'politely, leaving only what it can —', 'a line of foam, a shell, the shape of doubt.', '', 'I write your name a little past the reach', 'of water, and I watch the water reach.'].map((l, i) => <p style={`--i:${i}`}>{l || ' '}</p>)}
+          </div>
+          <p class="cg-verse__by">— an invented poem, set in Light with Regular Italic</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Write something <em>beautiful</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Cormorant Garamond" sample="Elegance, unhurried" italic axes={[]}
+            presets={[{ name: 'Roman', v: [] }, { name: 'Italic', v: [], italic: true }]} start={1} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Light to Bold, with italics' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-cg]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // =================== INK IN WATER ===================
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const disp = page.querySelector<SVGFEDisplacementMapElement>('[data-disp]')!;
+    const blooms = hero.querySelector<HTMLElement>('[data-blooms]')!;
+    let energy = 60, lx = 0, ly = 0, lt = 0, heroOn = true;
+    // on load the word settles out of the water
+    hero.addEventListener('pointermove', (e) => {
+      const now = performance.now(), d = Math.hypot(e.clientX - lx, e.clientY - ly), dt = Math.max(8, now - lt);
+      energy = Math.min(70, energy + (d / dt) * 6); lx = e.clientX; ly = e.clientY; lt = now;
+    });
+    const drop = (cx: number, cy: number) => {
+      const r = hero.getBoundingClientRect(), b = document.createElement('i');
+      b.style.left = `${cx - r.left}px`; b.style.top = `${cy - r.top}px`;
+      b.style.setProperty('--s', String(0.7 + Math.random() * 0.8)); b.style.setProperty('--rot', `${Math.random() * 360}deg`);
+      blooms.appendChild(b); if (blooms.children.length > 9) blooms.firstElementChild!.remove();
+      energy = Math.min(70, energy + 30);
+    };
+    hero.addEventListener('pointerdown', (e) => { if ((e.target as HTMLElement).closest('button')) return; drop(e.clientX, e.clientY); });
+    new IntersectionObserver((es) => { heroOn = es[0].isIntersecting; }).observe(hero);
+    let shown = -1;
+    const tick = () => {
+      requestAnimationFrame(tick);
+      if (!heroOn) return;
+      energy *= reduce ? 0 : 0.955;
+      const v = Math.round(energy * 10) / 10;
+      if (v !== shown) { shown = v; disp.setAttribute('scale', String(v)); }
+    };
+    requestAnimationFrame(tick);
+    const inks = Array.from(hero.querySelectorAll<HTMLButtonElement>('[data-ink-c]'));
+    inks.forEach((b) => b.addEventListener('click', () => { page.style.setProperty('--ink', b.dataset.inkC!); inks.forEach((o) => o.setAttribute('aria-checked', String(o === b))); energy = 55; }));
+
+    // =================== ZOOM INTO A LETTER ===================
+    const zoom = page.querySelector<HTMLElement>('[data-zoom]')!, g = zoom.querySelector<HTMLElement>('[data-zoom-g]')!;
+    const note = zoom.querySelector<HTMLElement>('[data-zoom-note]')!;
+    const notes: [number, string][] = [[0, 'Scroll. We are going inside one letter.'], [0.18, 'The ear of the g: a flick no thicker than a hair.'], [0.42, 'At this size the joins open up. You can see where the pen turned.'], [0.68, 'This hairline is drawn about a hundredth as thick as the stems.'], [0.9, 'And back out. That is why it wants to be set large.']];
+    let zt = -1;
+    const onScroll = () => {
+      const r = zoom.getBoundingClientRect(), span = r.height - window.innerHeight;
+      const t = clamp(-r.top / Math.max(span, 1), 0, 1);
+      if (Math.abs(t - zt) < 0.002) return; zt = t;
+      // rise to ~26× at t≈0.7, then ease back out at the end
+      const k = t < 0.82 ? Math.pow(t / 0.82, 1.6) : 1 - (t - 0.82) / 0.18;
+      const scale = 1 + k * 25;
+      g.style.transform = `translate(-50%, -50%) translate(${(k * 9).toFixed(2)}%, ${(k * 21).toFixed(2)}%) scale(${scale.toFixed(3)})`;
+      zoom.querySelector('[data-zoom-x]')!.textContent = scale.toFixed(1);
+      zoom.querySelector('[data-zoom-px]')!.textContent = String(Math.round(parseFloat(getComputedStyle(g).fontSize) * scale));
+      const n = [...notes].reverse().find(([at]) => t >= at)![1];
+      if (note.textContent !== n) { note.classList.remove('is-in'); void note.offsetWidth; note.textContent = n; note.classList.add('is-in'); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll();
+
+    // =================== VERSE: lines surface as it scrolls into view ===================
+    page.querySelectorAll<HTMLElement>('[data-inview]').forEach((el) => new IntersectionObserver((es) => el.classList.toggle('is-in', es[0].isIntersecting), { threshold: 0.3 }).observe(el));
+
+    // =================== MONOGRAM ===================
+    const mono = page.querySelector<HTMLElement>('[data-mono]')!, seal = mono.querySelector<HTMLElement>('[data-seal]')!;
+    const roman = (n: number) => { const t: [number, string][] = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let s = ''; for (const [v, r] of t) while (n >= v) { s += r; n -= v; } return s; };
+    const paint = () => {
+      const val = (k: string) => mono.querySelector<HTMLInputElement>(`[data-mono-in="${k}"]`)!.value;
+      const a = (val('a') || 'A').toUpperCase(), b = (val('b') || 'B').toUpperCase(), y = parseInt(val('y'), 10);
+      mono.querySelector('[data-mono-a]')!.textContent = a; mono.querySelector('[data-mono-b]')!.textContent = b;
+      mono.querySelector('[data-mono-ring]')!.textContent = `EST · ${y > 0 && y < 4000 ? roman(y) : 'MMXXVI'} · ${a} & ${b}`;
+      seal.classList.remove('is-new'); void seal.offsetWidth; seal.classList.add('is-new');
+    };
+    mono.querySelectorAll<HTMLInputElement>('[data-mono-in]').forEach((i) => i.addEventListener('input', paint));
+    const sbtn = Array.from(mono.querySelectorAll<HTMLButtonElement>('[data-mono-style]'));
+    sbtn.forEach((b) => b.addEventListener('click', () => { seal.dataset.style = b.dataset.monoStyle; sbtn.forEach((o) => o.setAttribute('aria-checked', String(o === b))); paint(); }));
+    seal.dataset.style = 'weave'; paint();
+  }
+</script>
+
+<style is:global>
+  .cg { --ink: #5b3a1e; --ed-head: 'Cormorant Garamond', Garamond, serif; --ed-radius: 2px; }
+  .cg .ed-h2 { font-weight: 500; font-size: clamp(2.4rem, 1rem + 5.4vw, 6.6rem); letter-spacing: -0.015em; line-height: 0.96; }
+  .cg .ed-h2 em, .cg .ed-hero__lede em { font-style: italic; color: var(--ink); transition: color 0.6s; }
+  .cg .ed-hero__lede { font-weight: 500; font-size: clamp(1.5rem, 1rem + 2vw, 2.8rem); line-height: 1.05; max-width: 20ch; }
+  .cg .ed-story__prose { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: calc(var(--step-1) * 1.18); }
+  .cg .ed-story__prose em { font-style: italic; } .cg .ed-story__prose strong { font-weight: 700; }
+  .cg-defs { position: absolute; }
+
+  /* ---------- ink in water ---------- */
+  .cg-hero { background: radial-gradient(90% 70% at 50% 45%, #fbf8f1, #efe7d6 80%); cursor: crosshair; }
+  .cg-hero__word { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: min(19vw, 46svh); line-height: 1.1; letter-spacing: -0.02em; }
+  .cg-hero__in { display: inline-block; padding: 0 0.1em; color: var(--ink); filter: url(#cg-water); transition: color 0.8s; }
+  .cg-blooms { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .cg-blooms i { position: absolute; width: 22vmin; height: 22vmin; margin: -11vmin; border-radius: 50%; background: radial-gradient(circle, var(--ink) 0 18%, color-mix(in srgb, var(--ink) 55%, transparent) 30%, color-mix(in srgb, var(--ink) 18%, transparent) 52%, transparent 70%); filter: url(#cg-bloom); transform: rotate(var(--rot)) scale(0); animation: cg-bloom 7s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; mix-blend-mode: multiply; }
+  @keyframes cg-bloom { 0% { transform: rotate(var(--rot)) scale(0); opacity: 1; } 30% { opacity: 0.85; } 100% { transform: rotate(calc(var(--rot) + 40deg)) scale(calc(var(--s) * 3.4)); opacity: 0.12; } }
+  .cg-inks { display: flex; gap: 0.6rem; }
+  .cg-inks button { width: 1.9rem; height: 1.9rem; border-radius: 50% 46% 52% 48%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 60%, #fff), var(--c) 60%); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px transparent; transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; }
+  .cg-inks button:hover { transform: scale(1.1); }
+  .cg-inks button[aria-checked='true'] { box-shadow: 0 0 0 2px #f6f1e7, 0 0 0 4px var(--c); }
+
+  /* ---------- zoom ---------- */
+  .cg-zoom { height: 420vh; position: relative; margin-top: clamp(4rem, 9vw, 8rem); }
+  .cg-zoom__stick { position: sticky; top: 64px; height: calc(100svh - 64px); overflow: hidden; background: #fbf8f1; border-block: 1px solid var(--line); }
+  .cg-zoom__kick { position: absolute; left: var(--gutter); right: var(--gutter); top: 1.4rem; z-index: 2; border-top: 0; padding-top: 0; }
+  .cg-zoom__g { position: absolute; left: 50%; top: 50%; margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: min(46vh, 38vw); line-height: 1; color: var(--ink); transform: translate(-50%, -50%); transform-origin: 50% 50%; transition: color 0.6s; }
+  .cg-zoom__note { position: absolute; left: var(--gutter); bottom: 2.2rem; max-width: 26ch; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: clamp(1.3rem, 1rem + 1.4vw, 2.2rem); line-height: 1.15; color: var(--fg); background: #fbf8f1; padding: 0.5rem 0.9rem 0.6rem; margin-left: -0.9rem; border-radius: 2px; box-shadow: 0 10px 30px -12px #19161144; z-index: 2; }
+  .cg-zoom__note.is-in { animation: cg-note 0.7s var(--ease); }
+  @keyframes cg-note { from { opacity: 0; transform: translateY(10px); } }
+  .cg-zoom__scale { position: absolute; right: var(--gutter); bottom: 2.4rem; font: 400 0.8rem/1 var(--font-mono); letter-spacing: 0.06em; color: var(--fg-3); background: #fbf8f1cc; padding: 0.3rem 0.5rem; z-index: 2; }
+  .cg-zoom__scale span:first-child { color: var(--ink); font-size: 1.5em; }
+
+  /* ---------- monogram ---------- */
+  .cg-mono { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .cg-mono__seal { position: relative; justify-self: center; width: min(80vw, 30rem); aspect-ratio: 1; display: grid; place-items: center; font-family: 'Cormorant Garamond', serif; color: var(--ink); container-type: inline-size; transition: color 0.6s; }
+  .cg-mono__wreath { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .cg-mono__wreath .o { fill: #fbf8f1; stroke: currentColor; stroke-width: 0.8; } .cg-mono__wreath .i { fill: none; stroke: currentColor; stroke-width: 0.4; }
+  .cg-mono__wreath text { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 8px; letter-spacing: 0.4em; fill: currentColor; }
+  .cg-mono__wreath .leaf { fill: currentColor; opacity: 0.55; }
+  .cg-mono__seal > span { position: absolute; left: 50%; top: 50%; line-height: 1; font-style: italic; transition: transform 0.7s cubic-bezier(0.34, 1.4, 0.64, 1), font-size 0.7s var(--ease), opacity 0.4s; }
+  .cg-mono__a { font-weight: 600; font-size: 46cqi; transform: translate(-72%, -58%); }
+  .cg-mono__b { font-weight: 300; font-size: 46cqi; transform: translate(-28%, -46%); mix-blend-mode: multiply; color: color-mix(in srgb, var(--ink) 75%, #c7a46a); }
+  .cg-mono__amp { font-weight: 400; font-size: 14cqi; opacity: 0; transform: translate(-50%, -50%); }
+  .cg-mono__seal[data-style='stack'] .cg-mono__a { font-size: 30cqi; transform: translate(-50%, -88%); }
+  .cg-mono__seal[data-style='stack'] .cg-mono__b { font-size: 30cqi; transform: translate(-50%, -14%); }
+  .cg-mono__seal[data-style='amp'] .cg-mono__a { font-size: 30cqi; transform: translate(-112%, -56%); }
+  .cg-mono__seal[data-style='amp'] .cg-mono__b { font-size: 30cqi; transform: translate(10%, -46%); }
+  .cg-mono__seal[data-style='amp'] .cg-mono__amp { opacity: 1; }
+  .cg-mono__seal.is-new > span { animation: cg-stamp 0.6s cubic-bezier(0.34, 1.5, 0.64, 1); }
+  @keyframes cg-stamp { from { opacity: 0; filter: blur(6px); } }
+  .cg-mono__form { display: grid; gap: 1.1rem; }
+  .cg-mono__form label { display: grid; gap: 0.3rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .cg input[type='text'] { font: italic 500 2rem/1.1 'Cormorant Garamond', serif; padding: 0.2rem 0; background: none; border: 0; border-bottom: 1px solid var(--fg-3); color: var(--fg); outline: none; width: 100%; }
+  .cg input[type='text']:focus { border-color: var(--ink); }
+  .cg-mono__styles { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .cg-mono__styles button { padding: 0.5rem 1rem; border: 1px solid var(--line); border-radius: 100px; font: italic 500 1.15rem/1 'Cormorant Garamond', serif; color: var(--fg-2); transition: all 0.2s; }
+  .cg-mono__styles button[aria-checked='true'] { background: var(--ink); border-color: var(--ink); color: #fbf8f1; }
+
+  /* ---------- verse ---------- */
+  .cg-verse { max-width: 40rem; margin-inline: auto; padding: clamp(2rem, 6vw, 5rem) clamp(1.2rem, 4vw, 4rem); background: #fbf8f1; box-shadow: 0 30px 60px -40px #19161188; font-family: 'Cormorant Garamond', serif; }
+  .cg-verse__t { font-size: clamp(1.6rem, 3.4vw, 2.6rem); font-weight: 600; font-style: italic; line-height: 1.1; color: var(--ink); margin-bottom: 1.6rem; text-align: center; }
+  .cg-verse__lines p { font-weight: 300; font-size: clamp(1.25rem, 2.4vw, 1.9rem); line-height: 1.5; opacity: 0; transform: translateY(8px); filter: blur(4px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease), filter 1.2s var(--ease); transition-delay: calc(var(--i) * 260ms); }
+  .cg-verse__lines p:nth-child(even) { padding-left: 1.4em; font-style: italic; }
+  .cg-verse.is-in .cg-verse__lines p { opacity: 1; transform: none; filter: none; }
+  .cg-verse__by { margin-top: 1.8rem; text-align: center; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+
+  .cg .ed-test__stage { background: #fbf8f1; }
+  .cg .ed-test__text { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: clamp(2.8rem, 8vw, 8.6rem); line-height: 0.98; color: var(--ink); }
+
+  @media (max-width: 900px) { .cg-mono { grid-template-columns: minmax(0, 1fr); } .cg-zoom { height: 340vh; } }
+  @media (prefers-reduced-motion: reduce) { .cg-hero__in { filter: none; } .cg-verse__lines p { opacity: 1; transform: none; filter: none; } }
+</style>

@@ -1,0 +1,340 @@
+---
+// JETBRAINS MONO — new edition. A typeface for people who read code all day:
+// ligatures that fuse under your pointer, a game drawn in characters, a loupe
+// for the look-alikes. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('jetbrains-mono');
+
+// Only sequences verified to form ligatures in the served font file.
+const OPS = ['->', '=>', '!=', '!==', '===', '==', '<=', '>=', '::', '|>', '<|', '++', '--', '&&', '||', '/*', '*/', '//', '=/=', '<->', '...', '?:', '<<', '>>', '</>', '~>', '<~', '<=>', '::=', '!!', '??', '?.', '<!--', '-->', '>>=', '=<<', '|=', '<<<', '>>>', '#{'];
+// a stable pseudo-random field so server and client agree
+let seed = 7; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+const field = Array.from({ length: 150 }, (_, i) => ({ t: OPS[Math.floor(rnd() * OPS.length)], x: rnd() * 100, y: rnd() * 100, o: 0.25 + rnd() * 0.5, i }));
+
+// Editor sample: tokens are [class, text]; operators get class "o".
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const L = (...parts: [string, string][]) => parts.map(([c, t]) => (c ? `<span class="${c}">${esc(t)}</span>` : esc(t))).join('');
+const editorHtml = [
+  L(['c', '// invented, but it would compile']),
+  L(['k', 'type'], ['', ' Job = { id: '], ['t', 'number'], ['', '; done?: '], ['t', 'boolean'], ['', ' };']),
+  '',
+  L(['k', 'const'], ['', ' '], ['f', 'ready'], ['', ' = (j: Job) '], ['o', '=>'], ['', ' j.done '], ['o', '!=='], ['', ' '], ['k', 'true'], ['', ' '], ['o', '&&'], ['', ' j.id '], ['o', '>='], ['', ' '], ['n', '0'], ['', ';']),
+  L(['k', 'const'], ['', ' '], ['f', 'next'], ['', '  = (q: Job[]) '], ['o', '=>'], ['', ' q.find(ready) '], ['o', '??'], ['', ' '], ['k', 'null'], ['', ';']),
+  '',
+  L(['k', 'for'], ['', ' ('], ['k', 'let'], ['', ' i = '], ['n', '0'], ['', '; i '], ['o', '<='], ['', ' q.length - '], ['n', '1'], ['', '; i'], ['o', '++'], ['', ') {']),
+  L(['', '  '], ['k', 'if'], ['', ' (q[i]'], ['o', '?.'], ['', 'id '], ['o', '=='], ['', ' last '], ['o', '||'], ['', ' q[i].done) '], ['k', 'continue'], ['', ';  '], ['c', '// skip']),
+  L(['', '  log(job '], ['o', '->'], ['', ' queue);']),
+  '}',
+].join('\n');
+
+const loupeCode = [
+  'const Il1 = { O0o: 0x0F, lI1: 0b1011, oO0: 1_000_000 };',
+  '// I l 1 |   O 0 o   5 S   8 B   2 Z   rn m   " \' `',
+  'if (Il1.O0o !== 0o17 || Il1.lI1 <= 0x1) throw new Error("l != 1");',
+  'const BS = "8B5S2Z", mn = "rn m nn", qd = "{[()]}", pq = ";:,.";',
+].join('\n');
+---
+<Layout title="JetBrains Mono — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="JetBrains Mono" showToggle={false} />
+  <div class="ed jb" data-jb>
+    <header class="ed-hero jb-hero" data-hero>
+      <div class="jb-field" data-field aria-hidden="true">
+        {field.map((f) => <span style={`left:${f.x}%;top:${f.y}%;--o:${f.o}`}>{f.t}</span>)}
+      </div>
+      <div class="ed-hero__top"><span>JetBrains Mono · {font.designer} · {font.year}</span><span>Thin 100 to ExtraBold 800, roman & italic</span></div>
+      <h1 class="ed-hero__word jb-hero__word" aria-label="JetBrains Mono"><span aria-hidden="true">JetBrains</span><span aria-hidden="true">Mono<i class="jb-caret"></i></span></h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Pairs of symbols <em>fuse</em> into one shape, and still take up two cells.
+          <span class="ed-hero__hint" data-fine>Move around. Every operator near your pointer turns its ligature on.</span>
+          <span class="ed-hero__hint" data-coarse>Drag around. Every operator near your finger turns its ligature on.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>ligatures on</dt><dd data-hud="on">0</dd></div><div><dt>of</dt><dd>{field.length}</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-game>
+        <div class="ed-kicker"><span>01</span> Drawn entirely in characters</div>
+        <h2 class="ed-h2">A whole game, and every cell<br />is <em>exactly one character wide</em>.</h2>
+        <p class="ed-lede">Eat the letters. Your tail spells what you have eaten. Arrow keys or WASD on a keyboard; swipe or use the pad on a phone.</p>
+        <div class="ed-body jb-game">
+          <div class="jb-game__screen" data-board tabindex="0" aria-label="Snake game. Press space to start, arrow keys to steer.">
+            <header><span>snake.ts</span><span>score <b data-score>0</b></span><span>best <b data-best>0</b></span></header>
+            <pre class="jb-f jb-game__pre" data-pre></pre>
+          </div>
+          <div class="jb-game__pad" aria-label="Direction pad">
+            <button type="button" data-dir="0,-1" aria-label="Up">↑</button>
+            <button type="button" data-dir="-1,0" aria-label="Left">←</button>
+            <button type="button" data-start aria-label="Start">●</button>
+            <button type="button" data-dir="1,0" aria-label="Right">→</button>
+            <button type="button" data-dir="0,1" aria-label="Down">↓</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-liga>
+        <div class="ed-kicker"><span>02</span> The ligatures</div>
+        <h2 class="ed-h2">Your code, with the <em>arrows</em><br />drawn as arrows.</h2>
+        <div class="ed-body jb-liga">
+          <div class="jb-editor">
+            <header><span class="jb-dots"><i></i><i></i><i></i></span><span>pipeline.ts</span><button type="button" class="jb-switch" data-liga-btn aria-pressed="true"><i></i><span>Ligatures on</span></button></header>
+            <pre class="jb-f jb-editor__code" data-liga-code set:html={editorHtml}></pre>
+          </div>
+          <p class="jb-liga__note">Ligatures only change how a pair is <em>drawn</em>. Underneath it is still <code>-&gt;</code>: same characters, same two cells, same thing to search for. Hover any highlighted operator to see the characters it is made of.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-loupe>
+        <div class="ed-kicker"><span>03</span> The look-alikes</div>
+        <h2 class="ed-h2">Hold a loupe to it.<br /><em>Nothing</em> is ambiguous.</h2>
+        <div class="ed-body jb-loupe" data-loupe-box>
+          <pre class="jb-f jb-loupe__code" data-loupe-src>{loupeCode}</pre>
+          <div class="jb-loupe__lens" data-lens aria-hidden="true"><div class="jb-loupe__inner" data-lens-inner></div></div>
+        </div>
+        <p class="ed-cap">Move over the code. The slashed zero, the tailed l and the serifed I are the reason this face exists.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <h2 class="ed-h2">Type <em>something</em> clever.</h2>
+        <div class="ed-body">
+          <EditionTester family="JetBrains Mono Variable" sample="x => x !== null" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 800 }]}
+            presets={[{ name: 'Thin', v: [100] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'ExtraBold', v: [800] }, { name: 'Italic', v: [400], italic: true }]} start={1} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Roman and italic' }, { k: 'Ligatures', v: 'Code ligatures via contextual alternates (calt)' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-jb]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // =================== HERO: ligatures fuse near the pointer ===================
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const toks = Array.from(hero.querySelectorAll<HTMLElement>('[data-field] span'));
+    let centres: number[][] = [];
+    const measure = () => { const hr = hero.getBoundingClientRect(); centres = toks.map((t) => { const r = t.getBoundingClientRect(); return [r.left + r.width / 2 - hr.left, r.top + r.height / 2 - hr.top]; }); };
+    const markBehind = () => {
+      const hr = hero.getBoundingClientRect(), lede = hero.querySelector<HTMLElement>('.ed-hero__lede')!.getBoundingClientRect();
+      toks.forEach((t, i) => { const [x, y] = centres[i] ?? [0, 0]; t.classList.toggle('is-behind', x > lede.left - hr.left - 30 && x < lede.right - hr.left + 30 && y > lede.top - hr.top - 30 && y < lede.bottom - hr.top + 30); });
+    };
+    const remeasure = () => { measure(); markBehind(); };
+    remeasure(); window.addEventListener('resize', remeasure); document.fonts.ready.then(remeasure);
+    let mx = -1e4, my = -1e4, last = -1e9, on = true;
+    hero.addEventListener('pointermove', (e) => { const r = hero.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; last = performance.now(); });
+    new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(hero);
+    const lit = toks.map(() => false), hudOn = hero.querySelector<HTMLElement>('[data-hud="on"]')!;
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      if (!on) return;
+      const live = now - last < 2200, t = now / 1000, R = Math.max(140, hero.clientWidth * 0.14);
+      // idle: a scanline sweeps across, switching ligatures as it passes
+      const sx = live ? mx : ((t * 0.12) % 1.3 - 0.15) * hero.clientWidth;
+      let n = 0;
+      toks.forEach((tk, i) => {
+        const [x, y] = centres[i] ?? [0, 0];
+        const d = live ? Math.hypot(x - mx, y - my) : Math.abs(x - sx) * 1.6;
+        const want = reduce ? i % 3 === 0 : d < R;
+        if (want !== lit[i]) { lit[i] = want; tk.classList.toggle('is-on', want); }
+        if (want) n++;
+      });
+      hudOn.textContent = String(n);
+    };
+    requestAnimationFrame(tick);
+
+    // =================== SNAKE ===================
+    const game = page.querySelector<HTMLElement>('[data-game]')!;
+    const board = game.querySelector<HTMLElement>('[data-board]')!;
+    const pre = game.querySelector<HTMLElement>('[data-pre]')!;
+    const WORD = 'JETBRAINSMONO';
+    let COLS = 40, ROWS = 17;
+    type P = [number, number];
+    let snake: P[] = [], dir: P = [1, 0], queue: P[] = [], food: P = [0, 0], eaten = '', state: 'idle' | 'play' | 'over' = 'idle', timer = 0, flash = 0;
+    let best = 0; try { best = +(localStorage.getItem('jb-snake-best') || 0); } catch {}
+    game.querySelector('[data-best]')!.textContent = String(best);
+    const fit = () => {
+      // Pick a cell size that keeps the board under ~62% of the viewport height,
+      // then fit as many columns as that width allows. JetBrains Mono's advance is 0.6em.
+      const small = board.clientWidth < 620;
+      ROWS = small ? 15 : 16;
+      const pad = parseFloat(getComputedStyle(pre).marginLeft) * 2;
+      const cell = Math.max(11, Math.min(small ? 18 : 24, (window.innerHeight * 0.62) / (ROWS * 1.18)));
+      COLS = Math.max(18, Math.floor((board.clientWidth - pad - 8) / (cell * 0.6)));
+      pre.style.setProperty('--cell', `${cell}px`);
+    };
+    const esc = (c: string) => c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c;
+    const placeFood = () => { do { food = [Math.floor(Math.random() * COLS), Math.floor(Math.random() * ROWS)]; } while (snake.some(([x, y]) => x === food[0] && y === food[1])); };
+    const reset = () => { fit(); const y = Math.floor(ROWS / 2); snake = [[6, y], [5, y], [4, y]]; dir = [1, 0]; queue = []; eaten = ''; placeFood(); };
+    const center = (s: string, w: number) => { const p = Math.max(0, Math.floor((w - s.length) / 2)); return (' '.repeat(p) + s).padEnd(w).slice(0, w); };
+    const draw = () => {
+      const grid: string[][] = Array.from({ length: ROWS }, () => Array(COLS).fill(' '));
+      const cls: string[][] = Array.from({ length: ROWS }, () => Array(COLS).fill(''));
+      // faint dot grid
+      for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (x % 4 === 0 && y % 2 === 0) { grid[y][x] = '·'; cls[y][x] = 'g'; }
+      if (state !== 'idle') {
+        grid[food[1]][food[0]] = WORD[eaten.length % WORD.length]; cls[food[1]][food[0]] = 'f';
+        const n = snake.length;
+        snake.forEach(([x, y], i) => {
+          if (i === 0) { grid[y][x] = dir[0] === 1 ? '>' : dir[0] === -1 ? '<' : dir[1] === 1 ? 'v' : '^'; cls[y][x] = 'h'; return; }
+          // tail reads the eaten word from tail to head
+          const k = n - 1 - i; grid[y][x] = k < eaten.length ? eaten[k] : '='; cls[y][x] = k < eaten.length ? 'b' : 'e';
+        });
+      }
+      const msg = (lines: string[]) => { const top = Math.floor(ROWS / 2) - Math.floor(lines.length / 2); lines.forEach((l, i) => { const row = center(l, COLS); for (let x = 0; x < COLS; x++) if (row[x] !== ' ') { grid[top + i][x] = row[x]; cls[top + i][x] = i === 0 ? 'm' : 'n'; } }); };
+      if (state === 'idle') msg(['SNAKE.TS', '', 'eat the letters', '', '[ space / tap to start ]']);
+      if (state === 'over') msg(['GAME OVER', '', `you spelled: ${eaten || '(nothing)'}`, '', '[ space / tap to retry ]']);
+      const rows = grid.map((r, y) => r.map((c, x) => cls[y][x] ? `<span class="${cls[y][x]}">${esc(c)}</span>` : esc(c)).join(''));
+      pre.innerHTML = rows.join('\n');
+      pre.classList.toggle('is-flash', flash > 0);
+    };
+    const step = () => {
+      if (queue.length) { const d = queue.shift()!; if (d[0] !== -dir[0] || d[1] !== -dir[1]) dir = d; }
+      const head: P = [snake[0][0] + dir[0], snake[0][1] + dir[1]];
+      const hit = head[0] < 0 || head[1] < 0 || head[0] >= COLS || head[1] >= ROWS || snake.slice(0, -1).some(([x, y]) => x === head[0] && y === head[1]);
+      if (hit) { state = 'over'; board.classList.remove('is-hit'); void board.offsetWidth; board.classList.add('is-hit'); if (eaten.length > best) { best = eaten.length; try { localStorage.setItem('jb-snake-best', String(best)); } catch {} game.querySelector('[data-best]')!.textContent = String(best); } draw(); return; }
+      snake.unshift(head);
+      if (head[0] === food[0] && head[1] === food[1]) { eaten += WORD[eaten.length % WORD.length]; game.querySelector('[data-score]')!.textContent = String(eaten.length); flash = 2; placeFood(); }
+      else snake.pop();
+      if (flash > 0) flash--;
+      draw();
+      timer = window.setTimeout(step, Math.max(55, 120 - eaten.length * 3));
+    };
+    const start = () => { clearTimeout(timer); reset(); state = 'play'; game.querySelector('[data-score]')!.textContent = '0'; board.focus({ preventScroll: true }); draw(); timer = window.setTimeout(step, 160); };
+    const turn = (d: P) => { if (state !== 'play') return; const lastD = queue[queue.length - 1] ?? dir; if (d[0] === lastD[0] && d[1] === lastD[1]) return; if (queue.length < 3) queue.push(d); };
+    const KEYS: Record<string, P> = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0], W: [0, -1], S: [0, 1], A: [-1, 0], D: [1, 0] };
+    let gameOn = false; new IntersectionObserver((es) => { gameOn = es[0].isIntersecting; if (!gameOn && state === 'play') { clearTimeout(timer); state = 'over'; draw(); } }, { threshold: 0.3 }).observe(board);
+    // capture phase so the page doesn't scroll and the footer's J/K shortcut stays out of it
+    document.addEventListener('keydown', (e) => {
+      if (!gameOn) return;
+      const t = e.target as HTMLElement; if (t.matches('input, textarea') || t.isContentEditable) return;
+      const focused = board.contains(document.activeElement) || state === 'play';
+      if (!focused) return;
+      if (e.key === ' ' || e.key === 'Enter') { if (state !== 'play') { start(); } e.preventDefault(); e.stopPropagation(); return; }
+      const d = KEYS[e.key]; if (d) { turn(d); e.preventDefault(); e.stopPropagation(); }
+    }, true);
+    board.addEventListener('click', () => { if (state !== 'play') start(); });
+    game.querySelectorAll<HTMLElement>('[data-dir]').forEach((b) => b.addEventListener('pointerdown', (e) => { e.preventDefault(); const [x, y] = b.dataset.dir!.split(',').map(Number); if (state !== 'play') start(); turn([x, y]); }));
+    game.querySelector('[data-start]')!.addEventListener('click', start);
+    let sx0 = 0, sy0 = 0;
+    board.addEventListener('touchstart', (e) => { sx0 = e.touches[0].clientX; sy0 = e.touches[0].clientY; }, { passive: true });
+    board.addEventListener('touchmove', (e) => { if (state === 'play') e.preventDefault(); }, { passive: false });
+    board.addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - sx0, dy = e.changedTouches[0].clientY - sy0; if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return; turn(Math.abs(dx) > Math.abs(dy) ? [Math.sign(dx), 0] : [0, Math.sign(dy)]); });
+    reset(); draw(); window.addEventListener('resize', () => { if (state !== 'play') { reset(); draw(); } });
+
+    // =================== LIGATURE SWITCH ===================
+    const lb = page.querySelector<HTMLButtonElement>('[data-liga-btn]')!, lc = page.querySelector<HTMLElement>('[data-liga-code]')!;
+    lb.addEventListener('click', () => { const on = lb.getAttribute('aria-pressed') !== 'true'; lb.setAttribute('aria-pressed', String(on)); lb.querySelector('span')!.textContent = on ? 'Ligatures on' : 'Ligatures off'; lc.classList.toggle('is-off', !on); });
+    lc.querySelectorAll<HTMLElement>('.o').forEach((o) => o.setAttribute('data-raw', o.textContent!.split('').join(' ')));
+
+    // =================== LOUPE ===================
+    const lbx = page.querySelector<HTMLElement>('[data-loupe-box]')!, src = lbx.querySelector<HTMLElement>('[data-loupe-src]')!;
+    const lens = lbx.querySelector<HTMLElement>('[data-lens]')!, inner = lbx.querySelector<HTMLElement>('[data-lens-inner]')!;
+    const clone = src.cloneNode(true) as HTMLElement; clone.removeAttribute('data-loupe-src'); inner.appendChild(clone);
+    const Z = 3.2;
+    const moveLens = (cx: number, cy: number) => {
+      const r = lbx.getBoundingClientRect(), sr = src.getBoundingClientRect();
+      const x = clamp(cx - r.left, 0, r.width), y = clamp(cy - r.top, 0, r.height), L = lens.offsetWidth / 2;
+      lens.style.transform = `translate(${x - L}px, ${y - L}px)`;
+      // point under the pointer, in the source's own coordinates
+      const ux = cx - sr.left, uy = cy - sr.top;
+      clone.style.width = `${src.offsetWidth}px`;
+      clone.style.margin = '0';
+      inner.style.transform = `translate(${L - ux * Z}px, ${L - uy * Z}px) scale(${Z})`;
+      lbx.classList.add('is-on');
+    };
+    lbx.addEventListener('pointermove', (e) => moveLens(e.clientX, e.clientY));
+    lbx.addEventListener('pointerdown', (e) => moveLens(e.clientX, e.clientY));
+    lbx.addEventListener('pointerleave', () => lbx.classList.remove('is-on'));
+  }
+</script>
+
+<style is:global>
+  .jb { --ed-head: 'JetBrains Mono Variable', ui-monospace, monospace; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 200; --ed-lede-vf: 'wght' 500; --ed-radius: 8px; --green: #5ecfb1; --pink: #ff7ab6; --amber: #ffcf6b; --blue: #7aa2ff; }
+  .jb em { font-style: italic; } .jb .ed-h2 { font-size: clamp(1.6rem, 0.8rem + 3.2vw, 4rem); letter-spacing: -0.04em; line-height: 1.06; }
+  .jb .ed-hero__lede { position: relative; z-index: 1; text-shadow: 0 0 18px var(--bg), 0 0 6px var(--bg); font-size: clamp(1.1rem, 0.8rem + 1.2vw, 1.8rem); letter-spacing: -0.03em; line-height: 1.25; max-width: 26ch; }
+  .jb-f { font-family: 'JetBrains Mono Variable', ui-monospace, monospace; font-weight: 400; }
+  .jb .ed-story__prose strong { font-family: 'JetBrains Mono Variable', monospace; font-weight: 400; font-variation-settings: 'wght' 700; font-size: 0.86em; }
+
+  /* ---------- hero ---------- */
+  .jb-field { position: absolute; inset: 0; z-index: -1; overflow: hidden; font-family: 'JetBrains Mono Variable', monospace; }
+  .jb-field span { position: absolute; transform: translate(-50%, -50%); font-size: clamp(1rem, 1.7vw, 1.6rem); color: var(--fg-3); opacity: var(--o); font-feature-settings: 'calt' 0; font-variation-settings: 'wght' 300; white-space: pre; transition: color 0.25s, opacity 0.25s, transform 0.35s cubic-bezier(0.34, 1.6, 0.64, 1), font-variation-settings 0.3s; }
+  .jb-field span.is-behind { opacity: calc(var(--o) * 0.35); }
+  .jb-field span.is-behind.is-on { transform: translate(-50%, -50%) scale(1.15); opacity: 0.55; }
+  .jb-field span.is-on { font-feature-settings: 'calt' 1; color: var(--green); opacity: 1; transform: translate(-50%, -50%) scale(1.5); font-variation-settings: 'wght' 700; text-shadow: 0 0 18px #5ecfb188; }
+  .jb-field span.is-on:nth-child(3n) { color: var(--pink); text-shadow: 0 0 18px #ff7ab688; }
+  .jb-field span.is-on:nth-child(5n) { color: var(--amber); text-shadow: 0 0 18px #ffcf6b88; }
+  .jb-hero__word { display: grid; font-family: 'JetBrains Mono Variable', monospace; font-size: min(12.6vw, 26svh); line-height: 1; letter-spacing: -0.05em; font-variation-settings: 'wght' 800; text-shadow: 0 0 40px var(--bg), 0 0 12px var(--bg); }
+  .jb-hero__word span:last-child { color: var(--green); font-variation-settings: 'wght' 200; font-style: italic; }
+  .jb-caret { display: inline-block; width: 0.08em; height: 0.82em; margin-left: 0.08em; background: var(--green); vertical-align: -0.06em; animation: jb-blink 1.05s steps(2, jump-none) infinite; }
+  @keyframes jb-blink { to { opacity: 0; } }
+
+  /* ---------- snake ---------- */
+  .jb-game { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(1rem, 3vw, 2.4rem); align-items: center; }
+  .jb-game__screen { background: #0a0c10; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; outline: none; box-shadow: 0 40px 80px -50px #5ecfb177; cursor: pointer; touch-action: pan-y; }
+  .jb-game__screen:focus-visible { box-shadow: 0 0 0 2px var(--green); }
+  .jb-game__screen.is-hit { animation: jb-hit 0.4s; }
+  @keyframes jb-hit { 20% { transform: translateX(-8px); background: #2a0b12; } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(2px); } }
+  .jb-game__screen header { display: flex; gap: 1.6rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); font: 400 0.72rem/1 'JetBrains Mono Variable', monospace; color: var(--fg-3); }
+  .jb-game__screen header span:first-child { margin-right: auto; color: var(--fg-2); }
+  .jb-game__screen header b { font-weight: 400; color: var(--green); font-variation-settings: 'wght' 700; }
+  .jb-game__pre .x { color: #4b5568; }
+  .jb-game__pre { margin: clamp(0.6rem, 2vw, 1.4rem); padding: 0; border: 1.5px solid #3a4252; border-radius: 4px; font-size: var(--cell, 1rem); line-height: 1.18; white-space: pre; color: #3a4252; font-feature-settings: 'calt' 0; overflow: hidden; text-align: center; }
+  .jb-game__pre .g { color: #222836; }
+  .jb-game__pre .h { color: #0a0c10; background: var(--green); font-variation-settings: 'wght' 800; border-radius: 2px; }
+  .jb-game__pre .b { color: var(--green); font-variation-settings: 'wght' 700; }
+  .jb-game__pre .e { color: #3d8f7a; }
+  .jb-game__pre .f { color: var(--pink); font-variation-settings: 'wght' 800; animation: jb-food 0.6s ease-in-out infinite alternate; text-shadow: 0 0 10px var(--pink); }
+  @keyframes jb-food { to { color: var(--amber); text-shadow: 0 0 14px var(--amber); } }
+  .jb-game__pre .m { color: var(--fg); font-variation-settings: 'wght' 800; }
+  .jb-game__pre .n { color: var(--fg-2); }
+  .jb-game__pre.is-flash .b { color: var(--amber); }
+  .jb-game__pad { display: grid; grid-template-columns: repeat(3, 3.4rem); grid-template-rows: repeat(3, 3.4rem); gap: 0.4rem; }
+  .jb-game__pad button { border-radius: 10px; background: var(--bg-2); border: 1px solid var(--line); color: var(--fg); font: 400 1.3rem/1 'JetBrains Mono Variable', monospace; touch-action: manipulation; transition: background 0.15s, transform 0.1s; }
+  .jb-game__pad button:active { transform: scale(0.92); background: var(--green); color: var(--bg); }
+  .jb-game__pad [data-dir="0,-1"] { grid-column: 2; grid-row: 1; } .jb-game__pad [data-dir="-1,0"] { grid-column: 1; grid-row: 2; } .jb-game__pad [data-start] { grid-column: 2; grid-row: 2; color: var(--green); }
+  .jb-game__pad [data-dir="1,0"] { grid-column: 3; grid-row: 2; } .jb-game__pad [data-dir="0,1"] { grid-column: 2; grid-row: 3; }
+
+  /* ---------- ligatures ---------- */
+  .jb-liga { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 3rem); align-items: start; }
+  .jb-editor { background: #0a0c10; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .jb-editor header { display: flex; align-items: center; gap: 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); font: 400 0.72rem/1 'JetBrains Mono Variable', monospace; color: var(--fg-3); }
+  .jb-dots { display: flex; gap: 6px; } .jb-dots i { width: 10px; height: 10px; border-radius: 50%; background: #ffffff22; }
+  .jb-editor__code { margin: 0; padding: clamp(1rem, 2.4vw, 1.8rem); font-size: clamp(0.72rem, 0.4rem + 0.9vw, 1.08rem); line-height: 1.8; color: var(--fg); overflow-x: auto; font-feature-settings: 'calt' 1; }
+  .jb-editor__code .c { color: #6f7789; font-style: italic; } .jb-editor__code .k { color: var(--pink); } .jb-editor__code .t { color: var(--blue); } .jb-editor__code .f { color: var(--amber); } .jb-editor__code .n { color: #c59cff; } .jb-editor__code .s { color: #9be39b; }
+  .jb-editor__code .o { position: relative; color: var(--green); font-variation-settings: 'wght' 700; border-radius: 3px; transition: background 0.2s; cursor: help; }
+  .jb-editor__code .o:hover { background: #5ecfb122; }
+  .jb-editor__code .o:hover::after { content: attr(data-raw); position: absolute; left: 50%; bottom: 120%; transform: translateX(-50%); padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--fg); color: var(--bg); font-size: 0.8em; white-space: pre; font-feature-settings: 'calt' 0; font-style: normal; }
+  .jb-editor__code.is-off { font-feature-settings: 'calt' 0; }
+  .jb-editor__code.is-off .o { background: #ff7ab61f; color: var(--pink); }
+  .jb-switch { margin-left: auto; display: inline-flex; align-items: center; gap: 0.6rem; font: inherit; color: var(--fg-2); }
+  .jb-switch i { width: 2.4rem; height: 1.3rem; border-radius: 100px; background: #ffffff22; position: relative; transition: background 0.25s; }
+  .jb-switch i::after { content: ''; position: absolute; top: 0.15rem; left: 0.15rem; width: 1rem; height: 1rem; border-radius: 50%; background: var(--fg); transition: transform 0.3s cubic-bezier(0.34, 1.6, 0.64, 1); }
+  .jb-switch[aria-pressed='true'] i { background: var(--green); } .jb-switch[aria-pressed='true'] i::after { transform: translateX(1.1rem); }
+  .jb-liga__note { font-size: var(--step-1); line-height: 1.5; color: var(--fg-2); }
+  .jb-liga__note code { font-family: 'JetBrains Mono Variable', monospace; color: var(--green); font-feature-settings: 'calt' 0; }
+  .jb-liga__note em { color: var(--fg); }
+
+  /* ---------- loupe ---------- */
+  .jb-loupe { position: relative; background: #0a0c10; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; cursor: none; touch-action: pan-y; }
+  .jb-loupe__code { margin: 0; padding: clamp(1rem, 2.4vw, 2rem); font-size: clamp(0.66rem, 0.35rem + 0.85vw, 1rem); line-height: 1.9; color: var(--fg-2); white-space: pre; font-feature-settings: 'calt' 0; overflow: hidden; }
+  .jb-loupe__lens { position: absolute; left: 0; top: 0; width: clamp(9rem, 20vw, 15rem); aspect-ratio: 1; border-radius: 50%; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 0.2s; background: #0a0c10; box-shadow: 0 0 0 2px var(--green), 0 20px 40px #000c, inset 0 0 30px #000; }
+  .jb-loupe.is-on .jb-loupe__lens { opacity: 1; }
+  .jb-loupe__inner { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .jb-loupe__inner pre { color: var(--fg) !important; }
+
+  @media (max-width: 900px) { .jb-liga { grid-template-columns: minmax(0, 1fr); } .jb-game { grid-template-columns: minmax(0, 1fr); justify-items: center; } .jb-game__screen { width: 100%; } }
+  @media (hover: hover) { .jb-game__pad { opacity: 0.6; } }
+</style>
