@@ -1,0 +1,234 @@
+---
+// INTER — new edition. The typeface of the interface, shown doing its job:
+// a live dashboard, a figures test, a legibility ladder and a stack of
+// notifications. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('inter');
+const kpis = [{ id: 'rev', k: 'Revenue', pre: '$' }, { id: 'usr', k: 'Active users', pre: '' }, { id: 'ms', k: 'Response time', pre: '', suf: ' ms' }, { id: 'up', k: 'Uptime', pre: '', suf: '%' }];
+const rows = [['INV-2041', 'Northwind Studio', 'Paid'], ['INV-2042', 'Halden & Co', 'Paid'], ['INV-2043', 'Lumen Labs', 'Due'], ['INV-2044', 'Ostrava Freight', 'Paid'], ['INV-2045', 'Quiet Hours Ltd', 'Late']];
+const toasts = [['Deploy finished', 'main → production · 42 s'], ['Ana commented', '“Can we ship this Friday?”'], ['Payment received', 'INV-2043 · $1,280.00'], ['Backup complete', '14.2 GB · 3 min ago'], ['New sign-in', 'Lisbon, Portugal · Firefox']];
+---
+<Layout title="Inter — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Inter" showToggle={false} />
+  <div class="ed it" data-it>
+    <header class="ed-hero it-hero" data-hero>
+      <div class="it-hero__grid" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Inter · {font.designer} · {font.year}</span><span>Weight × optical size, roman & italic</span></div>
+      <h1 class="ed-hero__word it-hero__word" data-word aria-label="Inter">{[...'Inter'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          You have read it <em>a thousand times</em> today without noticing.
+          <span class="ed-hero__hint" data-fine>Move across the name: letters under the pointer go Black, the rest go Thin. That is the whole range.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the name: letters under your finger go Black, the rest go Thin.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>lightest</dt><dd data-hud="lo">100</dd></div><div><dt>heaviest</dt><dd data-hud="hi">900</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-dash>
+        <div class="ed-kicker"><span>01</span> At work</div>
+        <h2 class="ed-h2">This is where it lives.<br />Everything here is <em>moving</em>.</h2>
+        <div class="ed-body it-app">
+          <aside class="it-app__side">
+            <b>Acme</b>
+            <nav><span class="on">Overview</span><span>Invoices</span><span>Customers</span><span>Reports</span><span>Settings</span></nav>
+          </aside>
+          <div class="it-app__main">
+            <header><b>Overview</b><span data-dash-time>Updated just now</span></header>
+            <div class="it-kpis">
+              {kpis.map((k) => <div class="it-kpi" data-kpi={k.id}><span>{k.k}</span><b>{k.pre}<i data-kv>0</i>{k.suf ?? ''}</b><em data-kd>+0.0%</em></div>)}
+            </div>
+            <div class="it-chart"><svg viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true"><path data-dash-area /><path data-dash-line /></svg></div>
+            <table class="it-table"><tbody>
+              {rows.map(([id, who, st], i) => <tr><td>{id}</td><td>{who}</td><td class="num" data-amt={i}>0.00</td><td><span class={`it-pill it-pill--${st.toLowerCase()}`}>{st}</span></td></tr>)}
+            </tbody></table>
+          </div>
+        </div>
+        <p class="ed-cap">An invented product with simulated numbers. No part of this is an image.</p>
+      </section>
+
+      <section class="ed-sec" data-tnum>
+        <div class="ed-kicker"><span>02</span> A small switch</div>
+        <h2 class="ed-h2">Same numbers.<br />One column <em>holds still</em>.</h2>
+        <p class="ed-lede">Both columns show the same changing values. The left uses Inter’s default proportional figures; the right turns on tabular figures, where every digit is the same width.</p>
+        <div class="ed-body it-tnum">
+          <div><p class="it-tnum__k">Proportional</p><ol data-tn="p"></ol></div>
+          <div class="on"><p class="it-tnum__k">Tabular <code>tnum</code></p><ol data-tn="t"></ol></div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>03</span> At eleven pixels</div>
+        <h2 class="ed-h2">It was drawn to stay clear<br />when it gets <em>very small</em>.</h2>
+        <div class="ed-body it-small">
+          <div class="it-small__ladder">
+            {[9, 10, 11, 12, 13, 14, 16].map((s) => <p style={`font-size:${s}px`}><b>{s}</b><span>Illegal 1lI0O — the invoice for $1,180.00 is due on 11/01.</span></p>)}
+          </div>
+          <div class="it-small__pairs">
+            {[['I', 'l', '1'], ['O', '0'], ['rn', 'm'], ['5', 'S'], ['8', 'B']].map((g) => <p>{g.map((c) => <span>{c}</span>)}</p>)}
+            <i>Look-alikes, set side by side</i>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>04</span> In the corner of your eye</div>
+        <h2 class="ed-h2">Two lines, two weights,<br />and you <em>know what happened</em>.</h2>
+        <div class="ed-body it-toasts" data-toasts data-items={JSON.stringify(toasts)}><div class="it-toasts__stack" data-toast-stack></div></div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Set <em>anything</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Inter Variable" sample="Clear at any size" italic
+            axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }, { tag: 'opsz', name: 'Optical size', min: 14, max: 32, step: 0.5 }]}
+            presets={[{ name: 'Body', v: [400, 14] }, { name: 'Label', v: [600, 14] }, { name: 'Display', v: [700, 32] }, { name: 'Thin', v: [100, 32] }, { name: 'Black', v: [900, 32] }]} start={2} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-it]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const seen = (el: Element, cb: (v: boolean) => void) => new IntersectionObserver((es) => cb(es[0].isIntersecting), { threshold: 0.15 }).observe(el);
+
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const w = letters.map(() => 400);
+    runHero(hero, (f) => {
+      const pos = clamp((f.px - 0.14) / 0.72, 0, 1) * (letters.length - 1); let lo = 900, hi = 100;
+      letters.forEach((l, i) => {
+        const tw = f.live ? 100 + 800 * near(i, pos, 1.7) : f.reduce ? 600 : 500 + 400 * Math.sin(f.t * 1.3 - i * 0.9);
+        w[i] += (tw - w[i]) * 0.15; l.style.fontVariationSettings = `'wght' ${w[i].toFixed(0)}, 'opsz' 32`; lo = Math.min(lo, w[i]); hi = Math.max(hi, w[i]);
+      });
+      hud.lo.textContent = String(Math.round(lo)); hud.hi.textContent = String(Math.round(hi));
+    });
+
+    // ---------- Dashboard ----------
+    const dash = page.querySelector<HTMLElement>('[data-dash]')!;
+    const K: Record<string, { v: number; d: number; f: (v: number) => string }> = {
+      rev: { v: 48210, d: 180, f: (v) => Math.round(v).toLocaleString('en-US') },
+      usr: { v: 1284, d: 9, f: (v) => Math.round(v).toLocaleString('en-US') },
+      ms: { v: 182, d: 11, f: (v) => String(Math.round(v)) },
+      up: { v: 99.98, d: 0.01, f: (v) => Math.min(100, v).toFixed(2) },
+    };
+    const pts = Array.from({ length: 40 }, (_, i) => 60 + 30 * Math.sin(i / 4) + Math.random() * 14);
+    const amts = [1280, 640.5, 1280, 3120.75, 89.99];
+    let dashOn = false; seen(dash, (v) => (dashOn = v));
+    const paintDash = (step: boolean) => {
+      dash.querySelectorAll<HTMLElement>('[data-kpi]').forEach((c) => {
+        const k = K[c.dataset.kpi!], old = k.v;
+        if (step) k.v = Math.max(0, k.v + (Math.random() - 0.42) * 2 * k.d);
+        c.querySelector('[data-kv]')!.textContent = k.f(k.v);
+        const pc = ((k.v - old) / (old || 1)) * 100, d = c.querySelector<HTMLElement>('[data-kd]')!;
+        d.textContent = `${pc >= 0 ? '+' : '−'}${Math.abs(pc).toFixed(2)}%`; d.classList.toggle('down', pc < 0);
+      });
+      if (step) { pts.shift(); pts.push(clamp(pts[pts.length - 1] + (Math.random() - 0.5) * 26, 14, 108)); amts.forEach((_, i) => { if (Math.random() < 0.3) amts[i] = Math.max(1, amts[i] + (Math.random() - 0.5) * 40); }); }
+      const d = pts.map((y, i) => `${i ? 'L' : 'M'}${(i * 600 / 39).toFixed(1)},${(120 - y).toFixed(1)}`).join(' ');
+      dash.querySelector('[data-dash-line]')!.setAttribute('d', d); dash.querySelector('[data-dash-area]')!.setAttribute('d', `${d} L600,120 L0,120 Z`);
+      dash.querySelectorAll<HTMLElement>('[data-amt]').forEach((t) => (t.textContent = amts[+t.dataset.amt!].toLocaleString('en-US', { style: 'currency', currency: 'USD' })));
+    };
+    paintDash(false); if (!reduce) setInterval(() => { if (dashOn) paintDash(true); }, 1100);
+
+    // ---------- Proportional vs tabular ----------
+    const tn = page.querySelector<HTMLElement>('[data-tnum]')!;
+    const lists = Array.from(tn.querySelectorAll<HTMLElement>('[data-tn]'));
+    const vals = [1111.11, 7481.9, 204.07, 91178.4, 16.11, 8810.01];
+    let tnOn = false; seen(tn, (v) => (tnOn = v));
+    const paintTn = () => lists.forEach((l) => (l.innerHTML = vals.map((v) => `<li>${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</li>`).join('')));
+    paintTn(); if (!reduce) setInterval(() => { if (!tnOn) return; vals.forEach((v, i) => (vals[i] = Math.max(1, v * (0.9 + Math.random() * 0.2) + (Math.random() < 0.2 ? 1111 : 0)) % 99999)); paintTn(); }, 700);
+
+    // ---------- Toasts ----------
+    const tz = page.querySelector<HTMLElement>('[data-toasts]')!, stack = tz.querySelector<HTMLElement>('[data-toast-stack]')!;
+    const items: string[][] = JSON.parse(tz.dataset.items!); let ti = 0, tzOn = false; seen(tz, (v) => (tzOn = v));
+    const push = () => {
+      const [a, b] = items[ti++ % items.length], el = document.createElement('div');
+      el.className = 'it-toast'; el.innerHTML = `<i></i><p><b>${a}</b><span>${b}</span></p><time>now</time>`;
+      stack.prepend(el); while (stack.children.length > 4) stack.lastElementChild!.remove();
+      Array.from(stack.children).forEach((c, i) => { (c as HTMLElement).style.setProperty('--n', String(i)); if (i) c.querySelector('time')!.textContent = `${i * 2} min`; });
+    };
+    push(); push(); push(); if (!reduce) setInterval(() => { if (tzOn) push(); }, 2400);
+  }
+</script>
+
+<style is:global>
+  .it { --ed-head: 'Inter Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 700, 'opsz' 32; --ed-em-vf: 'wght' 300, 'opsz' 32; --ed-lede-vf: 'wght' 600, 'opsz' 28; --ed-radius: 12px; font-family: 'Inter Variable', system-ui, sans-serif; font-feature-settings: normal; }
+  .it em { font-style: normal; } .it .ed-h2 { letter-spacing: -0.035em; } .it .ed-h2 em { font-style: italic; }
+  .it .ed-hero__lede { letter-spacing: -0.03em; }
+
+  .it-hero__grid { position: absolute; inset: 0; z-index: -1; background: linear-gradient(#0d101410 1px, transparent 1px) 0 0 / 100% 8px, radial-gradient(60% 60% at 50% 45%, #2f5cff22, transparent 70%); -webkit-mask-image: radial-gradient(70% 70% at 50% 50%, #000, transparent); mask-image: radial-gradient(70% 70% at 50% 50%, #000, transparent); }
+  .it-hero__word { font-family: 'Inter Variable', sans-serif; font-size: min(33vw, 60svh); line-height: 1; letter-spacing: -0.06em; }
+
+  .it-app { display: grid; grid-template-columns: 12rem minmax(0, 1fr); background: #fff; color: #0d1014; border: 1px solid #0d101422; border-radius: 14px; overflow: hidden; box-shadow: 0 50px 90px -50px #2f5cff66; font-variation-settings: 'wght' 420, 'opsz' 14; font-size: 13px; }
+  .it-app b { font-weight: 400; font-variation-settings: 'wght' 650, 'opsz' 14; }
+  .it-app__side { background: #f5f6f9; border-right: 1px solid #0d101414; padding: 1.1rem 0.8rem; display: grid; align-content: start; gap: 1.2rem; }
+  .it-app__side > b { font-size: 15px; padding-left: 0.6rem; letter-spacing: -0.02em; }
+  .it-app__side nav { display: grid; gap: 2px; }
+  .it-app__side nav span { padding: 0.45rem 0.6rem; border-radius: 7px; color: #4a505b; }
+  .it-app__side nav .on { background: #fff; color: #0d1014; font-variation-settings: 'wght' 600, 'opsz' 14; box-shadow: 0 0 0 1px #0d101414; }
+  .it-app__main { padding: 1.1rem 1.3rem 1.3rem; display: grid; gap: 1.1rem; min-width: 0; }
+  .it-app__main header { display: flex; justify-content: space-between; align-items: baseline; }
+  .it-app__main header b { font-size: 20px; letter-spacing: -0.03em; font-variation-settings: 'wght' 650, 'opsz' 24; }
+  .it-app__main header span { color: #7a808b; font-size: 12px; }
+  .it-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+  .it-kpi { border: 1px solid #0d101418; border-radius: 10px; padding: 0.8rem 0.9rem; display: grid; gap: 0.25rem; }
+  .it-kpi span { color: #5c626d; font-size: 12px; }
+  .it-kpi b { font-size: clamp(1.2rem, 2.4vw, 2rem); letter-spacing: -0.04em; font-variation-settings: 'wght' 650, 'opsz' 32; font-feature-settings: 'tnum'; line-height: 1.1; }
+  .it-kpi i { font-style: normal; }
+  .it-kpi em { font-size: 12px; color: #12805c; font-feature-settings: 'tnum'; font-variation-settings: 'wght' 550, 'opsz' 14; } .it-kpi em.down { color: #c2362b; }
+  .it-chart { height: clamp(5rem, 11vw, 9rem); border: 1px solid #0d101418; border-radius: 10px; overflow: hidden; }
+  .it-chart svg { width: 100%; height: 100%; display: block; } .it-chart path { transition: d 1s linear; }
+  .it-chart [data-dash-line] { fill: none; stroke: #2f5cff; stroke-width: 2; vector-effect: non-scaling-stroke; } .it-chart [data-dash-area] { fill: #2f5cff1f; }
+  .it-table { width: 100%; border-collapse: collapse; }
+  .it-table td { padding: 0.55rem 0.4rem; border-top: 1px solid #0d101412; white-space: nowrap; }
+  .it-table td:first-child { color: #7a808b; font-feature-settings: 'tnum'; } .it-table .num { text-align: right; font-feature-settings: 'tnum'; font-variation-settings: 'wght' 550, 'opsz' 14; } .it-table td:last-child { text-align: right; width: 4.5rem; }
+  .it-pill { display: inline-block; padding: 0.12rem 0.55rem; border-radius: 100px; font-size: 11px; font-variation-settings: 'wght' 600, 'opsz' 14; background: #dff5ea; color: #12805c; }
+  .it-pill--due { background: #fff1cf; color: #8a5a00; } .it-pill--late { background: #ffe1dd; color: #c2362b; }
+
+  .it-tnum { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 3vw, 3rem); }
+  .it-tnum > div { background: #fff; border: 1px solid #0d101418; border-radius: 14px; padding: clamp(1rem, 3vw, 2.4rem); }
+  .it-tnum > .on { border-color: #2f5cff; box-shadow: 0 0 0 3px #2f5cff22; }
+  .it-tnum__k { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #5c626d; font-variation-settings: 'wght' 600, 'opsz' 14; padding-bottom: 0.8rem; }
+  .it-tnum code { font-family: var(--font-mono); color: #2f5cff; text-transform: none; }
+  .it-tnum li { text-align: right; font-size: clamp(1.3rem, 4.2vw, 4rem); line-height: 1.25; letter-spacing: -0.03em; font-variation-settings: 'wght' 500, 'opsz' 32; border-top: 1px solid #0d101412; color: #0d1014; }
+  .it-tnum .on li { font-feature-settings: 'tnum'; }
+
+  .it-small { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 3rem); align-items: start; }
+  .it-small__ladder { background: #fff; border: 1px solid #0d101418; border-radius: 14px; padding: 1.2rem 1.4rem; }
+  .it-small__ladder p { display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: baseline; padding: 0.5rem 0; border-top: 1px solid #0d101410; color: #0d1014; font-variation-settings: 'wght' 420, 'opsz' 14; }
+  .it-small__ladder p:first-child { border-top: 0; } .it-small__ladder b { font: 400 10px/1 var(--font-mono); color: #9aa0ab; }
+  .it-small__pairs { display: grid; gap: 0.6rem; }
+  .it-small__pairs p { display: flex; gap: 0.5rem; }
+  .it-small__pairs span { flex: 1; text-align: center; background: #0d1014; color: #fff; border-radius: 10px; font-size: clamp(2rem, 5vw, 4.4rem); line-height: 1.3; font-variation-settings: 'wght' 500, 'opsz' 32; }
+  .it-small__pairs i { font: normal 400 0.7rem/1.5 var(--font-mono); color: var(--fg-3); letter-spacing: 0.04em; }
+
+  .it-toasts { display: grid; place-items: center; min-height: 24rem; background: linear-gradient(160deg, #2f5cff, #7a4dff 60%, #ff7ab8); border-radius: 18px; overflow: hidden; padding: 2rem 1rem; }
+  .it-toasts__stack { position: relative; width: min(100%, 24rem); height: 17rem; }
+  .it-toast { --n: 0; position: absolute; left: 0; right: 0; top: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; padding: 0.85rem 1rem; background: #ffffffee; backdrop-filter: blur(12px); border-radius: 16px; color: #0d1014; box-shadow: 0 12px 30px -12px #0d101477; transform: translateY(calc(var(--n) * 4.6rem)) scale(calc(1 - var(--n) * 0.03)); opacity: calc(1 - var(--n) * 0.22); transition: transform 0.6s cubic-bezier(0.2, 1.2, 0.3, 1), opacity 0.6s; animation: it-in 0.6s cubic-bezier(0.2, 1.2, 0.3, 1); }
+  @keyframes it-in { from { transform: translateY(-3rem) scale(0.9); opacity: 0; } }
+  .it-toast i { width: 2.2rem; height: 2.2rem; border-radius: 10px; background: linear-gradient(140deg, #2f5cff, #7a4dff); }
+  .it-toast p { display: grid; min-width: 0; } .it-toast b { font-weight: 400; font-variation-settings: 'wght' 650, 'opsz' 14; font-size: 14px; letter-spacing: -0.01em; }
+  .it-toast span { font-size: 13px; color: #4a505b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variation-settings: 'wght' 420, 'opsz' 14; }
+  .it-toast time { font-size: 11px; color: #7a808b; font-feature-settings: 'tnum'; }
+
+  .it .ed-test__stage { background: #fff; } .it .ed-test__text { letter-spacing: -0.04em; }
+
+  @media (max-width: 900px) { .it-app { grid-template-columns: minmax(0, 1fr); } .it-app__side { display: none; } .it-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .it-small { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .it-table td:nth-child(1) { display: none; } .it-tnum { gap: 0.5rem; } .it-tnum > div { padding: 0.8rem; } }
+</style>
