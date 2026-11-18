@@ -1,0 +1,281 @@
+---
+// NEWSREADER — new edition. Everything a newspaper does with type: a mini
+// crossword, a broadsheet that folds, a column-width lab and a headline that
+// gets more sensational as you push it. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('newsreader');
+// A double word square: rows and columns read the same.
+const GRID = ['HEART', 'EMBER', 'ABUSE', 'RESIN', 'TREND'];
+const CLUES = ['It never stops beating', 'A glowing coal', 'Misuse, badly', 'Pine sap, set hard', 'What the fashion pages chase'];
+const story = 'The council met on Tuesday evening in the upstairs room of the library, where the radiators knock and the chairs do not match. On the agenda were the bus timetable, the new crossing outside the school and, after some discussion, the question of who exactly had been feeding the ducks so much bread. A decision on the ducks was deferred until spring.';
+---
+<Layout title="Newsreader — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Newsreader" showToggle={false} />
+  <div class="ed nr" data-nr>
+    <header class="ed-hero nr-hero" data-hero>
+      <div class="nr-hero__dots" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Newsreader · {font.designer} · {font.year}</span><span>Optical size × weight, roman & italic</span></div>
+      <h1 class="ed-hero__word nr-hero__word" data-word aria-label="Newsreader">Newsreader</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Drawn for the newspaper, with <em>a different cut</em> for every size.
+          <span class="ed-hero__hint" data-fine>Sideways sets the optical size, from 6-point small print to 72-point headline. Up and down sets the weight.</span>
+          <span class="ed-hero__hint" data-coarse>Drag sideways for optical size, up and down for weight.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>opsz</dt><dd data-hud="o">72</dd></div><div><dt>wght</dt><dd data-hud="w">500</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-cw>
+        <div class="ed-kicker"><span>01</span> Page 34</div>
+        <h2 class="ed-h2">No newspaper is complete<br />without <em>a crossword</em>.</h2>
+        <div class="ed-body nr-cw">
+          <div class="nr-cw__grid" data-cw-grid role="grid" aria-label="Five by five crossword">
+            {GRID.map((row, r) => [...row].map((_, c) => (
+              <label class="nr-cw__cell">{c === 0 || r === 0 ? <i>{r === 0 ? c + 1 : r + 1}</i> : null}<input maxlength="1" data-r={r} data-c={c} aria-label={`Row ${r + 1}, column ${c + 1}`} autocomplete="off" /></label>
+            )))}
+          </div>
+          <div class="nr-cw__clues">
+            <p class="nr-cw__h">Across &amp; Down <span>(this grid reads the same both ways)</span></p>
+            <ol>{CLUES.map((c, i) => <li data-clue={i}><b>{i + 1}</b> {c} <span>(5)</span></li>)}</ol>
+            <p class="nr-cw__status" data-cw-status aria-live="polite">Type in the grid. Arrow keys move; Backspace goes back.</p>
+            <div class="nr-cw__btns"><button type="button" data-cw-check>Check</button><button type="button" data-cw-reveal>Reveal a letter</button><button type="button" data-cw-clear>Clear</button></div>
+          </div>
+        </div>
+        <script type="application/json" data-cw-data set:html={JSON.stringify(GRID)} />
+      </section>
+
+      <section class="ed-sec" data-fold>
+        <div class="ed-kicker"><span>02</span> Above the fold</div>
+        <h2 class="ed-h2">The story that sells the paper<br />has to work <em>folded in half</em>.</h2>
+        <div class="ed-body nr-fold">
+          <button type="button" class="nr-paper" data-fold-paper aria-pressed="true" aria-label="Fold or unfold the newspaper">
+            <span class="nr-paper__top">
+              <span class="nr-paper__mast"><span>No. 38,412</span><b>The Morning Reader</b><span data-fold-date>Wednesday</span></span>
+              <span class="nr-paper__head">Harbour bridge to reopen after nine years</span>
+              <span class="nr-paper__deck">Engineers say the new span will carry trams, bicycles and, for the first time, people who are not in a hurry</span>
+            </span>
+            <span class="nr-paper__bot">
+              <span class="nr-paper__cols">
+                <span><b>Weather</b> Bright spells, then rain. A good day for an umbrella you can lose.</span>
+                <span><b>Arts</b> The museum finally hangs the painting nobody could agree on.</span>
+                <span><b>Sport</b> Second division side wins on penalties; manager “lost for words”, then finds several.</span>
+              </span>
+            </span>
+          </button>
+          <p class="ed-cap">An invented paper. Click it to fold and unfold.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-measure>
+        <div class="ed-kicker"><span>03</span> The measure</div>
+        <h2 class="ed-h2">Too wide and you lose your place.<br />Too narrow and <em>you stutter</em>.</h2>
+        <div class="ed-body nr-ms">
+          <div class="nr-ms__col" data-ms-col><p>{story}</p></div>
+          <div class="nr-ms__ctl">
+            <label class="ed-slider"><span>Column width <b data-ms-ch>60</b> characters</span><input type="range" min="18" max="120" value="60" data-ms-in /></label>
+            <div class="nr-ms__meter"><i data-ms-dot></i><span class="lo">cramped</span><span class="ok">comfortable 45–75</span><span class="hi">tiring</span></div>
+            <p class="nr-ms__verdict" data-ms-verdict>Comfortable</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-sens>
+        <div class="ed-kicker"><span>04</span> Editorial judgement</div>
+        <h2 class="ed-h2">Same story.<br />How loud do <em>you</em> want it?</h2>
+        <div class="ed-body nr-sens">
+          <div class="nr-sens__sheet" data-sens-sheet>
+            <p class="nr-sens__kick" data-sens-kick>Local</p>
+            <p class="nr-sens__head" data-sens-head>Council postpones decision on duck feeding</p>
+          </div>
+          <label class="ed-slider nr-sens__slider"><span>Calm <b data-sens-name>Broadsheet</b> Sensational</span><input type="range" min="0" max="4" step="1" value="0" data-sens-in /></label>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>tomorrow’s</em> headline.</h2>
+        <div class="ed-body">
+          <EditionTester family="Newsreader Variable" sample="Hold the front page" italic
+            axes={[{ tag: 'opsz', name: 'Optical size', min: 6, max: 72 }, { tag: 'wght', name: 'Weight', min: 200, max: 800 }]}
+            presets={[{ name: 'Headline', v: [72, 600] }, { name: 'Deck', v: [36, 400] }, { name: 'Body', v: [16, 400] }, { name: 'Small print', v: [6, 400] }, { name: 'Italic standfirst', v: [36, 300], italic: true }]} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-nr]');
+  if (page) {
+    // ---------- Hero ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    let o = 72, w = 500;
+    runHero(hero, (f) => {
+      const to = f.live ? 6 + 66 * clamp((f.px - 0.08) / 0.84, 0, 1) : f.reduce ? 72 : 39 + 33 * Math.sin(f.t * 0.4);
+      const tw = f.live ? 200 + 600 * clamp(1 - f.py, 0, 1) : f.reduce ? 500 : 500 + 250 * Math.sin(f.t * 0.7);
+      o += (to - o) * 0.1; w += (tw - w) * 0.1;
+      word.style.fontVariationSettings = `'opsz' ${o.toFixed(1)}, 'wght' ${w.toFixed(0)}`;
+      hud.o.textContent = String(Math.round(o)); hud.w.textContent = String(Math.round(w));
+    });
+
+    // ---------- Crossword ----------
+    const cw = page.querySelector<HTMLElement>('[data-cw]')!, G: string[] = JSON.parse(cw.querySelector('[data-cw-data]')!.textContent!);
+    const cells = Array.from(cw.querySelectorAll<HTMLInputElement>('[data-r]'));
+    const at = (r: number, c: number) => cells[r * 5 + c];
+    let dir: 'a' | 'd' = 'a';
+    const status = cw.querySelector<HTMLElement>('[data-cw-status]')!;
+    const hl = (r: number, c: number) => {
+      cells.forEach((x) => x.parentElement!.classList.remove('is-word'));
+      for (let i = 0; i < 5; i++) (dir === 'a' ? at(r, i) : at(i, c)).parentElement!.classList.add('is-word');
+      cw.querySelectorAll('[data-clue]').forEach((li) => li.classList.toggle('is-on', +(li as HTMLElement).dataset.clue! === (dir === 'a' ? r : c)));
+    };
+    const solved = () => cells.every((x) => x.value.toUpperCase() === G[+x.dataset.r!][+x.dataset.c!]);
+    cells.forEach((x) => {
+      const r = +x.dataset.r!, c = +x.dataset.c!;
+      x.addEventListener('focus', () => hl(r, c));
+      x.addEventListener('click', () => { if (document.activeElement === x) { dir = dir === 'a' ? 'd' : 'a'; hl(r, c); } });
+      x.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+        const mv = (dr: number, dc: number) => { const nr = clamp(r + dr, 0, 4), nc = clamp(c + dc, 0, 4); at(nr, nc).focus(); };
+        if (e.key === 'ArrowRight') { dir = 'a'; mv(0, 1); e.preventDefault(); } else if (e.key === 'ArrowLeft') { dir = 'a'; mv(0, -1); e.preventDefault(); }
+        else if (e.key === 'ArrowDown') { dir = 'd'; mv(1, 0); e.preventDefault(); } else if (e.key === 'ArrowUp') { dir = 'd'; mv(-1, 0); e.preventDefault(); }
+        else if (e.key === 'Backspace' && !x.value) { dir === 'a' ? mv(0, -1) : mv(-1, 0); e.preventDefault(); }
+      });
+      x.addEventListener('input', () => {
+        x.value = x.value.replace(/[^a-z]/gi, '').toUpperCase().slice(-1); x.parentElement!.classList.remove('is-bad', 'is-good');
+        if (x.value) { if (dir === 'a' && c < 4) at(r, c + 1).focus(); else if (dir === 'd' && r < 4) at(r + 1, c).focus(); }
+        if (solved()) { cw.classList.add('is-solved'); status.textContent = 'Solved! Every row is also a column.'; }
+      });
+    });
+    cw.querySelector('[data-cw-check]')!.addEventListener('click', () => { let bad = 0; cells.forEach((x) => { if (!x.value) return; const ok = x.value === G[+x.dataset.r!][+x.dataset.c!]; x.parentElement!.classList.toggle('is-bad', !ok); x.parentElement!.classList.toggle('is-good', ok); if (!ok) bad++; }); status.textContent = bad ? `${bad} letter${bad > 1 ? 's' : ''} not quite right.` : 'So far, so good.'; });
+    cw.querySelector('[data-cw-reveal]')!.addEventListener('click', () => { const empty = cells.filter((x) => x.value !== G[+x.dataset.r!][+x.dataset.c!]); if (!empty.length) return; const x = empty[Math.floor(Math.random() * empty.length)]; x.value = G[+x.dataset.r!][+x.dataset.c!]; x.parentElement!.classList.add('is-revealed'); if (solved()) { cw.classList.add('is-solved'); status.textContent = 'Solved — with a little help.'; } });
+    cw.querySelector('[data-cw-clear]')!.addEventListener('click', () => { cells.forEach((x) => { x.value = ''; x.parentElement!.classList.remove('is-bad', 'is-good', 'is-revealed'); }); cw.classList.remove('is-solved'); status.textContent = 'Fresh grid.'; });
+
+    // ---------- Fold ----------
+    const paper = page.querySelector<HTMLButtonElement>('[data-fold-paper]')!;
+    page.querySelector('[data-fold-date]')!.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long' });
+    paper.addEventListener('click', () => { const f = paper.getAttribute('aria-pressed') !== 'true'; paper.setAttribute('aria-pressed', String(f)); });
+    new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { setTimeout(() => paper.setAttribute('aria-pressed', 'false'), 700); ob.disconnect(); } }, { threshold: 0.6 }).observe(paper);
+
+    // ---------- Measure ----------
+    const ms = page.querySelector<HTMLElement>('[data-measure]')!, col = ms.querySelector<HTMLElement>('[data-ms-col]')!, msin = ms.querySelector<HTMLInputElement>('[data-ms-in]')!;
+    const paintMs = () => {
+      const ch = +msin.value; col.style.maxWidth = `${ch}ch`;
+      ms.querySelector('[data-ms-ch]')!.textContent = String(ch);
+      ms.querySelector<HTMLElement>('[data-ms-dot]')!.style.left = `${((ch - 18) / 102) * 100}%`;
+      const v = ch < 45 ? ['Cramped', 'lo'] : ch <= 75 ? ['Comfortable', 'ok'] : ['Tiring', 'hi'];
+      const vd = ms.querySelector<HTMLElement>('[data-ms-verdict]')!; vd.textContent = v[0]; vd.dataset.v = v[1];
+    };
+    msin.addEventListener('input', paintMs); paintMs();
+
+    // ---------- Sensational-o-meter ----------
+    const sens = page.querySelector<HTMLElement>('[data-sens]')!, sin = sens.querySelector<HTMLInputElement>('[data-sens-in]')!, sheet = sens.querySelector<HTMLElement>('[data-sens-sheet]')!;
+    const LV = [
+      { n: 'Broadsheet', k: 'Local', h: 'Council postpones decision on duck feeding', o: 48, w: 400, up: false, it: false },
+      { n: 'Regional', k: 'Town hall', h: 'Duck feeding row delays council vote', o: 60, w: 550, up: false, it: false },
+      { n: 'Evening edition', k: 'Exclusive', h: 'Ducks put council in a flap', o: 72, w: 700, up: false, it: true },
+      { n: 'Tabloid', k: 'Shock', h: 'Quackers! Bread fury grips town', o: 72, w: 800, up: true, it: false },
+      { n: 'Off the scale', k: 'You will not believe', h: 'Duck-gate: the bread they didn’t want you to know about', o: 72, w: 800, up: true, it: true },
+    ];
+    const paintS = () => {
+      const l = LV[+sin.value];
+      sens.querySelector('[data-sens-name]')!.textContent = l.n; sens.querySelector('[data-sens-kick]')!.textContent = l.k;
+      const h = sens.querySelector<HTMLElement>('[data-sens-head]')!; h.textContent = l.h;
+      h.style.fontVariationSettings = `'opsz' ${l.o}, 'wght' ${l.w}`; h.style.textTransform = l.up ? 'uppercase' : 'none'; h.style.fontStyle = l.it ? 'italic' : 'normal';
+      sheet.dataset.level = sin.value;
+      sheet.classList.remove('is-new'); void sheet.offsetWidth; sheet.classList.add('is-new');
+    };
+    sin.addEventListener('input', paintS); paintS();
+  }
+</script>
+
+<style is:global>
+  .nr { --ed-head: 'Newsreader Variable', Georgia, serif; --ed-head-vf: 'opsz' 72, 'wght' 600; --ed-em-vf: 'opsz' 72, 'wght' 400; --ed-lede-vf: 'opsz' 36, 'wght' 450; --ed-radius: 2px; --newsprint: #f4f0e6; --ink: #161511; }
+  .nr .ed-h2 em, .nr .ed-hero__lede em { font-style: italic; }
+  .nr .ed-h2 { letter-spacing: -0.02em; line-height: 1; }
+  .nr .ed-story__prose { font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 16, 'wght' 400; }
+  .nr .ed-story__prose em { font-style: italic; } .nr .ed-story__prose strong { font-weight: 400; font-variation-settings: 'opsz' 16, 'wght' 650; }
+
+  .nr-hero__dots { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle, #1a181322 1.1px, transparent 1.4px) 0 0 / 7px 7px; -webkit-mask-image: radial-gradient(70% 60% at 50% 45%, #000, transparent); mask-image: radial-gradient(70% 60% at 50% 45%, #000, transparent); }
+  .nr-hero__word { font-family: 'Newsreader Variable', serif; font-size: min(15.2vw, 40svh); line-height: 1.05; letter-spacing: -0.03em; }
+
+  /* crossword */
+  .nr-cw { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: start; }
+  .nr-cw__grid { display: grid; grid-template-columns: repeat(5, clamp(3.4rem, 8vw, 5.6rem)); grid-auto-rows: clamp(3.4rem, 8vw, 5.6rem); border: 3px solid var(--ink); background: var(--ink); gap: 2px; }
+  .nr-cw__cell { position: relative; background: #fffdf6; display: block; }
+  .nr-cw__cell i { position: absolute; left: 4px; top: 2px; font: 600 0.7rem/1 'Newsreader Variable', serif; font-style: normal; color: #6a6254; pointer-events: none; }
+  .nr-cw__cell input { width: 100%; height: 100%; border: 0; background: transparent; text-align: center; font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 48, 'wght' 600; font-size: clamp(1.8rem, 4.4vw, 3rem); text-transform: uppercase; color: var(--ink); caret-color: var(--accent); outline: none; padding-top: 0.2em; }
+  .nr-cw__cell.is-word { background: #dfe8f3; }
+  .nr-cw__cell:focus-within { background: #ffe9a8; }
+  .nr-cw__cell.is-bad input { color: #b0301c; } .nr-cw__cell.is-good input { color: var(--accent); }
+  .nr-cw__cell.is-revealed input { color: #8a7a5a; font-style: italic; }
+  .nr-cw.is-solved .nr-cw__cell { animation: nr-win 0.8s var(--ease) backwards; background: #e6f1e0; }
+  .nr-cw.is-solved .nr-cw__cell:nth-child(5n+2) { animation-delay: 60ms; } .nr-cw.is-solved .nr-cw__cell:nth-child(5n+3) { animation-delay: 120ms; } .nr-cw.is-solved .nr-cw__cell:nth-child(5n+4) { animation-delay: 180ms; } .nr-cw.is-solved .nr-cw__cell:nth-child(5n) { animation-delay: 240ms; }
+  @keyframes nr-win { 40% { transform: scale(1.12); background: #c6e8a8; } }
+  .nr-cw__h { font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 36, 'wght' 700; font-size: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--fg); }
+  .nr-cw__h span { font-style: italic; font-variation-settings: 'opsz' 16, 'wght' 400; font-size: 0.65em; color: var(--fg-3); }
+  .nr-cw__clues ol { display: grid; gap: 0.2rem; margin: 0.8rem 0 1.2rem; font-family: 'Newsreader Variable', serif; font-size: 1.25rem; font-variation-settings: 'opsz' 16, 'wght' 400; }
+  .nr-cw__clues li { padding: 0.3rem 0.5rem; border-radius: 2px; transition: background 0.2s; }
+  .nr-cw__clues li.is-on { background: #dfe8f3; }
+  .nr-cw__clues li b { font-weight: 400; font-variation-settings: 'opsz' 16, 'wght' 700; margin-right: 0.4rem; }
+  .nr-cw__clues li span { color: var(--fg-3); font-size: 0.85em; }
+  .nr-cw__status { font-style: italic; font-family: 'Newsreader Variable', serif; color: var(--accent); min-height: 1.5em; font-size: 1.1rem; }
+  .nr-cw__btns { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+  .nr-cw__btns button { padding: 0.55rem 0.9rem; border: 1px solid var(--fg); font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .nr-cw__btns button:hover { background: var(--fg); color: var(--bg); }
+
+  /* fold */
+  .nr-fold { display: grid; justify-items: center; gap: 1rem; perspective: 1800px; }
+  .nr-paper { container-type: inline-size; position: relative; display: block; width: min(100%, 46rem); text-align: left; cursor: pointer; transform-style: preserve-3d; }
+  .nr-paper__top, .nr-paper__bot { display: block; background: var(--newsprint); color: var(--ink); padding: 4cqi 5cqi; background-image: radial-gradient(#16151112 0.7px, transparent 0.9px); background-size: 4px 4px; }
+  .nr-paper__top { box-shadow: 0 -1px 0 #0001; }
+  .nr-paper__bot { transform-origin: 50% 0; transition: transform 0.9s cubic-bezier(0.5, 0, 0.2, 1), filter 0.9s; box-shadow: 0 30px 50px -30px #0008; }
+  .nr-paper[aria-pressed='true'] .nr-paper__bot { transform: rotateX(178deg); filter: brightness(0.75); }
+  .nr-paper__mast { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2cqi; padding-bottom: 2cqi; border-bottom: 0.6cqi double var(--ink); font: 400 1.7cqi/1.3 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .nr-paper__mast b { font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 72, 'wght' 800; font-size: 6.8cqi; letter-spacing: -0.02em; text-transform: none; white-space: nowrap; }
+  .nr-paper__mast span:last-child { text-align: right; }
+  .nr-paper__head { display: block; padding-top: 3cqi; font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 72, 'wght' 700; font-size: 9cqi; line-height: 0.98; letter-spacing: -0.025em; }
+  .nr-paper__deck { display: block; padding-top: 2.4cqi; font-family: 'Newsreader Variable', serif; font-style: italic; font-variation-settings: 'opsz' 28, 'wght' 400; font-size: 3.4cqi; line-height: 1.3; color: #3b362c; }
+  .nr-paper__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3cqi; font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 10, 'wght' 420; font-size: 2.3cqi; line-height: 1.45; }
+  .nr-paper__cols b { display: block; font-weight: 400; font-variation-settings: 'opsz' 24, 'wght' 750; font-size: 1.4em; margin-bottom: 0.4em; padding-bottom: 0.3em; border-bottom: 1px solid var(--ink); }
+
+  /* measure */
+  .nr-ms { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+  .nr-ms__col { padding: 1.4rem 1.6rem; background: var(--newsprint); box-shadow: inset 0 0 0 1px var(--line); transition: max-width 0.25s var(--ease); font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 16, 'wght' 400; font-size: 1.15rem; line-height: 1.5; color: var(--ink); text-align: justify; hyphens: auto; -webkit-hyphens: auto; overflow: hidden; }
+  .nr-ms__ctl { display: grid; gap: 1.2rem; position: sticky; top: 100px; }
+  .nr-ms__meter { position: relative; display: grid; grid-template-columns: 26.5fr 29.4fr 44.1fr; height: 2.4rem; font: 400 0.62rem/2.4rem var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
+  .nr-ms__meter .lo { background: #f3d8c8; color: #8a3a1a; } .nr-ms__meter .ok { background: #d6e8cc; color: #2f5a22; } .nr-ms__meter .hi { background: #f3d8c8; color: #8a3a1a; }
+  .nr-ms__meter i { position: absolute; top: -6px; bottom: -6px; width: 3px; margin-left: -1.5px; background: var(--fg); transition: left 0.25s var(--ease); }
+  .nr-ms__verdict { font-family: 'Newsreader Variable', serif; font-variation-settings: 'opsz' 72, 'wght' 700; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1; }
+  .nr-ms__verdict[data-v='ok'] { color: #2f5a22; } .nr-ms__verdict[data-v='lo'], .nr-ms__verdict[data-v='hi'] { color: #b0301c; font-style: italic; }
+
+  /* sensational */
+  .nr-sens { display: grid; gap: 1.6rem; }
+  .nr-sens__sheet { container-type: inline-size; min-height: clamp(14rem, 28vw, 22rem); padding: clamp(1.4rem, 4vw, 3rem); background: var(--newsprint); color: var(--ink); display: grid; align-content: center; gap: 1rem; transition: background 0.4s, color 0.4s; overflow: hidden; }
+  .nr-sens__sheet.is-new .nr-sens__head { animation: nr-slam 0.5s cubic-bezier(0.34, 1.5, 0.64, 1); }
+  @keyframes nr-slam { from { transform: scale(1.12); opacity: 0; } }
+  .nr-sens__kick { justify-self: start; padding: 0.3em 0.6em; font: 400 2cqi/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--newsprint); }
+  .nr-sens__head { font-family: 'Newsreader Variable', serif; font-size: 7.6cqi; line-height: 0.98; letter-spacing: -0.02em; text-wrap: balance; }
+  .nr-sens__sheet[data-level='3'], .nr-sens__sheet[data-level='4'] { background: #fff; }
+  .nr-sens__sheet[data-level='3'] .nr-sens__kick, .nr-sens__sheet[data-level='4'] .nr-sens__kick { background: #d8201b; color: #fff; }
+  .nr-sens__sheet[data-level='4'] { background: #ffe14a; }
+  .nr-sens__sheet[data-level='4'] .nr-sens__head { color: #d8201b; transform: rotate(-1.5deg); }
+  .nr-sens__slider span { display: flex; justify-content: space-between; } .nr-sens__slider b { text-transform: none; }
+
+  .nr .ed-test__stage { background: var(--newsprint); }
+
+  @media (max-width: 900px) { .nr-cw, .nr-ms { grid-template-columns: minmax(0, 1fr); } .nr-ms__ctl { position: static; } }
+</style>
