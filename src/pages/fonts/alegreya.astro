@@ -1,0 +1,300 @@
+---
+// ALEGREYA — new edition. A face for literature: a poem machine, a story where
+// you choose what happens, a calligraphy pen that follows your hand and a
+// bookshop shelf of spines. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('alegreya');
+const spines = [
+  { t: 'The Orchard Keeper', a: 'M. Ilves', bg: '#7a2d2a', fg: '#f4e3c8', h: 92, w: 600 },
+  { t: 'Salt', a: 'R. Okoye', bg: '#1f3b4d', fg: '#e8d8b0', h: 84, w: 900 },
+  { t: 'A Grammar of Small Birds', a: 'T. Halvorsen', bg: '#d9c39a', fg: '#2c2418', h: 96, w: 500 },
+  { t: 'Nine Winters', a: 'L. Ferrand', bg: '#2d4a32', fg: '#efe4c9', h: 88, w: 800 },
+  { t: 'The Lighthouse Accounts', a: 'P. Ndiaye', bg: '#4a3a5c', fg: '#f0e2c4', h: 94, w: 600 },
+  { t: 'Bread & Wine', a: 'S. Moretti', bg: '#b07a2a', fg: '#2a1f12', h: 80, w: 700 },
+  { t: 'Letters from the Tide', a: 'A. Brennan', bg: '#2a2620', fg: '#d9b46a', h: 98, w: 500 },
+  { t: 'Under the Quince', a: 'Y. Sato', bg: '#8c6b2f', fg: '#f6ecd6', h: 86, w: 700 },
+];
+---
+<Layout title="Alegreya — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Alegreya" showToggle={false} />
+  <div class="ed ag" data-ag>
+    <header class="ed-hero ag-hero" data-hero>
+      <div class="ed-hero__top"><span>Alegreya · {font.designer} · {font.year}</span><span>Regular to Black, roman & italic</span></div>
+      <h1 class="ed-hero__word ag-hero__word" data-word aria-label="Alegreya">{[...'Alegreya'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A typeface with <em>a rhythm</em>, drawn for reading novels.
+          <span class="ed-hero__hint" data-fine>The letters dance to a slow beat. Move over them to lead; the closest ones turn italic and step forward.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the letters to lead the dance.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>tempo</dt><dd data-hud="bpm">72</dd></div><div><dt>italic</dt><dd data-hud="it">0</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-poem>
+        <div class="ed-kicker"><span>01</span> The poem machine</div>
+        <h2 class="ed-h2">Pull the lever.<br />Get <em>a little poem</em>.</h2>
+        <div class="ed-body ag-poem">
+          <div class="ag-poem__page" data-poem-page>
+            <p class="ag-poem__t" data-poem-title></p>
+            <div class="ag-poem__lines" data-poem-lines></div>
+          </div>
+          <div class="ag-poem__ctl">
+            <button type="button" class="ag-btn" data-poem-go>Write me another</button>
+            <button type="button" class="ag-btn ag-btn--ghost" data-poem-keep>Keep the first line, change the rest</button>
+            <p class="ed-cap">Each poem is assembled from a few hundred fragments, so the odds of seeing the same one twice are small. Some will be better than others; that is poetry.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-cyoa>
+        <div class="ed-kicker"><span>02</span> Turn to page…</div>
+        <h2 class="ed-h2">A story where<br /><em>you</em> choose what happens.</h2>
+        <div class="ed-body ag-cyoa">
+          <article class="ag-cyoa__page" data-cyoa-page aria-live="polite">
+            <p class="ag-cyoa__no" data-cyoa-no></p>
+            <div class="ag-cyoa__text" data-cyoa-text></div>
+            <div class="ag-cyoa__choices" data-cyoa-choices></div>
+          </article>
+          <p class="ed-cap">An invented story, nine pages long. There are four endings.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-pen>
+        <div class="ed-kicker"><span>03</span> Where it comes from</div>
+        <h2 class="ed-h2">The letters remember<br />a <em>broad-nibbed pen</em>.</h2>
+        <p class="ed-lede">Draw on the page. A broad nib makes thick strokes one way and thin strokes the other. That contrast, held at an angle, is the shape Alegreya keeps.</p>
+        <div class="ed-body ag-pen">
+          <canvas class="ag-pen__cv" data-pen-cv aria-label="Drawing area: draw with a calligraphy pen"></canvas>
+          <p class="ag-pen__ghost" aria-hidden="true">Alegreya</p>
+          <div class="ag-pen__ctl"><label class="ed-slider"><span>Nib angle <b data-pen-av>30°</b></span><input type="range" min="0" max="90" value="30" data-pen-a /></label><button type="button" class="ag-btn ag-btn--ghost" data-pen-clear>Fresh page</button></div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-shelf>
+        <div class="ed-kicker"><span>04</span> In the bookshop</div>
+        <h2 class="ed-h2">Pull one off <em>the shelf</em>.</h2>
+        <div class="ed-body ag-shelf">
+          <div class="ag-shelf__row" data-shelf-row>
+            {spines.map((b, i) => (
+              <button type="button" class="ag-spine" style={`--bg:${b.bg};--fg:${b.fg};--sh:${b.h}%;--w:${b.w};--i:${i}`} data-spine={i}>
+                <span class="ag-spine__in"><span class="ag-spine__a">{b.a}</span><span class="ag-spine__t">{b.t}</span></span>
+              </button>
+            ))}
+          </div>
+          <div class="ag-shelf__plank" aria-hidden="true"></div>
+          <div class="ag-shelf__open" data-shelf-open hidden>
+            <p class="ag-shelf__ot" data-shelf-t></p><p class="ag-shelf__oa" data-shelf-a></p><p class="ag-shelf__ol" data-shelf-l></p>
+          </div>
+        </div>
+        <script type="application/json" data-shelf-data set:html={JSON.stringify(spines)} />
+        <p class="ed-cap">Invented books by invented authors.</p>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Start <em>your novel</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Alegreya Variable" sample="It was the last summer of the old house." italic axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 900 }]}
+            presets={[{ name: 'Book', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }]} start={4} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-ag]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
+    const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+
+    // =========== HERO: the dance ===========
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const it = letters.map(() => 0);
+    runHero(hero, (f) => {
+      const r = hero.getBoundingClientRect(), beat = (f.t * 72) / 60; let n = 0;
+      letters.forEach((l, i) => {
+        const b = l.getBoundingClientRect(), cx = (b.left + b.width / 2 - r.left) / r.width;
+        const lead = f.live ? clamp(1 - Math.abs(cx - f.px) / 0.11, 0, 1) : f.reduce ? 0 : (Math.floor(beat) % letters.length === i ? 1 : 0);
+        it[i] += (lead - it[i]) * 0.12;
+        const bob = f.reduce ? 0 : Math.sin((beat + i * 0.5) * Math.PI) * 0.035;
+        l.style.transform = `translateY(${(bob - it[i] * 0.06).toFixed(3)}em) scale(${(1 + it[i] * 0.08).toFixed(3)})`;
+        l.style.fontStyle = it[i] > 0.5 ? 'italic' : 'normal';
+        l.style.fontVariationSettings = `'wght' ${Math.round(400 + it[i] * 500)}`;
+        if (it[i] > 0.5) n++;
+      });
+      hud.it.textContent = String(n);
+    });
+
+    // =========== POEM MACHINE ===========
+    const OPEN = ['The kettle remembers', 'All winter the river', 'My grandmother kept', 'At the edge of the map', 'Nobody tells the moon', 'In the last house on the street', 'The orchard has forgotten', 'Every Sunday the bells', 'Somewhere a door', 'The sea, being patient,'];
+    const MID = ['the shape of your hands', 'a name it cannot say', 'one blue cup for luck', 'the long way round', 'what the letters said', 'a small light in the rain', 'the weight of an hour', 'a song with the words gone', 'the key under the stone', 'whatever the tide brings back'];
+    const TURN = ['and so I wait', 'and nobody minds', 'and the dog sleeps on', 'and the bread still rises', 'and it is enough', 'and the clocks agree', 'and nothing is lost', 'but I am listening', 'but the light comes anyway', 'though no one is asking'];
+    const CLOSE = ['until the morning, which is soon.', 'like a held breath, let go.', 'the way a page turns itself.', 'as quiet as a pocket.', 'and that is all, and it is plenty.', 'in a hand I almost know.', 'for nobody, for you.', 'which is another word for home.'];
+    const TITLES = ['Small Hours', 'Inventory', 'Weather Report', 'For the Kitchen', 'A Map of Tuesday', 'Low Tide', 'Instructions for Staying', 'Late Letter'];
+    const ppage = page.querySelector<HTMLElement>('[data-poem-page]')!, plines = ppage.querySelector<HTMLElement>('[data-poem-lines]')!, ptitle = ppage.querySelector<HTMLElement>('[data-poem-title]')!;
+    let first = pick(OPEN);
+    const write = (keep: boolean) => {
+      if (!keep) first = pick(OPEN);
+      const lines = [first, pick(MID) + ',', pick(TURN), pick(MID) + ',', pick(CLOSE)];
+      ptitle.textContent = pick(TITLES);
+      plines.innerHTML = lines.map((l, i) => `<p style="--i:${i}" class="${i === 2 ? 'is-it' : ''}">${esc(l)}</p>`).join('');
+      ppage.classList.remove('is-new'); void ppage.offsetWidth; ppage.classList.add('is-new');
+    };
+    page.querySelector('[data-poem-go]')!.addEventListener('click', () => write(false));
+    page.querySelector('[data-poem-keep]')!.addEventListener('click', () => write(true));
+    write(false);
+
+    // =========== CHOOSE YOUR STORY ===========
+    type Node = { t: string; c?: [string, string][]; end?: string };
+    const S: Record<string, Node> = {
+      start: { t: 'The letter arrives on a Tuesday, in handwriting you have not seen for eleven years. It says only: <em>Come to the lighthouse before the tide turns.</em> Outside, the rain has just stopped.', c: [['Take the coast road', 'coast'], ['Go back to bed', 'bed']] },
+      coast: { t: 'The coast road is longer than you remember. Halfway along, an old man sells you an umbrella you do not need and tells you the tide turns at four. It is already three.', c: [['Run', 'run'], ['Ask him about the lighthouse', 'oldman']] },
+      bed: { t: 'You go back to bed. The letter lies on the table all afternoon, refusing to be ignored. At four o’clock exactly, someone knocks on the door.', c: [['Answer it', 'door'], ['Pretend you are out', 'hide']] },
+      run: { t: 'You run. The lighthouse door is open and the stairs go up and up. At the top, on the lamp table, is a second letter, addressed to you in your own handwriting.', c: [['Open it', 'open'], ['Leave it sealed', 'sealed']] },
+      oldman: { t: '“Nobody has kept that light in years,” he says, “but someone lit it last night.” He looks at you as though he already knows how this ends.', c: [['Keep walking', 'run'], ['Buy a second umbrella', 'umbrella']] },
+      door: { t: 'It is your sister. She is holding the same letter, in the same handwriting. “I thought it was from you,” she says.', end: 'Ending: You never find out who sent them. You talk until morning, and it turns out that was the point.' },
+      hide: { t: 'The knocking stops. A third letter slides under the door: <em>Never mind. Another time.</em>', end: 'Ending: There is no other time. You keep the letters in a drawer, and sometimes you take them out.' },
+      open: { t: 'Inside is a single line: <em>You came. That is all I wanted to know.</em> Through the window, the tide is already turning.', end: 'Ending: You walk home slowly. Something has been settled, though you could not say what.' },
+      sealed: { t: 'You leave the letter on the table and go down the stairs. At the bottom you look back. The light is on.', end: 'Ending: Some letters are better unread. You will think about this one for the rest of your life, happily.' },
+      umbrella: { t: 'He sells you a second umbrella. You now have three. It does not rain again for a month.', end: 'Ending: A comic one. You miss the tide entirely, but you are very well prepared.' },
+    };
+    const cy = page.querySelector<HTMLElement>('[data-cyoa]')!, cyText = cy.querySelector<HTMLElement>('[data-cyoa-text]')!, cyCh = cy.querySelector<HTMLElement>('[data-cyoa-choices]')!, cyNo = cy.querySelector<HTMLElement>('[data-cyoa-no]')!, cyPage = cy.querySelector<HTMLElement>('[data-cyoa-page]')!;
+    let pageNo = 1;
+    const go = (k: string) => {
+      const n = S[k]; cyNo.textContent = `— ${pageNo} —`;
+      cyText.innerHTML = `<p>${n.t}</p>${n.end ? `<p class="ag-cyoa__end">${n.end}</p>` : ''}`;
+      cyCh.innerHTML = n.end ? '<button type="button" data-go="start" class="is-again">Begin again</button>' : n.c!.map(([l, to]) => `<button type="button" data-go="${to}">${esc(l)} <span>→</span></button>`).join('');
+      cyPage.classList.remove('is-turn'); void cyPage.offsetWidth; cyPage.classList.add('is-turn');
+    };
+    cyCh.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('[data-go]'); if (!b) return; pageNo = b.dataset.go === 'start' ? 1 : pageNo + Math.ceil(Math.random() * 30); go(b.dataset.go!); });
+    go('start');
+
+    // =========== CALLIGRAPHY PEN ===========
+    const pen = page.querySelector<HTMLElement>('[data-pen]')!, cv = pen.querySelector<HTMLCanvasElement>('[data-pen-cv]')!, ctx = cv.getContext('2d')!, ain = pen.querySelector<HTMLInputElement>('[data-pen-a]')!;
+    const size = () => { const r = cv.getBoundingClientRect(), d = devicePixelRatio || 1; cv.width = r.width * d; cv.height = r.height * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+    size(); window.addEventListener('resize', size); new ResizeObserver(() => { if (!pen.classList.contains('is-drawn')) size(); }).observe(cv);
+    let down = false, lx = 0, ly = 0;
+    const nib = () => { const a = (+ain.value * Math.PI) / 180, L = Math.max(10, cv.clientWidth / 60); return [Math.cos(a) * L, -Math.sin(a) * L]; };
+    const seg = (x0: number, y0: number, x1: number, y1: number) => {
+      const [nx, ny] = nib(); ctx.fillStyle = '#26211a';
+      ctx.beginPath(); ctx.moveTo(x0 - nx, y0 - ny); ctx.lineTo(x0 + nx, y0 + ny); ctx.lineTo(x1 + nx, y1 + ny); ctx.lineTo(x1 - nx, y1 - ny); ctx.closePath(); ctx.fill();
+    };
+    const pos = (e: PointerEvent) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    cv.addEventListener('pointerdown', (e) => { if (cv.width < 10) size(); down = true; cv.setPointerCapture(e.pointerId); [lx, ly] = pos(e); seg(lx, ly, lx + 0.1, ly + 0.1); pen.classList.add('is-drawn'); });
+    cv.addEventListener('pointermove', (e) => { if (!down) return; const [x, y] = pos(e); seg(lx, ly, x, y); lx = x; ly = y; });
+    cv.addEventListener('pointerup', () => (down = false));
+    ain.addEventListener('input', () => (pen.querySelector('[data-pen-av]')!.textContent = `${ain.value}°`));
+    pen.querySelector('[data-pen-clear]')!.addEventListener('click', () => { ctx.clearRect(0, 0, cv.width, cv.height); pen.classList.remove('is-drawn'); });
+    // demo stroke so the canvas isn't empty: a quick looping flourish
+    new IntersectionObserver((es, ob) => {
+      if (!es[0].isIntersecting) return; ob.disconnect(); if (reduce) return;
+      const W = cv.clientWidth, H = cv.clientHeight; let t = 0, px = W * 0.12, py = H * 0.62;
+      const step = () => { if (pen.classList.contains('is-drawn') && t > 0.02) return; t += 0.012; const x = W * (0.12 + 0.76 * t), y = H * (0.55 + 0.16 * Math.sin(t * 22) - 0.1 * Math.sin(t * 7)); seg(px, py, x, y); px = x; py = y; if (t < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }, { threshold: 0.5 }).observe(cv);
+
+    // =========== BOOKSHELF ===========
+    // spine text length = spine height (the rotated line runs along it)
+    const sizeSpines = () => page.querySelectorAll<HTMLElement>('.ag-spine').forEach((sp) => sp.style.setProperty('--len', `${sp.clientHeight - 26}px`));
+    sizeSpines(); window.addEventListener('resize', sizeSpines);
+    const shelf = page.querySelector<HTMLElement>('[data-shelf]')!, books = JSON.parse(shelf.querySelector('[data-shelf-data]')!.textContent!);
+    const open = shelf.querySelector<HTMLElement>('[data-shelf-open]')!;
+    const LINES = ['The first thing she ever stole was a lemon.', 'Nobody in the village had seen the sea, which made the letter all the stranger.', 'It was not, strictly speaking, his piano.', 'The birds came back on a Thursday, as they always did, and stayed.', 'My father kept the lighthouse accounts in pencil, so they could be forgiven.', 'There were two kinds of bread in that house, and only one of them was for guests.', 'The tide brought letters, sometimes, and once a door.', 'The quince tree had opinions, and so did my aunt.'];
+    shelf.querySelectorAll<HTMLElement>('[data-spine]').forEach((b) => b.addEventListener('click', () => {
+      const i = +b.dataset.spine!, on = !b.classList.contains('is-out');
+      shelf.querySelectorAll('.ag-spine').forEach((x) => x.classList.remove('is-out')); if (!on) { open.hidden = true; return; }
+      b.classList.add('is-out'); const bk = books[i];
+      open.hidden = false; open.style.setProperty('--bg', bk.bg); open.style.setProperty('--fg', bk.fg);
+      shelf.querySelector('[data-shelf-t]')!.textContent = bk.t; shelf.querySelector('[data-shelf-a]')!.textContent = bk.a; shelf.querySelector('[data-shelf-l]')!.textContent = `“${LINES[i]}”`;
+      open.classList.remove('is-new'); void open.offsetWidth; open.classList.add('is-new');
+    }));
+  }
+</script>
+
+<style is:global>
+  .ag { --ed-head: 'Alegreya Variable', Georgia, serif; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 500; --ed-lede-vf: 'wght' 500; --ed-radius: 2px; --paper: #fbf6ea; }
+  .ag .ed-h2 em, .ag .ed-hero__lede em { font-style: italic; }
+  .ag .ed-h2 { letter-spacing: -0.01em; line-height: 1.02; }
+  .ag .ed-story__prose { font-family: 'Alegreya Variable', serif; font-size: calc(var(--step-1) * 1.08); }
+  .ag .ed-story__prose em { font-style: italic; } .ag .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 750; }
+  .ag-btn { padding: 0.8rem 1.3rem; border-radius: 100px; background: var(--fg); color: var(--bg); font: 500 1.1rem/1 'Alegreya Variable', serif; font-variation-settings: 'wght' 600; transition: background 0.2s; }
+  .ag-btn:hover { background: var(--accent); }
+  .ag-btn--ghost { background: none; color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
+  .ag-btn--ghost:hover { background: var(--fg); color: var(--bg); }
+
+  .ag-hero { background: radial-gradient(70% 60% at 50% 45%, #fffaf0, transparent 70%), var(--bg); }
+  .ag-hero__word { display: flex; font-family: 'Alegreya Variable', serif; font-size: min(18vw, 46svh); line-height: 1.1; letter-spacing: -0.01em; }
+  .ag-hero__word [data-l] { display: inline-block; transform-origin: 50% 90%; will-change: transform; }
+
+  /* poem */
+  .ag-poem { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+  .ag-poem__page { padding: clamp(2rem, 5vw, 4rem); background: var(--paper); box-shadow: 0 30px 60px -40px #26211a88; font-family: 'Alegreya Variable', serif; min-height: 22rem; }
+  .ag-poem__t { font-style: italic; font-variation-settings: 'wght' 700; font-size: clamp(1.6rem, 3vw, 2.4rem); color: var(--accent); margin-bottom: 1.4rem; }
+  .ag-poem__lines p { font-size: clamp(1.3rem, 2.3vw, 1.9rem); line-height: 1.5; }
+  .ag-poem__lines p.is-it { font-style: italic; padding-left: 1.6em; }
+  .ag-poem__page.is-new .ag-poem__lines p { animation: ag-ink 0.8s var(--ease) backwards; animation-delay: calc(var(--i) * 160ms); }
+  .ag-poem__page.is-new .ag-poem__t { animation: ag-ink 0.6s var(--ease); }
+  @keyframes ag-ink { from { opacity: 0; filter: blur(4px); transform: translateY(6px); } }
+  .ag-poem__ctl { display: grid; gap: 0.8rem; justify-items: start; }
+
+  /* choose your story */
+  .ag-cyoa { display: grid; gap: 1rem; }
+  .ag-cyoa__page { max-width: 46rem; margin-inline: auto; padding: clamp(2rem, 5vw, 4rem); background: var(--paper); box-shadow: 0 30px 60px -40px #26211a88; font-family: 'Alegreya Variable', serif; }
+  .ag-cyoa__page.is-turn { animation: ag-turn 0.6s var(--ease); }
+  @keyframes ag-turn { from { opacity: 0; transform: translateX(30px) rotate(1deg); } }
+  .ag-cyoa__no { text-align: center; font-style: italic; color: var(--fg-3); margin-bottom: 1.2rem; }
+  .ag-cyoa__text p { font-size: clamp(1.25rem, 2.2vw, 1.75rem); line-height: 1.55; }
+  .ag-cyoa__text p:first-child::first-letter { float: left; font-size: 3.3em; line-height: 0.82; padding: 0.04em 0.08em 0 0; font-variation-settings: 'wght' 900; color: var(--accent); }
+  .ag-cyoa__text em { font-style: italic; }
+  .ag-cyoa__end { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--line); font-style: italic; color: var(--accent); }
+  .ag-cyoa__choices { display: grid; gap: 0.6rem; margin-top: 1.8rem; }
+  .ag-cyoa__choices button { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.2rem; border: 1px solid var(--fg); font: 500 1.2rem/1.2 'Alegreya Variable', serif; text-align: left; transition: all 0.2s; }
+  .ag-cyoa__choices button:hover { background: var(--fg); color: var(--paper); font-style: italic; }
+  .ag-cyoa__choices button span { transition: transform 0.2s; } .ag-cyoa__choices button:hover span { transform: translateX(4px); }
+  .ag-cyoa__choices .is-again { justify-content: center; background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+  /* pen */
+  .ag-pen { position: relative; display: grid; gap: 1rem; }
+  .ag-pen__cv { width: 100%; height: clamp(16rem, 32vw, 24rem); background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); cursor: crosshair; touch-action: none; background-image: repeating-linear-gradient(0deg, transparent 0 3.6rem, #8c6b2f22 3.6rem calc(3.6rem + 1px)); }
+  .ag-pen__ghost { position: absolute; left: 0; right: 0; top: clamp(16rem, 32vw, 24rem); transform: translateY(-110%); text-align: center; font-family: 'Alegreya Variable', serif; font-style: italic; font-size: clamp(5rem, 13vw, 11rem); color: #8c6b2f18; pointer-events: none; line-height: 1; }
+  .ag-pen.is-drawn .ag-pen__ghost { opacity: 0.5; }
+  .ag-pen__ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2rem; align-items: end; }
+
+  /* shelf */
+  .ag-shelf { position: relative; }
+  .ag-shelf__row { display: flex; align-items: flex-end; gap: 0.3rem; height: clamp(18rem, 34vw, 26rem); padding: 0 clamp(0.5rem, 3vw, 3rem); background: linear-gradient(180deg, #3a2a1a, #26190e); }
+  .ag-spine { position: relative; flex: 1; height: var(--sh); padding: 0; background: var(--bg); color: var(--fg); border-radius: 2px 2px 0 0; box-shadow: inset 4px 0 0 #ffffff1a, inset -4px 0 0 #0000003a; transition: transform 0.5s var(--ease); cursor: pointer; overflow: hidden; }
+  .ag-spine:hover { transform: translateY(-10px); }
+  .ag-spine.is-out { transform: translateY(-34px) rotate(-3deg); }
+  /* the spine text runs bottom-to-top, as on English-language books */
+  .ag-spine__in { position: absolute; left: 50%; top: 50%; width: var(--len, 20rem); display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; transform: translate(-50%, -50%) rotate(-90deg); font-family: 'Alegreya Variable', serif; line-height: 1; white-space: nowrap; }
+  .ag-spine__t { font-variation-settings: 'wght' var(--w); font-size: clamp(0.85rem, 1.7vw, 1.4rem); overflow: hidden; text-overflow: ellipsis; }
+  .ag-spine__a { flex: none; font-style: italic; font-size: clamp(0.65rem, 1vw, 0.9rem); opacity: 0.85; }
+  .ag-shelf__plank { height: 1.2rem; background: linear-gradient(180deg, #8a6a42, #5a4128); box-shadow: 0 10px 20px -6px #0007; }
+  .ag-shelf__open { margin-top: 1.6rem; padding: clamp(1.6rem, 4vw, 3rem); background: var(--bg); color: var(--fg); text-align: center; font-family: 'Alegreya Variable', serif; box-shadow: 0 30px 50px -30px #0008; }
+  .ag-shelf__open.is-new { animation: ag-turn 0.6s var(--ease); }
+  .ag-shelf__ot { font-variation-settings: 'wght' 800; font-size: clamp(1.8rem, 4vw, 3.2rem); line-height: 1.05; }
+  .ag-shelf__oa { font-style: italic; font-size: 1.2rem; margin: 0.4rem 0 1.2rem; opacity: 0.85; }
+  .ag-shelf__ol { font-size: clamp(1.25rem, 2.2vw, 1.7rem); line-height: 1.45; max-width: 32ch; margin-inline: auto; }
+
+  .ag .ed-test__stage { background: var(--paper); }
+  .ag .ed-test__text { font-size: clamp(2rem, 5vw, 5.4rem); line-height: 1.15; }
+
+  @media (max-width: 900px) { .ag-poem { grid-template-columns: minmax(0, 1fr); } .ag-pen__ctl { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; } }
+</style>

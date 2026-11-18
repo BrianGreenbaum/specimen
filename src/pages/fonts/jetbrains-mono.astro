@@ -8,6 +8,8 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import EditionTester from '../../components/edition/EditionTester.astro';
 import EditionTail from '../../components/edition/EditionTail.astro';
+import JbDonut from '../../components/edition/demos/JbDonut.astro';
+import JbType from '../../components/edition/demos/JbType.astro';
 import { getEdition } from '../../lib/edition';
 
 const { entry, font, prev, next, themeStyle } = await getEdition('jetbrains-mono');
@@ -102,15 +104,18 @@ const loupeCode = [
         <p class="ed-cap">Move over the code. The slashed zero, the tailed l and the serifed I are the reason this face exists.</p>
       </section>
 
+      <JbDonut n="04" />
+      <JbType n="05" />
+
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Type <em>something</em> clever.</h2>
         <div class="ed-body">
           <EditionTester family="JetBrains Mono Variable" sample="x => x !== null" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 800 }]}
             presets={[{ name: 'Thin', v: [100] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'ExtraBold', v: [800] }, { name: 'Italic', v: [400], italic: true }]} start={1} />
         </div>
       </section>
-      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Roman and italic' }, { k: 'Ligatures', v: 'Code ligatures via contextual alternates (calt)' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }, { k: 'Ligatures', v: 'Code ligatures via contextual alternates (calt)' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

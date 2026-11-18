@@ -1,0 +1,66 @@
+---
+// JetBrains Mono: a torus rendered as text, lit by shading characters. Drag to spin.
+export interface Props { n: string }
+const { n } = Astro.props;
+---
+<section class="ed-sec" data-jbd>
+  <div class="ed-kicker"><span>{n}</span> Three dimensions, one grid</div>
+  <h2 class="ed-h2">A doughnut, drawn in<br /><em>twelve characters</em>.</h2>
+  <div class="ed-body jbd">
+    <pre class="jbd__pre" data-jbd-pre aria-label="A spinning torus drawn with text characters"></pre>
+    <div class="jbd__side">
+      <p class="jbd__ramp" aria-hidden="true">{[...'.,-~:;=!*#$@'].map((c, i) => <span style={`--i:${i}`}>{c}</span>)}</p>
+      <p class="ed-cap">Darkest to brightest. Each frame, every cell picks one of these twelve by how much light hits that point of the surface. Drag to spin it yourself.</p>
+      <label class="ed-slider"><span>Weight <b data-jbd-wv>500</b></span><input type="range" min="100" max="800" value="500" data-jbd-w /></label>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-jbd]').forEach((root) => {
+    const pre = root.querySelector<HTMLElement>('[data-jbd-pre]')!;
+    const RAMP = '.,-~:;=!*#$@';
+    const W = 64, H = 30;
+    let A = 1, B = 0, vA = 0.04, vB = 0.022, drag = false, lx = 0, ly = 0, on = false;
+    const frame = () => {
+      const out = new Array(W * H).fill(' '), z = new Array(W * H).fill(0);
+      const cA = Math.cos(A), sA = Math.sin(A), cB = Math.cos(B), sB = Math.sin(B);
+      for (let j = 0; j < 6.28; j += 0.07) {
+        const ct = Math.cos(j), st = Math.sin(j);
+        for (let i = 0; i < 6.28; i += 0.02) {
+          const sp = Math.sin(i), cp = Math.cos(i), h = ct + 2, D = 1 / (sp * h * sA + st * cA + 5), t = sp * h * cA - st * sA;
+          const x = Math.floor(W / 2 + 30 * D * (cp * h * cB - t * sB)), y = Math.floor(H / 2 + 15 * D * (cp * h * sB + t * cB));
+          const o = x + W * y, N = Math.floor(8 * ((st * sA - sp * ct * cA) * cB - sp * ct * sA - st * cA - cp * ct * sB));
+          if (y >= 0 && y < H && x >= 0 && x < W && D > z[o]) { z[o] = D; out[o] = RAMP[Math.max(0, Math.min(11, N))]; }
+        }
+      }
+      let s = ''; for (let y = 0; y < H; y++) s += out.slice(y * W, y * W + W).join('') + '\n';
+      pre.textContent = s;
+    };
+    pre.addEventListener('pointerdown', (e) => { drag = true; lx = e.clientX; ly = e.clientY; pre.setPointerCapture(e.pointerId); });
+    pre.addEventListener('pointermove', (e) => { if (!drag) return; vB = (e.clientX - lx) * 0.006; vA = (e.clientY - ly) * 0.006; lx = e.clientX; ly = e.clientY; });
+    pre.addEventListener('pointerup', () => (drag = false));
+    const ws = root.querySelector<HTMLInputElement>('[data-jbd-w]')!;
+    ws.addEventListener('input', () => { pre.style.fontVariationSettings = `'wght' ${ws.value}`; root.querySelector('[data-jbd-wv]')!.textContent = ws.value; });
+    new IntersectionObserver((es) => (on = es[0].isIntersecting)).observe(pre);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let last = 0;
+    const tick = (now: number) => {
+      requestAnimationFrame(tick); if (!on || now - last < 33) return; last = now;
+      if (!drag) { vA += (0.04 - vA) * 0.02; vB += (0.022 - vB) * 0.02; }
+      if (!reduce || drag) { A += vA; B += vB; }
+      frame();
+    };
+    frame(); requestAnimationFrame(tick);
+  });
+</script>
+
+<style is:global>
+  .jbd { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; }
+  .jbd__pre { margin: 0; padding: 1rem; font-family: 'JetBrains Mono Variable', monospace; font-variation-settings: 'wght' 500; font-feature-settings: 'calt' 0; font-size: clamp(0.42rem, 1.22vw, 1.3rem); line-height: 1.1; color: var(--green, #5ecfb1); background: radial-gradient(60% 60% at 50% 50%, #5ecfb114, #0a0c10 70%); border: 1px solid var(--line); border-radius: 12px; text-align: center; overflow: hidden; cursor: grab; touch-action: none; user-select: none; text-shadow: 0 0 8px #5ecfb155; }
+  .jbd__pre:active { cursor: grabbing; }
+  .jbd__side { display: grid; gap: 1.4rem; }
+  .jbd__ramp { display: flex; justify-content: space-between; font-family: 'JetBrains Mono Variable', monospace; font-feature-settings: 'calt' 0; font-size: clamp(1.4rem, 2.6vw, 2.4rem); color: var(--green, #5ecfb1); }
+  .jbd__ramp span { opacity: calc(0.25 + var(--i) * 0.068); }
+  @media (max-width: 900px) { .jbd { grid-template-columns: minmax(0, 1fr); } .jbd__pre { font-size: 1.5vw; } }
+</style>

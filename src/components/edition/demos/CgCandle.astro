@@ -1,0 +1,57 @@
+---
+// Cormorant: a page read by candlelight; the flame follows the pointer.
+export interface Props { n: string }
+const { n } = Astro.props;
+---
+<section class="cgc" data-cgc>
+  <div class="cgc__room" data-cgc-room aria-label="A letter in a dark room. Move to carry the candle.">
+    <div class="cgc__kick ed-kicker"><span>{n}</span> After dark</div>
+    <div class="cgc__page">
+      <p class="cgc__date">The fourteenth of November, late</p>
+      <p class="cgc__body">My dear Edith,</p>
+      <p class="cgc__body">The power has gone again, so I am writing this by the light of the last candle in the drawer. It is a strange thing to read your own handwriting by flame: every hairline flickers, every serif throws a small shadow, and the words seem to arrive one at a time, as though they were being decided as I go.</p>
+      <p class="cgc__body"><em>Perhaps that is how all letters ought to be written.</em></p>
+      <p class="cgc__sign">Ever yours, R.</p>
+    </div>
+    <div class="cgc__flame" data-cgc-flame aria-hidden="true"><i></i><b></b></div>
+  </div>
+  <p class="cgc__cap ed-cap">Move over the room to carry the candle. An invented letter.</p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cgc]').forEach((root) => {
+    const room = root.querySelector<HTMLElement>('[data-cgc-room]')!, flame = root.querySelector<HTMLElement>('[data-cgc-flame]')!;
+    let tx = 0.62, ty = 0.55, x = tx, y = ty, last = -1e9, on = false;
+    room.addEventListener('pointermove', (e) => { const r = room.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height; last = performance.now(); });
+    new IntersectionObserver((es) => (on = es[0].isIntersecting)).observe(room);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tick = (now: number) => {
+      requestAnimationFrame(tick); if (!on) return;
+      if (now - last > 3000 && !reduce) { const t = now / 1000; tx = 0.5 + 0.3 * Math.sin(t * 0.35); ty = 0.5 + 0.18 * Math.sin(t * 0.5); }
+      x += (tx - x) * 0.08; y += (ty - y) * 0.08;
+      // flicker: light radius and brightness wobble
+      const f = reduce ? 1 : 1 + 0.06 * Math.sin(now / 70) + 0.04 * Math.sin(now / 23 + 1) + 0.05 * Math.sin(now / 131);
+      room.style.setProperty('--x', `${(x * 100).toFixed(2)}%`); room.style.setProperty('--y', `${(y * 100).toFixed(2)}%`);
+      room.style.setProperty('--f', f.toFixed(3));
+      flame.style.transform = `translate(${(x * room.clientWidth).toFixed(1)}px, ${(y * room.clientHeight).toFixed(1)}px) scale(${(0.9 + (f - 1) * 3).toFixed(3)}, ${(f).toFixed(3)}) rotate(${((tx - x) * 60).toFixed(2)}deg)`;
+    };
+    requestAnimationFrame(tick);
+  });
+</script>
+
+<style is:global>
+  .cgc { padding-top: clamp(4.5rem, 10vw, 9rem); }
+  .cgc__room { --x: 60%; --y: 55%; --f: 1; position: relative; overflow: hidden; min-height: clamp(34rem, 60vw, 46rem); display: grid; place-items: center; padding: clamp(4rem, 8vw, 6rem) var(--gutter) clamp(2rem, 5vw, 4rem); background: #0d0a07; cursor: none; touch-action: pan-y; }
+  .cgc__room::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(calc(26vmax * var(--f)) calc(26vmax * var(--f)) at var(--x) var(--y), transparent 0%, #0d0a0733 30%, #0d0a07d9 62%, #0d0a07 85%); }
+  .cgc__kick { position: absolute; left: var(--gutter); right: var(--gutter); top: 1.4rem; border-top: 0; padding-top: 0; color: #a08a68; z-index: 2; }
+  .cgc__page { position: relative; max-width: 36rem; padding: clamp(2rem, 5vw, 3.4rem); background: radial-gradient(calc(30vmax * var(--f)) calc(30vmax * var(--f)) at var(--x) var(--y), #fff6dc, #e9d7ad 45%, #b99a62); color: #2a1d10; font-family: 'Cormorant Garamond', serif; box-shadow: 0 30px 80px #000; transform: rotate(-1.4deg); }
+  .cgc__date { text-align: right; font-style: italic; font-size: 1.15rem; color: #6a5236; margin-bottom: 1.4rem; }
+  .cgc__body { font-weight: 500; font-size: clamp(1.25rem, 2vw, 1.6rem); line-height: 1.5; margin-bottom: 0.9rem; }
+  .cgc__body em { font-style: italic; }
+  .cgc__sign { text-align: right; font-style: italic; font-weight: 600; font-size: 2rem; margin-top: 1.4rem; }
+  .cgc__flame { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; }
+  .cgc__flame i { position: absolute; left: -9px; top: -38px; width: 18px; height: 38px; border-radius: 50% 50% 45% 45% / 70% 70% 30% 30%; background: radial-gradient(ellipse at 50% 80%, #fff, #ffe08a 35%, #ff9a2a 65%, #ff5a1a00 80%); box-shadow: 0 0 30px 10px #ffb43a66, 0 0 90px 40px #ff8a2a33; filter: blur(0.6px); }
+  .cgc__flame b { position: absolute; left: -10px; top: 0; width: 20px; height: 60px; border-radius: 4px; background: linear-gradient(90deg, #d9cfb8, #fbf4e2 40%, #c7bba0); }
+  .cgc__cap { padding-inline: var(--gutter); max-width: var(--maxw); margin: 0.9rem auto 0; }
+  @media (hover: none) { .cgc__room { cursor: auto; } }
+</style>

@@ -1,0 +1,358 @@
+---
+// ROBOTO SLAB — new edition. Built like a building: a stack-the-letters game,
+// a road-sign maker, a weight elevator and a blueprint that draws itself.
+// Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('roboto-slab');
+const floors = [[900, 'Black', 'Penthouse'], [800, 'ExtraBold', 'Roof garden'], [700, 'Bold', 'Boardroom'], [600, 'SemiBold', 'Offices'], [500, 'Medium', 'Studios'], [400, 'Regular', 'Lobby'], [300, 'Light', 'Mezzanine'], [200, 'ExtraLight', 'Car park'], [100, 'Thin', 'Basement']] as const;
+---
+<Layout title="Roboto Slab — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Roboto Slab" showToggle={false} />
+  <div class="ed rs" data-rs>
+    <header class="ed-hero rs-hero" data-hero>
+      <div class="rs-hero__tape" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>Roboto Slab · {font.designer} · {font.year}</span><span>Thin 100 to Black 900</span></div>
+      <h1 class="ed-hero__word rs-hero__word" data-word aria-label="Roboto Slab">
+        <span class="rs-hero__row">{[...'Roboto'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</span>
+        <span class="rs-hero__row">{[...'Slab'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</span>
+      </h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A sans with <em>steel beams</em> bolted on.
+          <span class="ed-hero__hint" data-fine>Move over the letters to load them up with weight. Click to drop the whole word like a demolition.</span>
+          <span class="ed-hero__hint" data-coarse>Drag over the letters to load them up. Tap to drop the word.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>load</dt><dd data-hud="w">400</dd></div><div><dt>drops</dt><dd data-hud="d">0</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-stack>
+        <div class="ed-kicker"><span>01</span> Site work</div>
+        <h2 class="ed-h2">Stack the slabs.<br /><em>Don’t overhang.</em></h2>
+        <div class="ed-body rs-stack">
+          <div class="rs-stack__site" data-stack-site tabindex="0" aria-label="Stacking game. Click, tap or press space to drop the moving slab.">
+            <div class="rs-stack__tower" data-stack-tower></div>
+            <p class="rs-stack__msg" data-stack-msg>Click to drop the slab</p>
+            <p class="rs-stack__score"><span>Height</span><b data-stack-h>0</b><span>Best</span><b data-stack-best>0</b></p>
+          </div>
+          <p class="ed-cap">Each slab is a word in a heavier weight. Whatever hangs over the edge gets sliced off; the next slab is only as wide as what’s left.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-sign>
+        <div class="ed-kicker"><span>02</span> On the roadside</div>
+        <h2 class="ed-h2">Slab serifs were made<br />to be read <em>at forty miles an hour</em>.</h2>
+        <div class="ed-body rs-sign">
+          <div class="rs-sign__view" data-sign-view>
+            <div class="rs-sign__road" aria-hidden="true"></div>
+            <div class="rs-sign__post" data-sign-post>
+              <div class="rs-sign__plate" data-sign-plate>
+                <p class="rs-sign__row"><span data-s0>Hillbrook</span><b data-d0>3</b></p>
+                <p class="rs-sign__row"><span data-s1>Old Quarry</span><b data-d1>12</b></p>
+                <p class="rs-sign__row"><span data-s2>Coast Road</span><b data-d2>27</b></p>
+              </div>
+            </div>
+          </div>
+          <div class="rs-sign__ctl">
+            {[0, 1, 2].map((i) => <label><span>Place {i + 1}</span><input type="text" maxlength="16" value={['Hillbrook', 'Old Quarry', 'Coast Road'][i]} data-sign-in={i} /></label>)}
+            <div class="rs-sign__kinds" role="radiogroup" aria-label="Sign colour">
+              {[['Primary', '#1f6b3a'], ['Local', '#f3efe6'], ['Motorway', '#1d4ea8'], ['Tourist', '#6b3a1f']].map(([n, c], i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-sign-kind={c} style={`--c:${c}`}>{n}</button>)}
+            </div>
+            <button type="button" class="rs-btn" data-sign-drive>Drive past</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-lift>
+        <div class="ed-kicker"><span>03</span> Nine floors</div>
+        <h2 class="ed-h2">Take the lift<br />from <em>Thin</em> to Black.</h2>
+        <div class="ed-body rs-lift">
+          <div class="rs-lift__shaft">
+            <div class="rs-lift__car" data-lift-car><span data-lift-word>Going up</span></div>
+            <ol class="rs-lift__floors">{floors.map(([w, n, f]) => <li style={`--w:${w}`}><b>{w}</b><span>{n}</span><i>{f}</i></li>)}</ol>
+          </div>
+          <div class="rs-lift__panel">
+            <p class="rs-lift__display"><span data-lift-floor>4</span><i data-lift-arrow>·</i></p>
+            <div class="rs-lift__btns">{floors.map(([w], i) => <button type="button" data-lift-to={8 - i} aria-label={`Weight ${w}`}>{8 - i + 1}</button>)}</div>
+            <p class="ed-cap">Press a floor. The word in the car is set at that floor’s weight.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-print>
+        <div class="ed-kicker"><span>04</span> Blueprint</div>
+        <h2 class="ed-h2">Every letter,<br /><em>drawn to spec</em>.</h2>
+        <div class="ed-body rs-print">
+          <div class="rs-print__sheet" data-print-sheet>
+            <span class="rs-print__g" data-print-g aria-hidden="true">R</span>
+            <svg class="rs-print__dims" data-print-svg aria-hidden="true"></svg>
+            <p class="rs-print__title"><b>DRAWING NO. RS-<span data-print-no>082</span></b><span>GLYPH “<span data-print-ch>R</span>” · WEIGHT <span data-print-w>700</span> · SCALE 1:1</span></p>
+          </div>
+          <div class="rs-print__ctl">
+            <div class="rs-print__keys">{[...'RSabgQ&4'].map((c) => <button type="button" data-print-k={c}>{c}</button>)}</div>
+            <label class="ed-slider"><span>Weight <b data-print-wv>700</b></span><input type="range" min="100" max="900" value="700" data-print-w-in /></label>
+            <p class="ed-cap">Dimensions are measured from the rendered letter each time it changes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Build <em>something</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Roboto Slab Variable" sample="Hard hats required" axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
+            presets={[{ name: 'Thin', v: [100] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, near, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-rs]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // =========== HERO ===========
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, word = hero.querySelector<HTMLElement>('[data-word]')!;
+    const rows = Array.from(word.querySelectorAll<HTMLElement>('.rs-hero__row')).map((r) => Array.from(r.querySelectorAll<HTMLElement>('[data-l]')));
+    const all = rows.flat(), w = all.map(() => 400);
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    let seen = 0, drops = 0;
+    runHero(hero, (f) => {
+      if (f.clicks !== seen) {
+        seen = f.clicks; drops++; hud.d.textContent = String(drops);
+        all.forEach((l, i) => { l.classList.remove('is-drop'); void l.offsetWidth; l.style.setProperty('--dd', `${(i % 7) * 40 + Math.random() * 60}ms`); l.style.setProperty('--dr', `${(Math.random() - 0.5) * 30}deg`); l.classList.add('is-drop'); });
+        hero.classList.remove('is-shake'); void hero.offsetWidth; hero.classList.add('is-shake');
+      }
+      let k = 0, sum = 0;
+      rows.forEach((row, r) => {
+        const pos = clamp((f.px - 0.1) / 0.8, 0, 1) * (row.length - 1);
+        row.forEach((l, i) => {
+          const tw = f.live ? 100 + 800 * near(i, pos, row.length * 0.38) : f.reduce ? 600 : 500 + 400 * Math.sin(f.t * 1.2 - i * 0.7 - r);
+          w[k] += (tw - w[k]) * 0.14; l.style.fontVariationSettings = `'wght' ${w[k].toFixed(0)}`; sum += w[k]; k++;
+        });
+      });
+      hud.w.textContent = String(Math.round(sum / all.length));
+    });
+
+    // =========== STACKER ===========
+    const site = page.querySelector<HTMLElement>('[data-stack-site]')!, tower = site.querySelector<HTMLElement>('[data-stack-tower]')!;
+    const msg = site.querySelector<HTMLElement>('[data-stack-msg]')!, hOut = site.querySelector<HTMLElement>('[data-stack-h]')!, bestOut = site.querySelector<HTMLElement>('[data-stack-best]')!;
+    const WORDS = ['FOUNDATION', 'CONCRETE', 'GIRDERS', 'BEAMS', 'RIVETS', 'STEEL', 'BOLTS', 'SLAB', 'TOP'];
+    const COLORS = ['#b1551f', '#1b150d', '#d9a441', '#3e3525', '#b1551f', '#776a54'];
+    const SLAB_H = 46;
+    let best = 0; try { best = +(localStorage.getItem('rs-stack-best') || 0); } catch {} bestOut.textContent = String(best);
+    type Slab = { el: HTMLElement; x: number; w: number };
+    let slabs: Slab[] = [], mover: Slab | null = null, dir = 1, speed = 3, over = false, W = 0;
+    const mk = (i: number, x: number, w: number) => {
+      const el = document.createElement('div'); el.className = 'rs-slab';
+      el.style.setProperty('--c', COLORS[i % COLORS.length]); el.style.bottom = `${i * SLAB_H}px`; el.style.width = `${w}px`; el.style.left = `${x}px`;
+      el.innerHTML = `<span style="font-variation-settings:'wght' ${Math.min(900, 300 + i * 70)}">${WORDS[Math.min(i, WORDS.length - 1)]}${i >= WORDS.length - 1 ? ' ' + (i + 1) : ''}</span>`;
+      tower.appendChild(el); return { el, x, w };
+    };
+    const reset = () => {
+      tower.innerHTML = ''; W = site.clientWidth; const w0 = Math.min(W * 0.62, 520);
+      slabs = [mk(0, (W - w0) / 2, w0)]; over = false; speed = 3; hOut.textContent = '1';
+      spawn(); msg.textContent = 'Click to drop the slab'; tower.style.transform = '';
+    };
+    const spawn = () => { const top = slabs[slabs.length - 1]; mover = mk(slabs.length, dir > 0 ? 0 : W - top.w, top.w); mover.el.classList.add('is-moving'); };
+    const drop = () => {
+      if (over) { reset(); return; }
+      if (!mover) return;
+      const top = slabs[slabs.length - 1], a = Math.max(mover.x, top.x), b = Math.min(mover.x + mover.w, top.x + top.w), keep = b - a;
+      mover.el.classList.remove('is-moving');
+      if (keep <= 6) {
+        mover.el.classList.add('is-fall'); over = true; mover = null;
+        const h = slabs.length; if (h > best) { best = h; bestOut.textContent = String(best); try { localStorage.setItem('rs-stack-best', String(best)); } catch {} }
+        msg.textContent = `Collapsed at ${h} floors. Click to rebuild.`; site.classList.remove('is-crash'); void site.offsetWidth; site.classList.add('is-crash'); return;
+      }
+      // chop the overhang off as a falling piece
+      const cutL = a - mover.x, cutR = mover.x + mover.w - b;
+      if (cutL > 1 || cutR > 1) {
+        const piece = document.createElement('div'); piece.className = 'rs-slab rs-slab--chip'; piece.style.cssText = mover.el.style.cssText;
+        piece.style.left = `${cutL > 1 ? mover.x : b}px`; piece.style.width = `${cutL > 1 ? cutL : cutR}px`; piece.style.setProperty('--fx', cutL > 1 ? '-1' : '1');
+        tower.appendChild(piece); setTimeout(() => piece.remove(), 1200);
+      }
+      mover.x = a; mover.w = keep; mover.el.style.left = `${a}px`; mover.el.style.width = `${keep}px`;
+      const perfect = keep >= top.w - 3;
+      if (perfect) { mover.el.classList.add('is-perfect'); msg.textContent = 'Perfect!'; } else msg.textContent = `${Math.round(keep)} px wide`;
+      slabs.push(mover); hOut.textContent = String(slabs.length);
+      const lift = Math.max(0, slabs.length - 6) * SLAB_H; tower.style.transform = `translateY(${lift}px)`;
+      speed = Math.min(9, 3 + slabs.length * 0.35); dir = -dir; spawn();
+    };
+    site.addEventListener('pointerdown', (e) => { e.preventDefault(); drop(); });
+    site.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); drop(); } });
+    let on = false; new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(site);
+    const tick = () => {
+      requestAnimationFrame(tick); if (!on || !mover) return;
+      mover.x += dir * speed; if (mover.x > W - mover.w) { mover.x = W - mover.w; dir = -1; } if (mover.x < 0) { mover.x = 0; dir = 1; }
+      mover.el.style.left = `${mover.x}px`;
+    };
+    reset(); requestAnimationFrame(tick); window.addEventListener('resize', reset);
+
+    // =========== ROAD SIGN ===========
+    const sign = page.querySelector<HTMLElement>('[data-sign]')!, plate = sign.querySelector<HTMLElement>('[data-sign-plate]')!;
+    sign.querySelectorAll<HTMLInputElement>('[data-sign-in]').forEach((inp) => {
+      inp.addEventListener('input', () => { sign.querySelector(`[data-s${inp.dataset.signIn}]`)!.textContent = inp.value || '…'; });
+      inp.addEventListener('keydown', (e) => e.stopPropagation());
+    });
+    const kinds = Array.from(sign.querySelectorAll<HTMLButtonElement>('[data-sign-kind]'));
+    kinds.forEach((b) => b.addEventListener('click', () => { const c = b.dataset.signKind!; plate.style.setProperty('--bg', c); plate.style.setProperty('--fg', c === '#f3efe6' ? '#1b150d' : '#fff'); plate.style.setProperty('--bd', c === '#f3efe6' ? '#1b150d' : '#fff'); kinds.forEach((o) => o.setAttribute('aria-checked', String(o === b))); }));
+    const view = sign.querySelector<HTMLElement>('[data-sign-view]')!;
+    sign.querySelector('[data-sign-drive]')!.addEventListener('click', () => { view.classList.remove('is-drive'); void view.offsetWidth; view.classList.add('is-drive'); });
+
+    // =========== LIFT ===========
+    const lift = page.querySelector<HTMLElement>('[data-lift]')!, car = lift.querySelector<HTMLElement>('[data-lift-car]')!, carWord = lift.querySelector<HTMLElement>('[data-lift-word]')!;
+    const WTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+    let floor = 3, cw = 400, busy = 0;
+    const setFloor = (f: number) => {
+      const from = floor; floor = f; const up = f > from;
+      lift.querySelector('[data-lift-arrow]')!.textContent = f === from ? '·' : up ? '▲' : '▼';
+      car.style.setProperty('--f', String(f)); car.style.transitionDuration = `${reduce ? 0 : 0.5 + Math.abs(f - from) * 0.28}s`;
+      lift.querySelectorAll<HTMLElement>('[data-lift-to]').forEach((b) => b.classList.toggle('is-on', +b.dataset.liftTo! === f));
+      const t0 = performance.now(), dur = reduce ? 1 : (0.5 + Math.abs(f - from) * 0.28) * 1000, w0 = cw, w1 = WTS[f]; const me = ++busy;
+      const step = (now: number) => { if (me !== busy) return; const k = clamp((now - t0) / dur, 0, 1), e = k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2; cw = w0 + (w1 - w0) * e; carWord.style.fontVariationSettings = `'wght' ${cw.toFixed(0)}`; lift.querySelector('[data-lift-floor]')!.textContent = String(Math.round(1 + (from + (f - from) * e))); if (k < 1) requestAnimationFrame(step); else { lift.querySelector('[data-lift-arrow]')!.textContent = '·'; car.classList.remove('is-ding'); void car.offsetWidth; car.classList.add('is-ding'); } };
+      requestAnimationFrame(step);
+    };
+    lift.querySelectorAll<HTMLElement>('[data-lift-to]').forEach((b) => b.addEventListener('click', () => setFloor(+b.dataset.liftTo!)));
+    car.style.setProperty('--f', '3'); carWord.style.fontVariationSettings = `'wght' 400`;
+
+    // =========== BLUEPRINT ===========
+    const bp = page.querySelector<HTMLElement>('[data-print]')!, g = bp.querySelector<HTMLElement>('[data-print-g]')!, svg = bp.querySelector<SVGSVGElement>('[data-print-svg]')!, sheet = bp.querySelector<HTMLElement>('[data-print-sheet]')!;
+    const win = bp.querySelector<HTMLInputElement>('[data-print-w-in]')!;
+    const cv = document.createElement('canvas').getContext('2d')!;
+    let ch = 'R';
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (t: string, a: Record<string, string | number>, txt?: string) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, String(a[k])); if (txt) e.textContent = txt; return e; };
+    const draw = () => {
+      const wt = +win.value; g.textContent = ch; g.style.fontVariationSettings = `'wght' ${wt}`;
+      bp.querySelector('[data-print-ch]')!.textContent = ch; bp.querySelector('[data-print-w]')!.textContent = String(wt); bp.querySelector('[data-print-wv]')!.textContent = String(wt);
+      bp.querySelector('[data-print-no]')!.textContent = String(ch.charCodeAt(0)).padStart(3, '0');
+      const fs = parseFloat(getComputedStyle(g).fontSize); cv.font = `${wt} ${fs}px 'Roboto Slab Variable'`;
+      const m = cv.measureText(ch), sr = sheet.getBoundingClientRect(), gr = g.getBoundingClientRect();
+      const asc = m.fontBoundingBoxAscent, desc = m.fontBoundingBoxDescent, base = gr.top - sr.top + (gr.height - (asc + desc)) / 2 + asc;
+      const left = gr.left - sr.left + (gr.width - m.width) / 2, x0 = left - m.actualBoundingBoxLeft, x1 = left + m.actualBoundingBoxRight, y0 = base - m.actualBoundingBoxAscent, y1 = base + m.actualBoundingBoxDescent;
+      svg.setAttribute('viewBox', `0 0 ${sr.width} ${sr.height}`); svg.replaceChildren();
+      const units = (px: number) => Math.round((px / fs) * 1000);
+      svg.append(el('line', { x1: 0, y1: base, x2: sr.width, y2: base, class: 'g' }), el('text', { x: 14, y: base - 6, class: 't' }, 'BASELINE'));
+      svg.append(el('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, class: 'b' }));
+      const dx = y1 + 34; svg.append(el('line', { x1: x0, y1: dx, x2: x1, y2: dx, class: 'd' }), el('line', { x1: x0, y1: y1 + 8, x2: x0, y2: dx + 8, class: 'e' }), el('line', { x1: x1, y1: y1 + 8, x2: x1, y2: dx + 8, class: 'e' }), el('text', { x: (x0 + x1) / 2, y: dx - 8, 'text-anchor': 'middle', class: 't' }, `${units(x1 - x0)} UNITS`));
+      const dy = x1 + 34; svg.append(el('line', { x1: dy, y1: y0, x2: dy, y2: y1, class: 'd' }), el('line', { x1: x1 + 8, y1: y0, x2: dy + 8, y2: y0, class: 'e' }), el('line', { x1: x1 + 8, y1: y1, x2: dy + 8, y2: y1, class: 'e' }), el('text', { x: dy + 10, y: (y0 + y1) / 2, class: 't' }, `${units(y1 - y0)} UNITS`));
+      sheet.classList.remove('is-draw'); void sheet.offsetWidth; sheet.classList.add('is-draw');
+    };
+    bp.querySelectorAll<HTMLElement>('[data-print-k]').forEach((b) => b.addEventListener('click', () => { ch = b.dataset.printK!; draw(); }));
+    win.addEventListener('input', draw); window.addEventListener('resize', draw); document.fonts.load(`700 100px 'Roboto Slab Variable'`, 'RSabgQ&4').then(draw);
+  }
+</script>
+
+<style is:global>
+  .rs { --ed-head: 'Roboto Slab Variable', 'Rockwell', serif; --ed-head-vf: 'wght' 800; --ed-em-vf: 'wght' 200; --ed-lede-vf: 'wght' 600; --ed-radius: 2px; --hazard: #f2b632; --blue: #1d4ea8; }
+  .rs em { font-style: normal; } .rs .ed-h2 { letter-spacing: -0.03em; line-height: 1; }
+  .rs .ed-story__prose { font-family: 'Roboto Slab Variable', serif; font-variation-settings: 'wght' 350; }
+  .rs .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 700; }
+  .rs-btn { padding: 0.75rem 1.2rem; background: var(--fg); color: var(--bg); font: 400 0.95rem/1 'Roboto Slab Variable', serif; font-variation-settings: 'wght' 700; }
+  .rs-btn:hover { background: var(--accent); }
+
+  /* hero */
+  .rs-hero__tape { position: absolute; left: -5%; right: -5%; bottom: 22%; height: 2.6rem; z-index: -1; background: repeating-linear-gradient(-45deg, var(--hazard) 0 1.6rem, #1b150d 1.6rem 3.2rem); transform: rotate(-3deg); opacity: 0.9; }
+  .rs-hero.is-shake { animation: rs-shake 0.5s; }
+  @keyframes rs-shake { 15% { transform: translate(0, 8px); } 30% { transform: translate(-5px, -3px); } 45% { transform: translate(4px, 2px); } 60% { transform: translate(-2px, 0); } }
+  .rs-hero__word { display: grid; font-family: 'Roboto Slab Variable', serif; font-size: min(17vw, 29svh); line-height: 0.92; letter-spacing: -0.04em; }
+  .rs-hero__row { display: flex; } .rs-hero__row:last-child { color: var(--accent); padding-left: 0.6em; }
+  .rs-hero__word [data-l] { display: inline-block; }
+  .rs-hero__word [data-l].is-drop { animation: rs-drop 1.1s cubic-bezier(0.5, 0, 0.2, 1) var(--dd) backwards; }
+  @keyframes rs-drop { 0% { transform: translateY(-120%) rotate(var(--dr)); opacity: 0; } 55% { transform: translateY(6%) rotate(0); opacity: 1; } 70% { transform: translateY(-4%); } 85% { transform: translateY(1%); } 100% { transform: none; } }
+
+  /* stacker */
+  .rs-stack { display: grid; gap: 1rem; }
+  .rs-stack__site { position: relative; height: clamp(24rem, 56vh, 34rem); overflow: hidden; cursor: pointer; touch-action: manipulation; user-select: none; outline: none; background: linear-gradient(180deg, #cfe2f0 0%, #f3e6cf 85%); border-bottom: 1.4rem solid #6b5a43; }
+  .rs-stack__site:focus-visible { box-shadow: inset 0 0 0 3px var(--accent); }
+  .rs-stack__site.is-crash { animation: rs-shake 0.5s; }
+  .rs-stack__tower { position: absolute; inset: 0; transition: transform 0.4s var(--ease); }
+  .rs-slab { position: absolute; height: 44px; display: grid; place-items: center; overflow: hidden; background: var(--c); color: #fff; box-shadow: inset 0 -4px 0 #0003, inset 0 2px 0 #fff3; }
+  .rs-slab span { font-family: 'Roboto Slab Variable', serif; font-size: 1.5rem; letter-spacing: 0.02em; white-space: nowrap; }
+  .rs-slab.is-moving { box-shadow: inset 0 -4px 0 #0003, 0 0 0 2px var(--hazard); }
+  .rs-slab.is-perfect { animation: rs-perfect 0.5s; }
+  @keyframes rs-perfect { 30% { box-shadow: 0 0 0 5px var(--hazard), 0 0 30px var(--hazard); } }
+  .rs-slab--chip { animation: rs-chip 1.2s ease-in forwards; }
+  @keyframes rs-chip { to { transform: translate(calc(var(--fx) * 80px), 520px) rotate(calc(var(--fx) * 70deg)); opacity: 0; } }
+  .rs-slab.is-fall { animation: rs-fall 1s ease-in forwards; }
+  @keyframes rs-fall { to { transform: translateY(600px) rotate(25deg); opacity: 0; } }
+  .rs-stack__msg { position: absolute; left: 0; right: 0; top: 1.2rem; text-align: center; font-family: 'Roboto Slab Variable', serif; font-variation-settings: 'wght' 700; font-size: 1.3rem; color: #1b150d; pointer-events: none; }
+  .rs-stack__score { position: absolute; right: 1rem; top: 1rem; display: grid; grid-template-columns: auto auto; gap: 0 0.8rem; align-items: baseline; font: 400 0.68rem/1.6 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #3e3525; }
+  .rs-stack__score b { font-family: 'Roboto Slab Variable', serif; font-weight: 400; font-variation-settings: 'wght' 900; font-size: 2rem; line-height: 1; color: var(--accent); text-align: right; }
+
+  /* road sign */
+  .rs-sign { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.2rem, 3vw, 3rem); align-items: center; }
+  .rs-sign__view { position: relative; height: clamp(20rem, 38vw, 28rem); overflow: hidden; background: linear-gradient(180deg, #a9c9e2 0%, #dce9f0 55%, #8fae6a 56%, #6d8f4c 100%); perspective: 800px; }
+  .rs-sign__road { position: absolute; left: 50%; bottom: -10%; width: 70%; height: 55%; transform: translateX(-50%) rotateX(62deg); transform-origin: 50% 100%; background: linear-gradient(90deg, #4a4a48 0 47%, #f2f2f2 47% 53%, #4a4a48 53%); background-size: 100% 60px; }
+  .rs-sign__post { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); display: grid; justify-items: center; }
+  .rs-sign__post::after { content: ''; width: 10px; height: 5rem; background: linear-gradient(90deg, #8d8577, #cfcac0, #6f6a62); }
+  .rs-sign__plate { --bg: #1f6b3a; --fg: #fff; --bd: #fff; container-type: inline-size; width: clamp(15rem, 28vw, 22rem); padding: 4cqi 5cqi; background: var(--bg); color: var(--fg); border-radius: 8px; box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 5px var(--bd), 0 10px 20px #0004; display: grid; gap: 2cqi; transition: background 0.3s; }
+  .rs-sign__row { display: flex; justify-content: space-between; align-items: baseline; gap: 4cqi; font-family: 'Roboto Slab Variable', serif; font-variation-settings: 'wght' 600; font-size: 10cqi; line-height: 1.1; }
+  .rs-sign__row span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rs-sign__row b { font-weight: 400; font-variation-settings: 'wght' 800; }
+  .rs-sign__view.is-drive .rs-sign__post { animation: rs-drive 2.2s cubic-bezier(0.6, 0, 0.9, 0.6); }
+  @keyframes rs-drive { 0% { transform: translateX(-50%) scale(0.25) translateY(-120%); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateX(80%) scale(2.6) translateY(10%); opacity: 0; } }
+  .rs-sign__view.is-drive .rs-sign__road { animation: rs-roll 0.25s linear 9; }
+  @keyframes rs-roll { to { background-position: 0 60px; } }
+  .rs-sign__ctl { display: grid; gap: 0.9rem; }
+  .rs-sign__ctl label { display: grid; gap: 0.3rem; font: 400 0.68rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .rs input[type='text'] { font: 600 1.3rem/1.2 'Roboto Slab Variable', serif; padding: 0.3rem 0; background: none; border: 0; border-bottom: 2px solid var(--fg-3); color: var(--fg); outline: none; text-transform: none; letter-spacing: 0; }
+  .rs-sign__kinds { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .rs-sign__kinds button { padding: 0.45rem 0.7rem; border-radius: 4px; background: var(--c); color: #fff; font: 600 0.8rem/1 'Roboto Slab Variable', serif; box-shadow: inset 0 0 0 1px #0003; }
+  .rs-sign__kinds button[style*='#f3efe6'] { color: #1b150d; }
+  .rs-sign__kinds button[aria-checked='true'] { outline: 3px solid var(--hazard); outline-offset: 2px; }
+
+  /* lift */
+  .rs-lift { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.2rem, 3vw, 3rem); align-items: center; }
+  .rs-lift__shaft { --fh: 3.4rem; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; background: #2a241c; border: 6px solid #1b150d; height: calc(var(--fh) * 9); }
+  .rs-lift__floors { grid-column: 2; display: grid; grid-template-rows: repeat(9, var(--fh)); }
+  .rs-lift__floors li { display: grid; grid-template-columns: 3rem 7rem auto; align-items: center; gap: 0.6rem; padding: 0 1rem; border-top: 1px solid #ffffff14; color: #cfc4b0; font-family: 'Roboto Slab Variable', serif; }
+  .rs-lift__floors b { font-weight: 400; font: 400 0.7rem/1 var(--font-mono); color: #8b7f68; }
+  .rs-lift__floors span { font-variation-settings: 'wght' var(--w); font-size: 1.2rem; }
+  .rs-lift__floors i { font-style: normal; font: 400 0.68rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: #8b7f68; }
+  .rs-lift__car { --f: 3; position: absolute; left: 0.6rem; width: calc(100% - 21rem); height: calc(var(--fh) - 0.4rem); bottom: calc(var(--f) * var(--fh) + 0.2rem); display: grid; place-items: center; background: linear-gradient(180deg, #d8cfbd, #b9ad94); border: 2px solid #1b150d; transition: bottom 1s cubic-bezier(0.45, 0, 0.3, 1); overflow: hidden; }
+  .rs-lift__car span { font-family: 'Roboto Slab Variable', serif; font-size: clamp(1.4rem, 2.6vw, 2.2rem); letter-spacing: -0.02em; color: #1b150d; white-space: nowrap; }
+  .rs-lift__car.is-ding { animation: rs-ding 0.5s; }
+  @keyframes rs-ding { 30% { box-shadow: 0 0 0 4px var(--hazard); } }
+  .rs-lift__panel { display: grid; gap: 1rem; justify-items: start; }
+  .rs-lift__display { display: flex; gap: 0.6rem; align-items: baseline; padding: 0.4rem 1rem; background: #120d08; color: #ff7a2e; font: 400 2.4rem/1 var(--font-mono); text-shadow: 0 0 10px #ff7a2e88; border-radius: 4px; }
+  .rs-lift__btns { display: grid; grid-template-columns: repeat(3, 3.2rem); gap: 0.5rem; }
+  .rs-lift__btns button { aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f3efe6, #b8ae9c); box-shadow: 0 3px 0 #776a54, inset 0 0 0 2px #776a54; font: 700 1.1rem/1 'Roboto Slab Variable', serif; color: #1b150d; transition: transform 0.1s; }
+  .rs-lift__btns button:active { transform: translateY(2px); box-shadow: 0 1px 0 #776a54, inset 0 0 0 2px #776a54; }
+  .rs-lift__btns button.is-on { color: #ff7a2e; box-shadow: 0 3px 0 #776a54, inset 0 0 0 2px #ff7a2e, 0 0 12px #ff7a2e88; }
+
+  /* blueprint */
+  .rs-print { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.2rem, 3vw, 3rem); align-items: center; }
+  .rs-print__sheet { position: relative; height: clamp(22rem, 42vw, 32rem); display: grid; place-items: center; overflow: hidden; background: #1d4ea8; color: #dfeaff; background-image: linear-gradient(#ffffff1a 1px, transparent 1px), linear-gradient(90deg, #ffffff1a 1px, transparent 1px), linear-gradient(#ffffff0d 1px, transparent 1px), linear-gradient(90deg, #ffffff0d 1px, transparent 1px); background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px; }
+  .rs-print__g { font-family: 'Roboto Slab Variable', serif; font-size: clamp(11rem, 24vw, 19rem); line-height: 1.15; color: transparent; -webkit-text-stroke: 2px #fff; }
+  .rs-print__dims { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .rs-print__dims .g { stroke: #ffffff66; stroke-dasharray: 6 6; } .rs-print__dims .b { fill: none; stroke: #ffd36b; stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .rs-print__dims .d { stroke: #fff; stroke-width: 1.5; marker-start: none; } .rs-print__dims .e { stroke: #ffffffaa; }
+  .rs-print__dims .t { fill: #fff; font: 500 12px var(--font-mono); letter-spacing: 0.1em; paint-order: stroke; stroke: #1d4ea8; stroke-width: 4px; }
+  .rs-print__sheet.is-draw .rs-print__dims .d, .rs-print__sheet.is-draw .rs-print__dims .e { animation: rs-pen 0.7s ease-out backwards; }
+  .rs-print__sheet.is-draw .rs-print__dims .b { animation: rs-fade 0.5s ease-out backwards; }
+  .rs-print__sheet.is-draw .rs-print__dims .t { animation: rs-fade 0.5s 0.45s backwards; }
+  @keyframes rs-pen { from { opacity: 0; transform: scale(0.96); } } @keyframes rs-fade { from { opacity: 0; } }
+  .rs-print__title { position: absolute; right: 0; bottom: 0; display: grid; padding: 0.6rem 0.9rem; border-top: 2px solid #fff; border-left: 2px solid #fff; font: 400 0.68rem/1.5 var(--font-mono); letter-spacing: 0.08em; }
+  .rs-print__title b { font-weight: 600; } .rs-print__title > span { grid-column: 1 / -1; }
+  .rs-print__ctl { display: grid; gap: 1.2rem; }
+  .rs-print__keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+  .rs-print__keys button { padding: 0.6rem 0; border: 1px solid var(--line); font: 700 1.5rem/1 'Roboto Slab Variable', serif; color: var(--fg); background: var(--bg-2); }
+  .rs-print__keys button:hover { background: var(--blue); color: #fff; }
+
+  @media (max-width: 900px) { .rs-sign, .rs-lift, .rs-print { grid-template-columns: minmax(0, 1fr); } .rs-lift__floors li { grid-template-columns: 2.4rem 6rem; } .rs-lift__floors i { display: none; } .rs-lift__car { width: calc(100% - 11.5rem); } }
+</style>

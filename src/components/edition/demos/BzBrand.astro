@@ -1,0 +1,89 @@
+---
+// Besley: press and hold a branding iron to burn initials into leather.
+export interface Props { n: string }
+const { n } = Astro.props;
+---
+<section class="ed-sec" data-bzb>
+  <div class="ed-kicker"><span>{n}</span> The ranch mark</div>
+  <h2 class="ed-h2">Heat the iron.<br /><em>Mind your fingers.</em></h2>
+  <div class="ed-body bzb">
+    <div class="bzb__hide" data-bzb-hide aria-label="Leather. Press and hold to heat the iron, release to brand.">
+      <div class="bzb__marks" data-bzb-marks></div>
+      <div class="bzb__iron" data-bzb-iron aria-hidden="true"><span data-bzb-iron-t>B</span><i></i></div>
+    </div>
+    <div class="bzb__ctl">
+      <label><span>Your mark (up to 3 letters)</span><input type="text" maxlength="3" value="BZ" data-bzb-in /></label>
+      <div class="bzb__heat"><span>Heat</span><i><b data-bzb-heat></b></i></div>
+      <button type="button" data-bzb-clear>Fresh hide</button>
+      <p class="ed-cap">Press and hold on the leather; the longer you hold, the hotter the iron and the deeper the mark. Too long and it scorches.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-bzb]').forEach((root) => {
+    const hide = root.querySelector<HTMLElement>('[data-bzb-hide]')!, marks = root.querySelector<HTMLElement>('[data-bzb-marks]')!;
+    const iron = root.querySelector<HTMLElement>('[data-bzb-iron]')!, ironT = root.querySelector<HTMLElement>('[data-bzb-iron-t]')!, heatBar = root.querySelector<HTMLElement>('[data-bzb-heat]')!;
+    const inp = root.querySelector<HTMLInputElement>('[data-bzb-in]')!;
+    let heat = 0, hold = false, x = 0, y = 0;
+    const mark = () => (inp.value.trim() || 'B').toUpperCase();
+    const setT = () => (ironT.textContent = mark());
+    inp.addEventListener('input', setT); inp.addEventListener('keydown', (e) => e.stopPropagation()); setT();
+    const at = (e: PointerEvent) => { const r = hide.getBoundingClientRect(); x = e.clientX - r.left; y = e.clientY - r.top; iron.style.transform = `translate(${x}px, ${y}px)`; };
+    hide.addEventListener('pointermove', at);
+    hide.addEventListener('pointerenter', () => iron.classList.add('is-on'));
+    hide.addEventListener('pointerleave', () => { if (!hold) iron.classList.remove('is-on'); });
+    hide.addEventListener('pointerdown', (e) => { e.preventDefault(); at(e); hold = true; heat = 0; hide.setPointerCapture(e.pointerId); iron.classList.add('is-on', 'is-hold'); });
+    const stamp = () => {
+      if (!hold) return; hold = false; iron.classList.remove('is-hold');
+      const h = Math.min(heat, 1.3), m = document.createElement('span');
+      m.className = 'bzb__mark'; m.textContent = mark();
+      m.style.left = `${x}px`; m.style.top = `${y}px`;
+      m.style.setProperty('--h', h.toFixed(2)); m.style.setProperty('--r', `${(Math.random() - 0.5) * 10}deg`);
+      m.style.fontVariationSettings = `'wght' ${Math.round(500 + Math.min(1, h) * 400)}`;
+      if (h > 1.05) m.classList.add('is-scorch');
+      marks.appendChild(m);
+      for (let i = 0; i < 10; i++) { const s = document.createElement('i'); s.className = 'bzb__smoke'; s.style.left = `${x + (Math.random() - 0.5) * 60}px`; s.style.top = `${y}px`; s.style.setProperty('--dx', `${(Math.random() - 0.5) * 60}px`); s.style.animationDelay = `${i * 60}ms`; marks.appendChild(s); setTimeout(() => s.remove(), 2200); }
+      if (marks.querySelectorAll('.bzb__mark').length > 14) marks.querySelector('.bzb__mark')!.remove();
+      heat = 0;
+    };
+    hide.addEventListener('pointerup', stamp); hide.addEventListener('pointercancel', stamp);
+    root.querySelector('[data-bzb-clear]')!.addEventListener('click', () => (marks.innerHTML = ''));
+    const tick = () => {
+      requestAnimationFrame(tick);
+      if (hold) heat = Math.min(1.4, heat + 0.012);
+      iron.style.setProperty('--heat', Math.min(1, heat).toFixed(2));
+      heatBar.style.width = `${Math.min(100, (heat / 1.3) * 100)}%`;
+      heatBar.classList.toggle('is-over', heat > 1.05);
+    };
+    requestAnimationFrame(tick);
+  });
+</script>
+
+<style is:global>
+  .bzb { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1.2rem, 3vw, 3rem); align-items: center; }
+  .bzb__hide { position: relative; height: clamp(18rem, 34vw, 26rem); border-radius: 38% 34% 30% 42% / 26% 30% 24% 28%; overflow: hidden; cursor: none; touch-action: none; user-select: none;
+    background: radial-gradient(80% 70% at 40% 40%, #b7834f, #8a5a30 60%, #5d3a1c), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .12 0 0 0 0 .05 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-blend-mode: multiply; box-shadow: inset 0 0 40px #2a1a0d99, 0 30px 50px -30px #000; }
+  .bzb__marks { position: absolute; inset: 0; pointer-events: none; }
+  .bzb__mark { position: absolute; transform: translate(-50%, -50%) rotate(var(--r)); font-family: 'Besley Variable', serif; font-size: clamp(3rem, 7vw, 6rem); line-height: 1; white-space: nowrap; color: rgb(calc(70 - var(--h) * 50) calc(36 - var(--h) * 26) calc(14 - var(--h) * 10)); opacity: calc(0.35 + var(--h) * 0.6); text-shadow: 0 0 calc(var(--h) * 6px) #2a0f04, 0 0 calc(var(--h) * 18px) #3a1a08aa; mix-blend-mode: multiply; animation: bzb-sear 1.6s ease-out; }
+  .bzb__mark.is-scorch { filter: blur(1.4px); text-shadow: 0 0 10px #000, 0 0 30px #1a0a02; }
+  @keyframes bzb-sear { 0% { color: #ffd27a; text-shadow: 0 0 20px #ff7a1a, 0 0 40px #ff3a0a; mix-blend-mode: normal; opacity: 1; } 30% { color: #ff6a1a; } }
+  .bzb__smoke { position: absolute; width: 26px; height: 26px; margin: -13px; border-radius: 50%; background: radial-gradient(circle, #d9d2c3aa, transparent 70%); animation: bzb-smoke 2s ease-out forwards; pointer-events: none; }
+  @keyframes bzb-smoke { from { opacity: 0.9; transform: translate(0, 0) scale(0.6); } to { opacity: 0; transform: translate(var(--dx), -140px) scale(3); } }
+  .bzb__iron { --heat: 0; position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+  .bzb__iron.is-on { opacity: 1; }
+  .bzb__iron span { position: absolute; transform: translate(-50%, -50%) scaleX(-1); font-family: 'Besley Variable', serif; font-variation-settings: 'wght' 900; font-size: clamp(3rem, 7vw, 6rem); line-height: 1; white-space: nowrap; color: rgb(calc(60 + var(--heat) * 195) calc(55 + var(--heat) * 110) calc(50 - var(--heat) * 20)); text-shadow: 0 0 calc(var(--heat) * 22px) #ff6a1a, 0 0 calc(var(--heat) * 44px) #ff3a0a; opacity: 0.85; }
+  .bzb__iron i { position: absolute; left: 0; top: 0; width: 8px; height: 22rem; margin-left: -4px; background: linear-gradient(90deg, #3a3631, #6f6a62, #2a2724); transform: translateY(1.2rem) rotate(-28deg); transform-origin: 50% 0; }
+  .bzb__iron.is-hold span { animation: bzb-shake 0.08s linear infinite; }
+  @keyframes bzb-shake { 50% { margin-left: 1px; } }
+  .bzb__ctl { display: grid; gap: 1.2rem; }
+  .bzb__ctl label { display: grid; gap: 0.4rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .bzb__ctl input { font: 900 2.4rem/1 'Besley Variable', serif; font-variation-settings: 'wght' 900; padding: 0.2rem 0; background: none; border: 0; border-bottom: 2px solid var(--fg-3); color: var(--fg); outline: none; text-transform: uppercase; width: 100%; }
+  .bzb__heat { display: grid; grid-template-columns: auto 1fr; gap: 0.8rem; align-items: center; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .bzb__heat i { height: 10px; border-radius: 10px; background: var(--line); overflow: hidden; }
+  .bzb__heat b { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #6f6a62, #ff9a3a, #ffd27a); }
+  .bzb__heat b.is-over { background: linear-gradient(90deg, #ff9a3a, #ff3a0a); }
+  .bzb__ctl button { justify-self: start; padding: 0.6rem 1rem; border: 1px solid var(--line); font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); }
+  @media (max-width: 900px) { .bzb { grid-template-columns: minmax(0, 1fr); } }
+  @media (hover: none) { .bzb__hide { cursor: auto; } }
+</style>

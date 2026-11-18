@@ -1,0 +1,295 @@
+---
+// IBM PLEX MONO — new edition. The corporate typewriter: a punch card that
+// encodes your name, a mainframe console, a split-flap departures board and a
+// receipt printer. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('ibm-plex-mono');
+---
+<Layout title="IBM Plex Mono — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="IBM Plex Mono" showToggle={false} />
+  <div class="ed px" data-px>
+    <header class="ed-hero px-hero" data-hero>
+      <div class="ed-hero__top"><span>IBM Plex Mono · {font.designer} · {font.year}</span><span>Thin 100 to Bold 700, roman & italic</span></div>
+      <div class="px-hero__word" data-type aria-label="IBM Plex Mono"><span data-type-out aria-hidden="true"></span><i class="px-caret" aria-hidden="true"></i></div>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A typewriter that learned <em>to work in an office</em>.
+          <span class="ed-hero__hint" data-fine>Type anything. Every key strikes with a little weight, then settles.</span>
+          <span class="ed-hero__hint" data-coarse>Tap to bring up the keyboard and type.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>keystrokes</dt><dd data-hud="n">0</dd></div><div><dt>col</dt><dd data-hud="c">0</dd></div></dl>
+      </div>
+      <input class="px-hero__in" data-type-in aria-label="Type here" autocomplete="off" autocapitalize="off" spellcheck="false" />
+    </header>
+
+    <main>
+      <section class="ed-sec" data-card>
+        <div class="ed-kicker"><span>01</span> 80 columns</div>
+        <h2 class="ed-h2">Your name,<br />in <em>holes</em>.</h2>
+        <p class="ed-lede">Before screens, a line of code was a card with holes in it: twelve rows, eighty columns, one character per column. Type and watch the punches land in the right rows.</p>
+        <div class="ed-body px-card">
+          <div class="px-card__card" data-card-card>
+            <p class="px-card__print" data-card-print></p>
+            <div class="px-card__grid" data-card-grid></div>
+            <p class="px-card__foot"><span>IBM</span><span>5081</span><span data-card-n>0 / 80</span></p>
+          </div>
+          <label class="px-card__in"><span>Punch</span><input type="text" maxlength="80" value="HELLO, PLEX" data-card-in /></label>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-flap>
+        <div class="ed-kicker"><span>02</span> Gate change</div>
+        <h2 class="ed-h2">Every letter flips<br />through the alphabet <em>to get there</em>.</h2>
+        <div class="ed-body px-flap">
+          <div class="px-flap__board" data-flap-board></div>
+          <div class="px-flap__ctl"><input type="text" maxlength="20" value="NOW BOARDING GATE 7" data-flap-in /><button type="button" data-flap-go>Flip</button><button type="button" data-flap-rand>Random destination</button></div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-term>
+        <div class="ed-kicker"><span>03</span> Terminal session</div>
+        <h2 class="ed-h2">Talk to <em>the mainframe</em>.</h2>
+        <div class="ed-body px-term">
+          <div class="px-term__screen" data-term-screen>
+            <pre class="px-term__out" data-term-out></pre>
+            <label class="px-term__line"><span>PLEX&gt;</span><input type="text" data-term-in autocomplete="off" spellcheck="false" aria-label="Command" /></label>
+          </div>
+          <p class="ed-cap">Try <code>HELP</code>, <code>DATE</code>, <code>WEIGHTS</code>, <code>FORTUNE</code>, <code>BANNER YOUR TEXT</code> or <code>CLEAR</code>. An invented machine.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-rcpt>
+        <div class="ed-kicker"><span>04</span> Thermal paper</div>
+        <h2 class="ed-h2">Columns that line up<br /><em>without trying</em>.</h2>
+        <div class="ed-body px-rcpt">
+          <div class="px-rcpt__printer"><span class="px-rcpt__slot"></span><div class="px-rcpt__roll" data-rcpt-roll></div></div>
+          <div class="px-rcpt__menu">
+            {[['Espresso', 2.6], ['Flat white', 3.4], ['Croissant', 2.9], ['Soup of the day', 5.5], ['Sparkling water', 1.8], ['Lemon tart', 4.2]].map(([n, p]) => <button type="button" data-item={n} data-price={p}><span>{n}</span><b>{(p as number).toFixed(2)}</b></button>)}
+            <button type="button" class="px-rcpt__print" data-rcpt-print>Print receipt</button>
+            <p class="ed-cap">Tap items to add them, then print. An invented café.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Type a <em>memo</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="IBM Plex Mono" sample="Re: the quarterly numbers" italic axes={[]}
+            presets={[{ name: 'Regular', v: [] }, { name: 'Italic', v: [], italic: true }]} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Seven weights, with italics' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-px]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+
+    // =========== HERO: a typewriter ===========
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, out = hero.querySelector<HTMLElement>('[data-type-out]')!, hin = hero.querySelector<HTMLInputElement>('[data-type-in]')!;
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    let strokes = 0;
+    const strike = (c: string) => {
+      const s = document.createElement('span'); s.textContent = c; s.className = 'is-strike';
+      s.style.setProperty('--r', `${(Math.random() - 0.5) * 3}deg`); s.style.setProperty('--y', `${(Math.random() - 0.5) * 0.04}em`);
+      out.appendChild(s); strokes++; hud.n.textContent = String(strokes); hud.c.textContent = String(out.children.length);
+      hero.classList.remove('is-ding'); if (out.children.length % 18 === 0) { void hero.offsetWidth; hero.classList.add('is-ding'); }
+    };
+    // auto-typing until the visitor types
+    const intro = 'IBM Plex Mono';
+    let auto = true, ai = 0;
+    const autoType = () => { if (!auto) return; if (ai < intro.length) { strike(intro[ai++]); setTimeout(autoType, reduce ? 0 : 110 + Math.random() * 90); } };
+    setTimeout(autoType, 400);
+    const take = () => { if (auto) { auto = false; out.textContent = ''; } };
+    document.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement; if (t.matches('input, textarea') && t !== hin || t.isContentEditable) return;
+      const r = hero.getBoundingClientRect(); if (r.bottom < 80 || r.top > innerHeight * 0.6) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === 'Backspace') { take(); out.lastElementChild?.remove(); hud.c.textContent = String(out.children.length); e.preventDefault(); e.stopPropagation(); return; }
+      if (e.key.length !== 1) return; e.preventDefault(); e.stopPropagation(); take();
+      if (out.children.length >= 32) out.firstElementChild!.remove();
+      strike(e.key);
+    }, true);
+    hero.addEventListener('click', () => hin.focus({ preventScroll: true }));
+    hin.addEventListener('input', () => { take(); for (const c of hin.value) strike(c); hin.value = ''; });
+
+    // =========== PUNCH CARD ===========
+    const card = page.querySelector<HTMLElement>('[data-card]')!, grid = card.querySelector<HTMLElement>('[data-card-grid]')!, cin = card.querySelector<HTMLInputElement>('[data-card-in]')!;
+    // Hollerith rows: 12, 11, 0, 1..9 (top to bottom)
+    const ROWS = ['12', '11', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const code = (ch: string): string[] => {
+      const c = ch.toUpperCase();
+      if (c >= '0' && c <= '9') return [c];
+      if (c >= 'A' && c <= 'I') return ['12', String(c.charCodeAt(0) - 64)];
+      if (c >= 'J' && c <= 'R') return ['11', String(c.charCodeAt(0) - 73)];
+      if (c >= 'S' && c <= 'Z') return ['0', String(c.charCodeAt(0) - 81)];
+      return ({ '&': ['12'], '-': ['11'], '/': ['0', '1'], '.': ['12', '3', '8'], ',': ['0', '3', '8'], "'": ['5', '8'], '(': ['12', '5', '8'], ')': ['11', '5', '8'], '!': ['11', '2', '8'], '?': ['0', '7', '8'], ':': ['2', '8'], '#': ['3', '8'], '@': ['4', '8'], '=': ['6', '8'], '+': ['12', '6', '8'], '*': ['11', '4', '8'], '$': ['11', '3', '8'] } as Record<string, string[]>)[c] ?? [];
+    };
+    grid.innerHTML = ROWS.map((r) => `<div class="px-card__row">${Array.from({ length: 80 }, () => `<i>${r.length === 1 ? r : ''}</i>`).join('')}</div>`).join('');
+    const holes = Array.from(grid.querySelectorAll('.px-card__row')).map((row) => Array.from(row.children) as HTMLElement[]);
+    let prevStr = '';
+    const punch = () => {
+      const s = cin.value.toUpperCase().slice(0, 80);
+      card.querySelector<HTMLElement>('[data-card-print]')!.innerHTML = [...s.padEnd(80)].map((c) => `<span>${esc(c === ' ' ? ' ' : c)}</span>`).join('');
+      for (let col = 0; col < 80; col++) {
+        const want = code(s[col] ?? ' ');
+        ROWS.forEach((r, ri) => { const h = holes[ri][col], on = want.includes(r); if (on !== h.classList.contains('is-hole')) { h.classList.toggle('is-hole', on); if (on && s[col] !== prevStr[col]) { h.classList.remove('is-new'); void h.offsetWidth; h.classList.add('is-new'); } } });
+      }
+      card.querySelector('[data-card-n]')!.textContent = `${s.length} / 80`; prevStr = s;
+    };
+    cin.addEventListener('input', punch); cin.addEventListener('keydown', (e) => e.stopPropagation()); punch();
+
+    // =========== SPLIT FLAP ===========
+    const flap = page.querySelector<HTMLElement>('[data-flap]')!, board = flap.querySelector<HTMLElement>('[data-flap-board]')!, fin = flap.querySelector<HTMLInputElement>('[data-flap-in]')!;
+    const CH = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.-', N = 20;
+    board.innerHTML = Array.from({ length: N }, () => '<span class="px-flap__c"><b> </b></span>').join('');
+    const slots = Array.from(board.children) as HTMLElement[]; const cur = Array(N).fill(0);
+    const go = (text: string) => {
+      const t = text.toUpperCase().padEnd(N).slice(0, N);
+      slots.forEach((el, i) => {
+        const target = Math.max(0, CH.indexOf(t[i])); let k = 0;
+        const step = () => {
+          if (cur[i] === target) return;
+          cur[i] = (cur[i] + 1) % CH.length; const b = el.querySelector('b')!; b.textContent = CH[cur[i]];
+          el.classList.remove('is-flip'); void el.offsetWidth; el.classList.add('is-flip');
+          setTimeout(step, reduce ? 0 : 45 + (k++ > 6 ? 10 : 0));
+        };
+        setTimeout(step, reduce ? 0 : i * 35);
+      });
+    };
+    const DEST = ['TOKYO HANEDA 22:40', 'REYKJAVIK DELAYED', 'LISBON ON TIME', 'NAIROBI GATE 14', 'MONTREAL BOARDING', 'OSLO CANCELLED', 'BUENOS AIRES 07:15', 'HELSINKI FINAL CALL'];
+    flap.querySelector('[data-flap-go]')!.addEventListener('click', () => go(fin.value));
+    flap.querySelector('[data-flap-rand]')!.addEventListener('click', () => { const d = DEST[Math.floor(Math.random() * DEST.length)]; fin.value = d; go(d); });
+    fin.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') go(fin.value); });
+    new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { go(fin.value); ob.disconnect(); } }, { threshold: 0.4 }).observe(board);
+
+    // =========== TERMINAL ===========
+    const term = page.querySelector<HTMLElement>('[data-term]')!, tout = term.querySelector<HTMLElement>('[data-term-out]')!, tin = term.querySelector<HTMLInputElement>('[data-term-in]')!;
+    const FORT = ['THINK.', 'A KEYBOARD IS JUST A VERY SLOW PRINTER RUNNING BACKWARDS.', 'ALL PROGRAMS HAVE BUGS. SOME HAVE FEATURES.', 'THE MAINFRAME WILL SEE YOU NOW.', 'MONOSPACE: BECAUSE EVERY LETTER DESERVES THE SAME SEAT.'];
+    // a 5-row block font for BANNER, drawn with the font's own block character
+    const BF: Record<string, string[]> = { A: ['.#.', '#.#', '###', '#.#', '#.#'], B: ['##.', '#.#', '##.', '#.#', '##.'], C: ['.##', '#..', '#..', '#..', '.##'], D: ['##.', '#.#', '#.#', '#.#', '##.'], E: ['###', '#..', '##.', '#..', '###'], F: ['###', '#..', '##.', '#..', '#..'], G: ['.##', '#..', '#.#', '#.#', '.##'], H: ['#.#', '#.#', '###', '#.#', '#.#'], I: ['###', '.#.', '.#.', '.#.', '###'], J: ['..#', '..#', '..#', '#.#', '.#.'], K: ['#.#', '#.#', '##.', '#.#', '#.#'], L: ['#..', '#..', '#..', '#..', '###'], M: ['#.#', '###', '###', '#.#', '#.#'], N: ['##.', '#.#', '#.#', '#.#', '#.#'], O: ['.#.', '#.#', '#.#', '#.#', '.#.'], P: ['##.', '#.#', '##.', '#..', '#..'], Q: ['.#.', '#.#', '#.#', '##.', '.##'], R: ['##.', '#.#', '##.', '#.#', '#.#'], S: ['.##', '#..', '.#.', '..#', '##.'], T: ['###', '.#.', '.#.', '.#.', '.#.'], U: ['#.#', '#.#', '#.#', '#.#', '###'], V: ['#.#', '#.#', '#.#', '#.#', '.#.'], W: ['#.#', '#.#', '###', '###', '#.#'], X: ['#.#', '#.#', '.#.', '#.#', '#.#'], Y: ['#.#', '#.#', '.#.', '.#.', '.#.'], Z: ['###', '..#', '.#.', '#..', '###'], ' ': ['...', '...', '...', '...', '...'], '!': ['.#.', '.#.', '.#.', '...', '.#.'] };
+    const say = (s: string, cls = '') => { tout.insertAdjacentHTML('beforeend', `<span class="${cls}">${esc(s)}</span>\n`); tout.scrollTop = tout.scrollHeight; };
+    const boot = ['PLEX/360 SYSTEM RESTART', 'MEMORY 512K OK · DRIVES 3 OK · PRINTER READY', 'TYPE HELP FOR COMMANDS', ''];
+    boot.forEach((l, i) => setTimeout(() => say(l, i === 0 ? 'b' : 'd'), reduce ? 0 : i * 260));
+    const run = (raw: string) => {
+      const cmd = raw.trim(), up = cmd.toUpperCase(); say(`PLEX> ${cmd}`, 'p');
+      if (!up) return;
+      if (up === 'HELP') ['HELP      THIS LIST', 'DATE      TODAY, ACCORDING TO THE MACHINE', 'WEIGHTS   ALL SEVEN WEIGHTS', 'FORTUNE   ADVICE FROM THE MAINFRAME', 'BANNER X  PRINT X IN BIG LETTERS', 'CLEAR     WIPE THE SCREEN'].forEach((l) => say(l));
+      else if (up === 'DATE') say(new Date().toString().slice(0, 24).toUpperCase(), 'b');
+      else if (up === 'CLEAR') tout.textContent = '';
+      else if (up === 'FORTUNE') say(FORT[Math.floor(Math.random() * FORT.length)], 'b');
+      else if (up === 'WEIGHTS') [100, 200, 300, 400, 500, 600, 700].forEach((w) => tout.insertAdjacentHTML('beforeend', `<span style="font-weight:${w}">${w}  THE QUICK BROWN FOX JUMPS</span>\n`));
+      else if (up.startsWith('BANNER')) { const t = up.slice(6).trim().slice(0, 9) || 'PLEX'; for (let r = 0; r < 5; r++) say([...t].map((c) => (BF[c] ?? BF[' '])[r].replace(/#/g, '██').replace(/\./g, '  ')).join('  '), 'bn'); say(''); }
+      else say(`?SYNTAX ERROR: ${up.split(' ')[0]} — TRY HELP`, 'e');
+      tout.scrollTop = tout.scrollHeight;
+    };
+    tin.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') { run(tin.value); tin.value = ''; } });
+    term.querySelector('[data-term-screen]')!.addEventListener('click', () => tin.focus());
+
+    // =========== RECEIPT ===========
+    const rc = page.querySelector<HTMLElement>('[data-rcpt]')!, roll = rc.querySelector<HTMLElement>('[data-rcpt-roll]')!;
+    let cart: [string, number][] = [];
+    rc.querySelectorAll<HTMLButtonElement>('[data-item]').forEach((b) => b.addEventListener('click', () => { cart.push([b.dataset.item!, +b.dataset.price!]); b.classList.remove('is-add'); void b.offsetWidth; b.classList.add('is-add'); }));
+    const W = 30, line = (l: string, r: string) => l.slice(0, W - r.length - 1).padEnd(W - r.length) + r;
+    rc.querySelector('[data-rcpt-print]')!.addEventListener('click', () => {
+      const items = cart.length ? cart : [['Espresso', 2.6], ['Croissant', 2.9]] as [string, number][];
+      const counts = new Map<string, [number, number]>(); items.forEach(([n, p]) => { const c = counts.get(n) ?? [0, p]; counts.set(n, [c[0] + 1, p]); });
+      const sub = items.reduce((s, [, p]) => s + p, 0), tax = sub * 0.08;
+      const d = new Date();
+      const L = ['        CAFÉ PLEX', '     14 TYPEFACE LANE', '', d.toLocaleDateString('en-GB') + '  ' + d.toTimeString().slice(0, 5) + '  T:04', '-'.repeat(W),
+        ...[...counts].map(([n, [q, p]]) => line(`${q} x ${n}`, (q * p).toFixed(2))), '-'.repeat(W), line('SUBTOTAL', sub.toFixed(2)), line('TAX 8%', tax.toFixed(2)), line('TOTAL', (sub + tax).toFixed(2)), '', '   THANK YOU · COME AGAIN', '', '   ||| || ||| | |||| || |'];
+      roll.innerHTML = ''; roll.classList.remove('is-print'); void roll.offsetWidth; roll.classList.add('is-print');
+      L.forEach((l, i) => setTimeout(() => { roll.insertAdjacentHTML('beforeend', `<span class="${l.startsWith('TOTAL') ? 'tot' : ''}">${esc(l) || '&nbsp;'}</span>`); }, reduce ? 0 : i * 90));
+      cart = [];
+    });
+  }
+</script>
+
+<style is:global>
+  .px { --ed-head: 'IBM Plex Mono', ui-monospace, monospace; --ed-radius: 4px; --blue: #4d8dff; --paper: #f2efe6; }
+  .px .ed-h2 { font-weight: 600; font-size: clamp(1.6rem, 0.8rem + 3.2vw, 4rem); letter-spacing: -0.04em; line-height: 1.06; }
+  .px .ed-h2 em, .px .ed-hero__lede em { font-style: italic; font-weight: 300; color: var(--blue); }
+  .px .ed-hero__lede { font-weight: 500; font-size: clamp(1.1rem, 0.8rem + 1.2vw, 1.8rem); letter-spacing: -0.03em; line-height: 1.25; }
+  .px code { font-family: 'IBM Plex Mono', monospace; color: var(--blue); }
+  .px .ed-story__prose strong { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.88em; }
+
+  /* hero typewriter */
+  .px-hero { background: radial-gradient(70% 60% at 50% 45%, #13213a, var(--bg) 70%); cursor: text; }
+  .px-hero.is-ding { animation: px-ding 0.3s; }
+  @keyframes px-ding { 30% { transform: translateX(-6px); } }
+  .px-hero__word { align-self: center; justify-self: center; display: flex; align-items: baseline; flex-wrap: wrap; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: min(9.4vw, 24svh); line-height: 1.1; letter-spacing: -0.04em; max-width: 92vw; min-height: 1.2em; }
+  .px-hero__word span span { display: inline-block; white-space: pre; transform: translateY(var(--y)) rotate(var(--r)); }
+  .px-hero__word .is-strike { animation: px-strike 0.32s cubic-bezier(0.2, 0.9, 0.3, 1); }
+  @keyframes px-strike { 0% { font-weight: 700; color: var(--blue); transform: translateY(-0.12em) scale(1.12); } 100% { color: inherit; } }
+  .px-caret { display: inline-block; width: 0.55em; height: 0.12em; margin-left: 0.04em; background: var(--blue); animation: px-blink 1s steps(2, jump-none) infinite; }
+  @keyframes px-blink { 50% { opacity: 0; } }
+  .px-hero__in { position: absolute; opacity: 0; width: 1px; height: 1px; left: 50%; top: 50%; }
+
+  /* punch card */
+  .px-card { display: grid; gap: 1.2rem; }
+  .px-card__card { container-type: inline-size; position: relative; padding: 2cqi 2cqi 1.4cqi; background: #efe0b3; color: #3a2f12; border-radius: 0 6px 6px 6px; clip-path: polygon(3.2% 0, 100% 0, 100% 100%, 0 100%, 0 7%); box-shadow: 0 30px 50px -30px #000; overflow: hidden; }
+  .px-card__print { display: grid; grid-template-columns: repeat(80, 1fr); font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 1.05cqi; line-height: 1.6; text-align: center; color: #1a1408; min-height: 1.7cqi; }
+  .px-card__grid { display: grid; gap: 0.1cqi; }
+  .px-card__row { display: grid; grid-template-columns: repeat(80, 1fr); }
+  .px-card__row i { display: block; min-height: 1.48cqi; font-style: normal; font-family: 'IBM Plex Mono', monospace; font-weight: 400; font-size: 0.8cqi; line-height: 1.85; text-align: center; color: #9a8350; }
+  .px-card__row i.is-hole { color: transparent; background: var(--bg); border-radius: 0.1cqi; margin: 0.15cqi 0.2cqi; }
+  .px-card__row i.is-new { animation: px-punch 0.4s cubic-bezier(0.2, 1.4, 0.4, 1); }
+  @keyframes px-punch { from { transform: scale(2.2); background: var(--blue); } }
+  .px-card__foot { display: flex; justify-content: space-between; font: 600 1.1cqi/2 'IBM Plex Mono', monospace; color: #9a8350; }
+  .px-card__in { display: grid; gap: 0.4rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .px input[type='text'] { font: 500 1.4rem/1.2 'IBM Plex Mono', monospace; padding: 0.4rem 0; background: none; border: 0; border-bottom: 2px solid var(--fg-3); color: var(--fg); outline: none; text-transform: uppercase; letter-spacing: 0; width: 100%; }
+  .px input[type='text']:focus { border-color: var(--blue); }
+
+  /* split flap */
+  .px-flap { display: grid; gap: 1.2rem; }
+  .px-flap__board { container-type: inline-size; display: grid; grid-template-columns: repeat(20, 1fr); gap: 0.5cqi; padding: 1.6cqi; background: #060a10; border-radius: 8px; box-shadow: inset 0 0 0 1px #ffffff14; }
+  .px-flap__c { position: relative; aspect-ratio: 0.72; display: grid; place-items: center; background: linear-gradient(180deg, #1f2733 0 49.5%, #0a0e15 49.5% 50.5%, #1a212c 50.5%); border-radius: 0.5cqi; overflow: hidden; perspective: 200px; }
+  .px-flap__c b { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 3.6cqi; color: #f6d36a; }
+  .px-flap__c.is-flip b { animation: px-flip 0.07s linear; }
+  @keyframes px-flip { from { transform: rotateX(-80deg); opacity: 0.4; } }
+  .px-flap__ctl { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: end; }
+  .px-flap__ctl input { flex: 1; min-width: 12rem; }
+  .px-flap__ctl button, .px-rcpt__print { padding: 0.7rem 1rem; border: 1px solid var(--blue); color: var(--blue); font: 500 0.82rem/1 'IBM Plex Mono', monospace; text-transform: uppercase; }
+  .px-flap__ctl button:hover, .px-rcpt__print:hover { background: var(--blue); color: var(--bg); }
+
+  /* terminal */
+  .px-term__screen { padding: clamp(1rem, 3vw, 2rem); background: radial-gradient(90% 90% at 50% 40%, #0d1f12, #030805); border-radius: 18px; border: 10px solid #1b1f24; box-shadow: inset 0 0 60px #000, 0 30px 60px -30px #000; color: #6dff7a; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.78rem, 1.3vw, 1.05rem); cursor: text; position: relative; overflow: hidden; }
+  .px-term__screen::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, #0004 0 1px, transparent 1px 3px); }
+  .px-term__out { margin: 0; height: 18em; overflow-y: auto; white-space: pre; line-height: 1.45; text-shadow: 0 0 6px #6dff7a77; scrollbar-width: none; }
+  .px-term__out .b { font-weight: 700; } .px-term__out .bn { display: inline-block; line-height: 1; font-weight: 700; } .px-term__out .d { color: #3fae4c; } .px-term__out .p { color: #b7ffbf; } .px-term__out .e { color: #ffcf6b; }
+  .px-term__line { display: flex; gap: 0.6em; align-items: baseline; text-shadow: 0 0 6px #6dff7a77; }
+  .px-term__line input { flex: 1; background: none; border: 0; outline: none; color: #b7ffbf; font: inherit; caret-color: #6dff7a; text-transform: uppercase; }
+
+  /* receipt */
+  .px-rcpt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+  .px-rcpt__printer { position: relative; justify-self: center; width: min(92%, 22rem); padding-top: 2.4rem; }
+  .px-rcpt__slot { position: absolute; left: -4%; right: -4%; top: 0; height: 2.6rem; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #2b313b, #161a20); box-shadow: inset 0 -6px 0 #0a0d12; z-index: 2; }
+  .px-rcpt__roll { position: relative; min-height: 4rem; padding: 1.2rem 1rem 1.6rem; background: var(--paper); color: #1d1d1b; font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.66rem, 1.1vw, 0.86rem); line-height: 1.55; white-space: pre; display: grid; box-shadow: 0 20px 40px -20px #000; -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - 10px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 10px repeat-x; mask: linear-gradient(#000, #000) top / 100% calc(100% - 10px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 10px repeat-x; }
+  .px-rcpt__roll span { animation: px-feed 0.18s ease-out; }
+  .px-rcpt__roll .tot { font-weight: 700; }
+  @keyframes px-feed { from { opacity: 0; transform: translateY(-6px); } }
+  .px-rcpt__menu { display: grid; gap: 0.5rem; }
+  .px-rcpt__menu button[data-item] { display: flex; justify-content: space-between; padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: 4px; font: 400 1rem/1 'IBM Plex Mono', monospace; color: var(--fg); transition: border-color 0.2s, background 0.2s; }
+  .px-rcpt__menu button[data-item]:hover { border-color: var(--blue); }
+  .px-rcpt__menu button.is-add { animation: px-add 0.4s var(--ease); }
+  @keyframes px-add { 30% { background: #4d8dff33; transform: scale(1.02); } }
+  .px-rcpt__menu b { font-weight: 600; color: var(--blue); }
+  .px-rcpt__print { justify-self: start; margin-top: 0.6rem; }
+
+  .px .ed-test__text { font-family: 'IBM Plex Mono', monospace; letter-spacing: -0.03em; }
+
+  @media (max-width: 900px) { .px-rcpt { grid-template-columns: minmax(0, 1fr); } .px-flap__board { grid-template-columns: repeat(10, 1fr); } .px-flap__c b { font-size: 7cqi; } .px-card__card { min-width: 0; } }
+</style>
