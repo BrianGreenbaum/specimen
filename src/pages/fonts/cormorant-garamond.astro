@@ -8,6 +8,8 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import EditionTester from '../../components/edition/EditionTester.astro';
 import EditionTail from '../../components/edition/EditionTail.astro';
+import CgCandle from '../../components/edition/demos/CgCandle.astro';
+import CgLetter from '../../components/edition/demos/CgLetter.astro';
 import { getEdition } from '../../lib/edition';
 
 const { entry, font, prev, next, themeStyle } = await getEdition('cormorant-garamond');
@@ -98,15 +100,18 @@ const inks = [['Sepia', '#5b3a1e'], ['Bottle green', '#2f5a42'], ['Indigo', '#2b
         </div>
       </section>
 
+      <CgCandle n="04" />
+      <CgLetter n="05" />
+
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write something <em>beautiful</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Cormorant Garamond" sample="Elegance, unhurried" italic axes={[]}
             presets={[{ name: 'Roman', v: [] }, { name: 'Italic', v: [], italic: true }]} start={1} />
         </div>
       </section>
-      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Light to Bold, with italics' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Light to Bold, with italics' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

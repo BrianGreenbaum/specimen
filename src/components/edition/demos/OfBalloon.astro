@@ -1,0 +1,83 @@
+---
+// Outfit: hold to inflate a word along the weight axis; it pops at 900.
+export interface Props { n: string }
+const { n } = Astro.props;
+---
+<section class="ed-sec" data-ofb>
+  <div class="ed-kicker"><span>{n}</span> Pressure</div>
+  <h2 class="ed-h2">Hold it down.<br />Don’t <em>let go</em> too late.</h2>
+  <div class="ed-body ofb">
+    <button type="button" class="ofb__stage" data-ofb-stage aria-label="Hold to inflate the word">
+      <span class="ofb__word" data-ofb-word>pump</span>
+      <span class="ofb__burst" data-ofb-burst aria-hidden="true"></span>
+      <span class="ofb__gauge" aria-hidden="true"><i data-ofb-bar></i></span>
+    </button>
+    <dl class="ofb__read"><div><dt>wght</dt><dd data-ofb-w>100</dd></div><div><dt>pops</dt><dd data-ofb-pops>0</dd></div><div><dt>best release</dt><dd data-ofb-best>—</dd></div></dl>
+    <p class="ed-cap">Press and hold (mouse, finger or space bar). Let go between 850 and 899 for a perfect score. Hit 900 and it bursts.</p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ofb]').forEach((root) => {
+    const stage = root.querySelector<HTMLButtonElement>('[data-ofb-stage]')!;
+    const word = root.querySelector<HTMLElement>('[data-ofb-word]')!, bar = root.querySelector<HTMLElement>('[data-ofb-bar]')!;
+    const burst = root.querySelector<HTMLElement>('[data-ofb-burst]')!;
+    const out = (k: string) => root.querySelector<HTMLElement>(`[data-ofb-${k}]`)!;
+    const WORDS = ['pump', 'puff', 'blob', 'bulk', 'plump', 'boom', 'chunk'];
+    let w = 100, holding = false, vel = 0, pops = 0, best = 0, wi = 0, popped = false;
+    const paint = () => {
+      word.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`;
+      const k = (w - 100) / 800;
+      word.style.transform = `scale(${(1 + k * 0.32).toFixed(3)}) rotate(${(Math.sin(performance.now() / 60) * k * k * 3).toFixed(2)}deg)`;
+      bar.style.width = `${k * 100}%`; bar.classList.toggle('is-hot', w > 850);
+      out('w').textContent = String(Math.round(w));
+    };
+    const pop = () => {
+      popped = true; holding = false; pops++; out('pops').textContent = String(pops);
+      burst.innerHTML = Array.from({ length: 18 }, (_, i) => `<i style="--a:${(i / 18) * 360}deg;--d:${60 + Math.random() * 90}px;--c:${['#ff5a36', '#3b4bd8', '#14140f', '#c79bff'][i % 4]}"></i>`).join('');
+      stage.classList.remove('is-pop'); void stage.offsetWidth; stage.classList.add('is-pop');
+      setTimeout(() => { w = 100; wi = (wi + 1) % WORDS.length; word.textContent = WORDS[wi]; popped = false; paint(); }, 650);
+    };
+    const release = () => {
+      if (!holding) return; holding = false;
+      if (w >= 850 && w < 900) { stage.classList.remove('is-perfect'); void stage.offsetWidth; stage.classList.add('is-perfect'); }
+      if (w > best) { best = Math.round(w); out('best').textContent = String(best); }
+    };
+    const press = () => { if (!popped) { holding = true; vel = 0; } };
+    stage.addEventListener('pointerdown', (e) => { e.preventDefault(); stage.setPointerCapture(e.pointerId); press(); });
+    stage.addEventListener('pointerup', release); stage.addEventListener('pointercancel', release);
+    stage.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); press(); } });
+    stage.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') release(); });
+    let on = false; new IntersectionObserver((es) => (on = es[0].isIntersecting)).observe(stage);
+    const tick = () => {
+      requestAnimationFrame(tick); if (!on || popped) return;
+      if (holding) { vel = Math.min(14, vel + 0.22); w += vel; if (w >= 900) { w = 900; paint(); pop(); return; } }
+      else if (w > 100) { w += (100 - w) * 0.06; }
+      paint();
+    };
+    paint(); requestAnimationFrame(tick);
+  });
+</script>
+
+<style is:global>
+  .ofb { display: grid; gap: 1.2rem; }
+  .ofb__stage { position: relative; display: grid; place-items: center; height: clamp(16rem, 36vw, 26rem); border-radius: 28px; background: radial-gradient(60% 70% at 50% 45%, #fff, var(--bg-2)); border: 1px solid var(--line); overflow: hidden; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .ofb__stage:focus-visible { box-shadow: 0 0 0 3px var(--accent); }
+  .ofb__word { font-family: 'Outfit Variable', sans-serif; font-size: clamp(5rem, 17vw, 16rem); line-height: 1; letter-spacing: -0.04em; color: var(--accent); will-change: transform; }
+  .ofb__stage.is-pop .ofb__word { animation: ofb-pop 0.65s ease-out forwards; }
+  @keyframes ofb-pop { 0% { opacity: 1; } 15% { transform: scale(1.5); filter: blur(2px); opacity: 0.6; } 100% { transform: scale(0.2); opacity: 0; } }
+  .ofb__stage.is-perfect { animation: ofb-ok 0.6s var(--ease); }
+  @keyframes ofb-ok { 30% { background: radial-gradient(60% 70% at 50% 45%, #fff, #c6ff3d); } }
+  .ofb__burst { position: absolute; left: 50%; top: 50%; }
+  .ofb__burst i { position: absolute; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: var(--c); opacity: 0; }
+  .ofb__stage.is-pop .ofb__burst i { animation: ofb-burst 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+  @keyframes ofb-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateX(0) scale(1.4); } 100% { opacity: 0; transform: rotate(var(--a)) translateX(calc(var(--d) * 3)) scale(0.3); } }
+  .ofb__gauge { position: absolute; left: 8%; right: 8%; bottom: 1.4rem; height: 8px; border-radius: 8px; background: var(--line); overflow: hidden; }
+  .ofb__gauge::after { content: ''; position: absolute; left: 93.75%; top: 0; bottom: 0; width: 6.25%; background: #c6ff3d55; border-left: 2px solid #14140f55; }
+  .ofb__gauge i { display: block; height: 100%; width: 0; background: var(--accent); }
+  .ofb__gauge i.is-hot { background: #ff5a36; }
+  .ofb__read { display: flex; gap: 2.4rem; }
+  .ofb__read dt { font: 400 0.68rem/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .ofb__read dd { font: 300 clamp(1.6rem, 3vw, 2.4rem)/1.1 var(--font-mono); color: var(--accent); }
+  @media (prefers-reduced-motion: reduce) { .ofb__stage.is-pop .ofb__word { animation: none; } }
+</style>

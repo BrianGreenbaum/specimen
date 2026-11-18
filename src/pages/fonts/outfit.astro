@@ -8,6 +8,8 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import EditionTester from '../../components/edition/EditionTester.astro';
 import EditionTail from '../../components/edition/EditionTail.astro';
+import OfBalloon from '../../components/edition/demos/OfBalloon.astro';
+import OfRipple from '../../components/edition/demos/OfRipple.astro';
 import { getEdition } from '../../lib/edition';
 
 const { entry, font, prev, next, themeStyle } = await getEdition('outfit');
@@ -91,15 +93,18 @@ const names = ['Thin', 'ExtraLight', 'Light', 'Regular', 'Medium', 'SemiBold', '
         </div>
       </section>
 
+      <OfBalloon n="04" />
+      <OfRipple n="05" />
+
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Say it <em>simply</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Outfit Variable" sample="Hello, good looking" axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
             presets={[{ name: 'Thin', v: [100] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }]} start={3} />
         </div>
       </section>
-      <EditionTail entry={entry} from={5} />
+      <EditionTail entry={entry} from={7} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

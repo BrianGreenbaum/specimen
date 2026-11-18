@@ -1,0 +1,71 @@
+---
+// Cormorant: an envelope that opens; the letter inside writes itself.
+export interface Props { n: string }
+const { n } = Astro.props;
+---
+<section class="ed-sec" data-cgl>
+  <div class="ed-kicker"><span>{n}</span> By return of post</div>
+  <h2 class="ed-h2">Break the seal.<br /><em>Someone wrote back.</em></h2>
+  <div class="ed-body cgl">
+    <button type="button" class="cgl__env" data-cgl-env aria-label="Open the envelope">
+      <span class="cgl__back"></span>
+      <span class="cgl__letter" data-cgl-letter>
+        <span class="cgl__to">Dearest,</span>
+        <span class="cgl__text" data-cgl-text></span>
+      </span>
+      <span class="cgl__front"><span class="cgl__addr">Miss E. Harrow<br /><i>No. 9, Linden Row · By hand</i></span></span>
+      <span class="cgl__flap"></span>
+      <span class="cgl__seal">E</span>
+    </button>
+    <div class="cgl__ctl">
+      <label><span>Write your own reply</span><textarea rows="4" maxlength="220" data-cgl-in>Your letter came on Tuesday and I have read it eleven times. Come in spring, when the garden is foolish with blossom, and stay until it isn’t.</textarea></label>
+      <button type="button" data-cgl-again>Seal it and open again</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cgl]').forEach((root) => {
+    const env = root.querySelector<HTMLButtonElement>('[data-cgl-env]')!, text = root.querySelector<HTMLElement>('[data-cgl-text]')!, inp = root.querySelector<HTMLTextAreaElement>('[data-cgl-in]')!;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let job = 0;
+    const write = () => {
+      const me = ++job, s = inp.value.trim() || '…'; text.textContent = ''; let i = 0;
+      const step = () => { if (me !== job) return; if (i >= s.length) { text.insertAdjacentHTML('beforeend', '<span class="cgl__sig">— R.</span>'); return; } const c = document.createElement('span'); c.textContent = s[i++]; text.appendChild(c); setTimeout(step, reduce ? 0 : /[,.—]/.test(s[i - 1]) ? 220 : 28 + Math.random() * 30); };
+      setTimeout(step, reduce ? 0 : 900);
+    };
+    const open = () => { env.classList.add('is-open'); write(); };
+    const close = () => { job++; env.classList.remove('is-open'); text.textContent = ''; };
+    env.addEventListener('click', () => (env.classList.contains('is-open') ? close() : open()));
+    root.querySelector('[data-cgl-again]')!.addEventListener('click', () => { close(); setTimeout(open, 700); });
+    inp.addEventListener('keydown', (e) => e.stopPropagation());
+  });
+</script>
+
+<style is:global>
+  .cgl { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+  .cgl__env { position: relative; width: min(100%, 36rem); aspect-ratio: 1.55; justify-self: center; margin-top: clamp(11rem, 20vw, 16rem); cursor: pointer; perspective: 1400px; }
+  .cgl__env > span { position: absolute; left: 0; right: 0; }
+  .cgl__back { inset: 0; background: #d9c7a3; border-radius: 4px; box-shadow: 0 30px 50px -30px #19161188; }
+  .cgl__letter { left: 5% !important; right: 5% !important; top: 6%; height: 96%; padding: 1.4rem 1.6rem; background: #fffaf0; box-shadow: 0 4px 14px #19161122; text-align: left; font-family: 'Cormorant Garamond', serif; color: #2a1d10; transform: translateY(0); transition: transform 0.9s cubic-bezier(0.3, 1.1, 0.4, 1) 0.35s, height 0.9s 0.35s; overflow: hidden; z-index: 1; }
+  .cgl__env.is-open .cgl__letter { transform: translateY(-52%); height: 138%; }
+  .cgl__to { display: block; font-style: italic; font-weight: 600; font-size: clamp(1.4rem, 2.6vw, 2rem); color: var(--ink, #5b3a1e); margin-bottom: 0.5rem; }
+  .cgl__text { display: block; font-weight: 500; font-size: clamp(1.1rem, 1.9vw, 1.45rem); line-height: 1.45; }
+  .cgl__text span { animation: cgl-ink 0.5s ease-out; }
+  @keyframes cgl-ink { from { opacity: 0; filter: blur(2px); } }
+  .cgl__sig { display: block; text-align: right; font-style: italic; font-weight: 600; font-size: 1.6em; margin-top: 0.4rem; }
+  .cgl__front { inset: 0; z-index: 2; background: linear-gradient(to top right, #e6d6b4 50%, transparent 50.2%) left / 50% 100% no-repeat, linear-gradient(to top left, #e6d6b4 50%, transparent 50.2%) right / 50% 100% no-repeat, linear-gradient(#e6d6b4, #e6d6b4) bottom / 100% 40% no-repeat; pointer-events: none; }
+  .cgl__addr { position: absolute; left: 0; right: 0; bottom: 12%; text-align: center; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(1.1rem, 2.2vw, 1.6rem); line-height: 1.3; color: #2a1d10; }
+  .cgl__addr i { font-weight: 400; font-size: 0.75em; color: #6a5236; }
+  .cgl__flap { top: 0; height: 58%; z-index: 3; background: linear-gradient(to bottom, #cdb88f, #d8c49c); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; transition: transform 0.6s cubic-bezier(0.5, 0, 0.3, 1), z-index 0s 0.3s; }
+  .cgl__env.is-open .cgl__flap { transform: rotateX(178deg); z-index: 0; }
+  .cgl__seal { left: 50% !important; right: auto !important; top: 58%; z-index: 4; width: clamp(3rem, 6vw, 4.2rem); aspect-ratio: 1; margin: -2.1rem 0 0 -2.1rem; border-radius: 47% 53% 50% 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 30%, #c8324a, #7a1626 60%, #4d0b16); box-shadow: 0 3px 8px #0006, inset 0 0 0 4px #7a1626; color: #ffd9d0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600; font-size: 1.8rem; transition: transform 0.4s, opacity 0.4s; }
+  .cgl__env.is-open .cgl__seal { transform: translateY(-1rem) rotate(-30deg) scale(0.6); opacity: 0; }
+  .cgl__env:hover .cgl__seal { transform: scale(1.06); }
+  .cgl__ctl { display: grid; gap: 1rem; }
+  .cgl__ctl label { display: grid; gap: 0.5rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .cgl__ctl textarea { font: italic 500 1.3rem/1.45 'Cormorant Garamond', serif; padding: 0.8rem; background: #fbf8f1; border: 1px solid var(--line); color: var(--fg); resize: vertical; outline: none; letter-spacing: 0; text-transform: none; }
+  .cgl__ctl textarea:focus { border-color: var(--ink, #5b3a1e); }
+  .cgl__ctl button { justify-self: start; padding: 0.6rem 1.1rem; border-radius: 100px; background: var(--ink, #5b3a1e); color: #fbf8f1; font: italic 500 1.15rem/1 'Cormorant Garamond', serif; }
+  @media (max-width: 900px) { .cgl { grid-template-columns: minmax(0, 1fr); } }
+</style>

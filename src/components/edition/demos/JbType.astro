@@ -1,0 +1,105 @@
+---
+// JetBrains Mono: a typing test on real-looking code, measured in words per minute.
+export interface Props { n: string }
+const { n } = Astro.props;
+const snippets = [
+  'const total = items.reduce((sum, x) => sum + x.price, 0);',
+  'if (user?.name !== undefined && user.age >= 18) return true;',
+  'for (let i = 0; i < 10; i++) console.log(i * i);',
+  'export default function add(a: number, b: number) { return a + b; }',
+  'const ok = list.filter((n) => n % 2 === 0).map((n) => n / 2);',
+];
+---
+<section class="ed-sec" data-jbt>
+  <div class="ed-kicker"><span>{n}</span> Race the cursor</div>
+  <h2 class="ed-h2">How fast can you type<br /><em>actual code</em>?</h2>
+  <div class="ed-body jbt">
+    <div class="jbt__box" data-jbt-box tabindex="0" aria-label="Typing test. Focus here and start typing the code shown.">
+      <p class="jbt__line" data-jbt-line aria-hidden="true"></p>
+      <input class="jbt__in" data-jbt-in autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Type the code" />
+      <p class="jbt__hint" data-jbt-hint>Click here, then start typing. Ligatures stay on: watch => and !== fuse as you finish them.</p>
+    </div>
+    <dl class="jbt__stats">
+      <div><dt>wpm</dt><dd data-jbt-wpm>0</dd></div>
+      <div><dt>accuracy</dt><dd data-jbt-acc>100%</dd></div>
+      <div><dt>best wpm</dt><dd data-jbt-best>—</dd></div>
+      <div><button type="button" data-jbt-next>New line →</button></div>
+    </dl>
+  </div>
+  <script type="application/json" data-jbt-data set:html={JSON.stringify(snippets)} />
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-jbt]').forEach((root) => {
+    const S: string[] = JSON.parse(root.querySelector('[data-jbt-data]')!.textContent!);
+    const box = root.querySelector<HTMLElement>('[data-jbt-box]')!, line = root.querySelector<HTMLElement>('[data-jbt-line]')!, inp = root.querySelector<HTMLInputElement>('[data-jbt-in]')!;
+    const o = (k: string) => root.querySelector<HTMLElement>(`[data-jbt-${k}]`)!;
+    let si = 0, t0 = 0, errs = 0, typed = 0, best = 0;
+    try { best = +(localStorage.getItem('jbt-best') || 0); } catch {}
+    if (best) o('best').textContent = String(best);
+    const esc = (c: string) => c.replace(/[&<>]/g, (x) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[x]!);
+    const render = () => {
+      const target = S[si], v = inp.value;
+      // typed part: one span per word-run of correct chars so ligatures can form
+      let html = '', i = 0;
+      while (i < v.length && i < target.length) {
+        const ok = v[i] === target[i]; let j = i;
+        while (j < v.length && j < target.length && (v[j] === target[j]) === ok) j++;
+        html += `<span class="${ok ? 'ok' : 'bad'}">${esc(target.slice(i, j))}</span>`; i = j;
+      }
+      html += `<span class="cur">${esc(target[v.length] ?? ' ')}</span><span class="todo">${esc(target.slice(v.length + 1))}</span>`;
+      line.innerHTML = html;
+      const mins = t0 ? (performance.now() - t0) / 60000 : 0;
+      o('wpm').textContent = mins > 0.01 ? String(Math.round((v.length / 5) / mins)) : '0';
+      o('acc').textContent = typed ? `${Math.round(((typed - errs) / typed) * 100)}%` : '100%';
+    };
+    const finish = () => {
+      const wpm = +o('wpm').textContent!; box.classList.remove('is-done'); void box.offsetWidth; box.classList.add('is-done');
+      if (wpm > best && o('acc').textContent !== '0%') { best = wpm; o('best').textContent = String(best); try { localStorage.setItem('jbt-best', String(best)); } catch {} }
+      setTimeout(() => next(), 900);
+    };
+    const next = () => { si = (si + 1) % S.length; inp.value = ''; t0 = 0; errs = 0; typed = 0; render(); };
+    inp.addEventListener('input', () => {
+      const v = inp.value, target = S[si];
+      if (!t0 && v.length) t0 = performance.now();
+      if (v.length > target.length) inp.value = v.slice(0, target.length);
+      const last = inp.value.length - 1;
+      if (last >= 0 && (inp as any)._len !== undefined && inp.value.length > (inp as any)._len) { typed++; if (inp.value[last] !== target[last]) errs++; }
+      (inp as any)._len = inp.value.length;
+      o('hint').classList.add('is-gone');
+      render();
+      if (inp.value === target) finish();
+    });
+    (inp as any)._len = 0;
+    // keep keys away from the page-level J/K shortcut while typing
+    inp.addEventListener('keydown', (e) => e.stopPropagation());
+    box.addEventListener('click', () => inp.focus());
+    box.addEventListener('focus', () => inp.focus());
+    inp.addEventListener('focus', () => box.classList.add('is-focus')); inp.addEventListener('blur', () => box.classList.remove('is-focus'));
+    o('next').addEventListener('click', () => { next(); inp.focus(); });
+    render();
+  });
+</script>
+
+<style is:global>
+  .jbt { display: grid; gap: 1.2rem; }
+  .jbt__box { position: relative; padding: clamp(1.6rem, 4vw, 3.4rem) clamp(1rem, 3vw, 2.6rem); background: #0a0c10; border: 1px solid var(--line); border-radius: 12px; cursor: text; outline: none; transition: box-shadow 0.25s; }
+  .jbt__box.is-focus { box-shadow: 0 0 0 2px var(--green, #5ecfb1), 0 30px 60px -40px #5ecfb188; }
+  .jbt__box.is-done { animation: jbt-done 0.9s var(--ease); }
+  @keyframes jbt-done { 20% { box-shadow: 0 0 0 4px #ffcf6b, 0 0 60px #ffcf6b66; } }
+  .jbt__line { font-family: 'JetBrains Mono Variable', monospace; font-size: clamp(0.9rem, 1.9vw, 1.7rem); line-height: 1.6; white-space: pre-wrap; word-break: break-all; font-variation-settings: 'wght' 450; }
+  .jbt__line .ok { color: var(--green, #5ecfb1); font-variation-settings: 'wght' 650; }
+  .jbt__line .bad { color: #0a0c10; background: #ff7ab6; border-radius: 2px; }
+  .jbt__line .cur { color: #0a0c10; background: #ffcf6b; border-radius: 2px; animation: jbt-blink 1s steps(2, jump-none) infinite; }
+  .jbt__line .todo { color: #4b5568; }
+  @keyframes jbt-blink { 50% { background: transparent; color: #ffcf6b; } }
+  .jbt__in { position: absolute; opacity: 0; left: 0; top: 0; width: 1px; height: 1px; }
+  .jbt__hint { margin-top: 1.2rem; font: 400 0.74rem/1.5 var(--font-mono); color: var(--fg-3); transition: opacity 0.4s; }
+  .jbt__hint.is-gone { opacity: 0; }
+  .jbt__stats { display: flex; align-items: flex-end; gap: clamp(1.4rem, 4vw, 3rem); flex-wrap: wrap; }
+  .jbt__stats dt { font: 400 0.68rem/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .jbt__stats dd { font-family: 'JetBrains Mono Variable', monospace; font-variation-settings: 'wght' 200; font-size: clamp(2rem, 4.4vw, 3.6rem); line-height: 1; color: var(--green, #5ecfb1); }
+  .jbt__stats div:last-child { margin-left: auto; }
+  .jbt__stats button { padding: 0.7rem 1.1rem; border: 1px solid var(--line); border-radius: 8px; font: 400 0.8rem/1 'JetBrains Mono Variable', monospace; color: var(--fg-2); }
+  .jbt__stats button:hover { border-color: var(--green, #5ecfb1); color: var(--green, #5ecfb1); }
+</style>

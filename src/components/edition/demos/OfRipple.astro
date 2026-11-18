@@ -1,0 +1,65 @@
+---
+// Outfit: a pond of letters; clicks send rings of weight outward.
+export interface Props { n: string }
+const { n } = Astro.props;
+---
+<section class="ed-sec" data-ofr>
+  <div class="ed-kicker"><span>{n}</span> Ripples</div>
+  <h2 class="ed-h2">Drop a stone<br />in a pond <em>of letters</em>.</h2>
+  <div class="ed-body ofr">
+    <div class="ofr__pond" data-ofr-pond aria-label="Click or tap the grid to send ripples of weight"></div>
+    <div class="ofr__ctl">
+      <button type="button" class="ofr__btn" data-ofr-rain aria-pressed="false">Make it rain</button>
+      <span class="ed-cap">Click anywhere in the grid. Each ring is a wave of weight travelling through 100 to 900 and back.</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ofr]').forEach((root) => {
+    const pond = root.querySelector<HTMLElement>('[data-ofr-pond]')!;
+    const TEXT = 'OUTFIT';
+    let cells: HTMLElement[] = [], cols = 0, rows = 0, cw = 0, ch = 0;
+    const build = () => {
+      const W = pond.clientWidth, H = pond.clientHeight; cw = W < 600 ? 34 : 46; ch = cw * 1.15;
+      cols = Math.floor(W / cw); rows = Math.floor(H / ch);
+      pond.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      pond.innerHTML = Array.from({ length: cols * rows }, (_, i) => `<span>${TEXT[(i % cols + Math.floor(i / cols)) % TEXT.length]}</span>`).join('');
+      cells = Array.from(pond.children) as HTMLElement[];
+      cw = W / cols; ch = H / rows;
+    };
+    type Wave = { x: number; y: number; t0: number };
+    const waves: Wave[] = [];
+    const add = (x: number, y: number) => { waves.push({ x, y, t0: performance.now() }); if (waves.length > 12) waves.shift(); };
+    pond.addEventListener('pointerdown', (e) => { const r = pond.getBoundingClientRect(); add(e.clientX - r.left, e.clientY - r.top); });
+    const rainBtn = root.querySelector<HTMLButtonElement>('[data-ofr-rain]')!;
+    let rain = false; rainBtn.addEventListener('click', () => { rain = !rain; rainBtn.setAttribute('aria-pressed', String(rain)); rainBtn.textContent = rain ? 'Stop the rain' : 'Make it rain'; });
+    let on = false, lastRain = 0; new IntersectionObserver((es) => { on = es[0].isIntersecting; if (on && !waves.length) add(pond.clientWidth / 2, pond.clientHeight / 2); }, { threshold: 0.3 }).observe(pond);
+    const SPEED = 0.45, WIDTH = 70, LIFE = 3200;
+    const tick = (now: number) => {
+      requestAnimationFrame(tick); if (!on || !cells.length) return;
+      if (rain && now - lastRain > 380) { lastRain = now; add(Math.random() * pond.clientWidth, Math.random() * pond.clientHeight); }
+      while (waves.length && now - waves[0].t0 > LIFE) waves.shift();
+      for (let i = 0; i < cells.length; i++) {
+        const cx = (i % cols + 0.5) * cw, cy = (Math.floor(i / cols) + 0.5) * ch;
+        let h = 0;
+        for (const wv of waves) { const age = now - wv.t0, r = age * SPEED, d = Math.abs(Math.hypot(cx - wv.x, cy - wv.y) - r); if (d < WIDTH) h += (1 - d / WIDTH) * (1 - age / LIFE); }
+        h = Math.min(1, h);
+        const el = cells[i];
+        el.style.fontVariationSettings = `'wght' ${Math.round(100 + h * 800)}`;
+        el.style.transform = `translateY(${(-h * 8).toFixed(1)}px)`;
+        el.style.color = h > 0.55 ? 'var(--accent)' : '';
+      }
+    };
+    build(); window.addEventListener('resize', build); requestAnimationFrame(tick);
+  });
+</script>
+
+<style is:global>
+  .ofr { display: grid; gap: 1rem; }
+  .ofr__pond { display: grid; height: clamp(18rem, 40vw, 30rem); padding: 0.4rem; border-radius: 28px; background: var(--bg-2); border: 1px solid var(--line); overflow: hidden; cursor: crosshair; touch-action: manipulation; user-select: none; font-family: 'Outfit Variable', sans-serif; }
+  .ofr__pond span { display: grid; place-items: center; font-size: clamp(1.4rem, 2.6vw, 2.2rem); line-height: 1; color: var(--fg-3); font-variation-settings: 'wght' 100; will-change: transform; }
+  .ofr__ctl { display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; }
+  .ofr__btn { padding: 0.75rem 1.2rem; border-radius: 100px; background: var(--fg); color: var(--bg); font: 400 0.95rem/1 'Outfit Variable', sans-serif; font-variation-settings: 'wght' 600; }
+  .ofr__btn[aria-pressed='true'] { background: var(--accent); }
+</style>
