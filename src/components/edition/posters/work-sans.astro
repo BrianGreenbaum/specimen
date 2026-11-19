@@ -1,0 +1,36 @@
+---
+// Work Sans posters: an office notice, a coworking ad, the weight range.
+---
+<figure class="pw-p" id="work-sans-notice" data-name="Notice">
+  <div class="pw-art wsp-a">
+    <p class="wsp-a__k">Kitchen notice</p>
+    <p class="wsp-a__h">Your mug<br />misses<br />you.</p>
+    <p class="wsp-a__s">Please wash it. It has been in the sink since Tuesday and it is starting to have feelings.</p>
+    <p class="wsp-a__f">— Management</p>
+  </div>
+</figure>
+<figure class="pw-p" id="work-sans-desk" data-name="Desk">
+  <div class="pw-art wsp-b">
+    <p class="wsp-b__h">A desk.<br />A window.<br /><em>Good coffee.</em></p>
+    <p class="wsp-b__s">Coworking on the third floor. Day passes from 15.</p>
+  </div>
+</figure>
+<figure class="pw-p" id="work-sans-range" data-name="Range">
+  <div class="pw-art wsp-c">
+    {[100, 300, 500, 700, 900].map((w) => <p style={`font-variation-settings:'wght' ${w}`}>Work</p>)}
+  </div>
+</figure>
+<style>
+  .wsp-a { background: #fff; color: #1c1d1f; font-family: 'Work Sans Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; box-shadow: inset 0 3cqi 0 #2456a6; }
+  .wsp-a__k { font-size: 3.6cqi; letter-spacing: 0.14em; text-transform: uppercase; font-variation-settings: 'wght' 700; color: #2456a6; margin-top: 2cqi; }
+  .wsp-a__h { margin-top: 6cqi; font-size: 19cqi; line-height: 0.9; letter-spacing: -0.04em; font-variation-settings: 'wght' 800; }
+  .wsp-a__s { margin-top: auto; font-size: 4.8cqi; line-height: 1.4; font-variation-settings: 'wght' 350; }
+  .wsp-a__f { margin-top: 3cqi; font-size: 4.4cqi; font-style: italic; font-variation-settings: 'wght' 500; }
+  .wsp-b { background: #2456a6; color: #fff; font-family: 'Work Sans Variable', sans-serif; padding: 9cqi 8cqi; display: flex; flex-direction: column; }
+  .wsp-b__h { font-size: 15cqi; line-height: 0.98; letter-spacing: -0.04em; font-variation-settings: 'wght' 300; }
+  .wsp-b__h em { font-variation-settings: 'wght' 800; color: #ffd36a; }
+  .wsp-b__s { margin-top: auto; font-size: 4.6cqi; line-height: 1.35; font-variation-settings: 'wght' 400; }
+  .wsp-c { background: #f5f4f2; color: #1c1d1f; font-family: 'Work Sans Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .wsp-c p { font-size: 27cqi; line-height: 0.88; letter-spacing: -0.04em; }
+  .wsp-c p:nth-child(3) { color: #2456a6; }
+</style>

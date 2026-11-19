@@ -1,0 +1,41 @@
+---
+// Spectral posters: a literary review, an essay first page, a ghost story.
+---
+<figure class="pw-p" id="spectral-review" data-name="Review">
+  <div class="pw-art spp-a">
+    <p class="spp-a__k">The Quarterly Review · Autumn</p>
+    <p class="spp-a__h">On Reading<br /><em>Slowly</em></p>
+    <ul>{['The art of the margin note', 'Why we reread', 'A defence of long sentences', 'Letters to a young translator'].map((t) => <li>{t}</li>)}</ul>
+  </div>
+</figure>
+<figure class="pw-p" id="spectral-essay" data-name="Essay">
+  <div class="pw-art spp-b">
+    <p class="spp-b__n">I.</p>
+    <p class="spp-b__t"><span>T</span>here is a particular silence that settles over a room when someone in it is reading well. It is not the silence of absence but of attention, the sound of a mind leaning forward.</p>
+    <p class="spp-b__f">From <em>The Attentive Room</em>, an essay in four parts</p>
+  </div>
+</figure>
+<figure class="pw-p" id="spectral-ghost" data-name="Ghost story">
+  <div class="pw-art spp-c">
+    <p class="spp-c__h">Spectral</p>
+    <p class="spp-c__s"><em>a ghost story,</em><br />set in light</p>
+  </div>
+</figure>
+<style>
+  .spp-a { background: #f5f2ea; color: #191813; font-family: 'Spectral', serif; padding: 9cqi 8cqi; display: flex; flex-direction: column; }
+  .spp-a__k { font-size: 3.2cqi; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; color: #2f5d4f; }
+  .spp-a__h { margin-top: 8cqi; font-size: 16cqi; line-height: 0.95; font-weight: 300; letter-spacing: -0.02em; }
+  .spp-a__h em { font-style: italic; font-weight: 400; color: #2f5d4f; }
+  .spp-a ul { margin-top: auto; list-style: none; padding: 0; display: grid; gap: 2.4cqi; border-top: 0.3cqi solid #191813; padding-top: 4cqi; }
+  .spp-a li { font-size: 5cqi; font-weight: 400; } .spp-a li:nth-child(odd) { font-style: italic; }
+  .spp-b { background: #fff; color: #191813; font-family: 'Spectral', serif; padding: 12cqi 10cqi; }
+  .spp-b__n { font-size: 6cqi; font-weight: 600; color: #2f5d4f; margin-bottom: 6cqi; }
+  .spp-b__t { font-size: 6cqi; line-height: 1.55; font-weight: 300; }
+  .spp-b__t span { float: left; font-size: 25cqi; line-height: 0.8; font-weight: 600; margin: 1cqi 2cqi 0 0; color: #2f5d4f; }
+  .spp-b__f { position: absolute; left: 10cqi; right: 10cqi; bottom: 9cqi; font-size: 3.6cqi; color: #6a6a60; border-top: 0.3cqi solid #19181322; padding-top: 3cqi; }
+  .spp-b__f em { font-style: italic; }
+  .spp-c { background: #121512; color: #f5f2ea; font-family: 'Spectral', serif; display: grid; place-content: center; text-align: center; }
+  .spp-c__h { font-size: 26cqi; line-height: 1; font-weight: 300; letter-spacing: -0.02em; color: transparent; text-shadow: 0 0 1.4cqi #e8f5ef, 0 0 6cqi #8fe0c088; }
+  .spp-c__s { margin-top: 6cqi; font-size: 6cqi; line-height: 1.3; font-weight: 300; }
+  .spp-c__s em { font-style: italic; font-weight: 400; color: #8fe0c0; }
+</style>

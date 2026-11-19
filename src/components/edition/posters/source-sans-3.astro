@@ -1,0 +1,39 @@
+---
+// Source Sans 3 posters: a metro map key, a park sign, the weight ladder.
+---
+<figure class="pw-p" id="source-sans-3-metro" data-name="Metro">
+  <div class="pw-art sp3-a">
+    <p class="sp3-a__h">Metro</p>
+    {[['1', 'Harbour — Old Town', '#e4002b'], ['2', 'University — Airport', '#0072ce'], ['3', 'Market — Stadium', '#00a651'], ['4', 'Riverside Circle', '#ffb81c']].map(([n, t, c]) => <p class="sp3-a__l"><b style={`background:${c}`}>{n}</b>{t}</p>)}
+    <p class="sp3-a__f">Trains every 4 minutes · 05:30 — 00:30</p>
+  </div>
+</figure>
+<figure class="pw-p" id="source-sans-3-park" data-name="Park">
+  <div class="pw-art sp3-b">
+    <p class="sp3-b__k">Welcome to</p>
+    <p class="sp3-b__h">Linden<br />Park</p>
+    <div class="sp3-b__r">{[['↑', 'Lake', '400 m'], ['→', 'Playground', '150 m'], ['←', 'Café & toilets', '80 m']].map(([a, t, d]) => <p><b>{a}</b><span>{t}</span><i>{d}</i></p>)}</div>
+  </div>
+</figure>
+<figure class="pw-p" id="source-sans-3-ladder" data-name="Ladder">
+  <div class="pw-art sp3-c">
+    {[200, 300, 400, 500, 600, 700, 800, 900].map((w) => <p style={`font-variation-settings:'wght' ${w}`}><span>{w}</span>Source</p>)}
+  </div>
+</figure>
+<style>
+  .sp3-a { background: #fff; color: #0e1114; font-family: 'Source Sans 3 Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; gap: 4cqi; }
+  .sp3-a__h { font-size: 22cqi; line-height: 0.9; letter-spacing: -0.03em; font-variation-settings: 'wght' 900; margin-bottom: 4cqi; }
+  .sp3-a__l { display: flex; align-items: center; gap: 4cqi; font-size: 5.6cqi; font-variation-settings: 'wght' 600; }
+  .sp3-a__l b { flex: none; display: grid; place-items: center; width: 11cqi; height: 11cqi; border-radius: 50%; color: #fff; font-weight: 400; font-size: 6.4cqi; font-variation-settings: 'wght' 900; }
+  .sp3-a__f { margin-top: auto; font-size: 3.6cqi; font-variation-settings: 'wght' 400; color: #555; }
+  .sp3-b { background: #24543b; color: #f2efe1; font-family: 'Source Sans 3 Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; box-shadow: inset 0 0 0 3cqi #24543b, inset 0 0 0 3.6cqi #f2efe1; }
+  .sp3-b__k { font-size: 5cqi; font-variation-settings: 'wght' 400; }
+  .sp3-b__h { font-size: 23cqi; line-height: 0.88; letter-spacing: -0.03em; font-variation-settings: 'wght' 800; }
+  .sp3-b__r { margin-top: auto; display: grid; gap: 3cqi; }
+  .sp3-b__r p { display: grid; grid-template-columns: 10cqi 1fr auto; align-items: center; gap: 3cqi; font-size: 6cqi; font-variation-settings: 'wght' 600; border-top: 0.4cqi solid #f2efe155; padding-top: 3cqi; }
+  .sp3-b__r b { font-weight: 400; font-size: 8cqi; font-variation-settings: 'wght' 900; color: #f7d64a; }
+  .sp3-b__r i { font-style: normal; font-variation-settings: 'wght' 300; }
+  .sp3-c { background: #1f7a6b; color: #fff; font-family: 'Source Sans 3 Variable', sans-serif; display: grid; align-content: center; padding: 0 8cqi; }
+  .sp3-c p { position: relative; font-size: 16.5cqi; line-height: 0.88; letter-spacing: -0.03em; }
+  .sp3-c span { position: absolute; right: 0; top: 2cqi; font-size: 2.4cqi; letter-spacing: 0; font-variation-settings: 'wght' 500; opacity: 0.7; }
+</style>

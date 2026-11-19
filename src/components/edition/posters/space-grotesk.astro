@@ -1,0 +1,40 @@
+---
+// Space Grotesk posters: a launch countdown, a synth festival, glyph quirks.
+---
+<figure class="pw-p" id="space-grotesk-countdown" data-name="Countdown">
+  <div class="pw-art sg-a">
+    <p class="sg-a__n">T−10</p>
+    <p class="sg-a__h">We have<br />liftoff.</p>
+    <p class="sg-a__f">Space Grotesk · from Space Mono · Florian Karsten</p>
+  </div>
+</figure>
+<figure class="pw-p" id="space-grotesk-festival" data-name="Festival">
+  <div class="pw-art sg-b">
+    <span class="sg-b__grid" aria-hidden="true"></span>
+    <p class="sg-b__h">Analogue<br />Futures</p>
+    <p class="sg-b__l">Modular synths · Tape loops · Light shows</p>
+    <p class="sg-b__d">21.06 — 23.06</p>
+  </div>
+</figure>
+<figure class="pw-p" id="space-grotesk-quirks" data-name="Quirks">
+  <div class="pw-art sg-c">
+    <div class="sg-c__g">{['G', 'R', 'a', 'y', 'Q', '&', '@', 'j', 't'].map((c) => <span>{c}</span>)}</div>
+    <p class="sg-c__f">Nine quirks worth a closer look</p>
+  </div>
+</figure>
+<style>
+  .sg-a { background: #0b0d12; color: #e8ffef; font-family: 'Space Grotesk Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; }
+  .sg-a__n { font-size: 36cqi; line-height: 0.9; letter-spacing: -0.04em; font-variation-settings: 'wght' 700; color: #3bff8a; }
+  .sg-a__h { margin-top: auto; font-size: 15cqi; line-height: 0.95; letter-spacing: -0.03em; font-variation-settings: 'wght' 300; }
+  .sg-a__f { margin-top: 5cqi; font-size: 3cqi; font-variation-settings: 'wght' 400; opacity: 0.6; }
+  .sg-b { background: #ff5b2e; color: #0b0d12; font-family: 'Space Grotesk Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; }
+  .sg-b__grid { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: repeating-linear-gradient(90deg, #0b0d1222 0 0.3cqi, transparent 0.3cqi 8cqi), repeating-linear-gradient(#0b0d1222 0 0.3cqi, transparent 0.3cqi 8cqi); transform: perspective(60cqi) rotateX(55deg); transform-origin: bottom; }
+  .sg-b__h { position: relative; font-size: 18cqi; line-height: 0.88; letter-spacing: -0.04em; font-variation-settings: 'wght' 700; }
+  .sg-b__l { position: relative; margin-top: 4cqi; font-size: 4.4cqi; font-variation-settings: 'wght' 500; }
+  .sg-b__d { position: relative; margin-top: auto; font-size: 13cqi; line-height: 1; font-variation-settings: 'wght' 300; color: #fff; }
+  .sg-c { background: #e8ffef; color: #0b0d12; font-family: 'Space Grotesk Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; }
+  .sg-c__g { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; text-align: center; }
+  .sg-c__g span { font-size: 22cqi; line-height: 1.2; font-variation-settings: 'wght' 500; border: 0.3cqi solid #0b0d1222; border-radius: 2cqi; }
+  .sg-c__g span:nth-child(odd) { background: #0b0d12; color: #3bff8a; }
+  .sg-c__f { margin-top: auto; font-size: 4cqi; font-variation-settings: 'wght' 500; }
+</style>

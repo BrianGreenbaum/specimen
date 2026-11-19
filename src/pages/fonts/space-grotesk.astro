@@ -2,6 +2,7 @@
 // SPACE GROTESK — new edition. Orbit: a solar system of type, a boarding
 // pass, a synth and a mission patch. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -107,15 +108,16 @@ const knobs = [{ k: 'Cutoff', v: 64 }, { k: 'Reso', v: 28 }, { k: 'Attack', v: 1
         </div>
       </section>
 
+      <PosterWall slug="space-grotesk" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Transmit <em>something</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Space Grotesk Variable" sample="Ground control" axes={[{ tag: 'wght', name: 'Weight', min: 300, max: 700 }]}
             presets={[{ name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }]} start={3} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} />
+      <EditionTail entry={entry} from={7} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

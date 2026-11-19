@@ -1,0 +1,31 @@
+---
+// Unbounded posters: a crypto-free web3 joke, an expo, the stretched weights.
+---
+<figure class="pw-p" id="unbounded-expo" data-name="Expo">
+  <div class="pw-art ub-a">
+    <span class="ub-a__o" aria-hidden="true"></span>
+    <p class="ub-a__h">EXPO<br />∞</p>
+    <p class="ub-a__f">The future, rounded up</p>
+  </div>
+</figure>
+<figure class="pw-p" id="unbounded-wide" data-name="Wide">
+  <div class="pw-art ub-b">
+    <p>wide</p><p>open</p><p>space</p>
+  </div>
+</figure>
+<figure class="pw-p" id="unbounded-weights" data-name="Weights">
+  <div class="pw-art ub-c">
+    {[200, 400, 600, 800, 900].map((w) => <p style={`font-variation-settings:'wght' ${w}`}>Bold</p>)}
+  </div>
+</figure>
+<style>
+  .ub-a { background: #0d0d2b; color: #fff; font-family: 'Unbounded Variable', sans-serif; display: grid; place-content: center; text-align: center; }
+  .ub-a__o { position: absolute; left: 50%; top: 46%; width: 86cqi; height: 86cqi; translate: -50% -50%; border-radius: 50%; background: conic-gradient(#ff5ca8, #7a5cff, #2ee6d6, #ff5ca8); filter: blur(4cqi); opacity: 0.8; }
+  .ub-a__h { position: relative; font-size: 24cqi; line-height: 1; font-variation-settings: 'wght' 900; }
+  .ub-a__f { position: absolute; left: 0; right: 0; bottom: 8cqi; font-size: 3.6cqi; font-variation-settings: 'wght' 400; }
+  .ub-b { background: #2ee6d6; color: #0d0d2b; font-family: 'Unbounded Variable', sans-serif; display: grid; align-content: center; padding: 0 6cqi; }
+  .ub-b p { font-size: 24cqi; line-height: 1; letter-spacing: -0.03em; font-variation-settings: 'wght' 800; }
+  .ub-b p:nth-child(2) { font-variation-settings: 'wght' 200; text-align: right; }
+  .ub-c { background: #ff5ca8; color: #fff; font-family: 'Unbounded Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .ub-c p { font-size: 22cqi; line-height: 1.05; letter-spacing: -0.03em; }
+</style>
