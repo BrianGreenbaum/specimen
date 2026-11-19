@@ -1,0 +1,314 @@
+---
+// DM SANS — new edition. The product interface: a to-do list you can drag,
+// a settings panel, an optical-size lens and a pricing page. All new examples.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('dm-sans');
+const todos = [
+  { t: 'Ship the onboarding flow', tag: 'Design', done: false },
+  { t: 'Reply to Priya about the launch date', tag: 'Email', done: false },
+  { t: 'Pick a typeface for the new app', tag: 'Design', done: true },
+  { t: 'Book a room for Thursday’s review', tag: 'Admin', done: false },
+  { t: 'Water the office plants', tag: 'Life', done: false },
+];
+---
+<Layout title="DM Sans — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="DM Sans" showToggle={false} />
+  <div class="ed dm" data-dm>
+    <header class="ed-hero dm-hero" data-hero>
+      <div class="ed-hero__top"><span>DM Sans · {font.designer} · {font.year}</span><span>Weight 100 to 1000 · optical size 9 to 40</span></div>
+      <h1 class="ed-hero__word dm-hero__word" aria-label="DM Sans">{[...'DM Sans'].map((c) => c === ' ' ? <span class="dm-hero__sp" aria-hidden="true"> </span> : <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A low-contrast geometric sans for <em>interfaces that feel friendly</em>.
+          <span class="ed-hero__hint" data-fine>Left to right is weight. Top to bottom is optical size. Click to press every key at once.</span>
+          <span class="ed-hero__hint" data-coarse>Drag sideways for weight, up and down for optical size.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>wght</dt><dd data-hud="w">400</dd></div><div><dt>opsz</dt><dd data-hud="o">14</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-todo>
+        <div class="ed-kicker"><span>01</span> Today</div>
+        <h2 class="ed-h2">Drag it. Check it.<br /><em>Done.</em></h2>
+        <div class="ed-body dm-todo">
+          <div class="dm-app">
+            <div class="dm-app__bar"><i></i><i></i><i></i><span>Tasks</span></div>
+            <div class="dm-app__head"><p class="dm-app__day">Thursday</p><p class="dm-app__count"><b data-todo-n>4</b> left</p></div>
+            <ul class="dm-list" data-list>
+              {todos.map((d) => (
+                <li class={`dm-item${d.done ? ' is-done' : ''}`} draggable="true">
+                  <span class="dm-item__grip" aria-hidden="true">⋮⋮</span>
+                  <button type="button" class="dm-item__check" aria-label="Complete" aria-pressed={d.done ? 'true' : 'false'}></button>
+                  <span class="dm-item__t">{d.t}</span><span class="dm-item__tag">{d.tag}</span>
+                </li>
+              ))}
+            </ul>
+            <form class="dm-add" data-add><input type="text" placeholder="Add a task and press Enter" maxlength="48" data-add-in /></form>
+          </div>
+          <p class="ed-cap">Drag by the handle to reorder. Ticking a task drops its weight from 500 to 300 as it fades.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-set>
+        <div class="ed-kicker"><span>02</span> Preferences</div>
+        <h2 class="ed-h2">Every switch,<br /><em>live</em>.</h2>
+        <div class="ed-body dm-set">
+          <div class="dm-panel">
+            {[['bold', 'Bolder text', 'Raise the weight of everything'], ['large', 'Larger text', 'Bump the base size up a step'], ['compact', 'Compact mode', 'Tighten the spacing'], ['dark', 'Dark appearance', 'Easier on the eyes at night'], ['notify', 'Notifications', 'A badge on new messages']].map(([k, t, d], i) => (
+              <label class="dm-row"><span><b>{t}</b><small>{d}</small></span><input type="checkbox" role="switch" class="dm-sw" data-pref={k} checked={i === 4} /></label>
+            ))}
+          </div>
+          <div class="dm-phone" data-phone>
+            <div class="dm-phone__top"><span>9:41</span><span>●●● ▮</span></div>
+            <p class="dm-phone__h">Messages <i class="dm-badge" data-badge>3</i></p>
+            {[['Alex Moreno', 'Running ten minutes late, save me a seat', '9:12'], ['Design team', 'New mockups are in the shared folder', '8:47'], ['Mum', 'Did you eat breakfast?', '7:30'], ['Sam', 'Ha! Sending the photo now', 'Yesterday']].map(([n, m, t]) => (
+              <div class="dm-msg"><span class="dm-msg__av">{n[0]}</span><span class="dm-msg__b"><b>{n}</b><span>{m}</span></span><time>{t}</time></div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-opsz>
+        <div class="ed-kicker"><span>03</span> Optical size</div>
+        <h2 class="ed-h2">Small text is not<br />big text, <em>shrunk</em>.</h2>
+        <div class="ed-body dm-op">
+          <div class="dm-op__stage">
+            <p class="dm-op__word dm-op__word--ghost" aria-hidden="true" data-op-ghost>Rag</p>
+            <p class="dm-op__word" data-op-word>Rag</p>
+          </div>
+          <div class="dm-op__ctl">
+            <label class="ed-slider"><span>Optical size <b data-op-v>9</b></span><input type="range" min="9" max="40" value="9" step="0.5" data-op-in /></label>
+            <label class="dm-op__cmp"><input type="checkbox" checked data-op-cmp /> Overlay optical size 40 in red</label>
+            <p class="ed-cap">At size 9 the letters open up, the spacing loosens and the x-height grows, so captions survive at tiny sizes. At 40 everything tightens for headlines.</p>
+            <div class="dm-op__tiny" data-op-tiny>
+              <p style="font-variation-settings:'opsz' 9"><b>opsz 9</b> Terms apply. Offer ends 31 December. Free returns within 30 days.</p>
+              <p style="font-variation-settings:'opsz' 40"><b>opsz 40</b> Terms apply. Offer ends 31 December. Free returns within 30 days.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-price>
+        <div class="ed-kicker"><span>04</span> Pricing</div>
+        <h2 class="ed-h2">Numbers that <em>sell</em>.</h2>
+        <div class="ed-body dm-price">
+          <div class="dm-price__ctl">
+            <div class="dm-price__bill" role="radiogroup" aria-label="Billing"><button type="button" role="radio" aria-checked="false" data-bill="m">Monthly</button><button type="button" role="radio" aria-checked="true" data-bill="y">Yearly <i>−20%</i></button></div>
+            <label class="ed-slider"><span>Team size <b data-seats-v>8</b> people</span><input type="range" min="1" max="60" value="8" data-seats /></label>
+          </div>
+          <div class="dm-tiers">
+            {[['Starter', 6, ['Unlimited tasks', '3 projects', 'Email support']], ['Team', 12, ['Everything in Starter', 'Unlimited projects', 'Shared calendars', 'Priority support']], ['Business', 24, ['Everything in Team', 'Single sign-on', 'Audit log', 'A real human, on call']]].map(([n, p, f], i) => (
+              <article class={`dm-tier${i === 1 ? ' is-pop' : ''}`} data-tier={p}>
+                {i === 1 && <span class="dm-tier__pop">Most popular</span>}
+                <p class="dm-tier__n">{n}</p>
+                <p class="dm-tier__p"><span class="dm-tier__cur">$</span><b data-amt>0</b><span class="dm-tier__per">/mo</span></p>
+                <p class="dm-tier__sub" data-sub></p>
+                <ul>{(f as string[]).map((x) => <li>{x}</li>)}</ul>
+                <button type="button" class="dm-tier__cta">Choose {n}</button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the button</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="DM Sans Variable" sample="Get started for free" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 1000 }, { tag: 'opsz', name: 'Optical size', min: 9, max: 40, step: 0.5 }]}
+            presets={[{ name: 'Caption', v: [400, 9] }, { name: 'Body', v: [400, 14] }, { name: 'Button', v: [600, 14] }, { name: 'Headline', v: [800, 40] }, { name: 'Black', v: [1000, 40] }, { name: 'Italic', v: [300, 40], italic: true }]} start={3} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp, near } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-dm]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // ---------- Hero ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const ls = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    let press = 0; hero.addEventListener('click', () => (press = 1));
+    runHero(hero, (f) => {
+      const px = f.live ? f.px : 0.5 + Math.sin(f.t * 0.4) * 0.4, py = f.live ? f.py : 0.5 + Math.cos(f.t * 0.3) * 0.4;
+      press *= 0.9;
+      const w = 100 + px * 900, o = 9 + (1 - py) * 31;
+      ls.forEach((l, i) => {
+        const k = near(i, px * (ls.length - 1), 1.3);
+        const ww = clamp(w + k * 200, 100, 1000);
+        l.style.fontVariationSettings = `'wght' ${ww.toFixed(0)}, 'opsz' ${o.toFixed(1)}`;
+        l.style.transform = `translateY(${(k * -0.04 + press * 0.06).toFixed(3)}em) scale(${1 - press * 0.06})`;
+        l.style.setProperty('--dm-k', k.toFixed(2));
+      });
+      hero.querySelector('[data-hud="w"]')!.textContent = String(Math.round(w)); hero.querySelector('[data-hud="o"]')!.textContent = o.toFixed(0);
+    });
+
+    // ---------- To-do ----------
+    const td = page.querySelector<HTMLElement>('[data-todo]')!, list = td.querySelector<HTMLElement>('[data-list]')!;
+    const count = () => (td.querySelector('[data-todo-n]')!.textContent = String(list.querySelectorAll('.dm-item:not(.is-done)').length));
+    const wire = (li: HTMLElement) => {
+      const c = li.querySelector<HTMLElement>('.dm-item__check')!;
+      c.addEventListener('click', () => { const d = li.classList.toggle('is-done'); c.setAttribute('aria-pressed', String(d)); if (d) { li.classList.add('is-pop'); setTimeout(() => li.classList.remove('is-pop'), 500); } count(); });
+      li.addEventListener('dragstart', (e) => { li.classList.add('is-drag'); e.dataTransfer!.effectAllowed = 'move'; e.dataTransfer!.setData('text/plain', ''); });
+      li.addEventListener('dragend', () => li.classList.remove('is-drag'));
+    };
+    list.querySelectorAll<HTMLElement>('.dm-item').forEach(wire);
+    list.addEventListener('dragover', (e) => {
+      e.preventDefault(); const drag = list.querySelector<HTMLElement>('.is-drag'); if (!drag) return;
+      const after = Array.from(list.querySelectorAll<HTMLElement>('.dm-item:not(.is-drag)')).find((el) => { const r = el.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
+      after ? list.insertBefore(drag, after) : list.appendChild(drag);
+    });
+    // pointer-based reorder for touch: hold the grip and move
+    list.addEventListener('pointerdown', (e) => {
+      const grip = (e.target as HTMLElement).closest('.dm-item__grip'); if (!grip || e.pointerType === 'mouse') return;
+      const li = grip.closest<HTMLElement>('.dm-item')!; li.classList.add('is-drag'); e.preventDefault();
+      const mv = (ev: PointerEvent) => { const after = Array.from(list.querySelectorAll<HTMLElement>('.dm-item:not(.is-drag)')).find((el) => { const r = el.getBoundingClientRect(); return ev.clientY < r.top + r.height / 2; }); after ? list.insertBefore(li, after) : list.appendChild(li); };
+      const up = () => { li.classList.remove('is-drag'); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+      window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+    });
+    const ain = td.querySelector<HTMLInputElement>('[data-add-in]')!; ain.addEventListener('keydown', (e) => e.stopPropagation());
+    td.querySelector('[data-add]')!.addEventListener('submit', (e) => {
+      e.preventDefault(); const v = ain.value.trim(); if (!v) return;
+      const li = document.createElement('li'); li.className = 'dm-item is-new'; li.draggable = true;
+      li.innerHTML = `<span class="dm-item__grip" aria-hidden="true">⋮⋮</span><button type="button" class="dm-item__check" aria-label="Complete" aria-pressed="false"></button><span class="dm-item__t"></span><span class="dm-item__tag">New</span>`;
+      li.querySelector('.dm-item__t')!.textContent = v; list.prepend(li); wire(li); ain.value = ''; count();
+    });
+    count();
+
+    // ---------- Settings ----------
+    const st = page.querySelector<HTMLElement>('[data-set]')!, phone = st.querySelector<HTMLElement>('[data-phone]')!;
+    st.querySelectorAll<HTMLInputElement>('[data-pref]').forEach((i) => { const go = () => phone.classList.toggle(`is-${i.dataset.pref}`, i.checked); i.addEventListener('change', go); go(); });
+
+    // ---------- Optical size ----------
+    const op = page.querySelector<HTMLElement>('[data-opsz]')!, oin = op.querySelector<HTMLInputElement>('[data-op-in]')!, word = op.querySelector<HTMLElement>('[data-op-word]')!, ghost = op.querySelector<HTMLElement>('[data-op-ghost]')!;
+    const po = () => { word.style.fontVariationSettings = `'wght' 500, 'opsz' ${oin.value}`; op.querySelector('[data-op-v]')!.textContent = oin.value; };
+    oin.addEventListener('input', po); po();
+    op.querySelector<HTMLInputElement>('[data-op-cmp]')!.addEventListener('change', (e) => (ghost.hidden = !(e.target as HTMLInputElement).checked));
+
+    // ---------- Pricing ----------
+    const pr = page.querySelector<HTMLElement>('[data-price]')!, seats = pr.querySelector<HTMLInputElement>('[data-seats]')!;
+    let yearly = true; const shown = new Map<HTMLElement, number>();
+    const tiers = Array.from(pr.querySelectorAll<HTMLElement>('[data-tier]'));
+    const paint = () => {
+      const n = +seats.value; pr.querySelector('[data-seats-v]')!.textContent = String(n);
+      tiers.forEach((t) => {
+        const unit = +t.dataset.tier! * (yearly ? 0.8 : 1), target = Math.round(unit * n), el = t.querySelector<HTMLElement>('[data-amt]')!;
+        t.querySelector('[data-sub]')!.textContent = `$${unit.toFixed(2).replace(/\.00$/, '')} per person · ${yearly ? `billed $${(target * 12).toLocaleString()} yearly` : 'billed monthly'}`;
+        const from = shown.get(el) ?? 0; shown.set(el, target); const t0 = performance.now();
+        const step = (now: number) => { const k = reduce ? 1 : Math.min(1, (now - t0) / 450), e = 1 - (1 - k) ** 3; el.textContent = Math.round(from + (target - from) * e).toLocaleString(); if (k < 1) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      });
+    };
+    const bills = Array.from(pr.querySelectorAll<HTMLElement>('[data-bill]'));
+    bills.forEach((b) => b.addEventListener('click', () => { yearly = b.dataset.bill === 'y'; bills.forEach((o) => o.setAttribute('aria-checked', String(o === b))); paint(); }));
+    seats.addEventListener('input', paint); paint();
+  }
+</script>
+
+<style is:global>
+  .dm { --ed-head: 'DM Sans Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 700, 'opsz' 40; --ed-em-vf: 'wght' 300, 'opsz' 40; --ed-lede-vf: 'wght' 500, 'opsz' 20; --ed-radius: 14px; }
+  .dm em { font-style: italic; } .dm .ed-h2 { letter-spacing: -0.04em; line-height: 0.95; }
+  .dm .ed-story__prose { font-family: 'DM Sans Variable', sans-serif; font-variation-settings: 'opsz' 14; }
+
+  .dm-hero { background: radial-gradient(50% 50% at 75% 30%, #d95d3922, transparent), radial-gradient(50% 50% at 20% 80%, #3f6fd922, transparent), var(--bg); }
+  .dm-hero__word { display: flex; font-family: 'DM Sans Variable', sans-serif; font-size: min(18vw, 44svh); line-height: 1; letter-spacing: -0.05em; }
+  .dm-hero__word [data-l] { display: inline-block; color: color-mix(in oklab, var(--fg), var(--accent) calc(var(--dm-k, 0) * 100%)); }
+  .dm-hero__sp { width: 0.22em; }
+
+  /* to-do */
+  .dm-todo { display: grid; gap: 1rem; justify-items: center; }
+  .dm-app { width: min(100%, 34rem); background: #fff; border-radius: 22px; box-shadow: 0 40px 80px -40px #1d1c1a55, 0 0 0 1px #1d1c1a12; padding: 0 0 1rem; overflow: hidden; font-family: 'DM Sans Variable', sans-serif; font-variation-settings: 'opsz' 14; }
+  .dm-app__bar { display: flex; gap: 6px; align-items: center; padding: 0.9rem 1.1rem; border-bottom: 1px solid #0000000d; }
+  .dm-app__bar i { width: 11px; height: 11px; border-radius: 50%; background: #e2dfd9; } .dm-app__bar span { margin-left: auto; font-size: 0.8rem; color: var(--fg-3); }
+  .dm-app__head { display: flex; justify-content: space-between; align-items: baseline; padding: 1.4rem 1.4rem 0.6rem; }
+  .dm-app__day { font-size: 2.2rem; font-variation-settings: 'wght' 800, 'opsz' 40; letter-spacing: -0.03em; }
+  .dm-app__count { color: var(--fg-3); } .dm-app__count b { color: var(--accent); font-weight: 400; font-variation-settings: 'wght' 700; }
+  .dm-list { list-style: none; padding: 0 0.6rem; }
+  .dm-item { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 0.8rem; padding: 0.8rem; border-radius: 12px; transition: background 0.2s, opacity 0.3s; }
+  .dm-item:hover { background: #f4f2ee; }
+  .dm-item.is-drag { opacity: 0.4; background: #d95d3914; }
+  .dm-item.is-new { animation: dm-in 0.4s var(--ease); } @keyframes dm-in { from { opacity: 0; transform: translateY(-8px); } }
+  .dm-item__grip { cursor: grab; color: #c9c4bb; letter-spacing: -0.3em; font-size: 0.9rem; touch-action: none; padding: 0.3rem 0.4rem 0.3rem 0; }
+  .dm-item__check { width: 1.4rem; height: 1.4rem; border-radius: 50%; border: 2px solid #c9c4bb; position: relative; transition: all 0.25s var(--ease); }
+  .dm-item.is-done .dm-item__check { background: var(--accent); border-color: var(--accent); }
+  .dm-item.is-done .dm-item__check::after { content: ''; position: absolute; left: 0.38rem; top: 0.14rem; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .dm-item.is-pop .dm-item__check { animation: dm-pop 0.45s var(--ease); } @keyframes dm-pop { 40% { transform: scale(1.35); } }
+  .dm-item__t { font-size: 1.05rem; font-variation-settings: 'wght' 500, 'opsz' 14; transition: color 0.3s, font-variation-settings 0.3s; position: relative; }
+  .dm-item.is-done .dm-item__t { color: #b5b0a7; font-variation-settings: 'wght' 300, 'opsz' 14; text-decoration: line-through; text-decoration-color: #d95d3988; }
+  .dm-item__tag { font-size: 0.72rem; font-variation-settings: 'wght' 600, 'opsz' 9; padding: 0.25rem 0.55rem; border-radius: 100px; background: #f4f2ee; color: var(--fg-2); }
+  .dm-add { padding: 0.6rem 1.4rem 0; }
+  .dm-add input { width: 100%; padding: 0.8rem 1rem; border-radius: 12px; border: 1.5px dashed #d6d1c8; background: none; font: inherit; font-size: 1rem; color: var(--fg); outline: none; }
+  .dm-add input:focus { border-color: var(--accent); border-style: solid; }
+
+  /* settings */
+  .dm-set { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .dm-panel { background: #fff; border-radius: 20px; box-shadow: 0 0 0 1px #1d1c1a12; overflow: hidden; }
+  .dm-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.1rem 1.4rem; border-bottom: 1px solid #0000000d; cursor: pointer; font-family: 'DM Sans Variable', sans-serif; }
+  .dm-row:last-child { border: 0; }
+  .dm-row b { display: block; font-weight: 400; font-variation-settings: 'wght' 600, 'opsz' 14; font-size: 1.05rem; }
+  .dm-row small { display: block; color: var(--fg-3); font-size: 0.85rem; font-variation-settings: 'opsz' 9; margin-top: 0.15rem; }
+  .dm-sw { appearance: none; flex: none; width: 3.1rem; height: 1.85rem; border-radius: 100px; background: #dcd8d1; position: relative; cursor: pointer; transition: background 0.25s; }
+  .dm-sw::after { content: ''; position: absolute; left: 0.2rem; top: 0.2rem; width: 1.45rem; height: 1.45rem; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px #0003; transition: transform 0.3s var(--ease); }
+  .dm-sw:checked { background: var(--accent); } .dm-sw:checked::after { transform: translateX(1.25rem); }
+  .dm-phone { --dm-fs: 1rem; --dm-pad: 0.9rem; --dm-w: 400; justify-self: center; width: min(100%, 20rem); background: #fff; color: #1d1c1a; border-radius: 38px; padding: 1rem 1rem 1.6rem; box-shadow: 0 0 0 10px #1d1c1a, 0 40px 60px -30px #0008; font-family: 'DM Sans Variable', sans-serif; transition: background 0.4s, color 0.4s; }
+  .dm-phone.is-bold { --dm-w: 600; } .dm-phone.is-large { --dm-fs: 1.15rem; } .dm-phone.is-compact { --dm-pad: 0.45rem; }
+  .dm-phone.is-dark { background: #121212; color: #f0ede8; }
+  .dm-phone__top { display: flex; justify-content: space-between; font-size: 0.75rem; font-variation-settings: 'wght' 700, 'opsz' 9; padding: 0 0.6rem 0.8rem; }
+  .dm-phone__h { font-size: calc(var(--dm-fs) * 1.9); font-variation-settings: 'wght' calc(var(--dm-w) + 300), 'opsz' 40; letter-spacing: -0.03em; padding: 0 0.4rem 0.4rem; display: flex; align-items: center; gap: 0.5rem; transition: font-size 0.3s; }
+  .dm-badge { font-style: normal; font-size: 0.8rem; font-variation-settings: 'wght' 700, 'opsz' 9; background: var(--accent); color: #fff; border-radius: 100px; padding: 0.15rem 0.5rem; transform: scale(0); transition: transform 0.35s var(--ease); letter-spacing: 0; }
+  .dm-phone.is-notify .dm-badge { transform: scale(1); }
+  .dm-msg { display: grid; grid-template-columns: auto 1fr auto; gap: 0.7rem; align-items: center; padding: var(--dm-pad) 0.4rem; border-bottom: 1px solid #8881; transition: padding 0.3s; }
+  .dm-msg__av { width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; background: #d95d3922; color: var(--accent); font-variation-settings: 'wght' 700, 'opsz' 14; }
+  .dm-msg__b { min-width: 0; } .dm-msg__b b { display: block; font-weight: 400; font-size: var(--dm-fs); font-variation-settings: 'wght' calc(var(--dm-w) + 200), 'opsz' 14; transition: font-size 0.3s; }
+  .dm-msg__b span { display: block; font-size: calc(var(--dm-fs) * 0.82); font-variation-settings: 'wght' var(--dm-w), 'opsz' 9; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: font-size 0.3s; }
+  .dm-msg time { font-size: 0.7rem; font-variation-settings: 'opsz' 9; opacity: 0.5; align-self: start; }
+
+  /* opsz */
+  .dm-op { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .dm-op__stage { position: relative; display: grid; place-items: center; background: #fff; border-radius: 20px; box-shadow: 0 0 0 1px #1d1c1a12; padding: 1rem 1rem 3.4rem; overflow: hidden; }
+  .dm-op__word { grid-area: 1 / 1; font-family: 'DM Sans Variable', sans-serif; font-size: clamp(7rem, 18vw, 15rem); line-height: 1; letter-spacing: 0; }
+  .dm-op__word--ghost { color: transparent; -webkit-text-stroke: 2px #d95d39; font-variation-settings: 'wght' 500, 'opsz' 40; mix-blend-mode: multiply; z-index: 1; }
+  .dm-op__word--ghost[hidden] { display: none; }
+  .dm-op__ctl { display: grid; gap: 1.2rem; }
+  .dm-op__cmp { display: flex; gap: 0.5rem; align-items: center; font-size: 0.95rem; color: var(--fg-2); }
+  .dm-op__tiny { display: grid; gap: 0.6rem; padding: 1rem; background: #fff; border-radius: 12px; }
+  .dm-op__tiny p { font-family: 'DM Sans Variable', sans-serif; font-size: 10px; line-height: 1.4; }
+  .dm-op__tiny b { font-family: var(--font-mono); font-weight: 400; color: var(--accent); margin-right: 0.6em; }
+
+  /* pricing */
+  .dm-price { display: grid; gap: 2rem; }
+  .dm-price__ctl { display: grid; grid-template-columns: auto minmax(12rem, 1fr); gap: 1rem 3rem; align-items: center; }
+  .dm-price__bill { display: inline-flex; padding: 4px; background: #e9e6e0; border-radius: 100px; }
+  .dm-price__bill button { padding: 0.6rem 1.2rem; border-radius: 100px; font: 400 0.95rem/1 'DM Sans Variable', sans-serif; font-variation-settings: 'wght' 600; color: var(--fg-2); transition: background 0.25s, color 0.25s; }
+  .dm-price__bill button[aria-checked='true'] { background: #fff; color: var(--fg); box-shadow: 0 2px 6px #0001; }
+  .dm-price__bill i { font-style: normal; color: var(--accent); }
+  .dm-tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: stretch; }
+  .dm-tier { position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: 1.8rem; background: #fff; border-radius: 20px; box-shadow: 0 0 0 1px #1d1c1a12; font-family: 'DM Sans Variable', sans-serif; }
+  .dm-tier.is-pop { background: #1d1c1a; color: #f4f2ee; box-shadow: 0 30px 60px -30px #1d1c1a; transform: translateY(-0.6rem); }
+  .dm-tier__pop { position: absolute; top: -0.8rem; left: 1.8rem; padding: 0.3rem 0.7rem; border-radius: 100px; background: var(--accent); color: #fff; font-size: 0.75rem; font-variation-settings: 'wght' 700, 'opsz' 9; }
+  .dm-tier__n { font-size: 1.1rem; font-variation-settings: 'wght' 600, 'opsz' 14; }
+  .dm-tier__p { display: flex; align-items: baseline; gap: 0.15rem; }
+  .dm-tier__p b { font-weight: 400; font-size: clamp(2.8rem, 5vw, 4.2rem); line-height: 1; letter-spacing: -0.04em; font-variation-settings: 'wght' 800, 'opsz' 40; font-feature-settings: 'tnum'; }
+  .dm-tier__cur { font-size: 1.5rem; font-variation-settings: 'wght' 500; align-self: flex-start; margin-top: 0.4rem; } .dm-tier__per { opacity: 0.55; }
+  .dm-tier__sub { font-size: 0.8rem; font-variation-settings: 'opsz' 9; opacity: 0.6; min-height: 2.4em; }
+  .dm-tier ul { list-style: none; display: grid; gap: 0.5rem; margin: 0.6rem 0 1.2rem; font-size: 0.95rem; flex: 1; }
+  .dm-tier li::before { content: '✓'; color: var(--accent); margin-right: 0.6em; font-variation-settings: 'wght' 800; }
+  .dm-tier__cta { padding: 0.85rem; border-radius: 12px; background: #f4f2ee; color: #1d1c1a; font: inherit; font-variation-settings: 'wght' 600, 'opsz' 14; transition: transform 0.15s; }
+  .dm-tier.is-pop .dm-tier__cta { background: var(--accent); color: #fff; }
+  .dm-tier__cta:hover { transform: translateY(-2px); }
+
+  @media (max-width: 900px) { .dm-set, .dm-op, .dm-price__ctl, .dm-tiers { grid-template-columns: minmax(0, 1fr); } .dm-tier.is-pop { transform: none; } }
+</style>

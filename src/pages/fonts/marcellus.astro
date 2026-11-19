@@ -1,0 +1,242 @@
+---
+// MARCELLUS — new edition. The classical museum: light raking across carved
+// stone, an inscription in the Roman manner, a coin to mint and flip, a
+// cornerstone dated in numerals, and gallery labels. All new examples.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('marcellus');
+const objects = [
+  { k: 'amphora', n: 'Wine amphora', d: 'Terracotta · Campania · 1st century BC', t: 'Stamped on the handle with the potter’s name, this jar carried wine from the Bay of Naples to Gaul.' },
+  { k: 'bust', n: 'Portrait of a woman', d: 'Marble · Rome · c. AD 90', t: 'Her towering curls were the height of fashion under the Flavian emperors and took hours to arrange.' },
+  { k: 'column', n: 'Ionic capital', d: 'Limestone · Asia Minor · 2nd century BC', t: 'The spiral volutes may imitate a ram’s horns, or a scroll of papyrus unrolling at each end.' },
+];
+---
+<Layout title="Marcellus — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Marcellus" showToggle={false} />
+  <div class="ed mc" data-mc>
+    <header class="ed-hero mc-hero" data-hero>
+      <div class="ed-hero__top"><span>Marcellus · {font.designer} · {font.year}</span><span>A single, flared regular</span></div>
+      <h1 class="ed-hero__word mc-hero__word" data-word aria-label="Marcellus">Marcellus</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Flared capitals in the spirit of <em>Roman inscriptions</em>, with a lowercase for today.
+          <span class="ed-hero__hint" data-fine>You are holding a lamp. Move it around the stone and watch the shadows swing.</span>
+          <span class="ed-hero__hint" data-coarse>Drag the lamp across the stone.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>light</dt><dd data-hud="a">90°</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-ins>
+        <div class="ed-kicker"><span>01</span> The inscription</div>
+        <h2 class="ed-h2">Write it <em>the Roman way</em>.</h2>
+        <div class="ed-body mc-ins">
+          <div class="mc-slab"><p class="mc-slab__t" data-ins-out></p></div>
+          <div class="mc-ins__ctl">
+            <label class="mc-field"><span>Your words</span><input type="text" maxlength="60" value="Just the people of the city, built this" data-ins-in /></label>
+            <label class="ed-slider"><span>Letterspacing <b data-ins-sv>0.12</b> em</span><input type="range" min="0" max="0.4" step="0.01" value="0.12" data-ins-s /></label>
+            <p class="ed-cap">Capitals only. U becomes V, J becomes I, and a raised dot separates each word, just as a stonecutter would have done it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-coin>
+        <div class="ed-kicker"><span>02</span> The mint</div>
+        <h2 class="ed-h2">Strike a coin.<br /><em>Toss it.</em></h2>
+        <div class="ed-body mc-coin">
+          <button type="button" class="mc-c" data-coin-btn aria-label="Toss the coin">
+            <span class="mc-c__in" data-coin-in>
+              <span class="mc-c__face mc-c__face--h">
+                <svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="mc-ring" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0" /></defs><text class="mc-c__ring"><textPath href="#mc-ring" startOffset="0" data-coin-ring>MARCVS · AVRELIVS · AVGVSTVS</textPath></text></svg>
+                <span class="mc-c__head" aria-hidden="true"></span>
+              </span>
+              <span class="mc-c__face mc-c__face--t"><b>SPQR</b><small data-coin-year>MMXXVI</small></span>
+            </span>
+          </button>
+          <div class="mc-coin__ctl">
+            <label class="mc-field"><span>Emperor</span><input type="text" maxlength="28" value="Marcus Aurelius Augustus" data-coin-name /></label>
+            <p class="mc-coin__res" data-coin-res>Click the coin to toss it.</p>
+            <p class="mc-coin__tally"><span>Heads <b data-coin-h>0</b></span><span>Tails <b data-coin-t>0</b></span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-stone>
+        <div class="ed-kicker"><span>03</span> The cornerstone</div>
+        <h2 class="ed-h2">Every year,<br /><em>in numerals</em>.</h2>
+        <div class="ed-body mc-cs">
+          <div class="mc-cs__stone"><p class="mc-cs__anno">Anno</p><p class="mc-cs__num" data-cs-num>MMXXVI</p><p class="mc-cs__ad" data-cs-ad>2026</p></div>
+          <label class="ed-slider"><span>Year <b data-cs-v>2026</b></span><input type="range" min="1" max="3999" value="2026" data-cs-in /></label>
+          <div class="mc-cs__quick">{[['Rome founded*', 753], ['Vesuvius', 79], ['Hadrian’s Wall', 122], ['Gutenberg', 1455], ['This typeface', 2009], ['Today', 2026]].map(([n, y]) => <button type="button" data-cs-y={y}>{n}</button>)}</div>
+          <p class="ed-cap">* 753 BC, by tradition. Romans counted from the founding of the city, not from zero.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-gal>
+        <div class="ed-kicker"><span>04</span> The gallery</div>
+        <h2 class="ed-h2">Room VII. <em>Antiquities.</em></h2>
+        <div class="ed-body mc-gal">
+          <div class="mc-room">
+            {objects.map((o, i) => (
+              <button type="button" class={`mc-obj mc-obj--${o.k}`} data-obj={i} aria-label={o.n}><span class="mc-obj__art" aria-hidden="true"><i></i><i></i><i></i></span><span class="mc-obj__plinth" aria-hidden="true">{['I', 'II', 'III'][i]}</span></button>
+            ))}
+          </div>
+          <div class="mc-label" data-label>
+            <p class="mc-label__no" data-lb-no>Case I</p>
+            <p class="mc-label__n" data-lb-n></p>
+            <p class="mc-label__d" data-lb-d></p>
+            <p class="mc-label__t" data-lb-t></p>
+          </div>
+          <script type="application/json" data-gal-data set:html={JSON.stringify(objects)} />
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Carve <em>a dedication</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Marcellus" sample="To the Gods of the Hearth" axes={[]} presets={[{ name: 'Regular', v: [] }]} start={0} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Regular only; the capitals carry it' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-mc]');
+  if (page) {
+    const stop = (el: Element) => el.addEventListener('keydown', (e) => e.stopPropagation());
+
+    // ---------- Hero: raking light ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, word = hero.querySelector<HTMLElement>('[data-word]')!;
+    runHero(hero, (f) => {
+      const px = f.live ? f.px : 0.5 + Math.cos(f.t * 0.35) * 0.45, py = f.live ? f.py : 0.25 + Math.sin(f.t * 0.35) * 0.15;
+      const dx = 0.5 - px, dy = 0.45 - py, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d, len = 2 + Math.min(1, d * 2) * 6;
+      // carved: light edge on the far side, shadow on the near side (inset look)
+      word.style.textShadow = `${(-ux * 1.5).toFixed(2)}px ${(-uy * 1.5).toFixed(2)}px 0 #fffaf0cc, ${(ux * len * 0.5).toFixed(1)}px ${(uy * len * 0.5).toFixed(1)}px ${(len * 0.6).toFixed(1)}px #20180f55`;
+      hero.style.setProperty('--lx', `${(px * 100).toFixed(1)}%`); hero.style.setProperty('--ly', `${(py * 100).toFixed(1)}%`);
+      hero.querySelector('[data-hud="a"]')!.textContent = `${Math.round(((Math.atan2(-dy, -dx) * 180) / Math.PI + 360) % 360)}°`;
+    });
+
+    // ---------- Inscription ----------
+    const ins = page.querySelector<HTMLElement>('[data-ins]')!, iin = ins.querySelector<HTMLInputElement>('[data-ins-in]')!, out = ins.querySelector<HTMLElement>('[data-ins-out]')!, sp = ins.querySelector<HTMLInputElement>('[data-ins-s]')!;
+    const roman = (s: string) => s.toUpperCase().replace(/U/g, 'V').replace(/J/g, 'I').replace(/W/g, 'VV').replace(/[^A-Z0-9 ]/g, '').trim().split(/\s+/).filter(Boolean).join(' · ');
+    const paintI = () => { out.textContent = roman(iin.value) || ' '; out.style.letterSpacing = `${sp.value}em`; ins.querySelector('[data-ins-sv]')!.textContent = (+sp.value).toFixed(2); };
+    stop(iin); iin.addEventListener('input', paintI); sp.addEventListener('input', paintI); paintI();
+
+    // ---------- Coin ----------
+    const co = page.querySelector<HTMLElement>('[data-coin]')!, cin = co.querySelector<HTMLElement>('[data-coin-in]')!, nin = co.querySelector<HTMLInputElement>('[data-coin-name]')!;
+    let rot = 0, h = 0, t = 0, busy = false;
+    stop(nin); nin.addEventListener('input', () => (co.querySelector('[data-coin-ring]')!.textContent = roman(nin.value) || ' '));
+    co.querySelector('[data-coin-ring]')!.textContent = roman(nin.value);
+    co.querySelector('[data-coin-btn]')!.addEventListener('click', () => {
+      if (busy) return; busy = true;
+      const heads = Math.random() < 0.5; rot += 360 * (4 + Math.floor(Math.random() * 3)) + (heads ? 0 : 180) - (rot % 360);
+      cin.style.transform = `rotateY(${rot}deg)`; co.classList.add('is-toss');
+      setTimeout(() => { co.classList.remove('is-toss'); busy = false; heads ? h++ : t++; co.querySelector('[data-coin-h]')!.textContent = String(h); co.querySelector('[data-coin-t]')!.textContent = String(t); co.querySelector('[data-coin-res]')!.textContent = heads ? 'Capita. Heads, the emperor wins.' : 'Navia. Tails, the senate wins.'; }, 1600);
+    });
+
+    // ---------- Cornerstone ----------
+    const cs = page.querySelector<HTMLElement>('[data-stone]')!, csin = cs.querySelector<HTMLInputElement>('[data-cs-in]')!;
+    const toRoman = (n: number) => { const m: [number, string][] = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let s = ''; for (const [v, r] of m) while (n >= v) { s += r; n -= v; } return s; };
+    const num = cs.querySelector<HTMLElement>('[data-cs-num]')!;
+    const paintC = () => { const y = +csin.value, r = toRoman(y); num.textContent = r; num.style.fontSize = `clamp(2.4rem, ${Math.min(14, 70 / Math.max(r.length, 4))}vw, 9rem)`; cs.querySelector('[data-cs-ad]')!.textContent = String(y); cs.querySelector('[data-cs-v]')!.textContent = String(y); };
+    csin.addEventListener('input', paintC); paintC();
+    cs.querySelectorAll<HTMLElement>('[data-cs-y]').forEach((b) => b.addEventListener('click', () => { csin.value = b.dataset.csY!; paintC(); num.classList.remove('is-new'); void num.offsetWidth; num.classList.add('is-new'); }));
+
+    // ---------- Gallery ----------
+    const gal = page.querySelector<HTMLElement>('[data-gal]')!, O = JSON.parse(gal.querySelector('[data-gal-data]')!.textContent!), label = gal.querySelector<HTMLElement>('[data-label]')!;
+    const objs = Array.from(gal.querySelectorAll<HTMLElement>('[data-obj]'));
+    const show = (i: number) => {
+      objs.forEach((o, j) => o.classList.toggle('is-on', i === j));
+      label.querySelector('[data-lb-no]')!.textContent = `Case ${['I', 'II', 'III'][i]}`; label.querySelector('[data-lb-n]')!.textContent = O[i].n; label.querySelector('[data-lb-d]')!.textContent = O[i].d; label.querySelector('[data-lb-t]')!.textContent = O[i].t;
+      label.classList.remove('is-new'); void label.offsetWidth; label.classList.add('is-new');
+    };
+    objs.forEach((o, i) => { o.addEventListener('click', () => show(i)); o.addEventListener('mouseenter', () => show(i)); });
+    show(1);
+  }
+</script>
+
+<style is:global>
+  .mc { --ed-head: 'Marcellus', 'Trajan Pro', serif; --ed-head-vf: normal; --ed-em-vf: normal; --ed-lede-vf: normal; --ed-radius: 2px; --stone: #ddd5c4; --gold: #b48a3c; }
+  .mc em { font-style: normal; } .mc .ed-h2 { font-weight: 400; letter-spacing: 0.01em; line-height: 1.05; } .mc .ed-h2 em { color: var(--accent); }
+  .mc .ed-story__prose { font-family: 'Marcellus', serif; font-size: 1.2rem; line-height: 1.7; }
+  .mc-field { display: grid; gap: 0.35rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .mc-field input { font: 400 1.4rem/1.3 'Marcellus', serif; background: none; border: 0; border-bottom: 1px solid var(--fg); color: var(--fg); outline: none; padding: 0.2rem 0; text-transform: none; letter-spacing: 0; }
+
+  .mc-hero { --lx: 50%; --ly: 20%; background: radial-gradient(circle at var(--lx) var(--ly), #fff7e6 0, transparent 45%), repeating-linear-gradient(97deg, #0000 0 3px, #20180f05 3px 4px), var(--stone); }
+  .mc-hero__word { font-family: 'Marcellus', serif; font-size: min(13vw, 32svh); line-height: 1.1; letter-spacing: 0.04em; text-transform: uppercase; color: #cfc5b0; }
+
+  /* inscription */
+  .mc-ins { display: grid; gap: 2rem; }
+  .mc-slab { padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 4rem); background: repeating-linear-gradient(93deg, #0000 0 5px, #20180f06 5px 6px), linear-gradient(#e6dfcf, #d6cdb9); box-shadow: inset 0 0 0 10px #e6dfcf, inset 0 0 0 12px #b5a98f, inset 0 0 40px #20180f22, 0 30px 50px -30px #0006; text-align: center; container-type: inline-size; }
+  .mc-slab__t { font-family: 'Marcellus', serif; font-size: clamp(1.6rem, 6cqi, 4.6rem); line-height: 1.35; color: #b9ad94; text-shadow: 1px 1px 0 #fffaf0, -1px -1px 1px #20180f88; text-wrap: balance; overflow-wrap: anywhere; }
+  .mc-ins__ctl { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 1rem 3rem; align-items: end; }
+  .mc-ins__ctl .ed-cap { grid-column: 1 / -1; }
+
+  /* coin */
+  .mc-coin { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .mc-c { justify-self: center; width: min(100%, 20rem); aspect-ratio: 1; perspective: 900px; }
+  .mc-c__in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .is-toss .mc-c { animation: mc-up 1.6s cubic-bezier(0.3, 0.6, 0.4, 1); }
+  @keyframes mc-up { 45% { transform: translateY(-5rem) scale(1.08); } }
+  .mc-c__face { position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; background: radial-gradient(circle at 35% 30%, #f7dc93, #c99a3a 55%, #8a6420); box-shadow: inset 0 0 0 6px #a37a2c, inset 0 0 0 9px #e8c470, inset 0 -8px 20px #5a3d0e88, 0 20px 30px -14px #0008; color: #6a4810; display: grid; place-items: center; }
+  .mc-c__face svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mc-c__ring { font: 400 17px 'Marcellus', serif; letter-spacing: 0.08em; fill: #6a4810; }
+  .mc-c__head { width: 44%; height: 52%; border-radius: 48% 52% 40% 45% / 55% 50% 45% 45%; background: radial-gradient(circle at 40% 35%, #f3d589, #b48a3c 70%); box-shadow: inset -4px -6px 10px #6a481066, 1px 1px 0 #fff3; position: relative; }
+  .mc-c__head::before { content: ''; position: absolute; left: -10%; top: -6%; width: 80%; height: 40%; border-radius: 50%; border-top: 5px dotted #8a6420; transform: rotate(-14deg); }
+  .mc-c__face--t { transform: rotateY(180deg); align-content: center; gap: 0.3rem; }
+  .mc-c__face--t b { font: 400 clamp(3rem, 7vw, 4.6rem)/1 'Marcellus', serif; letter-spacing: 0.06em; text-shadow: 1px 1px 0 #fff4, -1px -1px 0 #5a3d0e66; }
+  .mc-c__face--t small { font: 400 1.1rem/1 'Marcellus', serif; letter-spacing: 0.2em; }
+  .mc-coin__ctl { display: grid; gap: 1.2rem; }
+  .mc-coin__res { font: 400 clamp(1.4rem, 2.6vw, 2rem)/1.2 'Marcellus', serif; color: var(--accent); min-height: 2.4em; }
+  .mc-coin__tally { display: flex; gap: 2rem; font: 400 0.75rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .mc-coin__tally b { font: 400 1.6rem/1 'Marcellus', serif; color: var(--fg); margin-left: 0.4rem; }
+
+  /* cornerstone */
+  .mc-cs { display: grid; gap: 1.4rem; }
+  .mc-cs__stone { display: grid; justify-items: center; gap: 0.4rem; padding: clamp(2rem, 5vw, 4rem) 1rem; background: repeating-linear-gradient(90deg, #0000 0 calc(50% - 1px), #20180f22 calc(50% - 1px) 50%, #0000 50% 100%) 0 0 / 14rem 7rem, repeating-linear-gradient(#0000 0 calc(7rem - 2px), #20180f22 calc(7rem - 2px) 7rem), linear-gradient(#cfc4ad, #bdb197); overflow: hidden; }
+  .mc-cs__anno { font: 400 1.4rem/1 'Marcellus', serif; letter-spacing: 0.5em; text-transform: uppercase; color: #6b5d45; }
+  .mc-cs__num { font-family: 'Marcellus', serif; line-height: 1; letter-spacing: 0.06em; color: #a5987c; text-shadow: 2px 2px 0 #efe7d4, -1px -1px 1px #20180f; padding: 0.2em 0.6em; background: #c8bda5; box-shadow: inset 0 0 0 3px #ada186, 0 0 0 1px #efe7d4; white-space: nowrap; max-width: 100%; }
+  .mc-cs__num.is-new { animation: mc-chisel 0.6s steps(6); } @keyframes mc-chisel { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  .mc-cs__ad { font: 400 0.85rem/1 var(--font-mono); letter-spacing: 0.1em; color: #6b5d45; }
+  .mc-cs__quick { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .mc-cs__quick button { padding: 0.5rem 1rem; border: 1px solid var(--line); border-radius: 100px; font: 400 0.95rem/1 'Marcellus', serif; transition: all 0.2s; }
+  .mc-cs__quick button:hover { background: var(--accent); color: #f1ece1; border-color: var(--accent); }
+
+  /* gallery */
+  .mc-gal { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 4rem); align-items: end; }
+  .mc-room { display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; gap: 1rem; padding: 2rem 1rem 0; background: linear-gradient(#e9e2d2, #e9e2d2 78%, #cfc6b2 78%); border-radius: 4px; min-height: 22rem; }
+  .mc-obj { display: grid; justify-items: center; align-content: end; gap: 0; transition: filter 0.3s; filter: saturate(0.6) brightness(0.96); }
+  .mc-obj.is-on { filter: none; } .mc-obj.is-on .mc-obj__art { transform: translateY(-4px); }
+  .mc-obj__art { position: relative; display: block; width: 100%; height: 12rem; transition: transform 0.4s var(--ease); }
+  .mc-obj__plinth { display: grid; place-items: center; width: 80%; height: 4.4rem; background: linear-gradient(#f6f2ea, #ddd5c4); box-shadow: 0 10px 20px -10px #0005; font: 400 1rem/1 'Marcellus', serif; color: #8a7d64; letter-spacing: 0.2em; }
+  .mc-obj__art i { position: absolute; display: block; }
+  .mc-obj--amphora i:nth-child(1) { left: 50%; bottom: 0; width: 46%; height: 72%; transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; background: radial-gradient(circle at 35% 35%, #d98a5a, #9a4a26 70%); clip-path: polygon(20% 0, 80% 0, 100% 30%, 90% 70%, 55% 100%, 45% 100%, 10% 70%, 0 30%); }
+  .mc-obj--amphora i:nth-child(2) { left: 50%; bottom: 68%; width: 14%; height: 24%; transform: translateX(-50%); background: #a8552c; }
+  .mc-obj--amphora i:nth-child(3) { left: 50%; bottom: 72%; width: 40%; height: 18%; transform: translateX(-50%); border: 5px solid #9a4a26; border-bottom: 0; border-radius: 40% 40% 0 0; }
+  .mc-obj--bust i:nth-child(1) { left: 50%; bottom: 0; width: 64%; height: 38%; transform: translateX(-50%); border-radius: 50% 50% 6px 6px / 70% 70% 6px 6px; background: linear-gradient(#f2eee6, #d9d2c3); }
+  .mc-obj--bust i:nth-child(2) { left: 50%; bottom: 34%; width: 34%; height: 40%; transform: translateX(-50%); border-radius: 46% 46% 44% 44% / 50% 50% 50% 50%; background: radial-gradient(circle at 40% 40%, #fbf8f2, #d4ccbb); }
+  .mc-obj--bust i:nth-child(3) { left: 50%; bottom: 62%; width: 46%; height: 30%; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, #e9e3d6 30%, transparent 32%) 0 0 / 0.7rem 0.7rem, #ddd5c6; }
+  .mc-obj--column i:nth-child(1) { left: 50%; bottom: 0; width: 30%; height: 76%; transform: translateX(-50%); background: repeating-linear-gradient(90deg, #f2ede3 0 6px, #d6cfbf 6px 9px); }
+  .mc-obj--column i:nth-child(2) { left: 50%; bottom: 74%; width: 70%; height: 14%; transform: translateX(-50%); background: #ece6d9; border-radius: 4px; }
+  .mc-obj--column i:nth-child(3) { left: 50%; bottom: 72%; width: 84%; height: 20%; transform: translateX(-50%); background: radial-gradient(circle at 12% 50%, transparent 0 8px, #b9ae97 9px 11px, #ece6d9 12px 26%, transparent 27%), radial-gradient(circle at 88% 50%, transparent 0 8px, #b9ae97 9px 11px, #ece6d9 12px 26%, transparent 27%); }
+  .mc-label { padding: 1.6rem 1.8rem; background: #fbf9f4; border-left: 3px solid var(--accent); box-shadow: 0 20px 30px -24px #0006; display: grid; gap: 0.5rem; min-height: 16rem; align-content: start; }
+  .mc-label.is-new { animation: mc-lbl 0.5s var(--ease); } @keyframes mc-lbl { from { opacity: 0; transform: translateY(8px); } }
+  .mc-label__no { font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+  .mc-label__n { font: 400 clamp(1.6rem, 3vw, 2.3rem)/1.1 'Marcellus', serif; }
+  .mc-label__d { font: 400 0.9rem/1.4 'Marcellus', serif; color: var(--fg-3); letter-spacing: 0.04em; }
+  .mc-label__t { font: 400 1.05rem/1.55 'Marcellus', serif; color: var(--fg-2); padding-top: 0.6rem; border-top: 1px solid var(--line); }
+
+  @media (max-width: 900px) { .mc-ins__ctl, .mc-coin, .mc-gal { grid-template-columns: minmax(0, 1fr); } .mc-obj__art { height: 8rem; } .mc-room { min-height: 15rem; } }
+</style>

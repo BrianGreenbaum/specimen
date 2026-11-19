@@ -1,0 +1,279 @@
+---
+// SOURCE SANS 3 — new edition. Getting around: a departures board in four
+// scripts, a wayfinding sign, a sortable table and a weather chart. All new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('source-sans-3');
+const langs = [
+  { k: 'EN', h: 'Departures', cols: ['Time', 'Destination', 'Gate', 'Status'], dest: ['Athens', 'Moscow', 'Hanoi', 'Lisbon', 'Reykjavík'], st: ['Boarding', 'On time', 'Delayed', 'On time', 'Gate closed'] },
+  { k: 'ΕΛ', h: 'Αναχωρήσεις', cols: ['Ώρα', 'Προορισμός', 'Πύλη', 'Κατάσταση'], dest: ['Αθήνα', 'Μόσχα', 'Ανόι', 'Λισαβόνα', 'Ρέικιαβικ'], st: ['Επιβίβαση', 'Στην ώρα', 'Καθυστέρηση', 'Στην ώρα', 'Έκλεισε'] },
+  { k: 'РУ', h: 'Вылет', cols: ['Время', 'Направление', 'Выход', 'Статус'], dest: ['Афины', 'Москва', 'Ханой', 'Лиссабон', 'Рейкьявик'], st: ['Посадка', 'По расписанию', 'Задержка', 'По расписанию', 'Закрыт'] },
+  { k: 'VI', h: 'Khởi hành', cols: ['Giờ', 'Điểm đến', 'Cửa', 'Trạng thái'], dest: ['Athens', 'Moskva', 'Hà Nội', 'Lisboa', 'Reykjavík'], st: ['Đang lên', 'Đúng giờ', 'Trễ', 'Đúng giờ', 'Đã đóng'] },
+];
+const times = ['09:05', '09:20', '09:45', '10:10', '10:30'];
+const gates = ['A12', 'B4', 'C21', 'A3', 'D9'];
+const rows = [
+  ['Tokyo', 37.4, 2194, 1.9, 'Japan'], ['Delhi', 32.9, 1484, 3.1, 'India'], ['Shanghai', 29.2, 6341, 2.6, 'China'], ['São Paulo', 22.6, 1521, 0.9, 'Brazil'],
+  ['Mexico City', 22.3, 1485, 0.7, 'Mexico'], ['Cairo', 21.8, 3085, 2.0, 'Egypt'], ['Mumbai', 21.3, 603, 1.6, 'India'], ['Lagos', 15.9, 1171, 3.5, 'Nigeria'],
+];
+const temps = [9, 8, 8, 7, 7, 7, 8, 10, 12, 14, 16, 18, 19, 20, 21, 21, 20, 19, 17, 15, 13, 12, 11, 10];
+---
+<Layout title="Source Sans 3 — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Source Sans 3" showToggle={false} />
+  <div class="ed ss" data-ss>
+    <header class="ed-hero ss-hero" data-hero>
+      <div class="ed-hero__top"><span>Source Sans 3 · {font.designer} · {font.year}</span><span>ExtraLight 200 to Black 900, roman & italic</span></div>
+      <div class="ss-hero__sign">
+        <span class="ss-hero__arrow" data-arrow aria-hidden="true">→</span>
+        <h1 class="ed-hero__word ss-hero__word" data-word>Source Sans</h1>
+      </div>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          Adobe’s first open-source family, made to <em>show the way</em>.
+          <span class="ed-hero__hint" data-fine>The arrow follows you. Come closer and the sign gets bolder.</span>
+          <span class="ed-hero__hint" data-coarse>Drag around the sign. The arrow follows; closer is bolder.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>heading</dt><dd data-hud="a">0°</dd></div><div><dt>wght</dt><dd data-hud="w">400</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-dep>
+        <div class="ed-kicker"><span>01</span> Departures</div>
+        <h2 class="ed-h2">One family.<br /><em>Four scripts.</em></h2>
+        <div class="ed-body ss-dep">
+          <div class="ss-board">
+            <div class="ss-board__top"><p class="ss-board__h" data-dep-h>Departures</p><p class="ss-board__clock" data-dep-clock>09:00</p>
+              <div class="ss-board__lang" role="radiogroup" aria-label="Language">{langs.map((l, i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-lang={i}>{l.k}</button>)}</div>
+            </div>
+            <table class="ss-board__t">
+              <thead><tr>{langs[0].cols.map((c) => <th data-col>{c}</th>)}</tr></thead>
+              <tbody>{times.map((t, i) => <tr data-row={i}><td class="ss-num">{t}</td><td data-dest>{langs[0].dest[i]}</td><td class="ss-num">{gates[i]}</td><td data-st class={`is-${i}`}>{langs[0].st[i]}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <p class="ed-cap">Latin, Greek, Cyrillic and Vietnamese, all drawn to sit together on the same board. The board changes language by itself every few seconds.</p>
+          <script type="application/json" data-dep-data set:html={JSON.stringify(langs)} />
+        </div>
+      </section>
+
+      <section class="ed-sec" data-sign>
+        <div class="ed-kicker"><span>02</span> Wayfinding</div>
+        <h2 class="ed-h2">Make <em>a sign</em>.</h2>
+        <div class="ed-body ss-sign">
+          <div class="ss-plate" data-plate>
+            {[['Platforms 1–4', '←'], ['Way out', '↑'], ['Lifts', '→']].map(([t, a], i) => (
+              <div class="ss-plate__row" data-prow={i}><button type="button" class="ss-plate__a" data-arr aria-label="Turn arrow">{a}</button><input type="text" value={t} maxlength="22" class="ss-plate__t" aria-label="Destination" /></div>
+            ))}
+          </div>
+          <div class="ss-sign__ctl">
+            <div class="ss-seg" role="radiogroup" aria-label="Sign colour">{[['Transit', '#0e1114', '#f7d64a'], ['Hospital', '#1d4f91', '#ffffff'], ['Park', '#24543b', '#f2efe1'], ['Exit', '#1f7a4b', '#ffffff']].map(([n, b, f], i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-sbg={b} data-sfg={f}>{n}</button>)}</div>
+            <label class="ed-slider"><span>Weight <b data-sw-v>600</b></span><input type="range" min="200" max="900" value="600" data-sw /></label>
+            <p class="ed-cap">Click an arrow to turn it. Edit any destination in place.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-tbl>
+        <div class="ed-kicker"><span>03</span> The table</div>
+        <h2 class="ed-h2">Figures that <em>line up</em>.</h2>
+        <div class="ed-body ss-tbl">
+          <input type="search" class="ss-tbl__q" placeholder="Filter cities or countries" data-tbl-q aria-label="Filter" />
+          <table class="ss-data" data-tbl-t>
+            <thead><tr>{[['City', 0], ['Pop. (m)', 1], ['Area (km²)', 2], ['Growth %', 3]].map(([n, i]) => <th><button type="button" data-sort={i}>{n} <i aria-hidden="true"></i></button></th>)}</tr></thead>
+            <tbody>{rows.map((r) => <tr data-r={JSON.stringify(r)}><td><b>{r[0]}</b><small>{r[4]}</small></td><td class="ss-num">{(r[1] as number).toFixed(1)}</td><td class="ss-num">{(r[2] as number).toLocaleString('en')}</td><td class="ss-num"><span class="ss-bar" style={`--v:${(r[3] as number) / 3.5}`}></span>{(r[3] as number).toFixed(1)}</td></tr>)}</tbody>
+          </table>
+          <p class="ed-cap">Click a header to sort. Tabular figures keep every column aligned while the rows move.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-wx>
+        <div class="ed-kicker"><span>04</span> The forecast</div>
+        <h2 class="ed-h2">Today, <em>hour by hour</em>.</h2>
+        <div class="ed-body">
+          <div class="ss-wx" data-wx-card>
+            <div class="ss-wx__now"><p class="ss-wx__city">Lisbon</p><p class="ss-wx__t"><span data-wx-t>14</span><sup>°</sup></p><p class="ss-wx__h" data-wx-h>09:00 · Sunny intervals</p></div>
+            <div class="ss-wx__chart" data-wx-chart>
+              <svg viewBox="0 0 240 80" preserveAspectRatio="none" aria-hidden="true"><path data-wx-area class="ss-wx__area" /><path data-wx-line class="ss-wx__line" /></svg>
+              <span class="ss-wx__cursor" data-wx-cur aria-hidden="true"></span>
+              <div class="ss-wx__hours" aria-hidden="true">{[0, 6, 12, 18, 23].map((h) => <span style={`left:${(h / 23) * 100}%`}>{String(h).padStart(2, '0')}</span>)}</div>
+            </div>
+          </div>
+          <p class="ed-cap">Drag across the chart. The temperature is set in ExtraLight at 200, the hour in SemiBold at 600.</p>
+          <script type="application/json" data-wx-data set:html={JSON.stringify(temps)} />
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the signage</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Source Sans 3 Variable" sample="Platform 9 · Trains to the coast" italic axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 900 }]}
+            presets={[{ name: 'ExtraLight', v: [200] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }]} start={2} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Scripts', v: 'Latin, Greek, Cyrillic, Vietnamese' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-ss]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // ---------- Hero ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, arrow = hero.querySelector<HTMLElement>('[data-arrow]')!, word = hero.querySelector<HTMLElement>('[data-word]')!;
+    let ang = 0;
+    runHero(hero, (f) => {
+      const r = hero.getBoundingClientRect(), a = arrow.getBoundingClientRect();
+      const px = f.live ? f.px : 0.5 + Math.cos(f.t * 0.4) * 0.4, py = f.live ? f.py : 0.5 + Math.sin(f.t * 0.4) * 0.35;
+      const tx = r.left + px * r.width - (a.left + a.width / 2), ty = r.top + py * r.height - (a.top + a.height / 2);
+      const target = (Math.atan2(ty, tx) * 180) / Math.PI; let d = target - ang; d = ((d + 540) % 360) - 180; ang += d * 0.12;
+      arrow.style.transform = `rotate(${ang.toFixed(1)}deg)`;
+      const wb = word.getBoundingClientRect(), dist = Math.hypot(r.left + px * r.width - (wb.left + wb.width / 2), r.top + py * r.height - (wb.top + wb.height / 2));
+      const w = clamp(900 - (dist / (r.width * 0.5)) * 700, 200, 900);
+      word.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`; arrow.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`;
+      hero.querySelector('[data-hud="a"]')!.textContent = `${Math.round(((ang % 360) + 360) % 360)}°`; hero.querySelector('[data-hud="w"]')!.textContent = String(Math.round(w));
+    });
+
+    // ---------- Departures ----------
+    const dep = page.querySelector<HTMLElement>('[data-dep]')!, L = JSON.parse(dep.querySelector('[data-dep-data]')!.textContent!);
+    const lb = Array.from(dep.querySelectorAll<HTMLElement>('[data-lang]')); let li = 0, auto = 0;
+    const setLang = (i: number) => {
+      li = i; lb.forEach((b, j) => b.setAttribute('aria-checked', String(i === j)));
+      const flip = (el: Element, txt: string, k: number) => { el.classList.remove('is-flip'); void (el as HTMLElement).offsetWidth; (el as HTMLElement).style.animationDelay = `${k * 40}ms`; el.classList.add('is-flip'); setTimeout(() => (el.textContent = txt), reduce ? 0 : 160 + k * 40); };
+      flip(dep.querySelector('[data-dep-h]')!, L[i].h, 0);
+      dep.querySelectorAll('[data-col]').forEach((th, k) => flip(th, L[i].cols[k], k));
+      dep.querySelectorAll('[data-row]').forEach((tr, k) => { flip(tr.querySelector('[data-dest]')!, L[i].dest[k], k + 1); flip(tr.querySelector('[data-st]')!, L[i].st[k], k + 2); });
+    };
+    lb.forEach((b) => b.addEventListener('click', () => { setLang(+b.dataset.lang!); auto = performance.now() + 15000; }));
+    let mins = 0;
+    setInterval(() => {
+      mins = (mins + 1) % 60; dep.querySelector('[data-dep-clock]')!.textContent = `09:${String(mins).padStart(2, '0')}`;
+      if (mins % 4 === 0 && performance.now() > auto && !reduce) { const r = dep.getBoundingClientRect(); if (r.top < innerHeight && r.bottom > 0) setLang((li + 1) % L.length); }
+    }, 1000);
+
+    // ---------- Sign ----------
+    const sg = page.querySelector<HTMLElement>('[data-sign]')!, plate = sg.querySelector<HTMLElement>('[data-plate]')!;
+    const ARR = ['↑', '↗', '→', '↘', '↓', '↙', '←', '↖'];
+    sg.querySelectorAll<HTMLElement>('[data-arr]').forEach((b) => b.addEventListener('click', () => { b.textContent = ARR[(ARR.indexOf(b.textContent!) + 1) % ARR.length]; }));
+    sg.querySelectorAll<HTMLInputElement>('.ss-plate__t').forEach((i) => i.addEventListener('keydown', (e) => e.stopPropagation()));
+    const segs = Array.from(sg.querySelectorAll<HTMLElement>('[data-sbg]'));
+    segs.forEach((b) => b.addEventListener('click', () => { plate.style.setProperty('--sbg', b.dataset.sbg!); plate.style.setProperty('--sfg', b.dataset.sfg!); segs.forEach((o) => o.setAttribute('aria-checked', String(o === b))); }));
+    const sw = sg.querySelector<HTMLInputElement>('[data-sw]')!; const pw = () => { plate.style.setProperty('--sww', sw.value); sg.querySelector('[data-sw-v]')!.textContent = sw.value; }; sw.addEventListener('input', pw); pw();
+
+    // ---------- Table ----------
+    const tb = page.querySelector<HTMLElement>('[data-tbl]')!, body = tb.querySelector('tbody')!, trs = Array.from(body.querySelectorAll<HTMLElement>('tr'));
+    let sk = 1, dir = -1;
+    const sortT = () => {
+      const first = new Map(trs.map((tr) => [tr, tr.getBoundingClientRect().top]));
+      trs.sort((a, b) => { const A = JSON.parse(a.dataset.r!)[sk], B = JSON.parse(b.dataset.r!)[sk]; return (A < B ? -1 : A > B ? 1 : 0) * dir; }).forEach((tr) => body.appendChild(tr));
+      if (!reduce) trs.forEach((tr) => { const d = first.get(tr)! - tr.getBoundingClientRect().top; if (d) tr.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: 400, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
+      tb.querySelectorAll<HTMLElement>('[data-sort]').forEach((b) => b.dataset.dir = +b.dataset.sort! === sk ? (dir > 0 ? 'asc' : 'desc') : '');
+    };
+    tb.querySelectorAll<HTMLElement>('[data-sort]').forEach((b) => b.addEventListener('click', () => { const k = +b.dataset.sort!; dir = k === sk ? -dir : k === 0 ? 1 : -1; sk = k; sortT(); }));
+    const q = tb.querySelector<HTMLInputElement>('[data-tbl-q]')!; q.addEventListener('keydown', (e) => e.stopPropagation());
+    q.addEventListener('input', () => { const v = q.value.toLowerCase(); trs.forEach((tr) => tr.classList.toggle('is-hidden', !!v && !tr.textContent!.toLowerCase().includes(v))); });
+    sortT();
+
+    // ---------- Weather ----------
+    const wx = page.querySelector<HTMLElement>('[data-wx]')!, T: number[] = JSON.parse(wx.querySelector('[data-wx-data]')!.textContent!), chart = wx.querySelector<HTMLElement>('[data-wx-chart]')!;
+    const lo = Math.min(...T) - 2, hi = Math.max(...T) + 2, X = (i: number) => (i / 23) * 240, Y = (t: number) => 80 - ((t - lo) / (hi - lo)) * 76;
+    const line = T.map((t, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)} ${Y(t).toFixed(1)}`).join(' ');
+    wx.querySelector('[data-wx-line]')!.setAttribute('d', line); wx.querySelector('[data-wx-area]')!.setAttribute('d', `${line} L240 80 L0 80Z`);
+    const SKY = (h: number) => (h < 6 || h > 20 ? 'Clear night' : h < 9 ? 'Morning mist' : h < 12 ? 'Sunny intervals' : h < 17 ? 'Sunshine' : 'Light cloud');
+    const card = wx.querySelector<HTMLElement>('[data-wx-card]')!;
+    const setH = (h: number) => {
+      h = clamp(Math.round(h), 0, 23); wx.querySelector('[data-wx-t]')!.textContent = String(T[h]);
+      wx.querySelector('[data-wx-h]')!.textContent = `${String(h).padStart(2, '0')}:00 · ${SKY(h)}`;
+      const c = wx.querySelector<HTMLElement>('[data-wx-cur]')!; c.style.left = `${(h / 23) * 100}%`; c.style.top = `${(Y(T[h]) / 80) * 100}%`;
+      card.style.setProperty('--day', String(h < 6 || h > 20 ? 0 : Math.sin(((h - 6) / 14) * Math.PI)));
+    };
+    const fromE = (e: PointerEvent) => { const r = chart.getBoundingClientRect(); setH(((e.clientX - r.left) / r.width) * 23); };
+    chart.addEventListener('pointerdown', (e) => { chart.setPointerCapture(e.pointerId); fromE(e); });
+    chart.addEventListener('pointermove', (e) => { if (e.buttons || e.pointerType === 'mouse') fromE(e); });
+    setH(9);
+  }
+</script>
+
+<style is:global>
+  .ss { --ed-head: 'Source Sans 3 Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 300; --ed-lede-vf: 'wght' 500; --ed-radius: 6px; }
+  .ss em { font-style: italic; } .ss .ed-h2 { letter-spacing: -0.03em; line-height: 0.95; }
+  .ss .ed-story__prose { font-family: 'Source Sans 3 Variable', sans-serif; font-size: 1.2rem; line-height: 1.6; } .ss .ed-story__prose em { font-style: italic; }
+  .ss-num { font-feature-settings: 'tnum'; }
+
+  .ss-hero { background: linear-gradient(var(--bg), #e3e7ec); }
+  .ss-hero__sign { display: flex; align-items: center; gap: 0.25em; font-size: min(11vw, 28svh); }
+  .ss-hero__arrow { display: inline-grid; place-items: center; width: 1.1em; height: 1.1em; border-radius: 0.14em; background: var(--fg); color: #f7d64a; font-family: 'Source Sans 3 Variable', sans-serif; font-size: 0.82em; line-height: 1; flex: none; }
+  .ss-hero__word { font-family: 'Source Sans 3 Variable', sans-serif; font-size: 1em; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+
+  /* departures */
+  .ss-dep { display: grid; gap: 1rem; }
+  .ss-board { background: #0d1013; color: #f2f2f0; border-radius: 10px; padding: clamp(1rem, 3vw, 2rem); box-shadow: 0 40px 60px -40px #000; overflow-x: auto; font-family: 'Source Sans 3 Variable', sans-serif; }
+  .ss-board__top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem 2rem; padding-bottom: 1rem; border-bottom: 2px solid #f7d64a; }
+  .ss-board__h { font-size: clamp(2rem, 5vw, 3.6rem); font-variation-settings: 'wght' 800; letter-spacing: -0.02em; color: #f7d64a; line-height: 1; }
+  .ss-board__clock { font-size: 1.6rem; font-variation-settings: 'wght' 300; font-feature-settings: 'tnum'; margin-left: auto; }
+  .ss-board__lang { display: flex; gap: 0.3rem; }
+  .ss-board__lang button { padding: 0.35rem 0.6rem; border-radius: 4px; border: 1px solid #ffffff33; font: inherit; font-size: 0.85rem; font-variation-settings: 'wght' 600; color: #c8c8c4; }
+  .ss-board__lang button[aria-checked='true'] { background: #f7d64a; color: #0d1013; border-color: #f7d64a; }
+  .ss-board__t { width: 100%; border-collapse: collapse; min-width: 30rem; }
+  .ss-board__t th { text-align: left; font-size: 0.8rem; font-variation-settings: 'wght' 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8f96; padding: 0.9rem 0.6rem 0.5rem; }
+  .ss-board__t td { padding: 0.7rem 0.6rem; border-top: 1px solid #ffffff14; font-size: clamp(1.1rem, 2vw, 1.5rem); font-variation-settings: 'wght' 500; }
+  .ss-board__t td:nth-child(2) { font-variation-settings: 'wght' 700; }
+  .ss-board__t td[data-st] { font-variation-settings: 'wght' 600; color: #8fe0a8; }
+  .ss-board__t td.is-0 { color: #f7d64a; animation: ss-blink 1.2s steps(2) infinite; } .ss-board__t td.is-2 { color: #ff8a6a; } .ss-board__t td.is-4 { color: #8a8f96; }
+  @keyframes ss-blink { 50% { opacity: 0.4; } }
+  .is-flip { animation: ss-flip 0.32s ease-in-out both; }
+  @keyframes ss-flip { 0% { transform: none; } 50% { transform: rotateX(90deg); opacity: 0.2; } 100% { transform: none; } }
+  .ss-board__t td, .ss-board__t th, .ss-board__h { display: table-cell; }
+  .ss-board__h { display: block; }
+
+  /* sign */
+  .ss-sign { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .ss-plate { --sbg: #0e1114; --sfg: #f7d64a; --sww: 600; background: var(--sbg); color: var(--sfg); border-radius: 12px; padding: 0.6rem 0; box-shadow: 0 30px 50px -30px #0008, inset 0 0 0 3px #ffffff18; transition: background 0.3s, color 0.3s; }
+  .ss-plate__row { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1.4rem; border-bottom: 2px solid color-mix(in oklab, var(--sfg) 25%, transparent); }
+  .ss-plate__row:last-child { border: 0; }
+  .ss-plate__a { flex: none; width: 3.6rem; height: 3.6rem; border-radius: 8px; background: var(--sfg); color: var(--sbg); font: 400 2.6rem/1 'Source Sans 3 Variable', sans-serif; font-variation-settings: 'wght' var(--sww); transition: transform 0.2s; }
+  .ss-plate__a:hover { transform: scale(1.06); }
+  .ss-plate__t { flex: 1; min-width: 0; background: none; border: 0; color: inherit; outline: none; font: 400 clamp(1.5rem, 3.2vw, 2.4rem)/1.1 'Source Sans 3 Variable', sans-serif; font-variation-settings: 'wght' var(--sww); letter-spacing: -0.01em; }
+  .ss-sign__ctl { display: grid; gap: 1.2rem; }
+  .ss-seg { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .ss-seg button { padding: 0.55rem 1rem; border-radius: 100px; border: 1px solid var(--line); font: 400 0.95rem/1 'Source Sans 3 Variable', sans-serif; font-variation-settings: 'wght' 600; }
+  .ss-seg button[aria-checked='true'] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  /* table */
+  .ss-tbl { display: grid; gap: 1rem; }
+  .ss-tbl__q { width: min(100%, 24rem); padding: 0.7rem 1rem; border-radius: 8px; border: 1px solid var(--line); background: #fff; font: 400 1rem/1 'Source Sans 3 Variable', sans-serif; color: var(--fg); outline: none; }
+  .ss-tbl__q:focus { border-color: var(--accent); }
+  .ss-data { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); font-family: 'Source Sans 3 Variable', sans-serif; }
+  .ss-data th { text-align: right; padding: 0; background: #f6f7f9; border-bottom: 1px solid var(--line); }
+  .ss-data th:first-child, .ss-data td:first-child { text-align: left; }
+  .ss-data th button { width: 100%; text-align: inherit; padding: 0.8rem 1rem; font: inherit; font-size: 0.82rem; font-variation-settings: 'wght' 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-2); }
+  .ss-data th button i::after { content: '↕'; opacity: 0.3; } .ss-data th button[data-dir='asc'] i::after { content: '↑'; opacity: 1; color: var(--accent); } .ss-data th button[data-dir='desc'] i::after { content: '↓'; opacity: 1; color: var(--accent); }
+  .ss-data td { padding: 0.75rem 1rem; text-align: right; border-bottom: 1px solid #0e111410; font-size: 1.1rem; font-variation-settings: 'wght' 400; }
+  .ss-data td b { font-weight: 400; font-variation-settings: 'wght' 650; } .ss-data td small { margin-left: 0.6rem; color: var(--fg-3); font-size: 0.85rem; font-style: italic; }
+  .ss-data tr.is-hidden { display: none; }
+  .ss-bar { display: inline-block; width: 4rem; height: 6px; margin-right: 0.7rem; border-radius: 6px; background: linear-gradient(90deg, var(--accent) calc(var(--v) * 100%), #0e111412 0); vertical-align: middle; }
+
+  /* weather */
+  .ss-wx { --day: 0.5; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr); gap: clamp(1rem, 4vw, 3rem); align-items: end; padding: clamp(1.4rem, 4vw, 2.6rem); border-radius: 22px; color: #fff; background: linear-gradient(160deg, color-mix(in oklab, #14243e, #3d8fd6 calc(var(--day) * 100%)), color-mix(in oklab, #0a1222, #9ad0f0 calc(var(--day) * 100%))); transition: background 0.4s; font-family: 'Source Sans 3 Variable', sans-serif; }
+  .ss-wx__city { font-size: 1.4rem; font-variation-settings: 'wght' 600; }
+  .ss-wx__t { font-size: clamp(6rem, 14vw, 10rem); line-height: 0.9; font-variation-settings: 'wght' 200; letter-spacing: -0.05em; font-feature-settings: 'tnum'; }
+  .ss-wx__t sup { font-size: 0.4em; vertical-align: 0.9em; font-variation-settings: 'wght' 300; }
+  .ss-wx__h { font-size: 1.05rem; font-variation-settings: 'wght' 600; opacity: 0.9; }
+  .ss-wx__chart { position: relative; height: 10rem; cursor: ew-resize; touch-action: none; margin-bottom: 1.4rem; }
+  .ss-wx__chart svg { width: 100%; height: 100%; overflow: visible; }
+  .ss-wx__area { fill: #ffffff22; } .ss-wx__line { fill: none; stroke: #fff; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .ss-wx__cursor { position: absolute; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px #ffffff44; pointer-events: none; transition: left 0.15s, top 0.15s; }
+  .ss-wx__hours { position: absolute; left: 0; right: 0; top: 100%; height: 1.4rem; }
+  .ss-wx__hours span { position: absolute; transform: translateX(-50%); padding-top: 0.4rem; font-size: 0.8rem; font-variation-settings: 'wght' 600; opacity: 0.75; font-feature-settings: 'tnum'; }
+
+  @media (max-width: 900px) { .ss-sign, .ss-wx { grid-template-columns: minmax(0, 1fr); } .ss-board__t { min-width: 0; } .ss-board__t th:nth-child(3), .ss-board__t td:nth-child(3) { display: none; } .ss-board__t td { font-size: 1rem; padding: 0.6rem 0.3rem; } .ss-board__t th { padding-inline: 0.3rem; } .ss-hero__sign { font-size: 12vw; } .ss-data td small { display: block; margin: 0; } .ss-bar { display: none; } }
+</style>

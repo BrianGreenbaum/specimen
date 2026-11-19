@@ -1,0 +1,301 @@
+---
+// LORA — new edition. The garden: a vine that writes, a seed packet, a recipe
+// that scales and a gardener's almanac. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('lora');
+const ingredients = [
+  [200, 'g', 'ripe tomatoes, roughly chopped'],
+  [1, '', 'small red onion, sliced thin'],
+  [2, 'tbsp', 'good olive oil'],
+  [0.5, 'tsp', 'flaky sea salt'],
+  [1, 'handful', 'basil leaves, torn'],
+  [100, 'g', 'stale sourdough, in chunks'],
+];
+const months = [
+  ['January', 'Order seeds by the fire. Plan the beds.', 'Leeks, parsnips, kale', 420],
+  ['February', 'Chit the first potatoes on a sunny sill.', 'Purple sprouting broccoli', 430],
+  ['March', 'Sow broad beans, peas and sweet peas.', 'Rhubarb, forced', 470],
+  ['April', 'Sow carrots, beetroot and lettuce outside.', 'Wild garlic, radishes', 520],
+  ['May', 'Plant out tomatoes after the last frost.', 'Asparagus, early salad', 580],
+  ['June', 'Water at dusk. Pinch out side shoots.', 'Strawberries, peas, new potatoes', 650],
+  ['July', 'Feed the tomatoes. Pick before you leave.', 'Courgettes, beans, raspberries', 700],
+  ['August', 'Save seed from the best plants.', 'Tomatoes, sweetcorn, plums', 690],
+  ['September', 'Sow green manure on empty beds.', 'Apples, squash, blackberries', 610],
+  ['October', 'Plant garlic. Rake the leaves into a pile.', 'Pumpkins, pears, chard', 540],
+  ['November', 'Mulch everything. Clean the tools.', 'Celeriac, sprouts', 470],
+  ['December', 'Rest. Read seed catalogues. Dream.', 'Winter cabbage, stored apples', 410],
+];
+---
+<Layout title="Lora — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Lora" showToggle={false} />
+  <div class="ed lo" data-lo>
+    <header class="ed-hero lo-hero" data-hero>
+      <div class="ed-hero__top"><span>Lora · {font.designer} · {font.year}</span><span>Regular 400 to Bold 700, roman & italic</span></div>
+      <h1 class="ed-hero__word lo-hero__word" aria-label="Lora">{[...'Lora'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A contemporary serif with <em>roots in calligraphy</em>, made for stories.
+          <span class="ed-hero__hint" data-fine>Move the pointer quickly to make wind. Click to water the letters; they grow bolder, then wilt.</span>
+          <span class="ed-hero__hint" data-coarse>Swipe to make wind. Tap to water the letters.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>growth</dt><dd data-hud="w">400</dd></div><div><dt>wind</dt><dd data-hud="k">calm</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-vine>
+        <div class="ed-kicker"><span>01</span> The vine</div>
+        <h2 class="ed-h2">Plant a word.<br /><em>Watch it climb.</em></h2>
+        <div class="ed-body lo-vine">
+          <svg class="lo-vine__svg" viewBox="0 0 1000 360" data-vine-svg aria-hidden="true">
+            <path id="lo-vine-path" class="lo-vine__stem" d="M20 320 C 180 330, 200 140, 360 170 S 560 330, 680 200 S 860 40, 980 90" data-vine-path />
+            <g data-leaves></g>
+            <text class="lo-vine__text" dy="-14"><textPath href="#lo-vine-path" startOffset="2%" data-vine-text>Honeysuckle climbs the garden wall</textPath></text>
+          </svg>
+          <form class="lo-vine__form" data-vine-form><input type="text" maxlength="40" value="Honeysuckle climbs the garden wall" data-vine-in aria-label="Words for the vine" /><button type="submit" class="lo-btn">Plant</button></form>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-seed>
+        <div class="ed-kicker"><span>02</span> The seed packet</div>
+        <h2 class="ed-h2">Save your <em>best seeds</em>.</h2>
+        <div class="ed-body lo-seed">
+          <div class="lo-pkt" data-pkt>
+            <p class="lo-pkt__k">Heirloom · Open pollinated</p>
+            <div class="lo-pkt__art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span></div>
+            <p class="lo-pkt__name" data-pk-name>Sweet Pea</p>
+            <p class="lo-pkt__var" data-pk-var>‘Matucana’</p>
+            <dl class="lo-pkt__dl"><div><dt>Sow</dt><dd data-pk-sow>March</dd></div><div><dt>Height</dt><dd>2 m</dd></div><div><dt>Seeds</dt><dd>approx. 30</dd></div></dl>
+            <p class="lo-pkt__note">Highly scented. Pick often and it will flower all summer long.</p>
+          </div>
+          <div class="lo-seed__ctl">
+            <label class="lo-field"><span>Plant</span><input type="text" value="Sweet Pea" maxlength="18" data-pk-in /></label>
+            <label class="lo-field"><span>Variety</span><input type="text" value="Matucana" maxlength="20" data-pk-vin /></label>
+            <div class="lo-sw" role="radiogroup" aria-label="Flower colour">{[['Violet', '#6b3a7a'], ['Poppy', '#c4402a'], ['Marigold', '#d98e1c'], ['Cornflower', '#3a5fa8'], ['Blush', '#d98aa0']].map(([n, c], i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} aria-label={n} style={`--sw:${c}`} data-pk-col={c}></button>)}</div>
+            <label class="ed-slider"><span>Sow in <b data-pk-mv>March</b></span><input type="range" min="0" max="11" value="2" data-pk-m /></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-recipe>
+        <div class="ed-kicker"><span>03</span> From the garden</div>
+        <h2 class="ed-h2">A recipe that <em>feeds everyone</em>.</h2>
+        <div class="ed-body lo-rec">
+          <article class="lo-card">
+            <p class="lo-card__k">Summer · Serves <b data-rc-n>2</b></p>
+            <p class="lo-card__t">Panzanella</p>
+            <p class="lo-card__d">The salad you make when the tomatoes are too many and the bread is a day old.</p>
+            <div class="lo-card__serves"><button type="button" data-rc-d="-1" aria-label="Fewer servings">−</button><span>Servings</span><button type="button" data-rc-d="1" aria-label="More servings">+</button></div>
+            <ul class="lo-card__ing">{ingredients.map(([q, u, t]) => <li data-q={q} data-u={u}><b data-amt></b><span>{t}</span></li>)}</ul>
+            <ol class="lo-card__steps">
+              <li>Salt the tomatoes in a bowl and leave them to weep for ten minutes.</li>
+              <li>Toss the bread with the oil and the tomato juices.</li>
+              <li>Add the onion and basil. Leave it alone for half an hour. <em>This is the hard part.</em></li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-alm>
+        <div class="ed-kicker"><span>04</span> The almanac</div>
+        <h2 class="ed-h2">A year <em>in the garden</em>.</h2>
+        <div class="ed-body lo-alm">
+          <div class="lo-alm__sun" data-alm-sun aria-hidden="true"></div>
+          <p class="lo-alm__m" data-alm-m>June</p>
+          <p class="lo-alm__do" data-alm-do></p>
+          <p class="lo-alm__eat"><span>In season</span> <em data-alm-eat></em></p>
+          <label class="ed-slider"><span>Month</span><input type="range" min="0" max="11" value="5" data-alm-in /></label>
+          <div class="lo-alm__ticks" aria-hidden="true">{months.map((m) => <span>{(m[0] as string).slice(0, 1)}</span>)}</div>
+          <p class="ed-cap">The month name grows bolder as the days lengthen, from 410 in December to 700 at midsummer.</p>
+        </div>
+        <script type="application/json" data-alm-data set:html={JSON.stringify(months)} />
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>a garden note</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Lora Variable" sample="The roses are early this year" italic axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 700 }]}
+            presets={[{ name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'SemiBold', v: [600] }, { name: 'Bold', v: [700] }, { name: 'Italic', v: [400], italic: true }]} start={4} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-lo]');
+  if (page) {
+    const stop = (el: Element) => el.addEventListener('keydown', (e) => e.stopPropagation());
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Hero: wind and water ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, ls = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    let water = 0, wind = 0, lastX = 0.5;
+    hero.addEventListener('click', (e) => {
+      water = Math.min(1, water + 0.45);
+      const r = hero.getBoundingClientRect();
+      for (let i = 0; i < 14; i++) { const d = document.createElement('i'); d.className = 'lo-drop'; d.style.left = `${e.clientX - r.left + (Math.random() - 0.5) * 120}px`; d.style.top = `${e.clientY - r.top - 60}px`; d.style.animationDelay = `${Math.random() * 0.3}s`; hero.appendChild(d); setTimeout(() => d.remove(), 1400); }
+    });
+    runHero(hero, (f) => {
+      const dx = f.px - lastX; lastX = f.px;
+      wind = wind * 0.94 + (f.live ? dx * 30 : Math.sin(f.t * 0.7) * 0.05);
+      water = Math.max(0, water - 0.0025);
+      const w = 400 + water * 300;
+      ls.forEach((l, i) => {
+        const sway = clamp(wind, -1, 1) * (14 + i * 3) + Math.sin(f.t * 1.3 + i) * (f.reduce ? 0 : 1.5);
+        l.style.transform = `skewX(${(-sway).toFixed(2)}deg)`;
+        l.style.fontVariationSettings = `'wght' ${(w + Math.sin(i + f.t) * water * 20).toFixed(0)}`;
+      });
+      hero.style.setProperty('--wet', water.toFixed(3));
+      hero.querySelector('[data-hud="w"]')!.textContent = String(Math.round(w));
+      hero.querySelector('[data-hud="k"]')!.textContent = Math.abs(wind) > 0.6 ? 'gale' : Math.abs(wind) > 0.25 ? 'breezy' : 'calm';
+    });
+
+    // ---------- Vine ----------
+    const vn = page.querySelector<HTMLElement>('[data-vine]')!, svg = vn.querySelector<SVGSVGElement>('[data-vine-svg]')!, path = vn.querySelector<SVGPathElement>('[data-vine-path]')!;
+    const tp = vn.querySelector<SVGTextPathElement>('[data-vine-text]')!, leaves = vn.querySelector<SVGGElement>('[data-leaves]')!, vin = vn.querySelector<HTMLInputElement>('[data-vine-in]')!;
+    const L = path.getTotalLength();
+    const grow = () => {
+      leaves.innerHTML = '';
+      for (let i = 1; i < 14; i++) {
+        const at = (i / 14) * L, p = path.getPointAtLength(at), q = path.getPointAtLength(Math.min(L, at + 2)), ang = (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI + (i % 2 ? 50 : -50 + 180);
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        g.setAttribute('d', 'M0 0 C 8 -10, 26 -10, 34 0 C 26 10, 8 10, 0 0Z'); g.setAttribute('class', `lo-leaf${i % 4 === 0 ? ' is-bloom' : ''}`);
+        g.setAttribute('transform', `translate(${p.x} ${p.y}) rotate(${ang})`); g.style.animationDelay = `${(i / 14) * 1.6}s`; leaves.appendChild(g);
+      }
+      tp.textContent = vin.value || ' ';
+      svg.classList.remove('is-grow'); void svg.getBoundingClientRect(); svg.classList.add('is-grow');
+    };
+    path.style.setProperty('--len', String(L));
+    stop(vin); vn.querySelector('[data-vine-form]')!.addEventListener('submit', (e) => { e.preventDefault(); grow(); });
+    const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { grow(); io.disconnect(); } }, { threshold: 0.4 }); io.observe(svg);
+
+    // ---------- Seed packet ----------
+    const sd = page.querySelector<HTMLElement>('[data-seed]')!, pkt = sd.querySelector<HTMLElement>('[data-pkt]')!;
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const pin = sd.querySelector<HTMLInputElement>('[data-pk-in]')!, vin2 = sd.querySelector<HTMLInputElement>('[data-pk-vin]')!, pm = sd.querySelector<HTMLInputElement>('[data-pk-m]')!;
+    [pin, vin2].forEach(stop);
+    pin.addEventListener('input', () => (sd.querySelector('[data-pk-name]')!.textContent = pin.value || ' '));
+    vin2.addEventListener('input', () => (sd.querySelector('[data-pk-var]')!.textContent = vin2.value ? `‘${vin2.value}’` : ' '));
+    pm.addEventListener('input', () => { const m = MONTHS[+pm.value]; sd.querySelector('[data-pk-mv]')!.textContent = m; sd.querySelector('[data-pk-sow]')!.textContent = m; });
+    const sws = Array.from(sd.querySelectorAll<HTMLElement>('[data-pk-col]'));
+    sws.forEach((b) => b.addEventListener('click', () => { pkt.style.setProperty('--fl', b.dataset.pkCol!); sws.forEach((o) => o.setAttribute('aria-checked', String(o === b))); }));
+
+    // ---------- Recipe ----------
+    const rc = page.querySelector<HTMLElement>('[data-recipe]')!; let serves = 2;
+    const FR: [number, string][] = [[0.125, '⅛'], [0.25, '¼'], [0.333, '⅓'], [0.5, '½'], [0.667, '⅔'], [0.75, '¾']];
+    const nice = (v: number, u: string) => {
+      if (u === 'g') return `${Math.round(v / 5) * 5} g`;
+      const whole = Math.floor(v + 0.02), fr = v - whole, f = FR.find(([x]) => Math.abs(x - fr) < 0.06);
+      const n = f ? `${whole || ''}${f[1]}` : String(Math.round(v * 10) / 10);
+      return u ? `${n} ${u}${u === 'handful' && v > 1.1 ? 's' : ''}` : n;
+    };
+    const paintR = () => {
+      rc.querySelector('[data-rc-n]')!.textContent = String(serves);
+      rc.querySelectorAll<HTMLElement>('[data-q]').forEach((li) => { const b = li.querySelector<HTMLElement>('[data-amt]')!; b.textContent = nice((+li.dataset.q! * serves) / 2, li.dataset.u!); b.classList.remove('is-new'); void b.offsetWidth; b.classList.add('is-new'); });
+    };
+    rc.querySelectorAll<HTMLElement>('[data-rc-d]').forEach((b) => b.addEventListener('click', () => { serves = clamp(serves + +b.dataset.rcD!, 1, 12); paintR(); }));
+    paintR();
+
+    // ---------- Almanac ----------
+    const al = page.querySelector<HTMLElement>('[data-alm]')!, M: [string, string, string, number][] = JSON.parse(al.querySelector('[data-alm-data]')!.textContent!);
+    const ain = al.querySelector<HTMLInputElement>('[data-alm-in]')!, mEl = al.querySelector<HTMLElement>('[data-alm-m]')!;
+    const paintA = () => {
+      const [m, d, e, w] = M[+ain.value]; mEl.textContent = m; mEl.style.fontVariationSettings = `'wght' ${w}`;
+      al.querySelector('[data-alm-do]')!.textContent = d; al.querySelector('[data-alm-eat]')!.textContent = e;
+      const k = (w - 400) / 300; al.style.setProperty('--sun', k.toFixed(2));
+      if (!reduce) { mEl.classList.remove('is-new'); void mEl.offsetWidth; mEl.classList.add('is-new'); }
+    };
+    ain.addEventListener('input', paintA); paintA();
+  }
+</script>
+
+<style is:global>
+  .lo { --ed-head: 'Lora Variable', Georgia, serif; --ed-head-vf: 'wght' 500; --ed-em-vf: 'wght' 400; --ed-lede-vf: 'wght' 500; --ed-radius: 8px; --leaf: #4f6b3a; }
+  .lo em { font-style: italic; } .lo .ed-h2 { letter-spacing: -0.02em; line-height: 1; }
+  .lo .ed-story__prose { font-family: 'Lora Variable', serif; font-size: 1.15rem; line-height: 1.7; } .lo .ed-story__prose em { font-style: italic; }
+  .lo-btn { padding: 0.8rem 1.4rem; border-radius: 100px; background: var(--leaf); color: #f7f3eb; font: italic 400 1.05rem/1 'Lora Variable', serif; }
+  .lo-field { display: grid; gap: 0.35rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .lo-field input, .lo-vine__form input { font: 400 1.35rem/1.3 'Lora Variable', serif; background: none; border: 0; border-bottom: 1px solid var(--fg); color: var(--fg); outline: none; padding: 0.2rem 0; text-transform: none; letter-spacing: 0; width: 100%; }
+
+  .lo-hero { --wet: 0; overflow: hidden; background: linear-gradient(transparent 70%, color-mix(in oklab, var(--leaf) calc(var(--wet) * 18%), transparent)), var(--bg); }
+  .lo-hero__word { display: flex; font-family: 'Lora Variable', serif; font-style: italic; font-size: min(28vw, 54svh); line-height: 1; letter-spacing: -0.02em; color: color-mix(in oklab, var(--fg), var(--leaf) calc(var(--wet) * 70%)); }
+  .lo-hero__word [data-l] { display: inline-block; transform-origin: 50% 100%; }
+  .lo-drop { position: absolute; width: 3px; height: 14px; border-radius: 3px; background: #6a9ac0; pointer-events: none; animation: lo-rain 0.9s ease-in forwards; }
+  @keyframes lo-rain { from { transform: translateY(-20px); opacity: 0; } 20% { opacity: 1; } to { transform: translateY(220px); opacity: 0; } }
+
+  /* vine */
+  .lo-vine { display: grid; gap: 1rem; }
+  .lo-vine__svg { width: 100%; height: auto; overflow: visible; }
+  .lo-vine__stem { fill: none; stroke: var(--leaf); stroke-width: 4; stroke-linecap: round; stroke-dasharray: var(--len); stroke-dashoffset: 0; }
+  .is-grow .lo-vine__stem { animation: lo-stem 2s var(--ease) both; }
+  @keyframes lo-stem { from { stroke-dashoffset: var(--len); } }
+  .lo-leaf { fill: #6f8f4e; transform-box: fill-box; transform-origin: 0 50%; }
+  .lo-leaf.is-bloom { fill: var(--accent); }
+  .is-grow .lo-leaf { animation: lo-leaf 0.6s var(--ease) both; }
+  @keyframes lo-leaf { from { scale: 0; } }
+  .lo-vine__text { font: italic 400 34px 'Lora Variable', serif; fill: var(--fg); }
+  .is-grow .lo-vine__text { animation: lo-txt 2.4s 0.6s var(--ease) both; }
+  @keyframes lo-txt { from { opacity: 0; letter-spacing: -0.3em; } }
+  .lo-vine__form { display: flex; gap: 1rem; align-items: end; max-width: 40rem; }
+
+  /* seed packet */
+  .lo-seed { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .lo-pkt { --fl: #6b3a7a; justify-self: center; width: min(100%, 22rem); padding: 1.6rem 1.6rem 1.4rem; background: #efe5cf; color: #2a2116; box-shadow: 0 30px 50px -30px #0007, inset 0 0 0 6px #efe5cf, inset 0 0 0 7px #2a211655; display: grid; gap: 0.5rem; text-align: center; clip-path: polygon(0 3%, 6% 0, 12% 3%, 18% 0, 24% 3%, 30% 0, 36% 3%, 42% 0, 48% 3%, 54% 0, 60% 3%, 66% 0, 72% 3%, 78% 0, 84% 3%, 90% 0, 96% 3%, 100% 0, 100% 100%, 0 100%); }
+  .lo-pkt__k { font: italic 400 0.85rem/1 'Lora Variable', serif; color: #6b5a40; margin-top: 0.6rem; }
+  .lo-pkt__art { position: relative; height: 10rem; margin: 0.6rem auto; width: 10rem; }
+  .lo-pkt__art i { position: absolute; left: 50%; top: 36%; width: 3.4rem; height: 3.6rem; margin: -1.8rem 0 0 -1.7rem; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(circle at 50% 80%, color-mix(in oklab, var(--fl), #fff 40%), var(--fl)); transform-origin: 50% 100%; transition: background 0.4s; }
+  .lo-pkt__art i:nth-child(1) { transform: rotate(-60deg) translateY(-1.2rem); } .lo-pkt__art i:nth-child(2) { transform: rotate(-20deg) translateY(-1.6rem); } .lo-pkt__art i:nth-child(3) { transform: rotate(20deg) translateY(-1.6rem); } .lo-pkt__art i:nth-child(4) { transform: rotate(60deg) translateY(-1.2rem); }
+  .lo-pkt__art i:nth-child(5) { transform: translateY(-0.2rem) scale(0.8); filter: brightness(0.85); }
+  .lo-pkt__art span { position: absolute; left: 50%; top: 45%; bottom: 0; width: 3px; margin-left: -1.5px; background: var(--leaf); }
+  .lo-pkt__art span::before, .lo-pkt__art span::after { content: ''; position: absolute; top: 40%; width: 2.2rem; height: 1rem; border-radius: 0 100% 0 100%; background: #6f8f4e; }
+  .lo-pkt__art span::before { right: 1px; transform: rotate(20deg); } .lo-pkt__art span::after { left: 1px; transform: scaleX(-1) rotate(20deg); }
+  .lo-pkt__name { font-family: 'Lora Variable', serif; font-variation-settings: 'wght' 700; font-size: 2.6rem; line-height: 1; overflow-wrap: anywhere; }
+  .lo-pkt__var { font: italic 400 1.3rem/1 'Lora Variable', serif; color: var(--fl); transition: color 0.4s; filter: brightness(0.8); }
+  .lo-pkt__dl { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #2a211633; border-bottom: 1px solid #2a211633; padding: 0.5rem 0; margin-top: 0.4rem; }
+  .lo-pkt__dl dt { font: 400 0.6rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #6b5a40; } .lo-pkt__dl dd { font: 600 0.95rem/1.5 'Lora Variable', serif; }
+  .lo-pkt__note { font: italic 400 0.9rem/1.4 'Lora Variable', serif; color: #4a3d2a; }
+  .lo-seed__ctl { display: grid; gap: 1.3rem; }
+  .lo-sw { display: flex; gap: 0.6rem; }
+  .lo-sw button { width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--sw); transition: transform 0.2s; }
+  .lo-sw button[aria-checked='true'] { transform: scale(1.15); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--sw); }
+
+  /* recipe */
+  .lo-rec { display: grid; justify-items: center; }
+  .lo-card { width: min(100%, 44rem); padding: clamp(1.6rem, 5vw, 3.4rem); background: #fffdf8; box-shadow: 0 30px 60px -40px #0007; border-radius: 4px; background-image: repeating-linear-gradient(transparent 0 2.1rem, #8b3a1e14 2.1rem calc(2.1rem + 1px)); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.8rem 2.4rem; }
+  .lo-card__k, .lo-card__t, .lo-card__d, .lo-card__serves { grid-column: 1 / -1; }
+  .lo-card__k { font: 400 0.75rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); } .lo-card__k b { font-weight: 400; }
+  .lo-card__t { font-family: 'Lora Variable', serif; font-variation-settings: 'wght' 700; font-size: clamp(2.8rem, 7vw, 5rem); line-height: 1; letter-spacing: -0.02em; }
+  .lo-card__d { font: italic 400 1.2rem/1.5 'Lora Variable', serif; color: var(--fg-2); max-width: 40ch; }
+  .lo-card__serves { display: flex; gap: 0.8rem; align-items: center; margin: 0.6rem 0; font: 400 0.75rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .lo-card__serves button { width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1px solid var(--fg); font: 400 1.3rem/1 'Lora Variable', serif; transition: background 0.2s; }
+  .lo-card__serves button:hover { background: var(--fg); color: var(--bg); }
+  .lo-card__ing { list-style: none; display: grid; gap: 0.55rem; align-content: start; font: 400 1.05rem/1.4 'Lora Variable', serif; }
+  .lo-card__ing li { display: grid; grid-template-columns: 5.6em 1fr; gap: 0.4em; } .lo-card__ing b { font-weight: 400; font-variation-settings: 'wght' 700; color: var(--accent); }
+  .lo-card__ing b.is-new { animation: lo-num 0.4s var(--ease); } @keyframes lo-num { from { transform: translateY(-6px); opacity: 0; } }
+  .lo-card__steps { padding-left: 1.2rem; display: grid; gap: 0.6rem; font: 400 1.05rem/1.5 'Lora Variable', serif; }
+  .lo-card__steps li::marker { font-style: italic; color: var(--accent); }
+
+  /* almanac */
+  .lo-alm { --sun: 0.5; position: relative; display: grid; gap: 0.8rem; padding: clamp(1.5rem, 5vw, 4rem); border-radius: 18px; overflow: hidden; background: linear-gradient(color-mix(in oklab, #cfe0e8, #fbe7b5 calc(var(--sun) * 100%)), var(--bg)); transition: background 0.5s; }
+  .lo-alm__sun { position: absolute; right: 8%; top: calc(60% - var(--sun) * 50%); width: 8rem; height: 8rem; border-radius: 50%; background: radial-gradient(circle, #ffd76a, #f0a83a 60%, transparent 62%); filter: blur(1px); opacity: calc(0.4 + var(--sun) * 0.6); transition: top 0.6s var(--ease), opacity 0.6s; box-shadow: 0 0 80px #ffd76a88; }
+  .lo-alm__m { position: relative; font-family: 'Lora Variable', serif; font-size: clamp(4rem, 13vw, 10rem); line-height: 1; letter-spacing: -0.03em; transition: font-variation-settings 0.4s; }
+  .lo-alm__m.is-new { animation: lo-mon 0.5s var(--ease); } @keyframes lo-mon { from { opacity: 0.2; transform: translateX(-10px); } }
+  .lo-alm__do { position: relative; font: italic 400 clamp(1.3rem, 2.4vw, 1.9rem)/1.3 'Lora Variable', serif; max-width: 30ch; }
+  .lo-alm__eat { position: relative; font-family: 'Lora Variable', serif; font-size: 1.1rem; color: var(--fg-2); margin-bottom: 1rem; }
+  .lo-alm__eat span { font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-right: 0.6rem; }
+  .lo-alm__ticks { display: flex; justify-content: space-between; font: italic 400 0.85rem/1 'Lora Variable', serif; color: var(--fg-3); padding: 0 0.3rem; }
+
+  @media (max-width: 900px) { .lo-seed, .lo-card { grid-template-columns: minmax(0, 1fr); } .lo-vine__text { font-size: 44px; } .lo-alm__sun { width: 5rem; height: 5rem; } }
+</style>
