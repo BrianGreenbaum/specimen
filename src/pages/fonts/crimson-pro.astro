@@ -1,0 +1,281 @@
+---
+// CRIMSON PRO — new edition. The scholar's book: footnotes, an illuminated
+// initial, a shelf of spines, and the justified page. Every example is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('crimson-pro');
+const notes = [
+  'Old-style serifs descend from the roman types cut in Venice around 1470, themselves modelled on humanist handwriting.',
+  'The contrast between thick and thin strokes comes from the angle of a broad-nibbed pen held at roughly thirty degrees.',
+  'A book face must survive ten thousand repetitions of the letter e without the reader ever noticing it.',
+  'Crimson was first released in 2010 and later redrawn as Crimson Pro, with a variable weight axis from 200 to 900.',
+];
+const books = [
+  { t: 'On Margins', a: 'H. Ashdown', c: '#7a2a1c', w: 700, h: 92 },
+  { t: 'The Quiet Page', a: 'L. Ferrer', c: '#2d3a4f', w: 400, h: 84 },
+  { t: 'Ligatures', a: 'M. Okafor', c: '#d9c9a6', w: 300, h: 96, ink: '#2b1d10' },
+  { t: 'A History of Ink', a: 'R. Vane', c: '#3e4a2c', w: 800, h: 88 },
+  { t: 'Notes & Queries', a: 'Anon.', c: '#5a1f2e', w: 500, h: 78 },
+  { t: 'The Long Sentence', a: 'C. Imre', c: '#1e2b24', w: 250, h: 94 },
+  { t: 'Vellum', a: 'P. Saito', c: '#a5703a', w: 900, h: 82 },
+  { t: 'Errata', a: 'J. Moreau', c: '#2a2622', w: 600, h: 90 },
+];
+const para = 'Every page of a well-made book is a small agreement between the writer and the printer. The writer supplies the words; the printer decides where each line will break, how wide the measure will be, and how much air will sit between the letters. When the agreement holds, the reader notices nothing at all, which is the highest praise a page can receive. When it fails, rivers of white space run down the paragraph, words are stretched or crushed, and the eye stumbles from line to line looking for somewhere to rest.';
+---
+<Layout title="Crimson Pro — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Crimson Pro" showToggle={false} />
+  <div class="ed cp" data-cp>
+    <header class="ed-hero cp-hero" data-hero>
+      <div class="ed-hero__top"><span>Crimson Pro · {font.designer} · {font.year}</span><span>ExtraLight 200 to Black 900, roman & italic</span></div>
+      <h1 class="ed-hero__word cp-hero__word" aria-label="Crimson">{[...'Crimson'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A book face in the old style, made for <em>long hours of reading</em>.
+          <span class="ed-hero__hint" data-fine>Move across the word: ink pools where the pen lingers. Click to let a drop fall.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the word to pool the ink. Tap to let a drop fall.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>weight</dt><dd data-hud="w">200</dd></div><div><dt>drops</dt><dd data-hud="d">0</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-fn>
+        <div class="ed-kicker"><span>01</span> Footnotes</div>
+        <h2 class="ed-h2">The best part of a book<br />is <em>at the bottom</em>.</h2>
+        <div class="ed-body cp-fn">
+          <article class="cp-fn__page">
+            <p class="cp-fn__text">
+              The type on this page belongs to a family that reaches back five centuries<button type="button" class="cp-ref" data-ref="0">1</button>.
+              Its strokes swell and thin as though drawn with a pen<button type="button" class="cp-ref" data-ref="1">2</button>,
+              though no pen ever touched it. It was made for the long haul: chapters, not headlines<button type="button" class="cp-ref" data-ref="2">3</button>.
+              And it is younger than it looks<button type="button" class="cp-ref" data-ref="3">4</button>.
+            </p>
+            <ol class="cp-fn__notes">{notes.map((n, i) => <li data-note={i}><b>{i + 1}</b> {n}</li>)}</ol>
+          </article>
+          <p class="ed-cap">Click a number. The note rises to meet you, and the reference glows until you look away.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-ill>
+        <div class="ed-kicker"><span>02</span> Illumination</div>
+        <h2 class="ed-h2">Begin the chapter<br />with <em>a flourish</em>.</h2>
+        <div class="ed-body cp-ill">
+          <div class="cp-ill__page" data-ill-page>
+            <span class="cp-ill__cap" data-ill-cap>O</span>
+            <p class="cp-ill__text"><span data-ill-rest>nce upon a time, in a library that had no end, a reader found a book with no title. Its pages were blank but for the first letter of each chapter, painted in gold and crimson and the blue of a winter sky. She began to read anyway.</span></p>
+          </div>
+          <div class="cp-ill__ctl">
+            <label class="cp-ill__in"><span>Your initial</span><input type="text" maxlength="1" value="O" data-ill-in aria-label="Initial letter" /></label>
+            <div class="cp-ill__sw" role="radiogroup" aria-label="Pigment">
+              {[['Crimson', '#a34a2a'], ['Lapis', '#24427a'], ['Verdigris', '#3c7a68'], ['Gold', '#b88a2a'], ['Ink', '#241d16']].map(([n, c], i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} aria-label={n} style={`--sw:${c}`} data-ill-sw={c}></button>)}
+            </div>
+            <label class="ed-slider"><span>Weight <b data-ill-wv>600</b></span><input type="range" min="200" max="900" value="600" data-ill-w /></label>
+            <div class="cp-ill__frames" role="radiogroup" aria-label="Frame">{['Plain', 'Boxed', 'Vine'].map((n, i) => <button type="button" role="radio" aria-checked={i === 2 ? 'true' : 'false'} data-ill-frame={n.toLowerCase()}>{n}</button>)}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-shelf>
+        <div class="ed-kicker"><span>03</span> The shelf</div>
+        <h2 class="ed-h2">Eight weights,<br /><em>eight spines</em>.</h2>
+        <div class="ed-body cp-shelf">
+          <div class="cp-shelf__row">
+            {books.map((b, i) => (
+              <button type="button" class="cp-book" style={`--bk:${b.c};--ink:${b.ink ?? '#f6f1e7'};--bh:${b.h}%;--bw:${b.w}`} data-book={i} aria-label={`${b.t} by ${b.a}`}>
+                <span class="cp-book__t">{b.t}</span><span class="cp-book__a">{b.a}</span>
+              </button>
+            ))}
+          </div>
+          <div class="cp-shelf__plank"></div>
+          <div class="cp-title" data-title hidden>
+            <p class="cp-title__a" data-title-a></p>
+            <p class="cp-title__t" data-title-t></p>
+            <p class="cp-title__rule">❦</p>
+            <p class="cp-title__imp">Set in Crimson Pro, weight <span data-title-w></span></p>
+          </div>
+          <p class="ed-cap">Pull a book off the shelf to open its title page. Each spine is set at a different weight.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-just>
+        <div class="ed-kicker"><span>04</span> The measure</div>
+        <h2 class="ed-h2">Where every line <em>breaks</em>.</h2>
+        <div class="ed-body cp-just">
+          <div class="cp-just__ctl">
+            <div class="cp-just__seg" role="radiogroup" aria-label="Alignment">{['Ragged', 'Justified', 'Justified + hyphens'].map((n, i) => <button type="button" role="radio" aria-checked={i === 2 ? 'true' : 'false'} data-just-mode={i}>{n}</button>)}</div>
+            <label class="ed-slider"><span>Measure <b data-just-mv>62</b> characters</span><input type="range" min="22" max="90" value="62" data-just-m /></label>
+            <label class="cp-just__rivers"><input type="checkbox" data-just-rv /> Show the white space</label>
+          </div>
+          <div class="cp-just__wrap"><p class="cp-just__p" data-just-p lang="en">{para}</p></div>
+          <p class="ed-cap">A narrow measure with no hyphens opens rivers. Hyphenation closes them. Most good books use between 55 and 75 characters per line.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Set <em>a title page</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Crimson Pro Variable" sample="The Collected Letters" italic axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 900 }]}
+            presets={[{ name: 'ExtraLight', v: [200] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [300], italic: true }]} start={1} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp, near } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-cp]');
+  if (page) {
+    // ---------- Hero: ink pools under the pointer; clicks drop blots ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const ls = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const ink = ls.map(() => 0); let drops = 0;
+    hero.addEventListener('click', (e) => {
+      const r = hero.getBoundingClientRect(); const d = document.createElement('i'); d.className = 'cp-drop';
+      d.style.left = `${e.clientX - r.left}px`; d.style.top = `${e.clientY - r.top}px`; hero.appendChild(d); setTimeout(() => d.remove(), 2600);
+      drops++; hero.querySelector('[data-hud="d"]')!.textContent = String(drops);
+      ls.forEach((l, i) => { const b = l.getBoundingClientRect(); if (Math.abs(b.left + b.width / 2 - e.clientX) < b.width * 1.5) ink[i] = 1; });
+    });
+    runHero(hero, (f) => {
+      let sum = 0;
+      ls.forEach((l, i) => {
+        const pos = f.live ? f.px : 0.5 + Math.sin(f.t * 0.5) * 0.45;
+        const k = near(i, pos * (ls.length - 1), 1.6);
+        ink[i] = Math.max(ink[i] * 0.992, k * (f.live ? 0.9 : 0.6));
+        const w = 200 + ink[i] * 700; sum += w;
+        l.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`;
+        l.style.color = `color-mix(in oklab, var(--fg), #a34a2a ${(ink[i] * 100).toFixed(0)}%)`;
+      });
+      hero.querySelector('[data-hud="w"]')!.textContent = String(Math.round(sum / ls.length));
+    });
+
+    // ---------- Footnotes ----------
+    const fn = page.querySelector<HTMLElement>('[data-fn]')!;
+    const refs = Array.from(fn.querySelectorAll<HTMLElement>('[data-ref]')), notesEl = Array.from(fn.querySelectorAll<HTMLElement>('[data-note]'));
+    const pick = (i: number) => { refs.forEach((r, j) => r.classList.toggle('is-on', i === j)); notesEl.forEach((n, j) => n.classList.toggle('is-on', i === j)); };
+    refs.forEach((r) => { r.addEventListener('click', () => pick(+r.dataset.ref!)); r.addEventListener('mouseenter', () => pick(+r.dataset.ref!)); });
+    fn.querySelector('.cp-fn__page')!.addEventListener('mouseleave', () => pick(-1));
+
+    // ---------- Illuminated initial ----------
+    const ill = page.querySelector<HTMLElement>('[data-ill]')!, ipage = ill.querySelector<HTMLElement>('[data-ill-page]')!, cap = ill.querySelector<HTMLElement>('[data-ill-cap]')!;
+    const iin = ill.querySelector<HTMLInputElement>('[data-ill-in]')!;
+    iin.addEventListener('keydown', (e) => e.stopPropagation());
+    iin.addEventListener('input', () => { const c = (iin.value || 'O').toUpperCase(); cap.textContent = c; cap.classList.remove('is-new'); void cap.offsetWidth; cap.classList.add('is-new'); });
+    const sws = Array.from(ill.querySelectorAll<HTMLElement>('[data-ill-sw]'));
+    sws.forEach((s) => s.addEventListener('click', () => { ipage.style.setProperty('--pig', s.dataset.illSw!); sws.forEach((o) => o.setAttribute('aria-checked', String(o === s))); }));
+    const iw = ill.querySelector<HTMLInputElement>('[data-ill-w]')!; const pw = () => { cap.style.fontVariationSettings = `'wght' ${iw.value}`; ill.querySelector('[data-ill-wv]')!.textContent = iw.value; }; iw.addEventListener('input', pw); pw();
+    const frs = Array.from(ill.querySelectorAll<HTMLElement>('[data-ill-frame]'));
+    frs.forEach((b) => b.addEventListener('click', () => { ipage.dataset.frame = b.dataset.illFrame; frs.forEach((o) => o.setAttribute('aria-checked', String(o === b))); }));
+    ipage.dataset.frame = 'vine';
+
+    // ---------- Shelf ----------
+    const sh = page.querySelector<HTMLElement>('[data-shelf]')!, title = sh.querySelector<HTMLElement>('[data-title]')!;
+    const bks = Array.from(sh.querySelectorAll<HTMLElement>('[data-book]'));
+    bks.forEach((b) => b.addEventListener('click', () => {
+      const on = !b.classList.contains('is-out'); bks.forEach((o) => o.classList.remove('is-out'));
+      if (!on) { title.hidden = true; return; }
+      b.classList.add('is-out'); const s = getComputedStyle(b);
+      title.hidden = false; title.style.setProperty('--bk', s.getPropertyValue('--bk'));
+      title.querySelector('[data-title-t]')!.textContent = b.querySelector('.cp-book__t')!.textContent;
+      title.querySelector('[data-title-a]')!.textContent = b.querySelector('.cp-book__a')!.textContent;
+      const w = s.getPropertyValue('--bw').trim(); title.querySelector('[data-title-w]')!.textContent = w;
+      (title.querySelector('[data-title-t]') as HTMLElement).style.fontVariationSettings = `'wght' ${w}`;
+      title.classList.remove('is-new'); void title.offsetWidth; title.classList.add('is-new');
+    }));
+
+    // ---------- Justification ----------
+    const ju = page.querySelector<HTMLElement>('[data-just]')!, jp = ju.querySelector<HTMLElement>('[data-just-p]')!;
+    const modes = Array.from(ju.querySelectorAll<HTMLElement>('[data-just-mode]'));
+    const setMode = (m: number) => { jp.style.textAlign = m ? 'justify' : 'left'; jp.style.hyphens = m === 2 ? 'auto' : 'manual'; (jp.style as any).webkitHyphens = jp.style.hyphens; modes.forEach((o, i) => o.setAttribute('aria-checked', String(i === m))); };
+    modes.forEach((b, i) => b.addEventListener('click', () => setMode(i))); setMode(2);
+    const jm = ju.querySelector<HTMLInputElement>('[data-just-m]')!; const pm = () => { jp.style.maxWidth = `${jm.value}ch`; ju.querySelector('[data-just-mv]')!.textContent = jm.value; }; jm.addEventListener('input', pm); pm();
+    jp.innerHTML = jp.textContent!.split(' ').map((w) => `<span>${w}</span>`).join(' ');
+    ju.querySelector<HTMLInputElement>('[data-just-rv]')!.addEventListener('change', (e) => jp.classList.toggle('is-rivers', (e.target as HTMLInputElement).checked));
+    void clamp;
+  }
+</script>
+
+<style is:global>
+  .cp { --ed-head: 'Crimson Pro Variable', 'Garamond', serif; --ed-head-vf: 'wght' 500; --ed-em-vf: 'wght' 300; --ed-lede-vf: 'wght' 400; --ed-radius: 2px; --gold: #b88a2a; }
+  .cp em { font-style: italic; } .cp .ed-h2 { line-height: 0.95; letter-spacing: -0.015em; }
+  .cp .ed-story__prose { font-family: 'Crimson Pro Variable', serif; font-size: 1.32rem; } .cp .ed-story__prose em { font-style: italic; }
+
+  .cp-hero { background: radial-gradient(60% 50% at 50% 50%, #fffaf0, transparent), var(--bg); overflow: hidden; cursor: crosshair; }
+  .cp-hero__word { display: flex; font-family: 'Crimson Pro Variable', serif; font-size: min(19vw, 46svh); line-height: 1; letter-spacing: -0.02em; }
+  .cp-drop { position: absolute; width: 1rem; height: 1rem; margin: -0.5rem; border-radius: 50%; background: #a34a2a; pointer-events: none; animation: cp-drop 2.6s var(--ease) forwards; filter: url(#none) blur(0.5px); }
+  @keyframes cp-drop { 0% { transform: scale(0.2); } 15% { transform: scale(3.2, 2.8); opacity: 0.9; } 100% { transform: scale(4.4, 3.8); opacity: 0; } }
+
+  /* footnotes */
+  .cp-fn { display: grid; gap: 1.2rem; }
+  .cp-fn__page { background: #fffcf5; border: 1px solid var(--line); padding: clamp(1.5rem, 5vw, 4.5rem); box-shadow: 0 30px 60px -40px #3a2a1a55; max-width: 52rem; }
+  .cp-fn__text { font-family: 'Crimson Pro Variable', serif; font-size: clamp(1.4rem, 2.6vw, 2.1rem); line-height: 1.45; text-wrap: pretty; }
+  .cp-ref { position: relative; top: -0.7em; font: 600 0.55em/1 'Crimson Pro Variable', serif; color: var(--accent); padding: 0.1em 0.2em; margin-left: 0.05em; border-radius: 3px; transition: background 0.2s, color 0.2s; }
+  .cp-ref.is-on { background: var(--accent); color: #fff; }
+  .cp-fn__notes { list-style: none; margin-top: 2.6rem; padding-top: 1rem; border-top: 1px solid var(--fg); width: 40%; min-width: 16rem; display: grid; gap: 0.5rem; }
+  .cp-fn__notes li { font-family: 'Crimson Pro Variable', serif; font-size: 1rem; line-height: 1.4; color: var(--fg-3); transition: color 0.3s, transform 0.4s var(--ease); }
+  .cp-fn__notes li b { color: var(--accent); font-weight: 600; margin-right: 0.3em; }
+  .cp-fn__notes li.is-on { color: var(--fg); transform: translateX(0.6rem) scale(1.04); transform-origin: left; }
+  .cp-fn__notes li.is-on { background: linear-gradient(transparent 60%, #a34a2a22 60%); }
+
+  /* illumination */
+  .cp-ill { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .cp-ill__page { --pig: #a34a2a; background: #fffcf5; padding: clamp(1.5rem, 4vw, 3.5rem); border: 1px solid var(--line); box-shadow: 0 30px 60px -40px #3a2a1a55; }
+  .cp-ill__cap { float: left; display: grid; place-items: center; width: 1.25em; height: 1.25em; margin: 0.08em 0.15em 0 0; font-family: 'Crimson Pro Variable', serif; font-size: clamp(6rem, 12vw, 9.5rem); line-height: 1; color: var(--pig); transition: color 0.3s, background 0.3s, box-shadow 0.3s; }
+  .cp-ill__cap.is-new { animation: cp-ink 0.7s var(--ease); }
+  @keyframes cp-ink { from { opacity: 0; filter: blur(8px); transform: scale(1.2); } }
+  [data-frame='boxed'] .cp-ill__cap { background: var(--pig); color: #fffcf5; box-shadow: inset 0 0 0 4px #fffcf5, inset 0 0 0 6px var(--gold), 0 0 0 2px var(--gold); }
+  [data-frame='vine'] .cp-ill__cap { background:
+      radial-gradient(circle at 15% 20%, var(--gold) 0 4px, transparent 5px), radial-gradient(circle at 85% 80%, var(--gold) 0 4px, transparent 5px),
+      radial-gradient(circle at 85% 18%, #3c7a6888 0 7px, transparent 8px), radial-gradient(circle at 15% 82%, #3c7a6888 0 7px, transparent 8px),
+      repeating-conic-gradient(from 0deg at 50% 50%, #b88a2a14 0 10deg, transparent 10deg 20deg), #fbf2dc;
+    box-shadow: inset 0 0 0 3px var(--gold), inset 0 0 0 7px #fbf2dc, inset 0 0 0 8px var(--pig); }
+  .cp-ill__text { font-family: 'Crimson Pro Variable', serif; font-size: clamp(1.15rem, 1.8vw, 1.45rem); line-height: 1.5; }
+  .cp-ill__text::first-line { font-variant-caps: small-caps; letter-spacing: 0.04em; }
+  .cp-ill__ctl { display: grid; gap: 1.2rem; }
+  .cp-ill__in { display: flex; align-items: baseline; gap: 1rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .cp-ill__in input { width: 3.4rem; font: 600 2.6rem/1 'Crimson Pro Variable', serif; text-align: center; background: none; border: 0; border-bottom: 2px solid var(--fg); color: var(--fg); outline: none; }
+  .cp-ill__sw { display: flex; gap: 0.6rem; }
+  .cp-ill__sw button { width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--sw); box-shadow: inset 0 0 0 2px #fff6; transition: transform 0.2s; }
+  .cp-ill__sw button[aria-checked='true'] { transform: scale(1.18); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--sw); }
+  .cp-ill__frames, .cp-just__seg { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .cp-ill__frames button, .cp-just__seg button { padding: 0.5rem 1rem; border: 1px solid var(--line); font: italic 400 1.05rem/1 'Crimson Pro Variable', serif; border-radius: 100px; }
+  .cp-ill__frames button[aria-checked='true'], .cp-just__seg button[aria-checked='true'] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  /* shelf */
+  .cp-shelf { display: grid; justify-items: center; }
+  .cp-shelf__row { display: flex; align-items: flex-end; gap: 3px; height: clamp(18rem, 40vw, 26rem); max-width: 100%; }
+  .cp-book { position: relative; width: clamp(2.1rem, 9.5vw, 4.4rem); height: var(--bh); background: linear-gradient(90deg, #0003, transparent 18%, #fff1 50%, transparent 82%, #0004), var(--bk); color: var(--ink); border-radius: 3px 3px 1px 1px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 1rem 0 0.8rem; transition: transform 0.4s var(--ease); box-shadow: inset 0 0.8rem 0 -0.6rem #b88a2a99, inset 0 -0.8rem 0 -0.6rem #b88a2a99; }
+  .cp-book:hover { transform: translateY(-0.6rem); }
+  .cp-book.is-out { transform: translateY(-2.6rem) rotate(-3deg); }
+  .cp-book__t { writing-mode: vertical-rl; transform: rotate(180deg); font-family: 'Crimson Pro Variable', serif; font-variation-settings: 'wght' var(--bw); font-size: clamp(0.9rem, 2.1vw, 1.5rem); white-space: nowrap; }
+  .cp-book__a { font: italic 400 0.7rem/1 'Crimson Pro Variable', serif; writing-mode: vertical-rl; transform: rotate(180deg); opacity: 0.7; }
+  .cp-shelf__plank { width: min(100%, 44rem); height: 1.1rem; background: linear-gradient(#6b4a2c, #3e2a18); border-radius: 2px; box-shadow: 0 16px 20px -12px #0007; }
+  .cp-title { margin-top: 2.2rem; width: min(100%, 26rem); aspect-ratio: 0.7; background: #fffcf5; border: 1px solid var(--line); box-shadow: 0 30px 60px -30px #3a2a1a77, inset 0 0 0 10px #fffcf5, inset 0 0 0 11px var(--bk); display: grid; align-content: center; justify-items: center; gap: 1.2rem; text-align: center; padding: 2rem; }
+  .cp-title[hidden] { display: none; }
+  .cp-title.is-new { animation: cp-open 0.7s var(--ease); }
+  @keyframes cp-open { from { transform: perspective(900px) rotateY(-70deg); transform-origin: left; opacity: 0; } }
+  .cp-title__a { font-family: 'Crimson Pro Variable', serif; font-variant-caps: all-small-caps; letter-spacing: 0.2em; font-size: 1.2rem; }
+  .cp-title__t { font-family: 'Crimson Pro Variable', serif; font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1; color: var(--bk); }
+  .cp-title__rule { color: var(--gold); font-size: 1.6rem; }
+  .cp-title__imp { font: italic 400 0.95rem/1.3 'Crimson Pro Variable', serif; color: var(--fg-3); }
+
+  /* justification */
+  .cp-just { display: grid; gap: 1.4rem; }
+  .cp-just__ctl { display: grid; grid-template-columns: auto minmax(12rem, 1fr) auto; gap: 1rem 2rem; align-items: center; }
+  .cp-just__rivers { display: flex; gap: 0.5rem; align-items: center; font: 400 0.75rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
+  .cp-just__wrap { background: #fffcf5; border: 1px solid var(--line); padding: clamp(1.2rem, 4vw, 3rem); overflow: hidden; }
+  .cp-just__p { font-family: 'Crimson Pro Variable', serif; font-size: clamp(1.15rem, 1.9vw, 1.5rem); line-height: 1.5; transition: max-width 0.25s; margin: 0 auto; }
+  .cp-just__wrap:has(.is-rivers) { background: #a34a2a; }
+  .cp-just__p.is-rivers span { background: #fffcf5; padding: 0.26em 0; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  @media (max-width: 900px) { .cp-ill, .cp-just__ctl { grid-template-columns: minmax(0, 1fr); } .cp-fn__notes { width: 100%; min-width: 0; } }
+</style>
