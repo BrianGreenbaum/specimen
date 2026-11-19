@@ -2,6 +2,7 @@
 // PINYON SCRIPT — new edition. A pen that writes itself: every example on
 // this page is new and built for this face.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -94,7 +95,8 @@ const cards = ['Mr. Hartwell', 'Ms. Okonkwo', 'Dr. Lindqvist', 'Grandmama'];
         </div>
       </section>
 
-      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Regular only' }]} />
+      <PosterWall slug="pinyon-script" n="05" />
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Regular only' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

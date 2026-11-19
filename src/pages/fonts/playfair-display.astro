@@ -2,6 +2,7 @@
 // PLAYFAIR DISPLAY — new edition. Curtain up: a playbill, three paperbacks,
 // a drop-cap machine and a wine list. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -85,8 +86,9 @@ const wines = [['Champagne, Brut Réserve', 'NV', '14'], ['Sancerre, Les Caillot
         </div>
       </section>
 
+      <PosterWall slug="playfair-display" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>your own</em> headline.</h2>
         <div class="ed-body">
           <EditionTester family="Playfair Display Variable" sample="A triumph, darling" italic
@@ -94,7 +96,7 @@ const wines = [['Champagne, Brut Réserve', 'NV', '14'], ['Sancerre, Les Caillot
             presets={[{ name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }, { name: 'Black italic', v: [900], italic: true }]} start={4} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

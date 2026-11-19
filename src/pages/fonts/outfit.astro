@@ -3,6 +3,7 @@
 // physics, a dial you turn, a watch you wear and a startup you invent.
 // Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -96,15 +97,16 @@ const names = ['Thin', 'ExtraLight', 'Light', 'Regular', 'Medium', 'SemiBold', '
       <OfBalloon n="04" />
       <OfRipple n="05" />
 
+      <PosterWall slug="outfit" n="06" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>06</span> Your turn</div>
+        <div class="ed-kicker"><span>07</span> Your turn</div>
         <h2 class="ed-h2">Say it <em>simply</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Outfit Variable" sample="Hello, good looking" axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
             presets={[{ name: 'Thin', v: [100] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }]} start={3} />
         </div>
       </section>
-      <EditionTail entry={entry} from={7} />
+      <EditionTail entry={entry} from={8} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />
