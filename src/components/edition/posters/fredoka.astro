@@ -1,0 +1,29 @@
+---
+// Fredoka posters: a bouncy castle bill, a sticker sheet, width as squish.
+---
+<figure class="pw-p" id="fredoka-bounce" data-name="Bounce">
+  <div class="pw-art fk-a">
+    {[...'BOUNCE'].map((c, i) => <span style={`--i:${i}`}>{c}</span>)}
+    <p class="fk-a__f">Saturday · Riverside park · All day · Shoes off</p>
+  </div>
+</figure>
+<figure class="pw-p" id="fredoka-stickers" data-name="Stickers">
+  <div class="pw-art fk-b">
+    {[['yay!', '#ff6b9a', -8, 10, 8], ['hi', '#5ec4ff', 6, 58, 6], ['nice', '#ffd23f', 4, 14, 44], ['oops', '#7be08a', -5, 56, 40], ['wow', '#b48cff', 10, 8, 72], ['ok!', '#ff9a3c', -3, 58, 80]].map(([t, c, r, x, y]) => <span style={`--c:${c};--r:${r}deg;left:${x}cqi;top:${y}%`}>{t}</span>)}
+  </div>
+</figure>
+<figure class="pw-p" id="fredoka-squish" data-name="Squish">
+  <div class="pw-art fk-c">
+    {[75, 88, 100, 112, 125].map((w, i) => <p style={`font-variation-settings:'wght' ${300 + i * 100}, 'wdth' ${w}`}>squish</p>)}
+  </div>
+</figure>
+<style>
+  .fk-a { background: #5ec4ff; color: #fff; font-family: 'Fredoka Variable', sans-serif; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; padding: 6cqi; gap: 0 1cqi; }
+  .fk-a span { font-size: 30cqi; line-height: 1; font-variation-settings: 'wght' 700, 'wdth' 125; transform: translateY(calc(sin(var(--i) * 1.1) * 6cqi)) rotate(calc((var(--i) - 2.5) * 4deg)); text-shadow: 0 1.6cqi 0 #1f6aa8; }
+  .fk-a span:nth-child(odd) { color: #ffd23f; }
+  .fk-a__f { position: absolute; left: 6cqi; right: 6cqi; bottom: 6cqi; text-align: center; font-size: 4cqi; font-variation-settings: 'wght' 600, 'wdth' 100; }
+  .fk-b { background: #fff7ec; font-family: 'Fredoka Variable', sans-serif; }
+  .fk-b span { position: absolute; padding: 3cqi 6cqi; border-radius: 10cqi; background: var(--c); color: #fff; font-size: 15cqi; line-height: 1; font-variation-settings: 'wght' 700, 'wdth' 110; transform: rotate(var(--r)); box-shadow: 0 0 0 1.6cqi #fff, 0 2cqi 3cqi #0002; }
+  .fk-c { background: #ff6b9a; color: #fff7ec; font-family: 'Fredoka Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .fk-c p { font-size: 21cqi; line-height: 0.95; }
+</style>

@@ -2,6 +2,7 @@
 // DM SANS — new edition. The product interface: a to-do list you can drag,
 // a settings panel, an optical-size lens and a pricing page. All new examples.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -119,15 +120,16 @@ const todos = [
         </div>
       </section>
 
+      <PosterWall slug="dm-sans" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>the button</em>.</h2>
         <div class="ed-body">
           <EditionTester family="DM Sans Variable" sample="Get started for free" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 1000 }, { tag: 'opsz', name: 'Optical size', min: 9, max: 40, step: 0.5 }]}
             presets={[{ name: 'Caption', v: [400, 9] }, { name: 'Body', v: [400, 14] }, { name: 'Button', v: [600, 14] }, { name: 'Headline', v: [800, 40] }, { name: 'Black', v: [1000, 40] }, { name: 'Italic', v: [300, 40], italic: true }]} start={3} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

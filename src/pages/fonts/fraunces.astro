@@ -3,6 +3,7 @@
 // the `fonts` collection (so Compare, Pair, Moods and History keep working);
 // facts, story and theme come from src/content/fonts/fraunces.mdx.
 import { getCollection, render } from 'astro:content';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -127,8 +128,9 @@ const presets = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="fraunces" n="04" kicker="fr-kicker" sec="fr-sec" />
       <section class="fr-sec" data-fr-test>
-        <div class="fr-kicker"><span>04</span> Your turn</div>
+        <div class="fr-kicker"><span>05</span> Your turn</div>
         <h2 class="fr-h2 fr">Now <em>you</em> misbehave.</h2>
 
         <div class="fr-test">
@@ -156,7 +158,7 @@ const presets = [
 
       <!-- ============ STORY ============ -->
       <section class="fr-sec">
-        <div class="fr-kicker"><span>05</span> The story</div>
+        <div class="fr-kicker"><span>06</span> The story</div>
         <div class="fr-story">
           <div class="fr-story__prose fr"><Content /></div>
           <dl class="fr-specs">
@@ -178,7 +180,7 @@ const presets = [
 
       <!-- ============ GLYPHS ============ -->
       <section class="fr-sec fr-sec--last">
-        <div class="fr-kicker"><span>06</span> The set</div>
+        <div class="fr-kicker"><span>07</span> The set</div>
         <h2 class="fr-h2 fr">Every character. <em>Click one.</em></h2>
         <div class="fr-glyphs"><GlyphGrid font={font} /></div>
       </section>

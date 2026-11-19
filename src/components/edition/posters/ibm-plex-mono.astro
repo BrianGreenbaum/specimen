@@ -1,0 +1,36 @@
+---
+// IBM Plex Mono posters: a punch card, a terminal manifesto, a mainframe spec sheet.
+---
+<figure class="pw-p" id="ibm-plex-mono-hello" data-name="Hello">
+  <div class="pw-art pm-a">
+    <p class="pm-a__p">$</p>
+    <p class="pm-a__h">print(<br />&nbsp;&nbsp;"hello,<br />&nbsp;&nbsp;&nbsp;world"<br />)</p>
+    <p class="pm-a__o">hello,<br />world<span>_</span></p>
+  </div>
+</figure>
+<figure class="pw-p" id="ibm-plex-mono-manifesto" data-name="Manifesto">
+  <div class="pw-art pm-b">
+    {['01 Every character', '02 is the same width,', '03 so every column', '04 lines up,', '05 so every idea', '06 has room.'].map((l) => <p><span>{l.slice(0, 2)}</span>{l.slice(3)}</p>)}
+    <p class="pm-b__f">// IBM Plex Mono · Mike Abbink · Bold Monday · 2017</p>
+  </div>
+</figure>
+<figure class="pw-p" id="ibm-plex-mono-weights" data-name="Weights">
+  <div class="pw-art pm-c">
+    {[100, 200, 300, 400, 500, 600, 700].map((w) => <p style={`font-weight:${w}`}>{`{${w}}`}</p>)}
+  </div>
+</figure>
+<style>
+  .pm-a { background: #0f62fe; color: #fff; font-family: 'IBM Plex Mono', monospace; padding: 9cqi; }
+  .pm-a__p { font-size: 9cqi; font-weight: 300; opacity: 0.6; }
+  .pm-a__h { margin-top: 2cqi; font-size: 9cqi; line-height: 1.2; font-weight: 600; }
+  .pm-a__o { position: absolute; left: 9cqi; bottom: 9cqi; font-size: 16cqi; line-height: 1; font-weight: 200; }
+  .pm-a__o span { animation: none; color: #a6c8ff; }
+  .pm-b { background: #161616; color: #f4f4f4; font-family: 'IBM Plex Mono', monospace; padding: 10cqi 8cqi; display: flex; flex-direction: column; gap: 2cqi; }
+  .pm-b p { font-size: 6.2cqi; line-height: 1.15; font-weight: 500; }
+  .pm-b p span { color: #6f6f6f; font-weight: 300; margin-right: 3cqi; }
+  .pm-b p:nth-child(6) { color: #42be65; font-weight: 700; }
+  .pm-b__f { margin-top: auto; font-size: 2.8cqi !important; color: #8d8d8d; font-weight: 400 !important; }
+  .pm-c { background: #f4f4f4; color: #161616; font-family: 'IBM Plex Mono', monospace; display: grid; align-content: center; padding: 0 8cqi; }
+  .pm-c p { font-size: 15.5cqi; line-height: 1.04; }
+  .pm-c p:nth-child(4) { color: #0f62fe; }
+</style>

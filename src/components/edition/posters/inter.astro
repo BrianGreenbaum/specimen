@@ -1,0 +1,46 @@
+---
+// Inter posters: a Swiss grid, an interface specimen, the alphabet at display size.
+---
+<figure class="pw-p" id="inter-grid" data-name="Grid">
+  <div class="pw-art in-a">
+    <p class="in-a__n">01</p>
+    <p class="in-a__h">Form<br />follows<br />function.</p>
+    <p class="in-a__c">Inter was drawn for computer screens: tall x-height, open apertures, and a display cut that tightens for headlines.</p>
+    <span class="in-a__sq" aria-hidden="true"></span>
+  </div>
+</figure>
+<figure class="pw-p" id="inter-interface" data-name="Interface">
+  <div class="pw-art in-b">
+    <div class="in-b__card">
+      <p class="in-b__k">Balance</p>
+      <p class="in-b__v">$12,480<span>.50</span></p>
+      <p class="in-b__d">+ 4.2% this month</p>
+      <div class="in-b__rows">{[['Coffee', '−4.50'], ['Salary', '+3,200.00'], ['Books', '−28.00']].map(([a, b]) => <p><span>{a}</span><b>{b}</b></p>)}</div>
+      <p class="in-b__btn">Send money</p>
+    </div>
+  </div>
+</figure>
+<figure class="pw-p" id="inter-alphabet" data-name="Alphabet">
+  <div class="pw-art in-c">
+    <p>Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz</p>
+  </div>
+</figure>
+<style>
+  .in-a { background: #fff; color: #111; font-family: 'Inter Variable', sans-serif; padding: 7cqi; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; gap: 4cqi; }
+  .in-a__n { font-size: 4cqi; font-variation-settings: 'wght' 700, 'opsz' 14; color: #e1251b; }
+  .in-a__h { grid-column: 1 / -1; align-self: end; font-size: 19cqi; line-height: 0.88; letter-spacing: -0.05em; font-variation-settings: 'wght' 800, 'opsz' 32; }
+  .in-a__c { grid-column: 2; font-size: 3.4cqi; line-height: 1.35; font-variation-settings: 'wght' 400, 'opsz' 14; }
+  .in-a__sq { position: absolute; right: 7cqi; top: 7cqi; width: 30cqi; height: 30cqi; background: #e1251b; }
+  .in-b { background: linear-gradient(160deg, #5b6cff, #9a5bff); font-family: 'Inter Variable', sans-serif; display: grid; place-items: center; }
+  .in-b__card { width: 74cqi; padding: 7cqi; border-radius: 6cqi; background: #fff; color: #111; box-shadow: 0 4cqi 10cqi #0004; display: grid; gap: 1.6cqi; }
+  .in-b__k { font-size: 3.4cqi; font-variation-settings: 'wght' 500, 'opsz' 14; color: #666; }
+  .in-b__v { font-size: 13cqi; line-height: 1; letter-spacing: -0.04em; font-variation-settings: 'wght' 700, 'opsz' 32; font-feature-settings: 'tnum'; }
+  .in-b__v span { font-size: 0.5em; color: #999; }
+  .in-b__d { font-size: 3.4cqi; color: #1a9b5a; font-variation-settings: 'wght' 600, 'opsz' 14; }
+  .in-b__rows { margin-top: 3cqi; display: grid; gap: 2.4cqi; border-top: 0.3cqi solid #eee; padding-top: 3cqi; }
+  .in-b__rows p { display: flex; justify-content: space-between; font-size: 3.8cqi; font-variation-settings: 'wght' 500, 'opsz' 14; }
+  .in-b__rows b { font-weight: 400; font-variation-settings: 'wght' 600, 'opsz' 14; font-feature-settings: 'tnum'; }
+  .in-b__btn { margin-top: 3cqi; padding: 3cqi; border-radius: 3cqi; background: #111; color: #fff; text-align: center; font-size: 3.8cqi; font-variation-settings: 'wght' 600, 'opsz' 14; }
+  .in-c { background: #111; color: #fff; font-family: 'Inter Variable', sans-serif; padding: 7cqi; display: grid; align-content: center; }
+  .in-c p { font-size: 13.4cqi; line-height: 1.02; letter-spacing: -0.04em; font-variation-settings: 'wght' 300, 'opsz' 32; }
+</style>

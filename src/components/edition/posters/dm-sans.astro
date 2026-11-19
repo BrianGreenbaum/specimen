@@ -1,0 +1,36 @@
+---
+// DM Sans posters: a launch announcement, a friendly sign, the weight ramp.
+---
+<figure class="pw-p" id="dm-sans-launch" data-name="Launch">
+  <div class="pw-art ds-pa">
+    <span class="ds-pa__dot" aria-hidden="true"></span>
+    <p class="ds-pa__k">Now available</p>
+    <p class="ds-pa__h">Hello,<br />world.</p>
+    <p class="ds-pa__b">The simplest version of the thing you’ve been waiting for. No sign-up, no setup, no manual.</p>
+    <p class="ds-pa__cta">Get started <span>→</span></p>
+  </div>
+</figure>
+<figure class="pw-p" id="dm-sans-be-kind" data-name="Be kind">
+  <div class="pw-art ds-pb">
+    <p>Be<br />kind<br />to<br />your<br />future<br />self.</p>
+  </div>
+</figure>
+<figure class="pw-p" id="dm-sans-ramp" data-name="Ramp">
+  <div class="pw-art ds-pc">
+    {[100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map((w) => <p style={`font-variation-settings:'wght' ${w}, 'opsz' 40`}><span>{w}</span>Weight</p>)}
+  </div>
+</figure>
+<style>
+  .ds-pa { background: #f4f2ee; color: #1d1c1a; font-family: 'DM Sans Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; }
+  .ds-pa__dot { position: absolute; right: -16cqi; top: -16cqi; width: 70cqi; height: 70cqi; border-radius: 50%; background: #d95d39; }
+  .ds-pa__k { position: relative; align-self: flex-start; padding: 1.4cqi 3cqi; border-radius: 10cqi; background: #1d1c1a; color: #f4f2ee; font-size: 3.2cqi; font-variation-settings: 'wght' 600, 'opsz' 14; }
+  .ds-pa__h { position: relative; margin-top: auto; font-size: 25cqi; line-height: 0.88; letter-spacing: -0.06em; font-variation-settings: 'wght' 800, 'opsz' 40; }
+  .ds-pa__b { margin-top: 5cqi; font-size: 4.6cqi; line-height: 1.35; max-width: 70cqi; font-variation-settings: 'wght' 400, 'opsz' 14; color: #55524c; }
+  .ds-pa__cta { margin-top: 5cqi; align-self: flex-start; padding: 3cqi 5cqi; border-radius: 3cqi; background: #d95d39; color: #fff; font-size: 4.4cqi; font-variation-settings: 'wght' 700, 'opsz' 14; }
+  .ds-pb { background: #d95d39; color: #fff6ee; font-family: 'DM Sans Variable', sans-serif; padding: 6cqi 8cqi; display: grid; align-content: center; }
+  .ds-pb p { font-size: 17.5cqi; line-height: 0.92; letter-spacing: -0.05em; font-variation-settings: 'wght' 900, 'opsz' 40; }
+  .ds-pc { background: #1d1c1a; color: #f4f2ee; font-family: 'DM Sans Variable', sans-serif; display: grid; align-content: center; padding: 0 8cqi; }
+  .ds-pc p { position: relative; font-size: 13.4cqi; line-height: 0.73; letter-spacing: -0.05em; }
+  .ds-pc p:nth-child(even) { color: #d95d39; }
+  .ds-pc span { position: absolute; right: 0; top: 0; font-size: 2.4cqi; letter-spacing: 0; font-variation-settings: 'wght' 500, 'opsz' 9; color: #f4f2ee88; }
+</style>

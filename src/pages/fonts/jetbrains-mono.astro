@@ -3,6 +3,7 @@
 // ligatures that fuse under your pointer, a game drawn in characters, a loupe
 // for the look-alikes. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -107,15 +108,16 @@ const loupeCode = [
       <JbDonut n="04" />
       <JbType n="05" />
 
+      <PosterWall slug="jetbrains-mono" n="06" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>06</span> Your turn</div>
+        <div class="ed-kicker"><span>07</span> Your turn</div>
         <h2 class="ed-h2">Type <em>something</em> clever.</h2>
         <div class="ed-body">
           <EditionTester family="JetBrains Mono Variable" sample="x => x !== null" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 800 }]}
             presets={[{ name: 'Thin', v: [100] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'ExtraBold', v: [800] }, { name: 'Italic', v: [400], italic: true }]} start={1} />
         </div>
       </section>
-      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }, { k: 'Ligatures', v: 'Code ligatures via contextual alternates (calt)' }]} />
+      <EditionTail entry={entry} from={8} extra={[{ k: 'Styles', v: 'Roman and italic' }, { k: 'Ligatures', v: 'Code ligatures via contextual alternates (calt)' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />
