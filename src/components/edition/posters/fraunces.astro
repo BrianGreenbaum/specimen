@@ -1,0 +1,43 @@
+---
+// Fraunces posters: soft and wonky, a citrus label, the full axis grid.
+---
+<figure class="pw-p" id="fraunces-soft-serve" data-name="Soft serve">
+  <div class="pw-art fr-pa">
+    <p class="fr-pa__h">Soft<br /><em>serve</em></p>
+    <p class="fr-pa__s">Vanilla · Pistachio · Burnt honey</p>
+    <span class="fr-pa__drip" aria-hidden="true"></span>
+  </div>
+</figure>
+<figure class="pw-p" id="fraunces-citrus" data-name="Citrus">
+  <div class="pw-art fr-pb">
+    <span class="fr-pb__sun" aria-hidden="true"></span>
+    <p class="fr-pb__k">Sunshine grown</p>
+    <p class="fr-pb__h">Blood<br />Orange</p>
+    <p class="fr-pb__f">Grade A · Sicily · Packed with care</p>
+  </div>
+</figure>
+<figure class="pw-p" id="fraunces-axes" data-name="Four axes">
+  <div class="pw-art fr-pc">
+    <div class="fr-pc__g">{[[100, 0, 144], [400, 50, 144], [900, 100, 144], [900, 0, 9], [600, 100, 72], [300, 100, 9]].map(([w, s, o]) => <p style={`font-variation-settings:'wght' ${w}, 'SOFT' ${s}, 'opsz' ${o}, 'WONK' 1`}>Rg<span>{w} · {s} · {o}</span></p>)}</div>
+    <p class="fr-pc__f">Fraunces · weight · softness · optical size · wonk</p>
+  </div>
+</figure>
+<style>
+  .fr-pa { background: #ffd6e0; color: #5a1d3a; font-family: 'Fraunces Variable', serif; padding: 10cqi 8cqi; display: flex; flex-direction: column; }
+  .fr-pa__h { font-size: 30cqi; line-height: 0.8; letter-spacing: -0.04em; font-variation-settings: 'wght' 900, 'SOFT' 100, 'opsz' 144, 'WONK' 1; }
+  .fr-pa__h em { font-style: italic; color: #e8457a; font-variation-settings: 'wght' 300, 'SOFT' 100, 'opsz' 144, 'WONK' 1; }
+  .fr-pa__s { margin-top: auto; font-size: 4.4cqi; font-style: italic; font-variation-settings: 'wght' 500, 'SOFT' 100, 'opsz' 24; }
+  .fr-pa__drip { position: absolute; right: 12cqi; bottom: 14cqi; width: 30cqi; height: 50cqi; background: radial-gradient(circle at 50% 15cqi, #fff8ec 14.5cqi, transparent 15cqi), radial-gradient(circle at 30% 27cqi, #a8e0b8 9cqi, transparent 9.5cqi), radial-gradient(circle at 70% 27cqi, #e8457a 9cqi, transparent 9.5cqi); }
+  .fr-pa__drip::after { content: ''; position: absolute; left: 3cqi; right: 3cqi; top: 30cqi; bottom: 0; background: repeating-linear-gradient(45deg, #d9964a 0 2cqi, #c27e36 2cqi 4cqi); clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .fr-pb { background: #f25c24; color: #fff4dd; font-family: 'Fraunces Variable', serif; text-align: center; display: flex; flex-direction: column; align-items: center; padding: 10cqi 6cqi; }
+  .fr-pb__sun { position: absolute; left: 50%; top: 46%; width: 90cqi; height: 90cqi; translate: -50% -50%; border-radius: 50%; background: repeating-conic-gradient(#ffb03b 0 10deg, #f25c24 10deg 20deg); opacity: 0.55; }
+  .fr-pb__k { position: relative; font-size: 4cqi; letter-spacing: 0.24em; text-transform: uppercase; font-variation-settings: 'wght' 700, 'opsz' 14; }
+  .fr-pb__h { position: relative; margin: auto 0; font-size: 26cqi; line-height: 0.82; letter-spacing: -0.03em; color: #5a0f12; font-variation-settings: 'wght' 900, 'SOFT' 50, 'opsz' 144, 'WONK' 1; font-style: italic; }
+  .fr-pb__f { position: relative; font-size: 3.4cqi; font-variation-settings: 'wght' 500, 'opsz' 14; }
+  .fr-pc { background: #fbf6ec; color: #2a1d12; font-family: 'Fraunces Variable', serif; padding: 7cqi; display: flex; flex-direction: column; }
+  .fr-pc__g { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqi; }
+  .fr-pc__g p { display: grid; font-size: 26cqi; line-height: 0.95; border-bottom: 0.3cqi solid #2a1d1222; }
+  .fr-pc__g p:nth-child(3n+2) { color: #c4401c; }
+  .fr-pc__g span { font: 400 2.2cqi/1.6 var(--font-mono, monospace); color: #2a1d1288; }
+  .fr-pc__f { margin-top: auto; font-size: 3cqi; letter-spacing: 0.1em; text-transform: uppercase; font-variation-settings: 'wght' 600, 'opsz' 14; }
+</style>

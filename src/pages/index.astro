@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { isEdition, NEW_EDITION_LABEL } from '../lib/editions';
 
 const fonts = (await getCollection('fonts')).sort((a, b) => a.data.order - b.data.order);
 const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.order);
@@ -11,7 +10,7 @@ const eras = (await getCollection('eras')).sort((a, b) => a.data.order - b.data.
 const rows = fonts.map((f) => ({
   slug: f.id, name: f.data.name, order: f.data.order, category: f.data.category,
   designer: f.data.designer, year: f.data.year, accent: f.data.theme.accent,
-  family: f.data.fontFamily, isNew: isEdition(f.id),
+  family: f.data.fontFamily,
 }));
 ---
 <Layout title="Specimen — A living library of type">
@@ -99,7 +98,7 @@ const rows = fonts.map((f) => ({
         >
           <a href={`/fonts/${f.slug}`} class="index-row__link" data-reveal>
             <span class="index-row__num index-num">{String(f.order).padStart(2, '0')}</span>
-            <span class="index-row__name">{f.name}{f.isNew && <span class="index-row__new label">{NEW_EDITION_LABEL}</span>}</span>
+            <span class="index-row__name">{f.name}</span>
             <span class="index-row__meta">
               <span class="index-row__cat label">{f.category}</span>
               <span class="index-row__designer">{f.designer}</span>
@@ -222,14 +221,6 @@ const rows = fonts.map((f) => ({
   .home-fonts .section-head { scroll-margin-top: 80px; }
 
   /* Index search row */
-  /* --- "New edition" tag: faces whose page is built in the newer format --- */
-  .index-row__new {
-    display: inline-block; vertical-align: middle;
-    margin-left: 1.1rem; padding: 0.3em 0.7em;
-    border: 1px solid var(--row-accent); border-radius: 100px;
-    color: var(--row-accent); font-size: 0.66rem; line-height: 1; letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
   .index-search {
     display: flex; align-items: center; gap: var(--sp-4);
     margin-bottom: var(--sp-3);
@@ -294,7 +285,6 @@ const rows = fonts.map((f) => ({
   .index-row--nabla .index-row__name { font-variation-settings: 'EDPT' 80, 'EHLT' 12; }
   .index-row--handjet .index-row__name { font-variation-settings: 'wght' 500, 'ELGR' 1, 'ELSH' 8; font-size: clamp(2.9rem, 7.6vw, 6.4rem); line-height: 0.8; letter-spacing: 0; }
   .index-row--climate-crisis .index-row__name { font-variation-settings: 'YEAR' 1979; font-size: clamp(1.25rem, 3.3vw, 2.8rem); letter-spacing: 0; }
-  .index-row__new { font-variation-settings: normal; }
   .index-row:hover .index-row__link { padding-left: 1rem; }
   .index-row:hover .index-row__arrow { opacity: 1; transform: none; }
 

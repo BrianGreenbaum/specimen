@@ -3,6 +3,7 @@
 // a live dashboard, a figures test, a legibility ladder and a stack of
 // notifications. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -85,8 +86,9 @@ const toasts = [['Deploy finished', 'main → production · 42 s'], ['Ana commen
         <div class="ed-body it-toasts" data-toasts data-items={JSON.stringify(toasts)}><div class="it-toasts__stack" data-toast-stack></div></div>
       </section>
 
+      <PosterWall slug="inter" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Set <em>anything</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Inter Variable" sample="Clear at any size" italic
@@ -94,7 +96,7 @@ const toasts = [['Deploy finished', 'main → production · 42 s'], ['Ana commen
             presets={[{ name: 'Body', v: [400, 14] }, { name: 'Label', v: [600, 14] }, { name: 'Display', v: [700, 32] }, { name: 'Thin', v: [100, 32] }, { name: 'Black', v: [900, 32] }]} start={2} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

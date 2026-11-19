@@ -3,6 +3,7 @@
 // crossword, a broadsheet that folds, a column-width lab and a headline that
 // gets more sensational as you push it. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -100,8 +101,9 @@ const story = 'The council met on Tuesday evening in the upstairs room of the li
         </div>
       </section>
 
+      <PosterWall slug="newsreader" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>tomorrow’s</em> headline.</h2>
         <div class="ed-body">
           <EditionTester family="Newsreader Variable" sample="Hold the front page" italic
@@ -109,7 +111,7 @@ const story = 'The council met on Tuesday evening in the upstairs room of the li
             presets={[{ name: 'Headline', v: [72, 600] }, { name: 'Deck', v: [36, 400] }, { name: 'Body', v: [16, 400] }, { name: 'Small print', v: [6, 400] }, { name: 'Italic standfirst', v: [36, 300], italic: true }]} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

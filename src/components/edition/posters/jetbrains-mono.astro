@@ -1,0 +1,38 @@
+---
+// JetBrains Mono posters: ligatures, a code poster, the arrow family.
+---
+<figure class="pw-p" id="jetbrains-mono-ligatures" data-name="Ligatures">
+  <div class="pw-art jb-pa">
+    {['=>', '!=', '>=', '->', '===', '<=>'].map((g) => <p>{g}</p>)}
+    <p class="jb-pa__f">JetBrains Mono · 138 code ligatures</p>
+  </div>
+</figure>
+<figure class="pw-p" id="jetbrains-mono-it-works" data-name="It works">
+  <div class="pw-art jb-pb">
+    <p class="jb-pb__c">// TODO: fix later</p>
+    <p class="jb-pb__k">if <span>(</span>it_works<span>) {'{'}</span></p>
+    <p class="jb-pb__k jb-pb__in">don't_touch<span>(</span>it<span>);</span></p>
+    <p class="jb-pb__k"><span>{'}'}</span></p>
+    <p class="jb-pb__f">❯ 0 errors · 0 warnings · shipped on a friday</p>
+  </div>
+</figure>
+<figure class="pw-p" id="jetbrains-mono-weights" data-name="Weights">
+  <div class="pw-art jb-pc">
+    {[100, 200, 300, 400, 500, 600, 700, 800].map((w) => <p style={`font-variation-settings:'wght' ${w}`}><span>{String(w).padStart(3, '0')}</span>{'{}'}</p>)}
+  </div>
+</figure>
+<style>
+  .jb-pa { background: #0c0f14; color: #f8f8f2; font-family: 'JetBrains Mono Variable', monospace; display: grid; grid-template-columns: 1fr 1fr; align-content: center; justify-items: center; row-gap: 4cqi; font-feature-settings: 'calt' 1; }
+  .jb-pa p { font-size: 20cqi; line-height: 1; font-variation-settings: 'wght' 700; }
+  .jb-pa p:nth-child(4n+1), .jb-pa p:nth-child(4n) { color: #ff4f9a; }
+  .jb-pa__f { position: absolute; left: 0; right: 0; bottom: 6cqi; text-align: center; font-size: 2.8cqi !important; color: #8a92a6 !important; font-variation-settings: 'wght' 400 !important; }
+  .jb-pb { background: #1e1f29; color: #f8f8f2; font-family: 'JetBrains Mono Variable', monospace; padding: 10cqi 8cqi; display: flex; flex-direction: column; justify-content: center; gap: 2cqi; }
+  .jb-pb__c { font-size: 5cqi; font-style: italic; color: #6272a4; font-variation-settings: 'wght' 400; margin-bottom: 4cqi; }
+  .jb-pb__k { font-size: 8cqi; line-height: 1.2; font-variation-settings: 'wght' 700; color: #50fa7b; }
+  .jb-pb__k span { color: #f8f8f2; font-variation-settings: 'wght' 300; }
+  .jb-pb__in { padding-left: 8cqi; color: #ff79c6; }
+  .jb-pb__f { position: absolute; left: 8cqi; right: 8cqi; bottom: 7cqi; font-size: 2.8cqi; color: #8be9fd; font-variation-settings: 'wght' 400; }
+  .jb-pc { background: #ff4f9a; color: #0c0f14; font-family: 'JetBrains Mono Variable', monospace; display: grid; grid-template-columns: 1fr 1fr; align-content: center; padding: 0 7cqi; row-gap: 2cqi; }
+  .jb-pc p { position: relative; font-size: 22cqi; line-height: 1.05; }
+  .jb-pc span { position: absolute; left: 0; top: -0.4cqi; font-size: 2.2cqi; font-variation-settings: 'wght' 500; opacity: 0.7; }
+</style>

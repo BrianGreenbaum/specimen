@@ -1,0 +1,37 @@
+---
+// Outfit posters: a brand book page, a geometric smile, weights as a gradient.
+---
+<figure class="pw-p" id="outfit-brand" data-name="Brand">
+  <div class="pw-art of-a">
+    <span class="of-a__mark" aria-hidden="true"></span>
+    <p class="of-a__h">orbit</p>
+    <p class="of-a__s">Brand guidelines · v2.0</p>
+    <div class="of-a__sw">{['#1a1a2e', '#5b5bff', '#ff7a59', '#f2f0ea'].map((c) => <span style={`background:${c}`}></span>)}</div>
+  </div>
+</figure>
+<figure class="pw-p" id="outfit-smile" data-name="Smile">
+  <div class="pw-art of-b">
+    <p class="of-b__t">good</p>
+    <p class="of-b__m">morning</p>
+    <span class="of-b__smile" aria-hidden="true"></span>
+  </div>
+</figure>
+<figure class="pw-p" id="outfit-gradient" data-name="Gradient">
+  <div class="pw-art of-c">
+    {[100, 200, 300, 400, 500, 600, 700, 800, 900].map((w, i) => <p style={`font-variation-settings:'wght' ${w};--i:${i}`}>outfit</p>)}
+  </div>
+</figure>
+<style>
+  .of-a { background: #f2f0ea; color: #1a1a2e; font-family: 'Outfit Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; }
+  .of-a__mark { width: 22cqi; height: 22cqi; border-radius: 50%; border: 4cqi solid #5b5bff; box-shadow: 9cqi -6cqi 0 -6cqi #ff7a59; }
+  .of-a__h { margin-top: auto; font-size: 30cqi; line-height: 0.9; letter-spacing: -0.05em; font-variation-settings: 'wght' 600; }
+  .of-a__s { font-size: 4cqi; font-variation-settings: 'wght' 300; margin-top: 2cqi; }
+  .of-a__sw { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2cqi; margin-top: 7cqi; }
+  .of-a__sw span { aspect-ratio: 1; border-radius: 3cqi; box-shadow: 0 0 0 0.3cqi #1a1a2e22; }
+  .of-b { background: #5b5bff; color: #fff; font-family: 'Outfit Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .of-b__t { font-size: 26cqi; line-height: 0.9; letter-spacing: -0.05em; font-variation-settings: 'wght' 200; }
+  .of-b__m { font-size: 24cqi; line-height: 0.9; letter-spacing: -0.05em; font-variation-settings: 'wght' 900; }
+  .of-b__smile { margin-top: 6cqi; width: 36cqi; height: 18cqi; border: 3cqi solid #ff7a59; border-top: 0; border-radius: 0 0 18cqi 18cqi; }
+  .of-c { background: #1a1a2e; font-family: 'Outfit Variable', sans-serif; display: grid; align-content: center; padding: 0 8cqi; }
+  .of-c p { font-size: 15cqi; line-height: 0.68; letter-spacing: -0.05em; color: color-mix(in oklab, #5b5bff, #ff7a59 calc(var(--i) * 12.5%)); }
+</style>

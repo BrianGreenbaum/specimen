@@ -3,6 +3,7 @@
 // a road-sign maker, a weight elevator and a blueprint that draws itself.
 // Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -104,15 +105,16 @@ const floors = [[900, 'Black', 'Penthouse'], [800, 'ExtraBold', 'Roof garden'], 
         </div>
       </section>
 
+      <PosterWall slug="roboto-slab" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Build <em>something</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Roboto Slab Variable" sample="Hard hats required" axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
             presets={[{ name: 'Thin', v: [100] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }]} start={3} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} />
+      <EditionTail entry={entry} from={7} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

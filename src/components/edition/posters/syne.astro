@@ -1,0 +1,32 @@
+---
+// Syne posters: an art-school show, extra-bold stretch, a gallery wall label.
+---
+<figure class="pw-p" id="syne-degree-show" data-name="Degree show">
+  <div class="pw-art sy-a">
+    <p class="sy-a__h">DEGREE<br />SHOW<br /><span>2026</span></p>
+    <p class="sy-a__f">Painting · Sculpture · Moving image · Free entry</p>
+  </div>
+</figure>
+<figure class="pw-p" id="syne-loud" data-name="Loud">
+  <div class="pw-art sy-b">
+    <p class="sy-b__s">say it</p>
+    <p class="sy-b__l">LOUD</p>
+  </div>
+</figure>
+<figure class="pw-p" id="syne-weights" data-name="Weights">
+  <div class="pw-art sy-c">
+    {[400, 500, 600, 700, 800].map((w) => <p style={`font-variation-settings:'wght' ${w}`}>Syne</p>)}
+  </div>
+</figure>
+<style>
+  .sy-a { background: #c6f432; color: #111; font-family: 'Syne Variable', sans-serif; padding: 7cqi; display: flex; flex-direction: column; }
+  .sy-a__h { font-size: 11.6cqi; line-height: 0.86; letter-spacing: -0.03em; font-variation-settings: 'wght' 800; }
+  .sy-a__h span { display: block; font-size: 2.2em; font-variation-settings: 'wght' 400; color: #6a3aff; }
+  .sy-a__f { margin-top: auto; font-size: 4cqi; font-variation-settings: 'wght' 600; }
+  .sy-b { background: #6a3aff; color: #fff; font-family: 'Syne Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .sy-b__s { font-size: 10cqi; font-variation-settings: 'wght' 400; align-self: start; justify-self: start; margin-left: 8cqi; }
+  .sy-b__l { font-size: 18cqi; line-height: 0.95; letter-spacing: -0.04em; font-variation-settings: 'wght' 800; color: #c6f432; }
+  .sy-c { background: #111; color: #fff; font-family: 'Syne Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .sy-c p { font-size: 20cqi; line-height: 0.86; letter-spacing: -0.03em; }
+  .sy-c p:nth-child(odd) { color: #c6f432; }
+</style>

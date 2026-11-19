@@ -2,6 +2,7 @@
 // INSTRUMENT SERIF — new edition. One weight, two styles, and a narrow body
 // that fits more into a headline. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -95,15 +96,16 @@ const swaps = ['inbox', 'calendar', 'notes', 'weekends'];
         <p class="is-quote__by">— Anonymous editor, probably tired</p>
       </section>
 
+      <PosterWall slug="instrument-serif" n="04" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>05</span> Your turn</div>
         <h2 class="ed-h2">Two styles. <em>Choose well.</em></h2>
         <div class="ed-body">
           <EditionTester family="Instrument Serif" sample="Quietly, with conviction" axes={[]}
             presets={[{ name: 'Roman', v: [] }, { name: 'Italic', v: [], italic: true }]} start={1} />
         </div>
       </section>
-      <EditionTail entry={entry} from={5} extra={[{ k: 'Styles', v: 'Regular and Italic' }]} />
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Regular and Italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

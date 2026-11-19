@@ -3,6 +3,7 @@
 // the `fonts` collection (so Compare, Pair, Moods and History keep working);
 // facts, story and theme come from src/content/fonts/archivo.mdx.
 import { getCollection, render } from 'astro:content';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -133,8 +134,9 @@ const presets = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="archivo" n="04" kicker="ar-kicker" sec="ar-sec" />
       <section class="ar-sec" data-ar-test>
-        <div class="ar-kicker"><span>04</span> Your turn</div>
+        <div class="ar-kicker"><span>05</span> Your turn</div>
         <h2 class="ar-h2 ar">Squeeze it. <em>Stretch it.</em></h2>
 
         <div class="ar-test">
@@ -156,7 +158,7 @@ const presets = [
 
       <!-- ============ STORY ============ -->
       <section class="ar-sec">
-        <div class="ar-kicker"><span>05</span> The story</div>
+        <div class="ar-kicker"><span>06</span> The story</div>
         <div class="ar-story">
           <div class="ar-story__prose ar"><Content /></div>
           <dl class="ar-specs">
@@ -177,7 +179,7 @@ const presets = [
 
       <!-- ============ GLYPHS ============ -->
       <section class="ar-sec ar-sec--last">
-        <div class="ar-kicker"><span>06</span> The set</div>
+        <div class="ar-kicker"><span>07</span> The set</div>
         <h2 class="ar-h2 ar">Every character. <em>Click one.</em></h2>
         <div class="ar-glyphs"><GlyphGrid font={font} /></div>
       </section>

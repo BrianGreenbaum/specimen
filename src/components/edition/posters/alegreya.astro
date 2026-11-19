@@ -1,0 +1,44 @@
+---
+// Alegreya posters: a giant italic a, a poem, a stack of weights.
+---
+<figure class="pw-p" id="alegreya-the-reader" data-name="The Reader">
+  <div class="pw-art ag-a">
+    <span class="ag-a__g" aria-hidden="true">a</span>
+    <p class="ag-a__t">Alegreya</p>
+    <p class="ag-a__q">“A typeface for <em>literature</em>, with the rhythm of the pen still in it.”</p>
+    <p class="ag-a__f">Juan Pablo del Peral · Huerta Tipográfica · 2011</p>
+  </div>
+</figure>
+<figure class="pw-p" id="alegreya-night-poem" data-name="Night poem">
+  <div class="pw-art ag-b">
+    <p class="ag-b__k">No. 7 — after midnight</p>
+    <p class="ag-b__h">The lamp<br /><em>and the moth</em></p>
+    <p class="ag-b__p">The lamp said nothing<br />all night long.<br />The moth wrote<br /><em>a hundred letters</em><br />against the glass,<br />and every one<br />began with light.</p>
+    <span class="ag-b__moth" aria-hidden="true"></span>
+  </div>
+</figure>
+<figure class="pw-p" id="alegreya-six-weights" data-name="Six weights">
+  <div class="pw-art ag-c">
+    {[400, 500, 600, 700, 800, 900].map((w, i) => <p style={`font-variation-settings:'wght' ${w};--i:${i}`}><span>{w}</span>Stories</p>)}
+    <p class="ag-c__f">Alegreya · Regular to Black</p>
+  </div>
+</figure>
+<style>
+  .ag-a { background: #f3ead8; color: #2a1c12; font-family: 'Alegreya Variable', serif; }
+  .ag-a__g { position: absolute; right: -10cqi; top: -38cqi; font-size: 128cqi; line-height: 1; font-style: italic; font-variation-settings: 'wght' 900; color: #a8341e; }
+  .ag-a__t { position: absolute; left: 7cqi; top: 7cqi; font-size: 6cqi; font-variation-settings: 'wght' 700; letter-spacing: 0.01em; }
+  .ag-a__q { position: absolute; left: 7cqi; bottom: 18cqi; width: 58cqi; font-size: 7.4cqi; line-height: 1.12; font-variation-settings: 'wght' 500; }
+  .ag-a__q em { font-style: italic; color: #a8341e; }
+  .ag-a__f { position: absolute; left: 7cqi; bottom: 7cqi; font-size: 2.6cqi; font-variant-caps: all-small-caps; letter-spacing: 0.12em; font-variation-settings: 'wght' 500; }
+  .ag-b { background: #12241f; color: #efe6d0; font-family: 'Alegreya Variable', serif; padding: 9cqi; }
+  .ag-b__k { font-size: 2.8cqi; font-variant-caps: all-small-caps; letter-spacing: 0.2em; color: #d6a74a; }
+  .ag-b__h { margin-top: 5cqi; font-size: 13cqi; line-height: 0.9; font-variation-settings: 'wght' 800; letter-spacing: -0.02em; }
+  .ag-b__h em { font-style: italic; font-variation-settings: 'wght' 400; color: #d6a74a; }
+  .ag-b__p { margin-top: 9cqi; font-size: 5.4cqi; line-height: 1.32; font-variation-settings: 'wght' 400; }
+  .ag-b__p em { font-style: italic; color: #d6a74a; }
+  .ag-b__moth { position: absolute; right: 12cqi; bottom: 14cqi; width: 22cqi; height: 22cqi; border-radius: 50%; background: radial-gradient(circle, #ffe7a6, #d6a74a55 40%, transparent 70%); }
+  .ag-c { background: #e8dcc6; color: #2a1c12; font-family: 'Alegreya Variable', serif; display: grid; align-content: center; padding: 0 7cqi; }
+  .ag-c p:not(.ag-c__f) { position: relative; font-size: 19.5cqi; line-height: 0.82; letter-spacing: -0.02em; font-style: italic; color: color-mix(in oklab, #2a1c12, #a8341e calc(var(--i) * 20%)); }
+  .ag-c p span { position: absolute; right: 0; top: 2cqi; font: 400 2.4cqi/1 'Alegreya Variable', serif; font-style: normal; font-variation-settings: 'wght' 500; color: #2a1c1299; }
+  .ag-c__f { position: absolute; left: 7cqi; bottom: 6cqi; font-size: 2.6cqi; letter-spacing: 0.14em; font-variant-caps: all-small-caps; }
+</style>

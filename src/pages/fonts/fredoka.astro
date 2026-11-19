@@ -2,6 +2,7 @@
 // FREDOKA — new edition. Jelly letters, a snack box, a sticker sheet and a
 // chat that types back. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -125,8 +126,9 @@ const chat = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="fredoka" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Say something <em>nice</em>.</h2>
         <div class="ed-body">
           <EditionTester
@@ -145,7 +147,7 @@ const chat = [
         </div>
       </section>
 
-      <EditionTail entry={entry} from={6} />
+      <EditionTail entry={entry} from={7} />
     </main>
   </div>
 

@@ -1,0 +1,37 @@
+---
+// Recursive posters: casual vs linear, a code-meets-comic panel, the slant cascade.
+---
+<figure class="pw-p" id="recursive-casual" data-name="Casual">
+  <div class="pw-art rc-pa">
+    <p style="font-variation-settings:'CASL' 0, 'MONO' 0, 'wght' 800, 'slnt' 0, 'CRSV' 0">Linear</p>
+    <p class="rc-pa__vs">→</p>
+    <p style="font-variation-settings:'CASL' 1, 'MONO' 0, 'wght' 800, 'slnt' -15, 'CRSV' 1">Casual</p>
+    <p class="rc-pa__f">Recursive · CASL 0 → 1</p>
+  </div>
+</figure>
+<figure class="pw-p" id="recursive-zap" data-name="Zap">
+  <div class="pw-art rc-pb">
+    <p class="rc-pb__b">ZAP!</p>
+    <p class="rc-pb__c">const hero = <span>new</span> Font(<b>'Recursive'</b>);</p>
+    <p class="rc-pb__s">One family. Five axes. Code by day, comics by night.</p>
+  </div>
+</figure>
+<figure class="pw-p" id="recursive-slant" data-name="Slant">
+  <div class="pw-art rc-pc">
+    {[0, -3, -6, -9, -12, -15].map((s, i) => <p style={`font-variation-settings:'CASL' ${i / 5}, 'MONO' 1, 'wght' ${400 + i * 120}, 'slnt' ${s}, 'CRSV' 0.5`}>monospace</p>)}
+  </div>
+</figure>
+<style>
+  .rc-pa { background: #fef3c7; color: #1c1917; font-family: 'Recursive Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .rc-pa p:not(.rc-pa__f) { font-size: 24cqi; line-height: 1; }
+  .rc-pa__vs { color: #e64a19; font-size: 14cqi !important; }
+  .rc-pa__f { position: absolute; left: 0; right: 0; bottom: 6cqi; text-align: center; font-size: 3cqi; font-variation-settings: 'MONO' 1, 'wght' 500; }
+  .rc-pb { background: #e64a19; color: #fff; font-family: 'Recursive Variable', sans-serif; padding: 8cqi; display: flex; flex-direction: column; }
+  .rc-pb__b { align-self: center; margin-top: 12cqi; padding: 6cqi 9cqi; background: #ffe14a; color: #1c1917; font-size: 30cqi; line-height: 1; font-variation-settings: 'CASL' 1, 'MONO' 0, 'wght' 1000, 'slnt' -12, 'CRSV' 1; clip-path: polygon(0 12%, 18% 0, 32% 10%, 52% 0, 66% 12%, 86% 2%, 100% 22%, 92% 48%, 100% 76%, 82% 88%, 70% 100%, 50% 90%, 28% 100%, 14% 86%, 0 78%, 8% 46%); }
+  .rc-pb__c { margin-top: auto; font-size: 4.6cqi; line-height: 1.4; font-variation-settings: 'CASL' 0, 'MONO' 1, 'wght' 500, 'slnt' 0, 'CRSV' 0; }
+  .rc-pb__c span { color: #ffe14a; } .rc-pb__c b { font-weight: 400; color: #1c1917; }
+  .rc-pb__s { margin-top: 3cqi; font-size: 5cqi; line-height: 1.2; font-variation-settings: 'CASL' 1, 'MONO' 0, 'wght' 700, 'slnt' -8, 'CRSV' 1; }
+  .rc-pc { background: #1c1917; color: #fef3c7; font-family: 'Recursive Variable', sans-serif; display: grid; align-content: center; padding: 0 6cqi; }
+  .rc-pc p { font-size: 14.2cqi; line-height: 1.12; }
+  .rc-pc p:nth-child(odd) { color: #ffb38a; }
+</style>

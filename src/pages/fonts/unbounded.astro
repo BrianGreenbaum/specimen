@@ -2,6 +2,7 @@
 // UNBOUNDED — new edition. Wide, round and loud: bands that never stop, a
 // festival bill and a launch countdown. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -93,8 +94,9 @@ const acts = [['Soft Machines', 900], ['Aurora Club', 700], ['Kilo Kilo', 500], 
         <p class="ed-cap">Hover a letter to see the box it is built in.</p>
       </section>
 
+      <PosterWall slug="unbounded" n="04" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>05</span> Your turn</div>
         <h2 class="ed-h2">Say it <em>wider</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Unbounded Variable" sample="No limits" axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 900 }]}
@@ -102,7 +104,7 @@ const acts = [['Soft Machines', 900], ['Aurora Club', 700], ['Kilo Kilo', 500], 
         </div>
       </section>
 
-      <EditionTail entry={entry} from={5} />
+      <EditionTail entry={entry} from={6} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

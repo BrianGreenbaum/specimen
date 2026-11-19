@@ -1,0 +1,148 @@
+---
+// A wall of three bespoke, static posters per face — the shareable part of
+// each page. Posters live in ./posters/<slug>.astro; each renders three
+// <figure class="pw-p" id="…" data-name="…"><div class="pw-art …">…</div></figure>.
+// Every .pw-art is a 4:5 inline-size container, so posters are drawn in cqi
+// and re-render crisply at any size: on the wall, full-screen, or exported.
+export interface Props {
+  slug: string;
+  n: string;          // section number, e.g. "05"
+  kicker?: string;    // kicker class, so custom pages keep their own look
+  sec?: string;       // section class, likewise
+}
+const { slug, n, kicker = 'ed-kicker', sec = 'ed-sec' } = Astro.props;
+const all = import.meta.glob<{ default: any }>('./posters/*.astro', { eager: true });
+const Posters = all[`./posters/${slug}.astro`]?.default;
+---
+{Posters && (
+  <section class={`${sec} pw`} data-pw>
+    <div class={kicker}><span>{n}</span> Posters</div>
+    <div class="pw-head">
+      <h2 class="pw-h">Made to be <em>shared</em>.</h2>
+      <p class="pw-sub">Three posters, set entirely in this face. Open one to see it full size, save it as an image, or send it to someone.</p>
+    </div>
+    <div class="pw-wall"><Posters /></div>
+    <dialog class="pw-dlg" data-pw-dlg aria-label="Poster">
+      <div class="pw-dlg__stage" data-pw-stage></div>
+      <div class="pw-dlg__bar">
+        <p class="pw-dlg__name" data-pw-name></p>
+        <button type="button" data-pw-act="save">Save image</button>
+        <button type="button" data-pw-act="share">Share</button>
+        <button type="button" data-pw-act="link">Copy link</button>
+        <button type="button" class="pw-dlg__x" data-pw-act="close" aria-label="Close">✕</button>
+      </div>
+      <p class="pw-dlg__toast" data-pw-toast aria-live="polite"></p>
+    </dialog>
+  </section>
+)}
+
+<script>
+  import { toBlob } from 'html-to-image';
+
+  // Inline only the @font-face rules the poster actually uses, as data URLs —
+  // embedding every face on the site would be several megabytes.
+  const fontCache = new Map<string, Promise<string>>();
+  const dataUrl = (url: string) => {
+    if (!fontCache.has(url)) fontCache.set(url, fetch(url).then((r) => r.blob()).then((b) => new Promise<string>((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result as string); fr.readAsDataURL(b); })));
+    return fontCache.get(url)!;
+  };
+  const clean = (f: string) => f.trim().replace(/^['"]|['"]$/g, '');
+  async function fontCSS(node: HTMLElement) {
+    const fams = new Set<string>();
+    [node, ...node.querySelectorAll<HTMLElement>('*')].forEach((el) => getComputedStyle(el).fontFamily.split(',').forEach((f) => fams.add(clean(f))));
+    const out: string[] = [];
+    for (const sheet of Array.from(document.styleSheets)) {
+      let rules: CSSRuleList; try { rules = sheet.cssRules; } catch { continue; }
+      for (const r of Array.from(rules)) {
+        if (!(r instanceof CSSFontFaceRule) || !fams.has(clean(r.style.getPropertyValue('font-family')))) continue;
+        let css = r.cssText; const base = sheet.href || location.href;
+        const urls = Array.from(css.matchAll(/url\(["']?([^"')]+)["']?\)/g)).map((m) => m[1]);
+        for (const u of urls) css = css.replace(u, await dataUrl(new URL(u, base).href));
+        out.push(css);
+      }
+    }
+    return out.join('\n');
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-pw]').forEach((wall) => {
+    const dlg = wall.querySelector<HTMLDialogElement>('[data-pw-dlg]')!, stage = wall.querySelector<HTMLElement>('[data-pw-stage]')!;
+    const toast = wall.querySelector<HTMLElement>('[data-pw-toast]')!;
+    let cur: HTMLElement | null = null;
+    const say = (t: string) => { toast.textContent = t; toast.classList.remove('is-on'); void toast.offsetWidth; toast.classList.add('is-on'); };
+
+    const render = async (fig: HTMLElement) => {
+      const art = fig.querySelector<HTMLElement>('.pw-art')!;
+      // Draw at a fixed 1600 × 2000 by cloning into an off-screen box of that width.
+      const box = document.createElement('div'); box.className = 'pw-render';
+      const clone = art.cloneNode(true) as HTMLElement; box.appendChild(clone); document.body.appendChild(box);
+      try {
+        await document.fonts.ready;
+        return await toBlob(clone, { width: 1600, height: 2000, pixelRatio: 1, fontEmbedCSS: await fontCSS(clone), cacheBust: false });
+      } finally { box.remove(); }
+    };
+    const fileName = (fig: HTMLElement) => `${fig.id || 'poster'}.png`;
+
+    const open = (fig: HTMLElement) => {
+      cur = fig; stage.innerHTML = ''; const frame = document.createElement('div'); frame.className = 'pw-frame'; frame.appendChild(fig.querySelector('.pw-art')!.cloneNode(true)); stage.appendChild(frame);
+      wall.querySelector('[data-pw-name]')!.textContent = fig.dataset.name || '';
+      dlg.showModal(); history.replaceState(null, '', `#${fig.id}`);
+    };
+    wall.querySelectorAll<HTMLElement>('.pw-p').forEach((fig) => {
+      fig.tabIndex = 0; fig.setAttribute('role', 'button'); fig.setAttribute('aria-label', `Open poster: ${fig.dataset.name}`);
+      fig.addEventListener('click', () => open(fig));
+      fig.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(fig); } });
+    });
+    dlg.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const figs = Array.from(wall.querySelectorAll<HTMLElement>('.pw-p')), i = figs.indexOf(cur!); open(figs[(i + (e.key === 'ArrowRight' ? 1 : figs.length - 1)) % figs.length]); } });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => history.replaceState(null, '', location.pathname + location.search));
+
+    wall.querySelectorAll<HTMLElement>('[data-pw-act]').forEach((b) => b.addEventListener('click', async () => {
+      if (!cur) return; const act = b.dataset.pwAct;
+      if (act === 'close') return dlg.close();
+      if (act === 'link') { await navigator.clipboard?.writeText(`${location.origin}${location.pathname}#${cur.id}`).catch(() => {}); return say('Link copied'); }
+      b.setAttribute('aria-busy', 'true'); say(act === 'save' ? 'Rendering…' : 'Preparing…');
+      try {
+        const blob = await render(cur); if (!blob) throw new Error('render failed');
+        const file = new File([blob], fileName(cur), { type: 'image/png' });
+        if (act === 'share' && navigator.canShare?.({ files: [file] })) { await navigator.share({ files: [file], title: cur.dataset.name, url: `${location.origin}${location.pathname}#${cur.id}` }).catch(() => {}); say(''); }
+        else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); say(act === 'share' ? 'Sharing isn’t available here, so it was saved instead' : 'Saved'); }
+      } catch { say('Couldn’t render that one, sorry'); }
+      b.removeAttribute('aria-busy');
+    }));
+
+    // Deep link: #<poster id> opens it.
+    const hash = decodeURIComponent(location.hash.slice(1));
+    if (hash) { const fig = wall.querySelector<HTMLElement>(`.pw-p[id="${CSS.escape(hash)}"]`); if (fig) { fig.scrollIntoView({ block: 'center' }); setTimeout(() => open(fig), 300); } }
+  });
+</script>
+
+<style is:global>
+  .pw-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem 3rem; align-items: end; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
+  .pw-h { font-family: var(--ed-head, inherit); font-variation-settings: var(--ed-head-vf, normal); font-size: clamp(2.6rem, 6vw, 5.2rem); line-height: 0.95; letter-spacing: -0.03em; font-weight: 400; }
+  .pw-h em { font-style: italic; font-variation-settings: var(--ed-em-vf, normal); color: var(--accent); }
+  .pw-sub { color: var(--fg-2); max-width: 38ch; }
+  .pw-wall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.8rem, 2vw, 1.6rem); }
+  .pw-p { margin: 0; container-type: inline-size; cursor: zoom-in; outline: none; border-radius: 4px; transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s; box-shadow: 0 30px 50px -36px #0009; }
+  .pw-p:hover, .pw-p:focus-visible { transform: translateY(-6px) rotate(-0.4deg); box-shadow: 0 40px 70px -36px #000b; }
+  .pw-p:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .pw-art { position: relative; box-sizing: border-box; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 3px; isolation: isolate; }
+  .pw-art * { margin: 0; }
+  .pw-render { position: fixed; left: -10000px; top: 0; width: 1600px; container-type: inline-size; pointer-events: none; }
+  .pw-render .pw-art { width: 1600px; border-radius: 0; }
+  .pw-dlg { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0b0b0c; color: #f4f2ee; z-index: 1000; }
+  .pw-dlg::backdrop { background: #0b0b0c; }
+  body:has(.pw-dlg[open]) { overflow: hidden; }
+  .pw-dlg[open] { display: grid; grid-template-rows: 1fr auto; }
+  .pw-dlg__stage { display: grid; place-items: center; padding: clamp(1rem, 3vw, 2.5rem) 1rem 0; min-height: 0; }
+  .pw-frame { width: min(calc((100dvh - 7.5rem) * 0.8), calc(100vw - 2rem)); container-type: inline-size; box-shadow: 0 40px 100px -30px #000; animation: pw-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  @keyframes pw-in { from { opacity: 0; transform: scale(0.96); } }
+  .pw-dlg__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 1rem clamp(1rem, 3vw, 2.5rem); font: 400 0.8rem/1 var(--font-mono); }
+  .pw-dlg__name { margin-right: auto; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+  .pw-dlg__bar button { padding: 0.7rem 1.1rem; border-radius: 100px; background: #ffffff1a; color: inherit; font: inherit; letter-spacing: 0.06em; text-transform: uppercase; transition: background 0.2s; }
+  .pw-dlg__bar button:hover { background: #ffffff33; }
+  .pw-dlg__bar button[aria-busy='true'] { opacity: 0.5; }
+  .pw-dlg__toast { position: absolute; left: 50%; bottom: 5rem; transform: translateX(-50%); padding: 0.6rem 1rem; border-radius: 100px; background: #f4f2ee; color: #111; font: 400 0.8rem/1 var(--font-mono); opacity: 0; pointer-events: none; }
+  .pw-dlg__toast.is-on:not(:empty) { animation: pw-toast 2.4s ease forwards; }
+  @keyframes pw-toast { 10%, 80% { opacity: 1; } }
+  @media (max-width: 900px) { .pw-head { grid-template-columns: minmax(0, 1fr); } .pw-wall { grid-template-columns: minmax(0, 1fr); max-width: 30rem; margin-inline: auto; } }
+</style>

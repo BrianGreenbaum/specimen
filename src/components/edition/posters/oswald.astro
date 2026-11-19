@@ -1,0 +1,37 @@
+---
+// Oswald posters: a protest placard, a gig poster, a stacked timetable.
+---
+<figure class="pw-p" id="oswald-placard" data-name="Placard">
+  <div class="pw-art os-a">
+    <p>SAVE</p><p>OUR</p><p>BOOKS</p>
+    <p class="os-a__f">Town hall steps · Saturday · Noon · Bring a book</p>
+  </div>
+</figure>
+<figure class="pw-p" id="oswald-gig" data-name="Gig">
+  <div class="pw-art os-b">
+    <p class="os-b__k">Live · One night only</p>
+    <p class="os-b__h">THE<br />NIGHT<br />SHIFT</p>
+    <p class="os-b__s">with special guests <b>Static Bloom</b></p>
+    <p class="os-b__f"><span>The Lantern Rooms</span><span>Doors 8pm</span></p>
+  </div>
+</figure>
+<figure class="pw-p" id="oswald-weights" data-name="Six weights">
+  <div class="pw-art os-c">
+    {[200, 300, 400, 500, 600, 700].map((w) => <p style={`font-variation-settings:'wght' ${w}`}>CONDENSED</p>)}
+  </div>
+</figure>
+<style>
+  .os-a { background: #ffde2e; color: #111; font-family: 'Oswald Variable', sans-serif; padding: 6cqi; display: flex; flex-direction: column; justify-content: center; }
+  .os-a p:not(.os-a__f) { font-size: 31cqi; line-height: 0.88; font-variation-settings: 'wght' 700; letter-spacing: -0.01em; }
+  .os-a p:nth-child(2) { color: #d62a1e; }
+  .os-a__f { position: absolute; left: 6cqi; right: 6cqi; bottom: 6cqi; font-size: 3.8cqi; font-variation-settings: 'wght' 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .os-b { background: #111; color: #f2efe8; font-family: 'Oswald Variable', sans-serif; padding: 8cqi 7cqi; display: flex; flex-direction: column; }
+  .os-b__k { font-size: 3.6cqi; letter-spacing: 0.2em; text-transform: uppercase; color: #ff3d6e; font-variation-settings: 'wght' 500; }
+  .os-b__h { margin-top: auto; font-size: 30cqi; line-height: 0.84; font-variation-settings: 'wght' 700; }
+  .os-b__h { background: linear-gradient(#f2efe8 55%, #ff3d6e 55%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .os-b__s { margin-top: 4cqi; font-size: 5cqi; font-variation-settings: 'wght' 300; text-transform: uppercase; }
+  .os-b__s b { font-weight: 400; font-variation-settings: 'wght' 700; }
+  .os-b__f { margin-top: 5cqi; display: flex; justify-content: space-between; border-top: 0.4cqi solid #f2efe8; padding-top: 3cqi; font-size: 3.6cqi; text-transform: uppercase; font-variation-settings: 'wght' 500; }
+  .os-c { background: #d62a1e; color: #fff; font-family: 'Oswald Variable', sans-serif; display: grid; align-content: center; justify-items: center; }
+  .os-c p { font-size: 17.6cqi; line-height: 0.98; }
+</style>

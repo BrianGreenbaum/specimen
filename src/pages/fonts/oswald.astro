@@ -2,6 +2,7 @@
 // OSWALD — new edition. Headlines under pressure: a front page you write, a
 // shirt with your name on it and an election night. Every example is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -103,15 +104,16 @@ const cands = [
         <p class="ed-cap">An invented constituency and invented candidates. The count runs when you scroll here.</p>
       </section>
 
+      <PosterWall slug="oswald" n="04" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>05</span> Your turn</div>
         <h2 class="ed-h2">Stop <em>the presses</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Oswald Variable" sample="Breaking news" upper axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 700 }]}
             presets={[{ name: 'ExtraLight', v: [200] }, { name: 'Light', v: [300] }, { name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'Bold', v: [700] }]} start={4} />
         </div>
       </section>
-      <EditionTail entry={entry} from={5} />
+      <EditionTail entry={entry} from={6} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

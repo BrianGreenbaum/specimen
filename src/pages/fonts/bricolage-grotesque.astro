@@ -2,6 +2,7 @@
 // BRICOLAGE GROTESQUE — new edition. Cut, paste, photocopy: a collage hero,
 // a zine cover and a loupe on the ink traps. Every example here is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -85,8 +86,9 @@ const menu = [['Flat white', '3.40'], ['Oat cortado with a little cinnamon', '3.
         </div>
       </section>
 
+      <PosterWall slug="bricolage-grotesque" n="04" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>04</span> Your turn</div>
+        <div class="ed-kicker"><span>05</span> Your turn</div>
         <h2 class="ed-h2">Stick <em>something</em> together.</h2>
         <div class="ed-body">
           <EditionTester family="Bricolage Grotesque Variable" sample="Odds and ends"
@@ -95,7 +97,7 @@ const menu = [['Flat white', '3.40'], ['Oat cortado with a little cinnamon', '3.
         </div>
       </section>
 
-      <EditionTail entry={entry} from={5} />
+      <EditionTail entry={entry} from={6} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

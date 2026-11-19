@@ -1,0 +1,47 @@
+---
+// Bricolage Grotesque posters: a cut-and-paste zine, ink traps up close, a flea market.
+---
+<figure class="pw-p" id="bricolage-grotesque-zine" data-name="Zine">
+  <div class="pw-art bg-a">
+    <p class="bg-a__1">make</p>
+    <p class="bg-a__2">THINGS</p>
+    <p class="bg-a__3">with your</p>
+    <p class="bg-a__4">hands</p>
+    <p class="bg-a__5">cut · paste · photocopy · repeat</p>
+    <span class="bg-a__tape" aria-hidden="true"></span>
+  </div>
+</figure>
+<figure class="pw-p" id="bricolage-grotesque-ink-traps" data-name="Ink traps">
+  <div class="pw-art bg-b">
+    <p class="bg-b__w">ink</p>
+    <p class="bg-b__k">Ink traps</p>
+    <p class="bg-b__t">Look where the strokes meet: little notches cut into the corners. At small sizes they keep ink from pooling. At 96 point, they turn into character.</p>
+  </div>
+</figure>
+<figure class="pw-p" id="bricolage-grotesque-flea" data-name="Flea market">
+  <div class="pw-art bg-c">
+    <p class="bg-c__h">Saturday<br />Flea</p>
+    <div class="bg-c__tags">{[['Lamps', '£12'], ['Records', '£3'], ['Chairs (odd)', '£8'], ['Mystery box', '£1'], ['Plants', '£5']].map(([a, b], i) => <p style={`--r:${[-6, 4, -2, 7, -4][i]}deg`}><b>{b}</b>{a}</p>)}</div>
+    <p class="bg-c__f">Car park behind the library · 8 till late-ish</p>
+  </div>
+</figure>
+<style>
+  .bg-a { background: #ff8fb1; color: #121212; font-family: 'Bricolage Grotesque Variable', sans-serif; }
+  .bg-a p { position: absolute; line-height: 0.85; }
+  .bg-a__1 { left: 6cqi; top: 6cqi; font-size: 26cqi; font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 96; font-style: normal; }
+  .bg-a__2 { left: 4cqi; top: 33cqi; font-size: 27cqi; padding: 1cqi 3cqi; background: #121212; color: #ffe14a; font-variation-settings: 'wght' 800, 'wdth' 75, 'opsz' 96; transform: rotate(-4deg); }
+  .bg-a__3 { right: 6cqi; top: 66cqi; font-size: 9cqi; padding: 1.5cqi 2.5cqi; background: #fff; font-variation-settings: 'wght' 500, 'wdth' 100, 'opsz' 24; transform: rotate(3deg); }
+  .bg-a__4 { left: 5cqi; bottom: 15cqi; font-size: 31cqi; color: #fff; font-variation-settings: 'wght' 800, 'wdth' 100, 'opsz' 96; -webkit-text-stroke: 0.6cqi #121212; }
+  .bg-a__5 { left: 6cqi; bottom: 6cqi; font-size: 3.2cqi; font-variation-settings: 'wght' 600, 'wdth' 75, 'opsz' 12; letter-spacing: 0.08em; text-transform: uppercase; }
+  .bg-a__tape { position: absolute; right: 8cqi; top: 10cqi; width: 26cqi; height: 7cqi; background: #fff8; transform: rotate(28deg); }
+  .bg-b { background: #121212; color: #ffe14a; font-family: 'Bricolage Grotesque Variable', sans-serif; }
+  .bg-b__w { position: absolute; left: -10cqi; top: -16cqi; font-size: 92cqi; line-height: 1; letter-spacing: -0.06em; font-variation-settings: 'wght' 800, 'wdth' 75, 'opsz' 96; }
+  .bg-b__k { position: absolute; left: 7cqi; bottom: 34cqi; font-size: 10cqi; color: #fff; font-variation-settings: 'wght' 700, 'wdth' 100, 'opsz' 96; }
+  .bg-b__t { position: absolute; left: 7cqi; right: 12cqi; bottom: 8cqi; font-size: 4.4cqi; line-height: 1.3; color: #ffffffcc; font-variation-settings: 'wght' 400, 'wdth' 100, 'opsz' 14; }
+  .bg-c { background: #3a62ff; color: #fff; font-family: 'Bricolage Grotesque Variable', sans-serif; padding: 7cqi; display: flex; flex-direction: column; }
+  .bg-c__h { font-size: 25cqi; line-height: 0.82; letter-spacing: -0.04em; font-variation-settings: 'wght' 800, 'wdth' 75, 'opsz' 96; }
+  .bg-c__tags { display: flex; flex-wrap: wrap; gap: 3cqi; margin-top: 7cqi; }
+  .bg-c__tags p { display: grid; padding: 2.4cqi 3.4cqi; background: #ffe14a; color: #121212; border-radius: 1cqi; transform: rotate(var(--r)); font-size: 4.2cqi; font-variation-settings: 'wght' 500, 'wdth' 90, 'opsz' 14; box-shadow: 0.8cqi 0.8cqi 0 #121212; }
+  .bg-c__tags b { font-weight: 400; font-size: 9cqi; line-height: 1; font-variation-settings: 'wght' 800, 'wdth' 75, 'opsz' 96; }
+  .bg-c__f { margin-top: auto; font-size: 3.4cqi; font-variation-settings: 'wght' 500, 'wdth' 100, 'opsz' 14; }
+</style>

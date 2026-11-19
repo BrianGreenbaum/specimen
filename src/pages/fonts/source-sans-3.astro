@@ -2,6 +2,7 @@
 // SOURCE SANS 3 — new edition. Getting around: a departures board in four
 // scripts, a wayfinding sign, a sortable table and a weather chart. All new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -109,15 +110,16 @@ const temps = [9, 8, 8, 7, 7, 7, 8, 10, 12, 14, 16, 18, 19, 20, 21, 21, 20, 19, 
         </div>
       </section>
 
+      <PosterWall slug="source-sans-3" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>the signage</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Source Sans 3 Variable" sample="Platform 9 · Trains to the coast" italic axes={[{ tag: 'wght', name: 'Weight', min: 200, max: 900 }]}
             presets={[{ name: 'ExtraLight', v: [200] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }]} start={2} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Scripts', v: 'Latin, Greek, Cyrillic, Vietnamese' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Scripts', v: 'Latin, Greek, Cyrillic, Vietnamese' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

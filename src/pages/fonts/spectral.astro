@@ -2,6 +2,7 @@
 // SPECTRAL — new edition. The document: a selectable title, a little word
 // processor, tracked changes, margin notes and a pixel loupe. All new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -90,14 +91,15 @@ const notes = [
         </div>
       </section>
 
+      <PosterWall slug="spectral" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>the opening line</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Spectral" sample="Chapter One, in which nothing happens" italic axes={[]} presets={[{ name: 'Regular', v: [] }, { name: 'Italic', v: [], italic: true }]} start={0} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Light, Regular, SemiBold, Italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Light, Regular, SemiBold, Italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

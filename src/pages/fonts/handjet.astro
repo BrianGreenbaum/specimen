@@ -3,6 +3,7 @@
 // collection. Every letter is a grid of identical elements; the page is a wall
 // of displays that lets you choose what that element is.
 import Layout from '../../layouts/Layout.astro';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import GlyphInspector from '../../components/specimen/GlyphInspector.astro';
@@ -200,8 +201,9 @@ const themeStyle = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="handjet" n="05" kicker="hj-kicker" sec="hj-sec" />
       <section class="hj-sec" data-hj-test>
-        <div class="hj-kicker"><span>05</span> Your turn</div>
+        <div class="hj-kicker"><span>06</span> Your turn</div>
         <h2 class="hj-h2">Write on the wall.</h2>
 
         <div class="hj-test__stage">
@@ -219,7 +221,7 @@ const themeStyle = [
 
       <!-- ============ GLYPHS ============ -->
       <section class="hj-sec">
-        <div class="hj-kicker"><span>06</span> The set</div>
+        <div class="hj-kicker"><span>07</span> The set</div>
         <h2 class="hj-h2">Run a hand over it.</h2>
         <p class="hj-lede">Click any letter to see it large.</p>
         <div class="hj-keys" data-hj-keys data-glyphroot>
@@ -230,7 +232,7 @@ const themeStyle = [
 
       <!-- ============ STORY + SPECS ============ -->
       <section class="hj-sec">
-        <div class="hj-kicker"><span>07</span> The story</div>
+        <div class="hj-kicker"><span>08</span> The story</div>
         <div class="hj-story">
           <div class="hj-story__prose">
             <p class="hj-story__lede">

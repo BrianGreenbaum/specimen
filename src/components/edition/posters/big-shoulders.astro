@@ -1,0 +1,50 @@
+---
+// Big Shoulders posters: Chicago skyline of weights, a ballpark scoreboard, a bridge.
+---
+<figure class="pw-p" id="big-shoulders-skyline" data-name="Skyline">
+  <div class="pw-art bs-a">
+    <div class="bs-a__city">{['C', 'H', 'I', 'C', 'A', 'G', 'O'].map((c, i) => <span style={`--h:${[62, 88, 54, 100, 70, 82, 58][i]};font-variation-settings:'wght' ${[300, 800, 500, 900, 400, 700, 200][i]}, 'opsz' 72`}>{c}</span>)}</div>
+    <p class="bs-a__k">City of the big shoulders</p>
+    <p class="bs-a__f">Big Shoulders · Patric King · after Carl Sandburg, 1914</p>
+  </div>
+</figure>
+<figure class="pw-p" id="big-shoulders-scoreboard" data-name="Scoreboard">
+  <div class="pw-art bs-b">
+    <p class="bs-b__h">Wrigley</p>
+    <div class="bs-b__g">
+      <span></span>{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => <span>{n}</span>)}<span>R</span>
+      <span class="t">VIS</span>{['0', '0', '1', '0', '0', '2', '0', '0', '0', '3'].map((n) => <span>{n}</span>)}
+      <span class="t">CHI</span>{['2', '0', '0', '0', '3', '0', '0', '1', 'x', '6'].map((n) => <span class="y">{n}</span>)}
+    </div>
+    <div class="bs-b__flag" aria-hidden="true"><span>W</span></div>
+    <p class="bs-b__s">Ball <b>3</b> Strike <b>2</b> Out <b>2</b></p>
+  </div>
+</figure>
+<figure class="pw-p" id="big-shoulders-bridge" data-name="Bridge">
+  <div class="pw-art bs-c">
+    <p class="bs-c__h">Hog butcher<br />for the world</p>
+    <div class="bs-c__beams" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <i style={`--i:${i}`}></i>)}</div>
+    <p class="bs-c__f">Tool maker · stacker of wheat · player with railroads</p>
+  </div>
+</figure>
+<style>
+  .bs-a { background: linear-gradient(#1b2b4a, #e26d3d 70%, #f5b45e); color: #0e1320; font-family: 'Big Shoulders Variable', sans-serif; }
+  .bs-a__city { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: center; gap: 0.6cqi; height: 100%; }
+  .bs-a__city span { display: grid; place-items: start center; width: 13.4cqi; height: calc(var(--h) * 1cqi); background: #0e1320; color: #f5b45e; font-size: 17cqi; line-height: 1; padding-top: 2cqi; background-image: repeating-linear-gradient(#0000 0 3cqi, #f5b45e22 3cqi 3.6cqi); }
+  .bs-a__k { position: absolute; left: 6cqi; top: 7cqi; width: 70cqi; font-size: 11cqi; line-height: 0.88; text-transform: uppercase; font-variation-settings: 'wght' 900, 'opsz' 72; color: #fff3e0; }
+  .bs-a__f { position: absolute; left: 6cqi; bottom: 3cqi; z-index: 1; font-size: 2.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: #f5b45e99; font-variation-settings: 'wght' 600, 'opsz' 10; }
+  .bs-b { background: #1f4d2b; color: #f3f0e6; font-family: 'Big Shoulders Variable', sans-serif; padding: 7cqi 5cqi; display: flex; flex-direction: column; gap: 5cqi; }
+  .bs-b__h { text-align: center; font-size: 22cqi; line-height: 0.85; text-transform: uppercase; font-variation-settings: 'wght' 900, 'opsz' 72; letter-spacing: 0.02em; }
+  .bs-b__g { display: grid; grid-template-columns: 13cqi repeat(10, 1fr); gap: 0.8cqi; font-variation-settings: 'wght' 700, 'opsz' 72; font-size: 8cqi; text-align: center; }
+  .bs-b__g span { background: #143a1f; padding: 1.4cqi 0; line-height: 1; } .bs-b__g span:nth-child(-n+11) { background: none; font-size: 3.6cqi; opacity: 0.8; }
+  .bs-b__g .t { text-align: left; padding-left: 1cqi; font-size: 6cqi; } .bs-b__g .y { color: #ffd84a; }
+  .bs-b__flag { align-self: center; width: 40cqi; height: 27cqi; background: #f3f0e6; display: grid; place-items: center; clip-path: polygon(0 0, 100% 4%, 96% 100%, 2% 94%); box-shadow: inset 0 0 0 1.4cqi #1d3d8f; }
+  .bs-b__flag span { font-size: 26cqi; line-height: 1; color: #1d3d8f; font-variation-settings: 'wght' 900, 'opsz' 72; }
+  .bs-b__s { margin-top: auto; text-align: center; font-size: 6cqi; text-transform: uppercase; letter-spacing: 0.04em; font-variation-settings: 'wght' 400, 'opsz' 72; }
+  .bs-b__s b { font-weight: 400; color: #ffd84a; font-variation-settings: 'wght' 900, 'opsz' 72; margin: 0 2cqi 0 1cqi; }
+  .bs-c { background: #e6e1d6; color: #b8321f; font-family: 'Big Shoulders Variable', sans-serif; padding: 7cqi; }
+  .bs-c__h { font-size: 16cqi; line-height: 0.84; text-transform: uppercase; font-variation-settings: 'wght' 900, 'opsz' 72; position: relative; z-index: 1; }
+  .bs-c__beams { position: absolute; left: 0; right: 0; bottom: 17cqi; height: 34cqi; border-top: 3cqi solid #1a1a1a; border-bottom: 3cqi solid #1a1a1a; display: flex; justify-content: space-around; }
+  .bs-c__beams i { width: 2cqi; background: #1a1a1a; transform: skewX(calc((var(--i) - 4) * 9deg)); }
+  .bs-c__f { position: absolute; left: 7cqi; right: 7cqi; bottom: 6cqi; font-size: 3.6cqi; text-transform: uppercase; letter-spacing: 0.06em; color: #1a1a1a; font-variation-settings: 'wght' 600, 'opsz' 20; }
+</style>
