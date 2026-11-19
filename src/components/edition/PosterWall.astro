@@ -129,8 +129,9 @@ const Posters = all[`./posters/${slug}.astro`]?.default;
   .pw-art * { margin: 0; }
   .pw-render { position: fixed; left: -10000px; top: 0; width: 1600px; container-type: inline-size; pointer-events: none; }
   .pw-render .pw-art { width: 1600px; border-radius: 0; }
-  .pw-dlg { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0b0b0ce8; color: #f4f2ee; }
-  .pw-dlg::backdrop { background: transparent; }
+  .pw-dlg { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0b0b0c; color: #f4f2ee; z-index: 1000; }
+  .pw-dlg::backdrop { background: #0b0b0c; }
+  body:has(.pw-dlg[open]) { overflow: hidden; }
   .pw-dlg[open] { display: grid; grid-template-rows: 1fr auto; }
   .pw-dlg__stage { display: grid; place-items: center; padding: clamp(1rem, 3vw, 2.5rem) 1rem 0; min-height: 0; }
   .pw-frame { width: min(calc((100dvh - 7.5rem) * 0.8), calc(100vw - 2rem)); container-type: inline-size; box-shadow: 0 40px 100px -30px #000; animation: pw-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
