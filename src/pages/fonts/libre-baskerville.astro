@@ -1,0 +1,279 @@
+---
+// LIBRE BASKERVILLE — new edition. Gaslight and print: fog over the moor, a
+// composing stick, a cipher wheel, a broadside and a calling card. All new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('libre-baskerville');
+const corners = [
+  ['tl', 'Visite', 'Folded at the top left: I called in person.'],
+  ['tr', 'Félicitation', 'Folded at the top right: congratulations.'],
+  ['bl', 'Condoléance', 'Folded at the bottom left: my condolences.'],
+  ['br', 'Adieu', 'Folded at the bottom right: I am leaving town. Goodbye.'],
+];
+---
+<Layout title="Libre Baskerville — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Libre Baskerville" showToggle={false} />
+  <div class="ed lb" data-lb>
+    <header class="ed-hero lb-hero" data-hero>
+      <div class="ed-hero__top"><span>Libre Baskerville · {font.designer} · {font.year}</span><span>Regular, Italic & Bold</span></div>
+      <h1 class="ed-hero__word lb-hero__word" aria-label="Baskerville">Baskerville</h1>
+      <canvas class="lb-fog" data-fog aria-hidden="true"></canvas>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A web-first revival of the 1757 classic, <em>steady on any screen</em>.
+          <span class="ed-hero__hint" data-fine>A fog has come in off the moor. Move the pointer to clear it; it will creep back.</span>
+          <span class="ed-hero__hint" data-coarse>Drag a finger to clear the fog off the moor.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>visibility</dt><dd data-hud="v">0%</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-stick>
+        <div class="ed-kicker"><span>01</span> The composing stick</div>
+        <h2 class="ed-h2">Set it backwards.<br /><em>Print it forwards.</em></h2>
+        <div class="ed-body lb-stick">
+          <div class="lb-stick__tray">
+            <div class="lb-stick__rail" data-sorts aria-hidden="true"></div>
+            <label class="lb-stick__in"><span>Type a line</span><input type="text" maxlength="22" value="Elementary" data-st-in /></label>
+            <button type="button" class="lb-btn" data-pull>Pull a proof</button>
+          </div>
+          <div class="lb-proof" data-proof><p class="lb-proof__t" data-proof-t>Elementary</p><p class="lb-proof__n">Proof no. <span data-proof-n>1</span></p></div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-cipher>
+        <div class="ed-kicker"><span>02</span> The cipher</div>
+        <h2 class="ed-h2">A message <em>from Baker Street</em>.</h2>
+        <div class="ed-body lb-ci">
+          <div class="lb-wheel" data-wheel aria-hidden="true">
+            <div class="lb-wheel__outer">{[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((c, i) => <span style={`--i:${i}`}>{c}</span>)}</div>
+            <div class="lb-wheel__inner" data-inner>{[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((c, i) => <span style={`--i:${i}`}>{c}</span>)}</div>
+            <span class="lb-wheel__hub">{'❦'}</span>
+          </div>
+          <div class="lb-ci__side">
+            <p class="lb-ci__k">The telegram reads</p>
+            <p class="lb-ci__msg" data-ci-msg></p>
+            <label class="ed-slider"><span>Turn the wheel <b data-ci-v>0</b></span><input type="range" min="0" max="25" value="0" data-ci-in /></label>
+            <p class="lb-ci__ok" data-ci-ok>Solved. <em>Come at once.</em></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-bs>
+        <div class="ed-kicker"><span>03</span> The broadside</div>
+        <h2 class="ed-h2">Posted on <em>every lamp-post</em>.</h2>
+        <div class="ed-body lb-bs">
+          <div class="lb-poster" data-poster>
+            <p class="lb-poster__a">Twenty Pounds</p>
+            <p class="lb-poster__b">Reward</p>
+            <p class="lb-poster__c">will be paid for information leading to the recovery of</p>
+            <p class="lb-poster__d" data-bs-item>A Large Black Hound</p>
+            <p class="lb-poster__e">last seen upon <em data-bs-place>Grimpen Mire</em>, on the night of the fourteenth instant.</p>
+            <p class="lb-poster__f">Apply to <b>Mr. S. Holmes</b> · 221b Baker Street</p>
+          </div>
+          <div class="lb-bs__ctl">
+            <label class="lb-field"><span>What was lost</span><input type="text" value="A Large Black Hound" maxlength="28" data-bs-in /></label>
+            <label class="lb-field"><span>Last seen</span><input type="text" value="Grimpen Mire" maxlength="24" data-bs-pl /></label>
+            <label class="ed-slider"><span>Reward <b data-bs-rv>20</b> pounds</span><input type="range" min="1" max="500" value="20" data-bs-r /></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-card>
+        <div class="ed-kicker"><span>04</span> The calling card</div>
+        <h2 class="ed-h2">Fold a corner.<br /><em>Say something.</em></h2>
+        <div class="ed-body lb-cc">
+          <div class="lb-card" data-cc>
+            {corners.map(([k, n]) => <button type="button" class={`lb-card__c lb-card__c--${k}`} data-corner={k} aria-label={`Fold the corner: ${n}`}></button>)}
+            <p class="lb-card__name" data-cc-name>Miss Irene Adler</p>
+            <p class="lb-card__addr">Briony Lodge · Serpentine Avenue<br /><em>St. John’s Wood</em></p>
+            <p class="lb-card__day">At home on Thursdays</p>
+          </div>
+          <div class="lb-cc__side">
+            <label class="lb-field"><span>Your name</span><input type="text" value="Miss Irene Adler" maxlength="24" data-cc-in /></label>
+            <p class="lb-cc__meaning" data-cc-mean>In Victorian society, a folded corner on a calling card carried a message. Click a corner of the card.</p>
+          </div>
+          <script type="application/json" data-cc-data set:html={JSON.stringify(corners)} />
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the first line</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Libre Baskerville" sample="It was a dark and foggy night" italic axes={[]} presets={[{ name: 'Regular', v: [] }, { name: 'Italic', v: [], italic: true }]} start={0} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Regular, italic and bold' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-lb]');
+  if (page) {
+    const stop = (el: Element) => el.addEventListener('keydown', (e) => e.stopPropagation());
+
+    // ---------- Hero: fog canvas ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, cv = hero.querySelector<HTMLCanvasElement>('[data-fog]')!, ctx = cv.getContext('2d')!;
+    let W = 0, H = 0, sc = 0.25; // fog runs at quarter resolution, blurred by CSS
+    const fill = (a: number) => { ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = `rgba(214, 210, 200, ${a})`; ctx.fillRect(0, 0, W, H); };
+    const size = () => { const r = hero.getBoundingClientRect(); W = cv.width = Math.ceil(r.width * sc); H = cv.height = Math.ceil(r.height * sc); fill(1); };
+    new ResizeObserver(size).observe(hero); size();
+    let frame = 0;
+    runHero(hero, (f) => {
+      fill(f.reduce ? 0 : 0.006);
+      const x = (f.live ? f.px : 0.5 + Math.sin(f.t * 0.4) * 0.38) * W, y = (f.live ? f.py : 0.45 + Math.sin(f.t * 0.9) * 0.1) * H;
+      if (f.live || !f.reduce) {
+        ctx.globalCompositeOperation = 'destination-out';
+        const g = ctx.createRadialGradient(x, y, 0, x, y, W * 0.09); g.addColorStop(0, 'rgba(0,0,0,0.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, W * 0.09, 0, Math.PI * 2); ctx.fill();
+      }
+      if (++frame % 20 === 0) {
+        const d = ctx.getImageData(0, Math.floor(H * 0.25), W, Math.floor(H * 0.4)).data; let a = 0, n = 0;
+        for (let i = 3; i < d.length; i += 64) { a += d[i]; n++; }
+        hero.querySelector('[data-hud="v"]')!.textContent = `${Math.round(100 - (a / n / 255) * 100)}%`;
+      }
+    });
+
+    // ---------- Composing stick ----------
+    const st = page.querySelector<HTMLElement>('[data-stick]')!, sorts = st.querySelector<HTMLElement>('[data-sorts]')!, sin = st.querySelector<HTMLInputElement>('[data-st-in]')!, proof = st.querySelector<HTMLElement>('[data-proof]')!;
+    let pulls = 1;
+    const setSorts = () => { sorts.innerHTML = ''; [...sin.value].forEach((c, i) => { const s = document.createElement('span'); s.className = 'lb-sort'; s.textContent = c === ' ' ? ' ' : c; s.style.animationDelay = `${i * 0.02}s`; sorts.appendChild(s); }); };
+    stop(sin); sin.addEventListener('input', setSorts); setSorts();
+    st.querySelector('[data-pull]')!.addEventListener('click', () => {
+      proof.classList.remove('is-pull'); void proof.offsetWidth; proof.classList.add('is-pull');
+      st.querySelector('[data-proof-t]')!.textContent = sin.value || ' '; st.querySelector('[data-proof-n]')!.textContent = String(++pulls);
+      proof.style.setProperty('--ink', String(0.75 + Math.random() * 0.25)); proof.style.setProperty('--tilt', `${(Math.random() - 0.5) * 2.4}deg`);
+    });
+
+    // ---------- Cipher ----------
+    const ci = page.querySelector<HTMLElement>('[data-cipher]')!, cin = ci.querySelector<HTMLInputElement>('[data-ci-in]')!, inner = ci.querySelector<HTMLElement>('[data-inner]')!, msgEl = ci.querySelector<HTMLElement>('[data-ci-msg]')!;
+    const PLAIN = 'THE HOUND IS ON THE MOOR', KEY = 9;
+    const shift = (s: string, k: number) => s.replace(/[A-Z]/g, (c) => String.fromCharCode(((c.charCodeAt(0) - 65 + k + 26) % 26) + 65));
+    const CIPH = shift(PLAIN, KEY);
+    msgEl.innerHTML = CIPH.split(' ').map((w) => `<b>${[...w].map((c) => `<span>${c}</span>`).join('')}</b>`).join('<i> </i>');
+    const spans = Array.from(msgEl.querySelectorAll('span'));
+    const paintC = () => {
+      const k = +cin.value; ci.querySelector('[data-ci-v]')!.textContent = String(k); inner.style.transform = `rotate(${-k * (360 / 26)}deg)`;
+      const dec = shift(CIPH, -k).replace(/ /g, ''); spans.forEach((s, i) => (s.textContent = dec[i]));
+      ci.classList.toggle('is-solved', k === KEY);
+    };
+    cin.addEventListener('input', paintC); paintC();
+
+    // ---------- Broadside ----------
+    const bs = page.querySelector<HTMLElement>('[data-bs]')!;
+    const NUM = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    const words = (n: number): string => n < 20 ? NUM[n] : n < 100 ? TENS[Math.floor(n / 10)] + (n % 10 ? '-' + NUM[n % 10] : '') : NUM[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' and ' + words(n % 100) : '');
+    const bind = (sel: string, out: string) => { const i = bs.querySelector<HTMLInputElement>(sel)!; stop(i); i.addEventListener('input', () => (bs.querySelector(out)!.textContent = i.value || ' ')); };
+    bind('[data-bs-in]', '[data-bs-item]'); bind('[data-bs-pl]', '[data-bs-place]');
+    const rin = bs.querySelector<HTMLInputElement>('[data-bs-r]')!;
+    rin.addEventListener('input', () => { const n = +rin.value; bs.querySelector('[data-bs-rv]')!.textContent = String(n); bs.querySelector('.lb-poster__a')!.textContent = `${words(n)} Pound${n === 1 ? '' : 's'}`; });
+
+    // ---------- Calling card ----------
+    const cc = page.querySelector<HTMLElement>('[data-card]')!, card = cc.querySelector<HTMLElement>('[data-cc]')!, C: string[][] = JSON.parse(cc.querySelector('[data-cc-data]')!.textContent!);
+    const ccin = cc.querySelector<HTMLInputElement>('[data-cc-in]')!; stop(ccin); ccin.addEventListener('input', () => (cc.querySelector('[data-cc-name]')!.textContent = ccin.value || ' '));
+    cc.querySelectorAll<HTMLElement>('[data-corner]').forEach((b) => b.addEventListener('click', () => {
+      const k = b.dataset.corner!, on = card.dataset.fold !== k; card.dataset.fold = on ? k : '';
+      const m = C.find((c) => c[0] === k)!; const mean = cc.querySelector<HTMLElement>('[data-cc-mean]')!;
+      mean.innerHTML = on ? `<b>${m[1]}.</b> ${m[2]}` : 'Unfolded. The card says only your name.';
+      mean.classList.remove('is-new'); void mean.offsetWidth; mean.classList.add('is-new');
+    }));
+  }
+</script>
+
+<style is:global>
+  .lb { --ed-head: 'Libre Baskerville', 'Baskerville', serif; --ed-head-vf: normal; --ed-em-vf: normal; --ed-lede-vf: normal; --ed-radius: 2px; --paper: #fbf8f0; }
+  .lb em { font-style: italic; } .lb .ed-h2 { font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; }
+  .lb .ed-story__prose { font-family: 'Libre Baskerville', serif; font-size: 1.08rem; line-height: 1.75; } .lb .ed-story__prose em { font-style: italic; } .lb .ed-story__prose strong { font-weight: 700; }
+  .lb-btn { padding: 0.9rem 1.5rem; background: var(--accent); color: var(--paper); font: italic 400 1rem/1 'Libre Baskerville', serif; border-radius: 2px; transition: transform 0.12s; }
+  .lb-btn:active { transform: translateY(2px); }
+  .lb-field { display: grid; gap: 0.35rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .lb-field input, .lb-stick__in input { font: 400 1.3rem/1.3 'Libre Baskerville', serif; background: none; border: 0; border-bottom: 1px solid var(--fg); color: var(--fg); outline: none; padding: 0.2rem 0; text-transform: none; letter-spacing: 0; }
+
+  .lb-hero { overflow: hidden; background: linear-gradient(#d9d6cd, #b9bdb4 60%, #8f988c); }
+  .lb-hero__word { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: min(13.5vw, 34svh); line-height: 1.1; letter-spacing: -0.03em; color: #1a1813; position: relative; }
+  .lb-hero__word::after { content: ''; }
+  .lb-fog { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; filter: blur(14px); z-index: 1; }
+  .lb-hero .ed-hero__top, .lb-hero .ed-hero__foot { position: relative; z-index: 2; }
+
+  /* composing stick */
+  .lb-stick { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .lb-stick__tray { display: grid; gap: 1.2rem; justify-items: start; }
+  .lb-stick__rail { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 1px; width: 100%; min-height: 5.6rem; padding: 0.6rem 0.8rem; background: linear-gradient(#8a8d90, #5f6266); border-radius: 4px; box-shadow: inset 0 3px 6px #0006, 0 2px 0 #c9ccd0; overflow: hidden; }
+  .lb-sort { display: grid; place-items: center; min-width: 2.1rem; height: 4.4rem; padding: 0 0.2rem; background: linear-gradient(90deg, #8b8f94, #c7cbd0 40%, #9da1a6); border-radius: 2px; box-shadow: inset 0 0 0 1px #0003; transform: scaleX(-1); font: 700 2rem/1 'Libre Baskerville', serif; color: #2a2c30; text-shadow: 0 1px 0 #ffffff55; animation: lb-drop 0.35s var(--ease) both; }
+  @keyframes lb-drop { from { transform: scaleX(-1) translateY(-120%); opacity: 0; } }
+  .lb-stick__in { display: grid; gap: 0.35rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); width: 100%; }
+  .lb-proof { --ink: 0.9; --tilt: -0.6deg; position: relative; aspect-ratio: 1.3; background: var(--paper); box-shadow: 0 20px 40px -20px #0006, 0 0 0 1px #0000000d; display: grid; place-items: center; padding: 1.5rem; transform: rotate(var(--tilt)); }
+  .lb-proof__t { font: 700 clamp(1.8rem, 3.6vw, 3rem)/1.1 'Libre Baskerville', serif; text-align: center; color: #1a1813; opacity: var(--ink); filter: url(#none); text-shadow: 0.5px 0 0 #1a181355, -0.3px 0.4px 0 #1a181333; overflow-wrap: anywhere; }
+  .lb-proof__n { position: absolute; right: 1rem; bottom: 0.8rem; font: italic 400 0.8rem/1 'Libre Baskerville', serif; color: var(--fg-3); }
+  .lb-proof.is-pull { animation: lb-pull 0.9s var(--ease); }
+  @keyframes lb-pull { 0% { transform: translateY(-30px) rotate(var(--tilt)); opacity: 0; } 50% { transform: translateY(6px) rotate(var(--tilt)); opacity: 1; } }
+
+  /* cipher */
+  .lb-ci { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .lb-wheel { position: relative; justify-self: center; width: min(100%, 24rem); aspect-ratio: 1; }
+  .lb-wheel__outer, .lb-wheel__inner { position: absolute; border-radius: 50%; }
+  .lb-wheel__outer { inset: 0; background: #e7dfcc; box-shadow: inset 0 0 0 2px var(--fg), inset 0 0 0 4px #e7dfcc, inset 0 0 0 5px var(--fg); }
+  .lb-wheel__inner { inset: 17%; background: var(--accent); color: var(--paper); transition: transform 0.4s var(--ease); box-shadow: 0 0 0 1px var(--fg), 0 6px 14px #0004; }
+  .lb-wheel span { position: absolute; left: 50%; top: 0; width: 1.6rem; margin-left: -0.8rem; height: 50%; transform-origin: 50% 100%; transform: rotate(calc(var(--i) * 13.846deg)); text-align: center; font: 700 1.1rem/1 'Libre Baskerville', serif; padding-top: 0.55rem; }
+  .lb-wheel__inner span { font-weight: 400; font-size: 0.95rem; padding-top: 0.5rem; }
+  .lb-wheel .lb-wheel__hub { position: absolute; left: 50%; top: 50%; width: 3rem; height: 3rem; margin: -1.5rem 0 0 -1.5rem; padding: 0; transform: none; border-radius: 50%; background: var(--paper); color: var(--accent); display: grid; place-items: center; font-size: 1.4rem; box-shadow: 0 0 0 1px var(--fg); }
+  .lb-wheel::after { content: ''; position: absolute; left: 50%; top: -0.4rem; border: 0.5rem solid transparent; border-top-color: #a83a2a; margin-left: -0.5rem; }
+  .lb-ci__side { display: grid; gap: 1.2rem; }
+  .lb-ci__k { font: italic 400 1rem/1 'Libre Baskerville', serif; color: var(--fg-3); }
+  .lb-ci__msg { display: flex; flex-wrap: wrap; gap: 0.1em 0.05em; padding: 1.2rem 1.4rem; background: #efe6c9; border: 1px solid #0000001a; font: 700 clamp(1.4rem, 3vw, 2.3rem)/1.2 'Libre Baskerville', serif; letter-spacing: 0.08em; box-shadow: 0 10px 20px -14px #0006; }
+  .lb-ci__msg i { width: 0.7em; } .lb-ci__msg b { display: inline-flex; font-weight: inherit; }
+  .lb-ci__msg span { transition: color 0.3s; color: #6b6253; }
+  .lb-cipher.is-solved .lb-ci__msg span, [data-cipher].is-solved .lb-ci__msg span { color: var(--accent); }
+  .lb-ci__ok { font: 400 1.4rem/1 'Libre Baskerville', serif; color: var(--accent); opacity: 0; transform: translateY(6px); transition: all 0.4s var(--ease); }
+  [data-cipher].is-solved .lb-ci__ok { opacity: 1; transform: none; }
+  [data-cipher].is-solved .lb-ci__msg { animation: lb-solve 0.6s var(--ease); }
+  @keyframes lb-solve { 40% { transform: scale(1.03); } }
+
+  /* broadside */
+  .lb-bs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .lb-poster { justify-self: center; width: min(100%, 28rem); padding: clamp(1.6rem, 4vw, 2.6rem); background: #efe6cf; text-align: center; color: #1a1813; box-shadow: 0 30px 50px -30px #000a, inset 0 0 60px #b49a6a44; display: grid; gap: 0.6rem; container-type: inline-size; transform: rotate(-0.8deg); }
+  .lb-poster__a { font: 700 10cqi/1 'Libre Baskerville', serif; text-transform: uppercase; letter-spacing: -0.01em; }
+  .lb-poster__b { font: italic 400 15cqi/0.9 'Libre Baskerville', serif; color: #8a2a1a; }
+  .lb-poster__c { font: 400 3.6cqi/1.4 'Libre Baskerville', serif; border-top: 2px solid; border-bottom: 1px solid; padding: 0.4rem 0; }
+  .lb-poster__d { font: 700 7.6cqi/1.05 'Libre Baskerville', serif; text-transform: uppercase; overflow-wrap: anywhere; }
+  .lb-poster__e { font: 400 4cqi/1.4 'Libre Baskerville', serif; }
+  .lb-poster__f { font: 400 3.4cqi/1.4 'Libre Baskerville', serif; border-top: 1px solid; padding-top: 0.6rem; font-variant-caps: small-caps; letter-spacing: 0.05em; }
+  .lb-bs__ctl { display: grid; gap: 1.3rem; }
+
+  /* calling card */
+  .lb-cc { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .lb-card { --f: 3.4rem; position: relative; justify-self: center; width: min(100%, 30rem); aspect-ratio: 1.75; background: var(--paper); box-shadow: 0 30px 50px -30px #0008, 0 0 0 1px #0000000f; display: grid; place-content: center; text-align: center; gap: 0.6rem; padding: 2rem; transition: clip-path 0.5s var(--ease); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  .lb-card[data-fold='tl'] { clip-path: polygon(var(--f) 0, 100% 0, 100% 100%, 0 100%, 0 var(--f)); }
+  .lb-card[data-fold='tr'] { clip-path: polygon(0 0, calc(100% - var(--f)) 0, 100% var(--f), 100% 100%, 0 100%); }
+  .lb-card[data-fold='bl'] { clip-path: polygon(0 0, 100% 0, 100% 100%, var(--f) 100%, 0 calc(100% - var(--f))); }
+  .lb-card[data-fold='br'] { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--f)), calc(100% - var(--f)) 100%, 0 100%); }
+  .lb-card__c { position: absolute; width: var(--f); height: var(--f); z-index: 1; }
+  .lb-card__c::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, #d8d0bc 50%, transparent 50%); opacity: 0; transition: opacity 0.4s 0.15s; box-shadow: 2px 2px 4px #0002; }
+  .lb-card__c--tl { left: 0; top: 0; } .lb-card__c--tr { right: 0; top: 0; transform: scaleX(-1); } .lb-card__c--bl { left: 0; bottom: 0; transform: scaleY(-1); } .lb-card__c--br { right: 0; bottom: 0; transform: scale(-1); }
+  .lb-card__c::before { content: ''; position: absolute; inset: 20%; border-radius: 50%; border: 1px dashed #2c4a6b55; opacity: 0.7; transition: opacity 0.2s; }
+  .lb-card__c:hover::before { opacity: 1; border-style: solid; }
+  .lb-card[data-fold='tl'] .lb-card__c--tl::after, .lb-card[data-fold='tr'] .lb-card__c--tr::after, .lb-card[data-fold='bl'] .lb-card__c--bl::after, .lb-card[data-fold='br'] .lb-card__c--br::after { opacity: 1; }
+  .lb-card[data-fold='tl'] .lb-card__c--tl::before, .lb-card[data-fold='tr'] .lb-card__c--tr::before, .lb-card[data-fold='bl'] .lb-card__c--bl::before, .lb-card[data-fold='br'] .lb-card__c--br::before { opacity: 0; }
+  .lb-card__name { font: 400 clamp(1.4rem, 3vw, 2.1rem)/1.1 'Libre Baskerville', serif; }
+  .lb-card__addr { font: 400 0.85rem/1.6 'Libre Baskerville', serif; color: var(--fg-2); font-variant-caps: small-caps; letter-spacing: 0.06em; }
+  .lb-card__addr em { font-variant-caps: normal; letter-spacing: 0; }
+  .lb-card__day { font: italic 400 0.8rem/1 'Libre Baskerville', serif; color: var(--accent); }
+  .lb-cc__side { display: grid; gap: 1.4rem; }
+  .lb-cc__meaning { font: 400 1.15rem/1.6 'Libre Baskerville', serif; color: var(--fg-2); min-height: 5em; }
+  .lb-cc__meaning b { font-style: italic; font-weight: 400; color: var(--accent); font-size: 1.4em; display: block; }
+  .lb-cc__meaning.is-new { animation: lb-in 0.5s var(--ease); } @keyframes lb-in { from { opacity: 0; transform: translateY(6px); } }
+
+  @media (max-width: 900px) { .lb-stick, .lb-ci, .lb-bs, .lb-cc { grid-template-columns: minmax(0, 1fr); } .lb-sort { min-width: 1.5rem; height: 3.4rem; font-size: 1.5rem; } .lb-card { --f: 2.4rem; } }
+</style>
