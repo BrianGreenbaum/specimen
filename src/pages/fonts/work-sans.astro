@@ -1,0 +1,295 @@
+---
+// WORK SANS — new edition. The working day: energy across the hours, a kanban
+// board, a meeting-room screen, a business card and an out-of-office. All new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('work-sans');
+const cols = [
+  { k: 'todo', n: 'To do', cards: [['Write the brief', 'Strategy'], ['Interview three customers', 'Research'], ['Order more coffee', 'Office']] },
+  { k: 'doing', n: 'Doing', cards: [['Redesign the pricing page', 'Design'], ['Fix the login bug', 'Engineering']] },
+  { k: 'done', n: 'Done', cards: [['Choose a typeface', 'Design']] },
+];
+---
+<Layout title="Work Sans — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Work Sans" showToggle={false} />
+  <div class="ed ws" data-ws>
+    <header class="ed-hero ws-hero" data-hero>
+      <div class="ed-hero__top"><span>Work Sans · {font.designer} · {font.year}</span><span>Thin 100 to Black 900, roman & italic</span></div>
+      <h1 class="ed-hero__word ws-hero__word" data-word>Work Sans</h1>
+      <div class="ws-hero__day" aria-hidden="true"><span>9:00</span><span>12:00</span><span>15:00</span><span>17:30</span></div>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A grotesque drawn for screens, <em>busy and friendly</em>.
+          <span class="ed-hero__hint" data-fine>Left to right is the working day. Energy peaks after lunch. Click for a coffee.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the working day. Tap for a coffee.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>time</dt><dd data-hud="t">9:00</dd></div><div><dt>energy</dt><dd data-hud="w">100</dd></div><div><dt>coffees</dt><dd data-hud="c">0</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-kb>
+        <div class="ed-kicker"><span>01</span> The board</div>
+        <h2 class="ed-h2">Move it <em>to done</em>.</h2>
+        <div class="ed-body ws-kb">
+          {cols.map((c) => (
+            <div class={`ws-col ws-col--${c.k}`} data-col={c.k}>
+              <p class="ws-col__h">{c.n} <b data-col-n>{c.cards.length}</b></p>
+              <div class="ws-col__list" data-list>{c.cards.map(([t, tag]) => <div class="ws-card" tabindex="0"><span class="ws-card__tag">{tag}</span><span class="ws-card__t">{t}</span></div>)}</div>
+            </div>
+          ))}
+        </div>
+        <p class="ed-cap">Drag cards between columns. Work in progress is set in Medium; finished work relaxes to Light.</p>
+      </section>
+
+      <section class="ed-sec" data-room>
+        <div class="ed-kicker"><span>02</span> Meeting room</div>
+        <h2 class="ed-h2">Is it <em>free?</em></h2>
+        <div class="ed-body ws-room-wrap">
+          <div class="ws-room" data-room-el>
+            <p class="ws-room__name">Room 4 · Lovelace</p>
+            <p class="ws-room__state" data-room-state>Available</p>
+            <p class="ws-room__sub" data-room-sub>Free until 14:00</p>
+            <div class="ws-room__btns" data-room-btns>{[15, 30, 60].map((m) => <button type="button" data-book={m}>Book {m} min</button>)}</div>
+            <button type="button" class="ws-room__end" data-room-end hidden>End meeting</button>
+            <ul class="ws-room__next"><li><b>14:00</b> Design review</li><li><b>15:30</b> One-to-one</li></ul>
+          </div>
+          <p class="ed-cap">Booking starts a countdown, sped up so a minute passes every second.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-bc>
+        <div class="ed-kicker"><span>03</span> Business card</div>
+        <h2 class="ed-h2">Nice to <em>meet you</em>.</h2>
+        <div class="ed-body ws-bc">
+          <button type="button" class="ws-card3" data-bc-card aria-label="Flip the card">
+            <span class="ws-card3__in">
+              <span class="ws-card3__f ws-card3__f--front" data-bc-front>
+                <span class="ws-card3__name" data-bc-name>Wei Huang</span>
+                <span class="ws-card3__role" data-bc-role>Type designer</span>
+                <span class="ws-card3__ct">hello@example.com<br />+1 555 0123</span>
+              </span>
+              <span class="ws-card3__f ws-card3__f--back"><span class="ws-card3__logo" data-bc-logo>W</span></span>
+            </span>
+          </button>
+          <div class="ws-bc__ctl">
+            <label class="ws-field"><span>Name</span><input type="text" value="Wei Huang" maxlength="24" data-bc-in /></label>
+            <label class="ws-field"><span>Role</span><input type="text" value="Type designer" maxlength="28" data-bc-rin /></label>
+            <div class="ws-seg" role="radiogroup" aria-label="Layout">{['Classic', 'Bold', 'Light'].map((n, i) => <button type="button" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-bc-lay={n.toLowerCase()}>{n}</button>)}</div>
+            <p class="ed-cap">Click the card to turn it over.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-ooo>
+        <div class="ed-kicker"><span>04</span> Out of office</div>
+        <h2 class="ed-h2">Gone fishing. <em>Mostly.</em></h2>
+        <div class="ed-body ws-ooo">
+          <div class="ws-mail">
+            <p class="ws-mail__h"><span>Automatic reply</span><b data-ooo-subj>Out of office</b></p>
+            <div class="ws-mail__b" data-ooo-body></div>
+          </div>
+          <div class="ws-ooo__ctl">
+            <label class="ed-slider"><span>Tone <b data-ooo-tv>Professional</b></span><input type="range" min="0" max="3" value="1" data-ooo-t /></label>
+            <label class="ed-slider"><span>Away for <b data-ooo-dv>5</b> days</span><input type="range" min="1" max="30" value="5" data-ooo-d /></label>
+            <p class="ed-cap">The more relaxed the tone, the lighter the weight.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the all-hands email</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Work Sans Variable" sample="Big news: Fridays are now half days" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
+            presets={[{ name: 'Thin', v: [100] }, { name: 'Regular', v: [400] }, { name: 'SemiBold', v: [600] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }]} start={2} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-ws]');
+  if (page) {
+    const stop = (el: Element) => el.addEventListener('keydown', (e) => e.stopPropagation());
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Hero: the working day ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, word = hero.querySelector<HTMLElement>('[data-word]')!;
+    let boost = 0, cups = 0;
+    hero.addEventListener('click', () => { boost = 1; cups++; hero.querySelector('[data-hud="c"]')!.textContent = String(cups); });
+    runHero(hero, (f) => {
+      const x = f.live ? f.px : ((f.t * 0.06) % 1);
+      boost = Math.max(0, boost - 0.006);
+      // energy: slow start, post-lunch peak around 60%, fade at the end
+      const e = Math.sin(Math.PI * Math.pow(x, 0.85)) * (x > 0.42 && x < 0.5 ? 0.82 : 1);
+      const w = clamp(100 + e * 800 + boost * 400, 100, 900);
+      word.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`;
+      word.style.letterSpacing = `${(-0.04 + (1 - e) * 0.03).toFixed(3)}em`;
+      hero.style.setProperty('--x', `${(x * 100).toFixed(1)}%`);
+      const mins = Math.round(9 * 60 + x * 510), hh = Math.floor(mins / 60), mm = String(mins % 60).padStart(2, '0');
+      hero.querySelector('[data-hud="t"]')!.textContent = `${hh}:${mm}`; hero.querySelector('[data-hud="w"]')!.textContent = String(Math.round(w));
+    });
+
+    // ---------- Kanban (pointer-driven drag) ----------
+    const kb = page.querySelector<HTMLElement>('[data-kb]')!;
+    const counts = () => kb.querySelectorAll<HTMLElement>('[data-col]').forEach((c) => (c.querySelector('[data-col-n]')!.textContent = String(c.querySelectorAll('.ws-card').length)));
+    kb.addEventListener('pointerdown', (e) => {
+      const card = (e.target as HTMLElement).closest<HTMLElement>('.ws-card'); if (!card || e.button) return;
+      e.preventDefault(); const r = card.getBoundingClientRect(), ox = e.clientX - r.left, oy = e.clientY - r.top;
+      const ghost = card.cloneNode(true) as HTMLElement; ghost.classList.add('is-ghost'); ghost.style.width = `${r.width}px`; document.body.appendChild(ghost);
+      card.classList.add('is-hole');
+      const move = (ev: PointerEvent) => {
+        ghost.style.transform = `translate(${ev.clientX - ox}px, ${ev.clientY - oy}px) rotate(3deg)`;
+        const col = (document.elementsFromPoint(ev.clientX, ev.clientY).find((el) => (el as HTMLElement).dataset?.col) as HTMLElement) || null;
+        kb.querySelectorAll('[data-col]').forEach((c) => c.classList.toggle('is-over', c === col));
+        if (col) { const list = col.querySelector<HTMLElement>('[data-list]')!; const after = Array.from(list.querySelectorAll<HTMLElement>('.ws-card:not(.is-hole)')).find((el) => { const b = el.getBoundingClientRect(); return ev.clientY < b.top + b.height / 2; }); after ? list.insertBefore(card, after) : list.appendChild(card); }
+      };
+      const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); ghost.remove(); card.classList.remove('is-hole'); card.classList.add('is-drop'); setTimeout(() => card.classList.remove('is-drop'), 400); kb.querySelectorAll('[data-col]').forEach((c) => c.classList.remove('is-over')); counts(); };
+      move(e as PointerEvent); window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+    });
+    // keyboard: arrow keys move a focused card between columns
+    kb.addEventListener('keydown', (e) => {
+      const card = (e.target as HTMLElement).closest<HTMLElement>('.ws-card'); if (!card || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+      e.preventDefault(); e.stopPropagation(); const cs = Array.from(kb.querySelectorAll<HTMLElement>('[data-col]')), i = cs.indexOf(card.closest('[data-col]')!), j = clamp(i + (e.key === 'ArrowRight' ? 1 : -1), 0, cs.length - 1);
+      cs[j].querySelector('[data-list]')!.appendChild(card); card.focus(); counts();
+    });
+
+    // ---------- Meeting room ----------
+    const rm = page.querySelector<HTMLElement>('[data-room]')!, rel = rm.querySelector<HTMLElement>('[data-room-el]')!;
+    let left = 0, timer = 0;
+    const setFree = () => { clearInterval(timer); rel.classList.remove('is-busy'); rm.querySelector('[data-room-state]')!.textContent = 'Available'; rm.querySelector('[data-room-sub]')!.textContent = 'Free until 14:00'; (rm.querySelector('[data-room-btns]') as HTMLElement).hidden = false; (rm.querySelector('[data-room-end]') as HTMLElement).hidden = true; };
+    const tick = () => { left--; if (left <= 0) return setFree(); rm.querySelector('[data-room-sub]')!.textContent = `Ends in ${left} min`; rel.style.setProperty('--p', String(left)); };
+    rm.querySelectorAll<HTMLElement>('[data-book]').forEach((b) => b.addEventListener('click', () => {
+      left = +b.dataset.book!; rel.style.setProperty('--tot', String(left)); rel.style.setProperty('--p', String(left)); rel.classList.add('is-busy');
+      rm.querySelector('[data-room-state]')!.textContent = 'In use'; rm.querySelector('[data-room-sub]')!.textContent = `Ends in ${left} min`;
+      (rm.querySelector('[data-room-btns]') as HTMLElement).hidden = true; (rm.querySelector('[data-room-end]') as HTMLElement).hidden = false;
+      clearInterval(timer); timer = window.setInterval(tick, reduce ? 200 : 1000);
+    }));
+    rm.querySelector('[data-room-end]')!.addEventListener('click', setFree);
+
+    // ---------- Business card ----------
+    const bc = page.querySelector<HTMLElement>('[data-bc]')!, card3 = bc.querySelector<HTMLElement>('[data-bc-card]')!;
+    const nin = bc.querySelector<HTMLInputElement>('[data-bc-in]')!, rin = bc.querySelector<HTMLInputElement>('[data-bc-rin]')!; [nin, rin].forEach(stop);
+    nin.addEventListener('input', () => { bc.querySelector('[data-bc-name]')!.textContent = nin.value || ' '; bc.querySelector('[data-bc-logo]')!.textContent = (nin.value.trim()[0] || 'W').toUpperCase(); });
+    rin.addEventListener('input', () => (bc.querySelector('[data-bc-role]')!.textContent = rin.value || ' '));
+    card3.addEventListener('click', () => card3.classList.toggle('is-back'));
+    const lays = Array.from(bc.querySelectorAll<HTMLElement>('[data-bc-lay]'));
+    lays.forEach((b) => b.addEventListener('click', () => { card3.dataset.lay = b.dataset.bcLay; lays.forEach((o) => o.setAttribute('aria-checked', String(o === b))); card3.classList.remove('is-back'); }));
+    card3.dataset.lay = 'classic';
+
+    // ---------- Out of office ----------
+    const oo = page.querySelector<HTMLElement>('[data-ooo]')!, ot = oo.querySelector<HTMLInputElement>('[data-ooo-t]')!, od = oo.querySelector<HTMLInputElement>('[data-ooo-d]')!, body = oo.querySelector<HTMLElement>('[data-ooo-body]')!;
+    const TONES = ['Formal', 'Professional', 'Friendly', 'Breezy'], W = [600, 450, 350, 250];
+    const SUBJ = ['Out of office', 'Away until {d}', 'Back on {d}!', 'brb ({d})'];
+    const msg = (t: number, d: string, n: number) => [
+      `<p>Thank you for your message.</p><p>I am currently out of the office and will return on ${d}. During this period I will have limited access to email.</p><p>For urgent matters, please contact my colleague at operations@example.com.</p><p>Kind regards,</p>`,
+      `<p>Hi there,</p><p>Thanks for getting in touch. I’m away for ${n} day${n > 1 ? 's' : ''} and back on ${d}. I’ll reply as soon as I can after that.</p><p>If it can’t wait, the team at hello@example.com can help.</p><p>Best,</p>`,
+      `<p>Hello!</p><p>I’m taking a little break and I’ll be back on ${d}. I’ll catch up on everything then, promise.</p><p>Something urgent? Give the team a shout at hello@example.com.</p><p>Cheers,</p>`,
+      `<p>hey 👋</p><p>i’m off ${n > 7 ? 'somewhere with no wifi' : 'for a few days'}. back ${d}, probably sunburnt.</p><p>if the building is on fire, ping the team. otherwise: it’ll keep.</p><p>x</p>`,
+    ][t];
+    const paintO = () => {
+      const t = +ot.value, n = +od.value, back = new Date(2026, 0, 12 + n), d = back.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      oo.querySelector('[data-ooo-tv]')!.textContent = TONES[t]; oo.querySelector('[data-ooo-dv]')!.textContent = String(n);
+      oo.querySelector('[data-ooo-subj]')!.textContent = SUBJ[t].replace('{d}', back.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+      body.innerHTML = msg(t, d, n) + '<p class="ws-mail__sig">Wei</p>';
+      body.style.fontVariationSettings = `'wght' ${W[t]}`; body.style.fontStyle = t === 3 ? 'italic' : 'normal';
+      body.classList.remove('is-new'); void body.offsetWidth; body.classList.add('is-new');
+    };
+    ot.addEventListener('input', paintO); od.addEventListener('input', paintO); paintO();
+  }
+</script>
+
+<style is:global>
+  .ws { --ed-head: 'Work Sans Variable', system-ui, sans-serif; --ed-head-vf: 'wght' 700; --ed-em-vf: 'wght' 250; --ed-lede-vf: 'wght' 500; --ed-radius: 10px; }
+  .ws em { font-style: italic; } .ws .ed-h2 { letter-spacing: -0.04em; line-height: 0.95; }
+  .ws .ed-story__prose { font-family: 'Work Sans Variable', sans-serif; font-variation-settings: 'wght' 350; font-size: 1.12rem; line-height: 1.65; } .ws .ed-story__prose em { font-style: italic; }
+  .ws-field { display: grid; gap: 0.35rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .ws-field input { font: 400 1.3rem/1.3 'Work Sans Variable', sans-serif; font-variation-settings: 'wght' 500; background: none; border: 0; border-bottom: 2px solid var(--fg); color: var(--fg); outline: none; padding: 0.2rem 0; text-transform: none; letter-spacing: 0; }
+  .ws-seg { display: flex; gap: 0.35rem; }
+  .ws-seg button { padding: 0.55rem 1.1rem; border-radius: 100px; border: 1px solid var(--line); font: 400 0.95rem/1 'Work Sans Variable', sans-serif; font-variation-settings: 'wght' 500; }
+  .ws-seg button[aria-checked='true'] { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .ws-hero { --x: 0%; background: linear-gradient(90deg, #dfe8f7 0%, #fff6e0 45%, #ffe9cf 70%, #d9d6ee 100%); }
+  .ws-hero::after { content: ''; position: absolute; left: var(--x); top: 4rem; bottom: 0; width: 2px; background: var(--accent); opacity: 0.25; pointer-events: none; }
+  .ws-hero__word { font-family: 'Work Sans Variable', sans-serif; font-size: min(17vw, 40svh); line-height: 1; white-space: nowrap; }
+  .ws-hero__day { position: absolute; left: 0; right: 0; top: 62%; display: flex; justify-content: space-between; padding: 0 var(--pad, 3vw); font: 400 0.72rem/1 var(--font-mono); color: var(--fg-3); pointer-events: none; }
+
+  /* kanban */
+  .ws-kb { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+  .ws-col { padding: 1rem; border-radius: 14px; background: #e9e8e4; min-height: 20rem; transition: background 0.2s, box-shadow 0.2s; font-family: 'Work Sans Variable', sans-serif; }
+  .ws-col.is-over { background: #dfe6f3; box-shadow: inset 0 0 0 2px var(--accent); }
+  .ws-col__h { display: flex; justify-content: space-between; font-variation-settings: 'wght' 700; font-size: 0.95rem; letter-spacing: 0.02em; margin-bottom: 0.8rem; }
+  .ws-col__h b { font-weight: 400; font-variation-settings: 'wght' 500; background: #fff; border-radius: 100px; padding: 0.1rem 0.55rem; font-size: 0.85rem; }
+  .ws-col__list { display: grid; gap: 0.6rem; min-height: 14rem; align-content: start; }
+  .ws-card { display: grid; gap: 0.4rem; padding: 0.9rem 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 2px #0001, 0 4px 10px -6px #0003; cursor: grab; user-select: none; touch-action: none; transition: opacity 0.2s; }
+  .ws-card:focus-visible { outline: 2px solid var(--accent); }
+  .ws-card__tag { justify-self: start; font-size: 0.7rem; font-variation-settings: 'wght' 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); }
+  .ws-card__t { font-size: 1.05rem; line-height: 1.25; font-variation-settings: 'wght' 500; transition: font-variation-settings 0.3s, color 0.3s; }
+  .ws-col--done .ws-card__t { font-variation-settings: 'wght' 300; color: var(--fg-3); text-decoration: line-through; text-decoration-color: #2456a688; }
+  .ws-col--doing .ws-card { box-shadow: inset 3px 0 0 #e8a23a, 0 1px 2px #0001, 0 4px 10px -6px #0003; }
+  .ws-card.is-hole { opacity: 0.3; } .ws-card.is-drop { animation: ws-drop 0.4s var(--ease); }
+  @keyframes ws-drop { 40% { transform: scale(1.04); } }
+  .ws-card.is-ghost { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; box-shadow: 0 20px 40px -10px #0005; cursor: grabbing; font-family: 'Work Sans Variable', sans-serif; }
+
+  /* meeting room */
+  .ws-room-wrap { display: grid; gap: 1rem; justify-items: center; }
+  .ws-room { --p: 1; --tot: 1; position: relative; width: min(100%, 40rem); padding: clamp(1.6rem, 4vw, 2.6rem); border-radius: 22px; background: #1d7a4b; color: #fff; overflow: hidden; display: grid; gap: 0.6rem; box-shadow: 0 0 0 12px #1c1d1f, 0 40px 60px -30px #000a; font-family: 'Work Sans Variable', sans-serif; transition: background 0.5s; }
+  .ws-room.is-busy { background: #b8372a; }
+  .ws-room::before { content: ''; position: absolute; left: 0; bottom: 0; height: 6px; width: calc(var(--p) / var(--tot) * 100%); background: #fff6; transition: width 1s linear; opacity: 0; }
+  .ws-room.is-busy::before { opacity: 1; }
+  .ws-room__name { font-size: 1rem; font-variation-settings: 'wght' 500; opacity: 0.85; }
+  .ws-room__state { font-size: clamp(3.4rem, 9vw, 6.4rem); line-height: 0.95; font-variation-settings: 'wght' 800; letter-spacing: -0.04em; }
+  .ws-room__sub { font-size: 1.4rem; font-variation-settings: 'wght' 300; font-feature-settings: 'tnum'; }
+  .ws-room__btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+  .ws-room__btns[hidden], .ws-room__end[hidden] { display: none; }
+  .ws-room__btns button, .ws-room__end { padding: 0.8rem 1.2rem; border-radius: 12px; background: #ffffff26; color: #fff; font: inherit; font-variation-settings: 'wght' 600; transition: background 0.2s; }
+  .ws-room__btns button:hover, .ws-room__end:hover { background: #ffffff40; }
+  .ws-room__end { justify-self: start; margin: 0.6rem 0; }
+  .ws-room__next { list-style: none; display: grid; gap: 0.3rem; padding-top: 0.8rem; border-top: 1px solid #ffffff33; font-size: 1rem; font-variation-settings: 'wght' 400; opacity: 0.85; }
+  .ws-room__next b { font-weight: 400; font-variation-settings: 'wght' 700; margin-right: 0.6rem; font-feature-settings: 'tnum'; }
+
+  /* business card */
+  .ws-bc { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .ws-card3 { justify-self: center; width: min(100%, 30rem); aspect-ratio: 1.75; perspective: 1200px; }
+  .ws-card3__in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.8s var(--ease); }
+  .ws-card3.is-back .ws-card3__in { transform: rotateY(180deg); }
+  .ws-card3__f { position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden; box-shadow: 0 30px 50px -30px #0008, 0 0 0 1px #0000000d; font-family: 'Work Sans Variable', sans-serif; text-align: left; }
+  .ws-card3__f--front { display: grid; grid-template-rows: auto auto 1fr; align-content: start; padding: 8% 8%; background: #fff; color: #1c1d1f; container-type: inline-size; }
+  .ws-card3__f--back { transform: rotateY(180deg); background: var(--accent); display: grid; place-items: center; }
+  .ws-card3__name { font-size: 9cqi; line-height: 1; font-variation-settings: 'wght' 600; letter-spacing: -0.03em; }
+  .ws-card3__role { font-size: 4.4cqi; font-variation-settings: 'wght' 300; margin-top: 0.4em; color: var(--accent); }
+  .ws-card3__ct { align-self: end; font-size: 3.6cqi; line-height: 1.5; font-variation-settings: 'wght' 400; color: #55585e; }
+  .ws-card3[data-lay='bold'] .ws-card3__f--front { background: #1c1d1f; color: #fff; }
+  .ws-card3[data-lay='bold'] .ws-card3__name { font-size: 13cqi; font-variation-settings: 'wght' 900; letter-spacing: -0.05em; }
+  .ws-card3[data-lay='bold'] .ws-card3__role { color: #8fb3ff; font-variation-settings: 'wght' 500; }
+  .ws-card3[data-lay='bold'] .ws-card3__ct { color: #b9bcc2; }
+  .ws-card3[data-lay='light'] .ws-card3__f--front { text-align: center; justify-items: center; }
+  .ws-card3[data-lay='light'] .ws-card3__name { font-size: 10cqi; font-variation-settings: 'wght' 100; letter-spacing: 0.02em; margin-top: 10%; }
+  .ws-card3[data-lay='light'] .ws-card3__role { font-style: italic; font-variation-settings: 'wght' 300; color: #55585e; }
+  .ws-card3__logo { font: 400 7rem/1 'Work Sans Variable', sans-serif; font-variation-settings: 'wght' 900; color: #fff; letter-spacing: -0.06em; }
+  .ws-bc__ctl { display: grid; gap: 1.3rem; }
+
+  /* out of office */
+  .ws-ooo { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: start; }
+  .ws-mail { background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px var(--line), 0 30px 50px -40px #0007; overflow: hidden; font-family: 'Work Sans Variable', sans-serif; }
+  .ws-mail__h { display: grid; gap: 0.3rem; padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--line); background: #fafaf9; }
+  .ws-mail__h span { font-size: 0.75rem; font-variation-settings: 'wght' 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+  .ws-mail__h b { font-weight: 400; font-size: 1.4rem; font-variation-settings: 'wght' 700; letter-spacing: -0.02em; }
+  .ws-mail__b { padding: 1.4rem; min-height: 16rem; font-size: 1.12rem; line-height: 1.6; display: grid; gap: 0.8em; align-content: start; transition: font-variation-settings 0.3s; }
+  .ws-mail__b.is-new { animation: ws-type 0.45s var(--ease); } @keyframes ws-type { from { opacity: 0.2; transform: translateY(4px); } }
+  .ws-mail__sig { font-variation-settings: 'wght' 700 !important; }
+  .ws-ooo__ctl { display: grid; gap: 1.4rem; }
+
+  @media (max-width: 900px) { .ws-kb, .ws-bc, .ws-ooo { grid-template-columns: minmax(0, 1fr); } .ws-col { min-height: 0; } .ws-col__list { min-height: 4rem; } .ws-hero__day { display: none; } }
+</style>
