@@ -1,0 +1,284 @@
+---
+// DM SERIF DISPLAY — new edition. After dark: a jeweller's loupe, a cocktail
+// bar, a magazine cover and a perfume label. Every example is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('dm-serif-display');
+const loupeText = 'Hairlines thin as a thread, ball terminals like drops of ink, and serifs cut sharp enough to draw blood. Display faces are drawn to be seen large.';
+const spirits = [['Gin', '#cfe3d8'], ['Rum', '#c9873a'], ['Mezcal', '#e8d9a0'], ['Whisky', '#a8541c']];
+const moods = ['Celebrating', 'Heartbroken', 'Mysterious', 'Sleepy'];
+---
+<Layout title="DM Serif Display — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="DM Serif Display" showToggle={false} />
+  <div class="ed ds" data-ds>
+    <header class="ed-hero ds-hero" data-hero>
+      <div class="ds-spot" aria-hidden="true"></div>
+      <div class="ed-hero__top"><span>DM Serif Display · {font.designer} · {font.year}</span><span>Regular & Italic</span></div>
+      <h1 class="ed-hero__word ds-hero__word" aria-label="Display">{[...'Display'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          High contrast, made for <em>large sizes and late nights</em>.
+          <span class="ed-hero__hint" data-fine>You are holding the spotlight. Letters it touches lean into italic.</span>
+          <span class="ed-hero__hint" data-coarse>Drag the spotlight across the stage.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>italic</dt><dd data-hud="i">0/7</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-loupe>
+        <div class="ed-kicker"><span>01</span> The loupe</div>
+        <h2 class="ed-h2">Look <em>closer</em>.</h2>
+        <div class="ed-body ds-loupe">
+          <div class="ds-loupe__stage" data-lp-stage>
+            <p class="ds-loupe__text">{loupeText}</p>
+            <div class="ds-loupe__lens" data-lp-lens aria-hidden="true"><p class="ds-loupe__text ds-loupe__text--big" data-lp-big>{loupeText}</p></div>
+          </div>
+          <label class="ed-slider"><span>Magnification <b data-lp-zv>4</b>×</span><input type="range" min="2" max="8" step="0.5" value="4" data-lp-z /></label>
+          <p class="ed-cap">Move the loupe over the text. At this size the hairlines almost vanish; under the glass they turn out to be exact.</p>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-bar>
+        <div class="ed-kicker"><span>02</span> The bar</div>
+        <h2 class="ed-h2">Name me <em>a cocktail</em>.</h2>
+        <div class="ed-body ds-bar">
+          <div class="ds-bar__ctl">
+            <p class="ds-bar__q">The spirit</p>
+            <div class="ds-chips" data-spirit>{spirits.map(([n, c], i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-c={c}>{n}</button>)}</div>
+            <p class="ds-bar__q">Your mood</p>
+            <div class="ds-chips" data-mood>{moods.map((n, i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'}>{n}</button>)}</div>
+            <button type="button" class="ds-shake" data-shake>Shake it</button>
+          </div>
+          <div class="ds-menu">
+            <div class="ds-glass" aria-hidden="true"><span class="ds-glass__liq" data-liq></span><span class="ds-glass__stem"></span></div>
+            <p class="ds-menu__k">Tonight’s special</p>
+            <p class="ds-menu__name" data-cname>The Velvet Hour</p>
+            <p class="ds-menu__desc" data-cdesc>gin, elderflower, a twist of lemon, poured over one large ice cube</p>
+            <p class="ds-menu__price" data-cprice>16</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-cover>
+        <div class="ed-kicker"><span>03</span> The cover</div>
+        <h2 class="ed-h2">Stop the presses.<br /><em>You’re on the cover.</em></h2>
+        <div class="ed-body ds-cov">
+          <div class="ds-mag" data-mag>
+            <p class="ds-mag__mast">Allure<span>.</span></p>
+            <p class="ds-mag__issue">No. 47 · Winter</p>
+            <div class="ds-mag__figure" aria-hidden="true"><i></i><i></i></div>
+            <p class="ds-mag__line ds-mag__line--a">The return<br /><em>of glamour</em></p>
+            <p class="ds-mag__head" data-mag-head>Fearless</p>
+            <p class="ds-mag__line ds-mag__line--b">48 pages of<br /><em>evening wear</em></p>
+          </div>
+          <div class="ds-cov__ctl">
+            <label class="ds-field"><span>Headline</span><input type="text" value="Fearless" maxlength="16" data-mag-in /></label>
+            <label class="ds-field"><span>Masthead</span><input type="text" value="Allure" maxlength="10" data-mag-mast /></label>
+            <div class="ds-chips" data-mag-col>{[['Noir', '#100f0d'], ['Rouge', '#7a1626'], ['Emerald', '#0f3b2e'], ['Ivory', '#efe6d4']].map(([n, c], i) => <button type="button" aria-pressed={i === 1 ? 'true' : 'false'} data-c={c}>{n}</button>)}</div>
+            <label class="ds-tog"><input type="checkbox" data-mag-it checked /> Italic headline</label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-scent>
+        <div class="ed-kicker"><span>04</span> The bottle</div>
+        <h2 class="ed-h2">A scent with <em>your name</em>.</h2>
+        <div class="ed-body ds-scent">
+          <div class="ds-bottle" data-bottle>
+            <span class="ds-bottle__cap"></span>
+            <span class="ds-bottle__body">
+              <span class="ds-bottle__label">
+                <span class="ds-bottle__name" data-sc-name>Minuit</span>
+                <span class="ds-bottle__sub" data-sc-sub>Eau de parfum</span>
+                <span class="ds-bottle__ml">50 ml</span>
+              </span>
+            </span>
+          </div>
+          <div class="ds-scent__ctl">
+            <label class="ds-field"><span>Name the scent</span><input type="text" value="Minuit" maxlength="12" data-sc-in /></label>
+            <p class="ds-bar__q">Notes</p>
+            <div class="ds-chips" data-sc-notes>{['Amber', 'Fig', 'Vetiver', 'Rose', 'Tobacco', 'Sea salt'].map((n, i) => <button type="button" aria-pressed={i < 2 ? 'true' : 'false'}>{n}</button>)}</div>
+            <div class="ds-chips" data-sc-glass>{[['Smoke', '#4a4038'], ['Blush', '#d9a0a0'], ['Ink', '#1f2a4a'], ['Gold', '#c9a24a']].map(([n, c], i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-c={c}>{n}</button>)}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the invitation</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="DM Serif Display" sample="You are cordially invited" italic axes={[]} presets={[{ name: 'Regular', v: [] }, { name: 'Italic', v: [], italic: true }]} start={0} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Regular and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-ds]');
+  if (page) {
+    const stop = (el: Element) => el.addEventListener('keydown', (e) => e.stopPropagation());
+    const chips = (root: Element, multi = false, cb?: (b: HTMLElement) => void) => {
+      const bs = Array.from(root.querySelectorAll<HTMLElement>('button'));
+      bs.forEach((b) => b.addEventListener('click', () => { if (multi) b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); else bs.forEach((o) => o.setAttribute('aria-pressed', String(o === b))); cb?.(b); }));
+      return () => bs.filter((b) => b.getAttribute('aria-pressed') === 'true');
+    };
+
+    // ---------- Hero spotlight ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const ls = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    runHero(hero, (f) => {
+      const px = f.live ? f.px : 0.5 + Math.sin(f.t * 0.35) * 0.42, py = f.live ? f.py : 0.48 + Math.cos(f.t * 0.5) * 0.12;
+      hero.style.setProperty('--sx', `${(px * 100).toFixed(1)}%`); hero.style.setProperty('--sy', `${(py * 100).toFixed(1)}%`);
+      const r = hero.getBoundingClientRect(); let n = 0;
+      ls.forEach((l) => {
+        const b = l.getBoundingClientRect(), cx = (b.left + b.width / 2 - r.left) / r.width, cy = (b.top + b.height / 2 - r.top) / r.height;
+        const lit = Math.hypot((cx - px) * r.width, (cy - py) * r.height) < r.width * 0.11;
+        if (lit) n++; l.classList.toggle('is-lit', lit);
+      });
+      hero.querySelector('[data-hud="i"]')!.textContent = `${n}/${ls.length}`;
+    });
+
+    // ---------- Loupe ----------
+    const lp = page.querySelector<HTMLElement>('[data-loupe]')!, stage = lp.querySelector<HTMLElement>('[data-lp-stage]')!, lens = lp.querySelector<HTMLElement>('[data-lp-lens]')!, big = lp.querySelector<HTMLElement>('[data-lp-big]')!;
+    const zin = lp.querySelector<HTMLInputElement>('[data-lp-z]')!;
+    let lx = 0.3, ly = 0.4;
+    const place = () => {
+      const z = +zin.value, r = stage.getBoundingClientRect(), x = lx * r.width, y = ly * r.height, L = lens.offsetWidth / 2;
+      lens.style.transform = `translate(${x - L}px, ${y - L}px)`;
+      big.style.width = `${r.width}px`; big.style.transform = `translate(${L - x * z}px, ${L - y * z}px) scale(${z})`;
+      lp.querySelector('[data-lp-zv]')!.textContent = String(z);
+    };
+    stage.addEventListener('pointermove', (e) => { const r = stage.getBoundingClientRect(); lx = (e.clientX - r.left) / r.width; ly = (e.clientY - r.top) / r.height; place(); });
+    zin.addEventListener('input', place); new ResizeObserver(place).observe(stage); place();
+
+    // ---------- Cocktail ----------
+    const bar = page.querySelector<HTMLElement>('[data-bar]')!;
+    const getSp = chips(bar.querySelector('[data-spirit]')!), getMd = chips(bar.querySelector('[data-mood]')!);
+    const NAMES: Record<string, string[]> = { Celebrating: ['The Gilded Toast', 'Last Dance', 'Confetti & Smoke', 'The Grand Finale'], Heartbroken: ['The Long Goodbye', 'Paper Roses', 'Sweet Regret', 'Midnight Letter'], Mysterious: ['The Velvet Hour', 'Masquerade', 'The Unseen Guest', 'Black Orchid'], Sleepy: ['The Nightcap', 'Pillow Talk', 'Lantern Low', 'Slow Moon'] };
+    const DESC: Record<string, string> = { Gin: 'gin, elderflower, a twist of lemon', Rum: 'aged rum, burnt sugar, a whisper of clove', Mezcal: 'mezcal, pink grapefruit, a salted rim', Whisky: 'rye whisky, bitters, an orange peel flamed tableside' };
+    const ENDS = ['poured over one large ice cube', 'served up, very cold', 'stirred forty times, not one more', 'with a cherry you did not ask for'];
+    const liq = bar.querySelector<HTMLElement>('[data-liq]')!, nm = bar.querySelector<HTMLElement>('[data-cname]')!;
+    bar.querySelector('[data-shake]')!.addEventListener('click', () => {
+      const s = getSp()[0], m = getMd()[0].textContent!, pool = NAMES[m];
+      bar.classList.remove('is-shake'); void bar.offsetWidth; bar.classList.add('is-shake');
+      liq.style.height = '0%';
+      setTimeout(() => {
+        nm.textContent = pool[Math.floor(Math.random() * pool.length)];
+        bar.querySelector('[data-cdesc]')!.textContent = `${DESC[s.textContent!]}, ${ENDS[Math.floor(Math.random() * ENDS.length)]}`;
+        bar.querySelector('[data-cprice]')!.textContent = String(14 + Math.floor(Math.random() * 7));
+        liq.style.background = s.dataset.c!; liq.style.height = '78%';
+      }, 600);
+    });
+
+    // ---------- Magazine ----------
+    const cov = page.querySelector<HTMLElement>('[data-cover]')!, mag = cov.querySelector<HTMLElement>('[data-mag]')!;
+    const head = cov.querySelector<HTMLElement>('[data-mag-head]')!, hin = cov.querySelector<HTMLInputElement>('[data-mag-in]')!, mast = cov.querySelector<HTMLInputElement>('[data-mag-mast]')!;
+    const fit = () => { head.style.fontSize = ''; const max = mag.clientWidth * 0.92; let fs = parseFloat(getComputedStyle(head).fontSize); while (head.offsetWidth > max && fs > 20) { fs -= 2; head.style.fontSize = `${fs}px`; } };
+    [hin, mast].forEach(stop);
+    hin.addEventListener('input', () => { head.textContent = hin.value || ' '; fit(); });
+    mast.addEventListener('input', () => (cov.querySelector('.ds-mag__mast')!.firstChild!.textContent = mast.value || ' '));
+    chips(cov.querySelector('[data-mag-col]')!, false, (b) => { mag.style.setProperty('--mg', b.dataset.c!); mag.classList.toggle('is-light', b.textContent === 'Ivory'); });
+    mag.style.setProperty('--mg', '#7a1626');
+    cov.querySelector<HTMLInputElement>('[data-mag-it]')!.addEventListener('change', (e) => { head.classList.toggle('is-roman', !(e.target as HTMLInputElement).checked); fit(); });
+    new ResizeObserver(fit).observe(mag);
+
+    // ---------- Perfume ----------
+    const sc = page.querySelector<HTMLElement>('[data-scent]')!, bottle = sc.querySelector<HTMLElement>('[data-bottle]')!, sin = sc.querySelector<HTMLInputElement>('[data-sc-in]')!;
+    stop(sin); sin.addEventListener('input', () => (sc.querySelector('[data-sc-name]')!.textContent = sin.value || ' '));
+    const notes = chips(sc.querySelector('[data-sc-notes]')!, true, () => paintN());
+    const paintN = () => { const n = notes().map((b) => b.textContent!.toLowerCase()); sc.querySelector('[data-sc-sub]')!.textContent = n.length ? n.slice(0, 3).join(' · ') : 'Eau de parfum'; };
+    chips(sc.querySelector('[data-sc-glass]')!, false, (b) => bottle.style.setProperty('--gl', b.dataset.c!));
+    bottle.style.setProperty('--gl', '#4a4038'); paintN();
+  }
+</script>
+
+<style is:global>
+  .ds { --ed-head: 'DM Serif Display', 'Didot', serif; --ed-head-vf: normal; --ed-em-vf: normal; --ed-lede-vf: normal; --ed-radius: 2px; --gold: #d7a23f; }
+  .ds em { font-style: italic; } .ds .ed-h2 { font-weight: 400; letter-spacing: -0.01em; line-height: 0.95; }
+  .ds .ed-story__prose { font-family: 'DM Serif Display', serif; font-size: 1.3rem; } .ds .ed-story__prose em { font-style: italic; }
+  .ds .ed-lede, .ds .ed-hero__lede { font-weight: 400; }
+
+  .ds-hero { --sx: 50%; --sy: 50%; overflow: hidden; background: #0a0908; }
+  .ds-spot { position: absolute; inset: 0; pointer-events: none; z-index: -1; background: radial-gradient(circle at var(--sx) var(--sy), #fff4d633 0, #d7a23f18 12%, transparent 26%); }
+  .ds-hero__word { display: flex; font-family: 'DM Serif Display', serif; font-weight: 400; font-size: min(19vw, 46svh); line-height: 1.05; letter-spacing: -0.01em; }
+  .ds-hero__word [data-l] { color: #f3ede133; transition: color 0.4s, text-shadow 0.4s; }
+  .ds-hero__word [data-l].is-lit { font-style: italic; color: var(--gold); text-shadow: 0 0 40px #d7a23f55; }
+
+  .ds-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .ds-chips button { padding: 0.55rem 1.05rem; border: 1px solid #f3ede130; border-radius: 100px; font: 400 1rem/1 'DM Serif Display', serif; color: var(--fg); transition: all 0.2s; }
+  .ds-chips button[aria-pressed='true'] { background: var(--gold); color: #100f0d; border-color: var(--gold); font-style: italic; }
+  .ds-field { display: grid; gap: 0.35rem; font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .ds-field input { font: 400 1.8rem/1.2 'DM Serif Display', serif; background: none; border: 0; border-bottom: 1px solid var(--gold); color: var(--fg); outline: none; padding: 0.2rem 0; text-transform: none; letter-spacing: 0; }
+  .ds-tog { display: flex; gap: 0.5rem; align-items: center; color: var(--fg-2); }
+  .ds-bar__q { font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+
+  /* loupe */
+  .ds-loupe { display: grid; gap: 1.2rem; }
+  .ds-loupe__stage { position: relative; padding: 4rem 0; cursor: none; touch-action: none; }
+  .ds-loupe__text { font-family: 'DM Serif Display', serif; font-size: clamp(1.15rem, 2vw, 1.7rem); line-height: 1.5; color: #f3ede1aa; max-width: none; }
+  .ds-loupe__lens { position: absolute; left: 0; top: 0; width: 15rem; height: 15rem; border-radius: 50%; overflow: hidden; background: #15130f; box-shadow: 0 0 0 6px #2a251c, 0 0 0 8px var(--gold), 0 30px 60px #000c, inset 0 0 40px #000; pointer-events: none; }
+  .ds-loupe__text--big { position: absolute; left: 0; top: 0; transform-origin: 0 0; color: #f3ede1; padding: 4rem 0; }
+
+  /* bar */
+  .ds-bar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .ds-bar__ctl { display: grid; gap: 0.8rem; justify-items: start; }
+  .ds-shake { margin-top: 1rem; padding: 1rem 2rem; background: var(--gold); color: #100f0d; font: italic 400 1.4rem/1 'DM Serif Display', serif; border-radius: 100px; }
+  .ds-menu { position: relative; text-align: center; padding: clamp(2rem, 5vw, 3.5rem) 2rem; border: 1px solid #d7a23f66; outline: 1px solid #d7a23f33; outline-offset: 6px; display: grid; gap: 0.8rem; justify-items: center; background: radial-gradient(circle at 50% 0, #d7a23f14, transparent 60%); }
+  .ds-menu__k { font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+  .ds-menu__name { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1; }
+  .ds-menu__desc { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 1.15rem; color: var(--fg-2); max-width: 28ch; }
+  .ds-menu__price { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--gold); }
+  .ds-bar.is-shake .ds-menu__name, .ds-bar.is-shake .ds-menu__desc { animation: ds-fade 1.2s var(--ease); }
+  @keyframes ds-fade { 0% { opacity: 1; } 40% { opacity: 0; filter: blur(6px); } 100% { opacity: 1; } }
+  .ds-glass { position: relative; width: 7rem; height: 8.5rem; margin-bottom: 0.4rem; }
+  .ds-glass::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4.6rem; clip-path: polygon(0 0, 100% 0, 50% 100%); background: #f3ede118; }
+  .ds-glass__liq { position: absolute; left: 0; right: 0; top: 0; height: 4.6rem; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .ds-glass__liq { height: 78%; max-height: 4.6rem; background: #cfe3d8; transition: height 0.9s var(--ease), background 0.4s; transform-origin: bottom; }
+  .ds-glass__liq { clip-path: polygon(0 0, 100% 0, 50% 100%); top: auto; bottom: calc(100% - 4.6rem); }
+  .ds-glass__stem { position: absolute; left: 50%; top: 4.5rem; bottom: 0; width: 3px; margin-left: -1.5px; background: #f3ede155; }
+  .ds-glass__stem::after { content: ''; position: absolute; left: -1.6rem; bottom: 0; width: 3.3rem; height: 3px; background: #f3ede155; border-radius: 3px; }
+  .ds-bar.is-shake .ds-glass { animation: ds-shake 0.6s ease-in-out; }
+  @keyframes ds-shake { 20%, 60% { transform: rotate(-12deg) translateY(-6px); } 40%, 80% { transform: rotate(12deg) translateY(-6px); } }
+
+  /* magazine */
+  .ds-cov { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .ds-mag { --mg: #7a1626; position: relative; justify-self: center; width: min(100%, 26rem); aspect-ratio: 0.76; background: radial-gradient(60% 50% at 50% 55%, #ffffff18, transparent), var(--mg); color: #f6efe2; overflow: hidden; container-type: inline-size; box-shadow: 0 40px 70px -30px #000; transition: background 0.4s; }
+  .ds-mag.is-light { color: #100f0d; }
+  .ds-mag__mast { position: absolute; left: 0; right: 0; top: 2%; text-align: center; font-family: 'DM Serif Display', serif; font-size: 24cqi; line-height: 1; letter-spacing: -0.02em; }
+  .ds-mag__mast span { color: var(--gold); }
+  .ds-mag__issue { position: absolute; right: 5%; top: 28%; font: 400 2.6cqi/1 var(--font-mono); letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.7; }
+  .ds-mag__figure { position: absolute; left: 50%; bottom: 0; width: 64%; height: 64%; transform: translateX(-50%); }
+  .ds-mag__figure i:first-child { position: absolute; left: 32%; top: 0; width: 36%; aspect-ratio: 0.8; border-radius: 50%; background: linear-gradient(160deg, #e9c9a8, #b98463); }
+  .ds-mag__figure i:last-child { position: absolute; left: 0; right: 0; bottom: 0; height: 64%; border-radius: 50% 50% 0 0 / 40% 40% 0 0; background: linear-gradient(#100f0d, #2a2018); }
+  .ds-mag.is-light .ds-mag__figure i:last-child { background: linear-gradient(#7a1626, #4a0e18); }
+  .ds-mag__line { position: absolute; font-family: 'DM Serif Display', serif; font-size: 5cqi; line-height: 1.05; }
+  .ds-mag__line em { color: var(--gold); }
+  .ds-mag__line--a { left: 5%; top: 32%; } .ds-mag__line--b { right: 5%; bottom: 25%; text-align: right; }
+  .ds-mag__head { position: absolute; left: 50%; width: max-content; transform: translateX(-50%); bottom: 4%; text-align: center; font-family: 'DM Serif Display', serif; font-style: italic; font-size: 19cqi; line-height: 1; white-space: nowrap; text-shadow: 0 4px 30px #0008; }
+  .ds-mag__head.is-roman { font-style: normal; text-transform: uppercase; letter-spacing: 0.02em; }
+  .ds-cov__ctl { display: grid; gap: 1.4rem; }
+
+  /* perfume */
+  .ds-scent { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .ds-bottle { --gl: #4a4038; justify-self: center; display: grid; justify-items: center; filter: drop-shadow(0 40px 40px #000c); }
+  .ds-bottle__cap { width: 7rem; height: 5.4rem; border-radius: 8px 8px 2px 2px; background: linear-gradient(90deg, #8a6a2a, #f0d38a 35%, #b88a2a 60%, #6a4a1a); }
+  .ds-bottle__body { position: relative; width: 17rem; height: 20rem; margin-top: -2px; border-radius: 14px; background: linear-gradient(100deg, #ffffff28, transparent 30%, transparent 70%, #ffffff14), radial-gradient(80% 60% at 50% 70%, color-mix(in oklab, var(--gl), #fff 15%), var(--gl)); display: grid; place-items: center; box-shadow: inset 0 0 0 2px #ffffff22; transition: background 0.4s; }
+  .ds-bottle__label { width: 74%; padding: 1.4rem 1rem; background: #f6efe2; color: #100f0d; text-align: center; display: grid; gap: 0.5rem; box-shadow: inset 0 0 0 4px #f6efe2, inset 0 0 0 5px #b88a2a; }
+  .ds-bottle__name { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 2.6rem; line-height: 1; overflow-wrap: anywhere; }
+  .ds-bottle__sub { font-family: 'DM Serif Display', serif; font-size: 0.95rem; }
+  .ds-bottle__ml { font: 400 0.6rem/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+  .ds-scent__ctl { display: grid; gap: 1rem; }
+
+  @media (max-width: 900px) { .ds-bar, .ds-cov, .ds-scent { grid-template-columns: minmax(0, 1fr); } .ds-loupe__lens { width: 10rem; height: 10rem; } .ds-bottle__body { width: 14rem; height: 16rem; } }
+</style>
