@@ -1,0 +1,40 @@
+---
+// Newsreader posters: a broadsheet front page, a pull quote, an opsz study.
+---
+<figure class="pw-p" id="newsreader-front-page" data-name="Front page">
+  <div class="pw-art nr-a">
+    <p class="nr-a__mast">The Evening Reader</p>
+    <p class="nr-a__date"><span>Vol. CXII · No. 38,901</span><span>Thursday</span><span>Late edition</span></p>
+    <p class="nr-a__h">Town Votes to Keep Its Last Lighthouse Lit, Forever</p>
+    <p class="nr-a__d"><em>Keeper, 81, says she has no plans to retire: “The sea never does.”</em></p>
+    <div class="nr-a__cols">{Array.from({ length: 3 }, () => <p>By a margin of two votes to one, residents agreed last night to fund the lamp for as long as there are ships, and perhaps a little longer, in case any come back.</p>)}</div>
+  </div>
+</figure>
+<figure class="pw-p" id="newsreader-quote" data-name="Pull quote">
+  <div class="pw-art nr-b">
+    <p class="nr-b__q">“</p>
+    <p class="nr-b__t">News is what somebody <em>somewhere</em> wants to suppress; all the rest is advertising.</p>
+    <p class="nr-b__f">— attributed to Lord Northcliffe</p>
+  </div>
+</figure>
+<figure class="pw-p" id="newsreader-optical" data-name="Optical">
+  <div class="pw-art nr-c">
+    {[6, 12, 24, 48, 72].map((o) => <p style={`font-variation-settings:'opsz' ${o}, 'wght' 400`}><span>opsz {o}</span>Headline</p>)}
+  </div>
+</figure>
+<style>
+  .nr-a { background: #f4f0e6; color: #151412; font-family: 'Newsreader Variable', serif; padding: 6cqi; display: flex; flex-direction: column; gap: 2.4cqi; }
+  .nr-a__mast { text-align: center; font-size: 9.4cqi; white-space: nowrap; line-height: 1; font-variation-settings: 'opsz' 72, 'wght' 700; letter-spacing: -0.02em; }
+  .nr-a__date { display: flex; justify-content: space-between; font-size: 2.4cqi; text-transform: uppercase; letter-spacing: 0.1em; border-top: 0.6cqi double #151412; border-bottom: 0.3cqi solid #151412; padding: 1cqi 0; }
+  .nr-a__h { font-size: 10cqi; line-height: 0.95; letter-spacing: -0.02em; font-variation-settings: 'opsz' 72, 'wght' 600; margin-top: 2cqi; }
+  .nr-a__d { font-size: 4.4cqi; line-height: 1.2; font-variation-settings: 'opsz' 24, 'wght' 400; color: #4a2a1a; }
+  .nr-a__cols { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3cqi; font-size: 2.7cqi; line-height: 1.4; font-variation-settings: 'opsz' 6, 'wght' 400; border-top: 0.3cqi solid #151412; padding-top: 2cqi; }
+  .nr-b { background: #151412; color: #f4f0e6; font-family: 'Newsreader Variable', serif; padding: 9cqi 8cqi; display: flex; flex-direction: column; }
+  .nr-b__q { font-size: 50cqi; line-height: 0.7; color: #c2402a; font-variation-settings: 'opsz' 72, 'wght' 800; height: 24cqi; }
+  .nr-b__t { font-size: 9.4cqi; line-height: 1.08; letter-spacing: -0.02em; font-variation-settings: 'opsz' 72, 'wght' 300; }
+  .nr-b__t em { font-style: italic; color: #c2402a; }
+  .nr-b__f { margin-top: auto; font-size: 3.6cqi; font-style: italic; font-variation-settings: 'opsz' 16, 'wght' 400; }
+  .nr-c { background: #c2402a; color: #f4f0e6; font-family: 'Newsreader Variable', serif; display: grid; align-content: center; padding: 0 7cqi; gap: 2cqi; }
+  .nr-c p { position: relative; font-size: 17.5cqi; line-height: 1; letter-spacing: -0.02em; }
+  .nr-c span { position: absolute; right: 0; top: -1cqi; font: 400 2.2cqi/1 var(--font-mono, monospace); opacity: 0.8; letter-spacing: 0; }
+</style>

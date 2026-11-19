@@ -1,0 +1,38 @@
+---
+// Martian Mono posters: a mission patch, a telemetry printout, width as distance.
+---
+<figure class="pw-p" id="martian-mono-mission" data-name="Mission">
+  <div class="pw-art mm-a">
+    <span class="mm-a__planet" aria-hidden="true"></span>
+    <p class="mm-a__h">MARS</p>
+    <p class="mm-a__s">225,000,000 KM<br />7 MONTHS · ONE WAY</p>
+    <p class="mm-a__k">CREW WANTED</p>
+  </div>
+</figure>
+<figure class="pw-p" id="martian-mono-telemetry" data-name="Telemetry">
+  <div class="pw-art mm-b">
+    {[['T+00:00:00', 'IGNITION'], ['T+00:02:41', 'MECO'], ['T+00:08:30', 'ORBIT'], ['T+03:14:00', 'TRANS-MARS BURN'], ['T+211:06:12', 'ENTRY'], ['T+211:06:19', 'TOUCHDOWN']].map(([t, e], i) => <p class={i === 5 ? 'is-last' : ''}><span>{t}</span>{e}</p>)}
+    <p class="mm-b__f">SIGNAL ACQUIRED ■</p>
+  </div>
+</figure>
+<figure class="pw-p" id="martian-mono-width" data-name="Width">
+  <div class="pw-art mm-c">
+    {[75, 87, 100, 112].map((w, i) => <p style={`font-variation-settings:'wght' ${200 + i * 200}, 'wdth' ${w}`}>ORBIT</p>)}
+    <p class="mm-c__f">MARTIAN MONO · WDTH 75 → 112</p>
+  </div>
+</figure>
+<style>
+  .mm-a { background: #120c0a; color: #ffdccb; font-family: 'Martian Mono Variable', monospace; text-align: center; }
+  .mm-a__planet { position: absolute; left: 50%; top: 14cqi; width: 70cqi; height: 70cqi; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ff8a5a, #c2401c 50%, #5a1608 80%); box-shadow: 0 0 12cqi #ff6a3a44; }
+  .mm-a__h { position: absolute; left: 0; right: 0; top: 36cqi; font-size: 24cqi; line-height: 1; font-variation-settings: 'wght' 800, 'wdth' 112; color: #fff; mix-blend-mode: overlay; }
+  .mm-a__s { position: absolute; left: 0; right: 0; bottom: 20cqi; font-size: 4cqi; line-height: 1.5; font-variation-settings: 'wght' 400, 'wdth' 100; }
+  .mm-a__k { position: absolute; left: 0; right: 0; bottom: 8cqi; font-size: 6cqi; font-variation-settings: 'wght' 800, 'wdth' 75; color: #ff6a3a; letter-spacing: 0.2em; }
+  .mm-b { background: #ece8de; color: #2a2620; font-family: 'Martian Mono Variable', monospace; padding: 12cqi 8cqi 9cqi; display: flex; flex-direction: column; gap: 5cqi; background-image: repeating-linear-gradient(#0000 0 7cqi, #2a262008 7cqi 14cqi); }
+  .mm-b p { display: flex; justify-content: space-between; gap: 3cqi; font-size: 4.6cqi; font-variation-settings: 'wght' 500, 'wdth' 87; border-bottom: 0.3cqi dashed #2a262044; padding-bottom: 2.4cqi; }
+  .mm-b span { color: #8a8070; font-variation-settings: 'wght' 300, 'wdth' 75; }
+  .mm-b .is-last { color: #c2401c; font-variation-settings: 'wght' 800, 'wdth' 112; font-size: 5.4cqi; }
+  .mm-b__f { margin-top: auto; border: 0 !important; justify-content: flex-start !important; font-size: 3.4cqi !important; }
+  .mm-c { background: #c2401c; color: #120c0a; font-family: 'Martian Mono Variable', monospace; display: grid; align-content: center; padding: 0 6cqi; }
+  .mm-c p:not(.mm-c__f) { font-size: 16.8cqi; line-height: 1.1; white-space: nowrap; }
+  .mm-c__f { position: absolute; left: 6cqi; bottom: 6cqi; font-size: 2.8cqi; font-variation-settings: 'wght' 500, 'wdth' 100; color: #ffdccb; }
+</style>

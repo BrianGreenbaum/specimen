@@ -2,6 +2,7 @@
 // LORA — new edition. The garden: a vine that writes, a seed packet, a recipe
 // that scales and a gardener's almanac. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -118,15 +119,16 @@ const months = [
         <script type="application/json" data-alm-data set:html={JSON.stringify(months)} />
       </section>
 
+      <PosterWall slug="lora" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>a garden note</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Lora Variable" sample="The roses are early this year" italic axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 700 }]}
             presets={[{ name: 'Regular', v: [400] }, { name: 'Medium', v: [500] }, { name: 'SemiBold', v: [600] }, { name: 'Bold', v: [700] }, { name: 'Italic', v: [400], italic: true }]} start={4} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

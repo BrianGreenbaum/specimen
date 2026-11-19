@@ -1,0 +1,39 @@
+---
+// Lora posters: a pressed-flower label, a poem, a bookshop window.
+---
+<figure class="pw-p" id="lora-wildflowers" data-name="Wildflowers">
+  <div class="pw-art lop-a">
+    {[['Cornflower', 'Centaurea cyanus', '#3a5fa8'], ['Poppy', 'Papaver rhoeas', '#c4402a'], ['Oxeye daisy', 'Leucanthemum vulgare', '#e8b84a'], ['Cowslip', 'Primula veris', '#d98e1c']].map(([n, l, c]) => <div class="lop-a__r"><span style={`--c:${c}`}></span><p><b>{n}</b><em>{l}</em></p></div>)}
+    <p class="lop-a__f">Pressed in the meadow · June</p>
+  </div>
+</figure>
+<figure class="pw-p" id="lora-poem" data-name="Poem">
+  <div class="pw-art lop-b">
+    <p class="lop-b__h">Inventory<br /><em>of a garden</em></p>
+    <p class="lop-b__p">Three bees,<br />one thrush,<br />a wheelbarrow with a flat tyre,<br /><em>the smell of rain on warm stone,</em><br />and you,<br />kneeling in the beans.</p>
+  </div>
+</figure>
+<figure class="pw-p" id="lora-bookshop" data-name="Bookshop">
+  <div class="pw-art lop-c">
+    <p class="lop-c__h">Second<br />Chapter</p>
+    <p class="lop-c__s"><em>Books</em> · Tea · Small cat</p>
+    <p class="lop-c__o">Open Tuesday to Sunday</p>
+  </div>
+</figure>
+<style>
+  .lop-a { background: #f7f3eb; color: #1c1812; font-family: 'Lora Variable', serif; padding: 10cqi 8cqi 8cqi; display: flex; flex-direction: column; gap: 6.4cqi; }
+  .lop-a__r { display: grid; grid-template-columns: 19cqi 1fr; gap: 5cqi; align-items: center; }
+  .lop-a__r span { aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #f7d36a 0 16%, transparent 17%), repeating-conic-gradient(var(--c) 0 20deg, transparent 20deg 30deg); }
+  .lop-a__r b { display: block; font-weight: 400; font-size: 9.6cqi; line-height: 1; font-variation-settings: 'wght' 700; }
+  .lop-a__r em { font-size: 4.4cqi; color: #6b5a40; }
+  .lop-a__f { margin-top: auto; font-size: 3.4cqi; font-style: italic; color: #8b3a1e; }
+  .lop-b { background: #4f6b3a; color: #f7f3eb; font-family: 'Lora Variable', serif; padding: 10cqi 9cqi; display: flex; flex-direction: column; }
+  .lop-b__h { font-size: 13cqi; line-height: 0.95; font-variation-settings: 'wght' 700; }
+  .lop-b__h em { font-variation-settings: 'wght' 400; color: #e8d9a0; }
+  .lop-b__p { margin-top: auto; font-size: 6cqi; line-height: 1.4; }
+  .lop-b__p em { color: #e8d9a0; }
+  .lop-c { background: #8b3a1e; color: #f7f3eb; font-family: 'Lora Variable', serif; display: grid; place-content: center; text-align: center; box-shadow: inset 0 0 0 5cqi #8b3a1e, inset 0 0 0 5.4cqi #f7f3eb; }
+  .lop-c__h { font-size: 22cqi; line-height: 0.88; font-style: italic; font-variation-settings: 'wght' 700; }
+  .lop-c__s { margin-top: 6cqi; font-size: 5.4cqi; }
+  .lop-c__o { margin-top: 2cqi; font-size: 3.4cqi; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.8; }
+</style>

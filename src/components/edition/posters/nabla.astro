@@ -1,0 +1,30 @@
+---
+// Nabla posters: an arcade marquee, a 3D sweet-shop sign, the extrusion stack.
+---
+<figure class="pw-p" id="nabla-arcade" data-name="Arcade">
+  <div class="pw-art nbp-a">
+    <p class="nbp-a__h">PLAY</p>
+    <p class="nbp-a__s">1 CREDIT</p>
+  </div>
+</figure>
+<figure class="pw-p" id="nabla-sweets" data-name="Sweets">
+  <div class="pw-art nbp-b">
+    <p>Pick</p><p>&amp;</p><p>Mix</p>
+  </div>
+</figure>
+<figure class="pw-p" id="nabla-depth" data-name="Depth">
+  <div class="pw-art nbp-c">
+    {[0, 50, 100, 200].map((d) => <p style={`font-variation-settings:'EDPT' ${d}, 'EHLT' 12`}>3D<span>EDPT {d}</span></p>)}
+  </div>
+</figure>
+<style>
+  .nbp-a { background: radial-gradient(70% 50% at 50% 40%, #3a1a6a, #0c0618); font-family: 'Nabla Variable', system-ui; display: grid; place-content: center; text-align: center; }
+  .nbp-a__h { font-size: 38cqi; line-height: 1; font-variation-settings: 'EDPT' 200, 'EHLT' 20; }
+  .nbp-a__s { margin-top: 6cqi; font-size: 10cqi; font-variation-settings: 'EDPT' 100, 'EHLT' 8; }
+  .nbp-b { background: #ffe8f2; font-family: 'Nabla Variable', system-ui; display: grid; place-content: center; text-align: center; }
+  .nbp-b p { font-size: 34cqi; line-height: 0.95; font-variation-settings: 'EDPT' 150, 'EHLT' 16; }
+  .nbp-b p:nth-child(2) { font-size: 18cqi; }
+  .nbp-c { background: #101018; font-family: 'Nabla Variable', system-ui; display: grid; grid-template-columns: 1fr 1fr; align-content: center; justify-items: center; gap: 6cqi 2cqi; }
+  .nbp-c p { position: relative; font-size: 30cqi; line-height: 1; }
+  .nbp-c span { position: absolute; left: 0; right: 0; bottom: -4cqi; text-align: center; font: 400 2.4cqi/1 var(--font-mono, monospace); color: #ffffff88; }
+</style>
