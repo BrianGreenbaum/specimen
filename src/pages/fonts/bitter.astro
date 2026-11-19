@@ -2,6 +2,7 @@
 // BITTER — new edition. Coffee: pull a shot, roast a bean, read on a screen,
 // collect your order. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -107,15 +108,16 @@ const pages = [
         </div>
       </section>
 
+      <PosterWall slug="bitter" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Write <em>the menu</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Bitter Variable" sample="Fresh roasted, served strong" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
             presets={[{ name: 'Thin', v: [100] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }]} start={2} />
         </div>
       </section>
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

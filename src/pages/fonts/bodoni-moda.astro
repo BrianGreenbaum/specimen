@@ -2,6 +2,7 @@
 // BODONI MODA — new edition. Hairlines, fashion and theatre: every example on
 // this page is new and built for this face.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -159,8 +160,9 @@ const runway = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="bodoni-moda" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Dress <em>your own</em> words.</h2>
         <div class="ed-body">
           <EditionTester
@@ -180,7 +182,7 @@ const runway = [
         </div>
       </section>
 
-      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
 

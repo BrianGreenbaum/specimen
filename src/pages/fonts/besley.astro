@@ -3,6 +3,7 @@
 // of holes, a saloon sign that won't stop swinging, a tin of beans and a
 // telegram. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -100,15 +101,16 @@ const { entry, font, prev, next, themeStyle } = await getEdition('besley');
       <BzSlots n="04" />
       <BzBrand n="05" />
 
+      <PosterWall slug="besley" n="06" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>06</span> Your turn</div>
+        <div class="ed-kicker"><span>07</span> Your turn</div>
         <h2 class="ed-h2">Put it <em>on a poster</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Besley Variable" sample="Ten-gallon hat" italic upper axes={[{ tag: 'wght', name: 'Weight', min: 400, max: 900 }]}
             presets={[{ name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [500], italic: true }, { name: 'Black italic', v: [900], italic: true }]} start={2} />
         </div>
       </section>
-      <EditionTail entry={entry} from={7} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+      <EditionTail entry={entry} from={8} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

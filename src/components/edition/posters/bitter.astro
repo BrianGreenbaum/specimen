@@ -1,0 +1,39 @@
+---
+// Bitter posters: coffee chalkboard, roast scale, a long-read cover.
+---
+<figure class="pw-p" id="bitter-menu" data-name="Menu">
+  <div class="pw-art bt-pa">
+    <p class="bt-pa__h">Coffee</p>
+    <dl>{[['Espresso', '2.80'], ['Cortado', '3.40'], ['Flat white', '3.80'], ['Long black', '3.20'], ['Filter, by the cup', '3.00']].map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
+    <p class="bt-pa__f">Strong. Dark. <em>Bitter.</em></p>
+  </div>
+</figure>
+<figure class="pw-p" id="bitter-roast-scale" data-name="Roast scale">
+  <div class="pw-art bt-pb">
+    {[100, 260, 420, 580, 740, 900].map((w, i) => <p style={`font-variation-settings:'wght' ${w};--k:${i / 5}`}>roast</p>)}
+    <p class="bt-pb__f"><span>Light</span><span>Bitter 100 → 900</span><span>Dark</span></p>
+  </div>
+</figure>
+<figure class="pw-p" id="bitter-long-read" data-name="Long read">
+  <div class="pw-art bt-pc">
+    <p class="bt-pc__k">A long read</p>
+    <p class="bt-pc__h">Ten thousand words, one screen.</p>
+    <p class="bt-pc__b">Bitter was drawn for the e-reader years: a slab with a large x-height and almost no contrast, so the letters hold their shape on any screen. Its serifs are small rectangles that keep each line straight.</p>
+    <p class="bt-pc__f">Huerta Tipográfica · Sol Matas · 2011</p>
+  </div>
+</figure>
+<style>
+  .bt-pa { background: #1f2421; color: #efe9dc; font-family: 'Bitter Variable', serif; padding: 9cqi; background-image: radial-gradient(#ffffff08 1px, transparent 1px); background-size: 2cqi 2cqi; display: flex; flex-direction: column; }
+  .bt-pa__h { font-size: 26cqi; line-height: 0.9; font-style: italic; font-variation-settings: 'wght' 800; letter-spacing: -0.03em; text-align: center; border-bottom: 0.4cqi solid #efe9dc55; padding-bottom: 5cqi; margin-bottom: 4cqi; }
+  .bt-pa dl div { display: flex; justify-content: space-between; align-items: baseline; padding: 2.2cqi 0; font-size: 6cqi; }
+  .bt-pa dt { font-variation-settings: 'wght' 400; } .bt-pa dd { font-variation-settings: 'wght' 700; color: #e8b46a; }
+  .bt-pa__f { margin-top: auto; text-align: center; font-size: 5cqi; font-variation-settings: 'wght' 300; } .bt-pa__f em { color: #e8b46a; font-variation-settings: 'wght' 700; }
+  .bt-pb { background: #f2efe8; font-family: 'Bitter Variable', serif; display: grid; align-content: center; padding: 0 6cqi 8cqi; }
+  .bt-pb p:not(.bt-pb__f) { font-size: 22cqi; line-height: 0.78; letter-spacing: -0.03em; color: color-mix(in oklab, #c9a26a, #1b0f08 calc(var(--k) * 100%)); }
+  .bt-pb__f { position: absolute; left: 6cqi; right: 6cqi; bottom: 6cqi; display: flex; justify-content: space-between; font-size: 2.6cqi; letter-spacing: 0.1em; text-transform: uppercase; color: #22201b; font-variation-settings: 'wght' 600; }
+  .bt-pc { background: #3d6b54; color: #f2efe8; font-family: 'Bitter Variable', serif; padding: 9cqi 8cqi; display: flex; flex-direction: column; gap: 6cqi; }
+  .bt-pc__k { font-size: 3cqi; letter-spacing: 0.2em; text-transform: uppercase; font-variation-settings: 'wght' 700; color: #cfe3d6; }
+  .bt-pc__h { font-size: 15cqi; line-height: 0.92; letter-spacing: -0.03em; font-variation-settings: 'wght' 900; }
+  .bt-pc__b { font-size: 4.6cqi; line-height: 1.5; font-variation-settings: 'wght' 350; columns: 1; }
+  .bt-pc__f { margin-top: auto; font-size: 2.6cqi; font-style: italic; opacity: 0.8; }
+</style>

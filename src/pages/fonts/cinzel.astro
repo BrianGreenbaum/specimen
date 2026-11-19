@@ -2,6 +2,7 @@
 // CINZEL — new edition. Stone, bronze and the cinema: every example on this
 // page is new and built for this face.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -91,8 +92,9 @@ const slab = ['To the makers', 'of letters', 'who cut them in stone', 'so that w
         </div>
       </section>
 
+      <PosterWall slug="cinzel" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Carve <em>your own</em>.</h2>
         <div class="ed-body">
           <EditionTester family="Cinzel Variable" sample="Veni, Vidi, Vici"
@@ -101,7 +103,7 @@ const slab = ['To the makers', 'of letters', 'who cut them in stone', 'so that w
         </div>
       </section>
 
-      <EditionTail entry={entry} from={6} />
+      <EditionTail entry={entry} from={7} />
     </main>
   </div>
   <SiteFooter prev={prev} next={next} />

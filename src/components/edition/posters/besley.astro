@@ -1,0 +1,45 @@
+---
+// Besley posters: a big friendly Clarendon, a seed-store price list, a motto.
+---
+<figure class="pw-p" id="besley-good-bread" data-name="Good bread">
+  <div class="pw-art be-a">
+    <p class="be-a__k">Est. 1891 · Open early</p>
+    <p class="be-a__h">Good<br />Bread</p>
+    <p class="be-a__s"><em>&amp;</em> honest coffee</p>
+    <span class="be-a__sun" aria-hidden="true"></span>
+  </div>
+</figure>
+<figure class="pw-p" id="besley-price-list" data-name="Price list">
+  <div class="pw-art be-b">
+    <p class="be-b__h">Seeds <em>&amp;</em> Bulbs</p>
+    <p class="be-b__r">Spring catalogue</p>
+    <dl>{[['Sweet peas', '6d'], ['Runner beans', '4d'], ['Tulips, mixed', '1s'], ['Nasturtium', '3d'], ['Dahlia tubers', '2s 6d'], ['Lettuce, Cos', '2d']].map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
+    <p class="be-b__f">Besley · after Robert Besley’s Clarendon, 1845</p>
+  </div>
+</figure>
+<figure class="pw-p" id="besley-motto" data-name="Motto">
+  <div class="pw-art be-c">
+    <p>Make</p><p><em>it</em></p><p>sturdy.</p>
+    <p class="be-c__f">Besley · Indestructible Type · Regular to Black</p>
+  </div>
+</figure>
+<style>
+  .be-a { background: #ffcf3f; color: #1b1a17; font-family: 'Besley Variable', serif; text-align: center; display: grid; align-content: center; justify-items: center; }
+  .be-a__k { font-size: 3cqi; letter-spacing: 0.2em; text-transform: uppercase; font-variation-settings: 'wght' 700; }
+  .be-a__h { font-size: 27cqi; line-height: 0.82; letter-spacing: -0.03em; font-variation-settings: 'wght' 900; margin: 4cqi 0; position: relative; z-index: 1; }
+  .be-a__s { font-size: 8cqi; font-style: italic; font-variation-settings: 'wght' 500; }
+  .be-a__s em { color: #c4401c; }
+  .be-a__sun { position: absolute; left: 50%; top: 50%; width: 92cqi; height: 92cqi; translate: -50% -50%; border-radius: 50%; background: repeating-conic-gradient(#ffffff55 0 6deg, transparent 6deg 15deg); z-index: -1; }
+  .be-b { background: #f4ecda; color: #1b1a17; font-family: 'Besley Variable', serif; padding: 8cqi; display: flex; flex-direction: column; box-shadow: inset 0 0 0 3cqi #f4ecda, inset 0 0 0 3.5cqi #1b1a17; }
+  .be-b__h { font-size: 13cqi; line-height: 0.9; text-align: center; font-variation-settings: 'wght' 900; margin-top: 3cqi; }
+  .be-b__h em { font-style: italic; color: #2e6a4a; font-variation-settings: 'wght' 400; }
+  .be-b__r { text-align: center; font-size: 3.4cqi; font-style: italic; margin: 2cqi 0 5cqi; padding-bottom: 3cqi; border-bottom: 0.6cqi double #1b1a17; }
+  .be-b dl div { display: flex; align-items: baseline; gap: 2cqi; font-size: 5.2cqi; padding: 1.4cqi 0; }
+  .be-b dt { font-variation-settings: 'wght' 600; } .be-b dl div::after { content: ''; order: 2; flex: 1; border-bottom: 0.5cqi dotted #1b1a1788; }
+  .be-b dd { order: 3; font-variation-settings: 'wght' 800; color: #2e6a4a; }
+  .be-b__f { margin-top: auto; text-align: center; font-size: 2.4cqi; font-style: italic; opacity: 0.7; }
+  .be-c { background: #2e6a4a; color: #f4ecda; font-family: 'Besley Variable', serif; padding: 9cqi 7cqi; display: flex; flex-direction: column; }
+  .be-c p:not(.be-c__f) { font-size: 25cqi; line-height: 0.82; letter-spacing: -0.04em; font-variation-settings: 'wght' 900; }
+  .be-c p:nth-child(2) { align-self: flex-end; color: #ffcf3f; font-variation-settings: 'wght' 400; } .be-c em { font-style: italic; }
+  .be-c__f { margin-top: auto; font-size: 2.6cqi; letter-spacing: 0.08em; text-transform: uppercase; font-variation-settings: 'wght' 600; opacity: 0.8; }
+</style>

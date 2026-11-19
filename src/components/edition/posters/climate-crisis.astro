@@ -1,0 +1,36 @@
+---
+// Climate Crisis posters: warming stripes, a melting word, four years in one line.
+---
+<figure class="pw-p" id="climate-crisis-stripes" data-name="Stripes">
+  <div class="pw-art cc-a">
+    <div class="cc-a__s" aria-hidden="true">{Array.from({ length: 40 }, (_, i) => <i style={`--k:${(Math.sin(i * 1.7) * 0.12 + i / 40)}`}></i>)}</div>
+    <p class="cc-a__w">ICE</p>
+    <p class="cc-a__f"><span>1979</span><span>Climate Crisis</span><span>2050</span></p>
+  </div>
+</figure>
+<figure class="pw-p" id="climate-crisis-melt" data-name="Melt">
+  <div class="pw-art cc-b">
+    {[1979, 1995, 2010, 2025, 2040, 2050].map((y) => <p style={`font-variation-settings:'YEAR' ${y}`}><span>{y}</span>ARCTIC</p>)}
+  </div>
+</figure>
+<figure class="pw-p" id="climate-crisis-still-time" data-name="Still time">
+  <div class="pw-art cc-c">
+    <p class="cc-c__h">We still<br />have time</p>
+    <p class="cc-c__s">This typeface melts as the years pass, tracking the loss of Arctic sea ice. Set it to today, and the letters are already thinner than they were. Set it to 2050, and it is up to us.</p>
+    <p class="cc-c__f">Climate Crisis · Daniel Coull & Eino Korkala · Helsingin Sanomat · 2019</p>
+  </div>
+</figure>
+<style>
+  .cc-a { background: #08306b; color: #fff; font-family: 'Climate Crisis Variable', sans-serif; }
+  .cc-a__s { position: absolute; inset: 0; display: flex; }
+  .cc-a__s i { flex: 1; background: color-mix(in oklab, #08519c, #cb181d calc(var(--k) * 100%)); }
+  .cc-a__w { position: absolute; left: 0; right: 0; top: 50%; translate: 0 -50%; text-align: center; font-size: 34cqi; line-height: 1; color: #fff; font-variation-settings: 'YEAR' 2030; text-shadow: 0 1cqi 4cqi #0005; }
+  .cc-a__f { position: absolute; left: 5cqi; right: 5cqi; bottom: 5cqi; display: flex; justify-content: space-between; font-size: 3.4cqi; font-variation-settings: 'YEAR' 1979; }
+  .cc-b { background: #f2f4f6; color: #0b2d4d; font-family: "Climate Crisis Variable", sans-serif; display: grid; align-content: center; row-gap: 3.4cqi; padding: 0 6cqi; }
+  .cc-b p { position: relative; font-size: 15.4cqi; line-height: 0.98; letter-spacing: -0.01em; }
+  .cc-b p span { position: absolute; left: 0; top: -2.6cqi; font-size: 2.6cqi; font-variation-settings: 'YEAR' 1979; color: #cb181d; }
+  .cc-c { background: #cb181d; color: #fff; font-family: 'Climate Crisis Variable', sans-serif; padding: 8cqi 7cqi; display: flex; flex-direction: column; }
+  .cc-c__h { font-size: 15cqi; line-height: 0.92; font-variation-settings: 'YEAR' 2018; }
+  .cc-c__s { margin-top: auto; font-family: system-ui, sans-serif; font-size: 4.2cqi; line-height: 1.4; }
+  .cc-c__f { margin-top: 5cqi; font-size: 2.6cqi; font-variation-settings: 'YEAR' 1979; opacity: 0.8; }
+</style>

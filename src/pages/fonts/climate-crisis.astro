@@ -2,6 +2,7 @@
 // CLIMATE CRISIS — new edition. A hand-built page; the face is also in the `fonts`
 // collection. The letters are the ice, the page is the sea, and scroll is time.
 import Layout from '../../layouts/Layout.astro';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import { inkByAxis } from '../../lib/ink';
@@ -163,8 +164,9 @@ const themeStyle = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="climate-crisis" n="03" kicker="cc-kicker" sec="cc-sec" />
       <section class="cc-sec cc-test" data-cc-test>
-        <div class="cc-kicker"><span>03</span> Your turn</div>
+        <div class="cc-kicker"><span>04</span> Your turn</div>
         <h2 class="cc-h2">Say something.<br />Then pick the year you say it in.</h2>
 
         <div class="cc-test__stage">
@@ -187,7 +189,7 @@ const themeStyle = [
 
       <!-- ============ STORY + SPECS ============ -->
       <section class="cc-sec cc-story">
-        <div class="cc-kicker"><span>04</span> The story</div>
+        <div class="cc-kicker"><span>05</span> The story</div>
         <div class="cc-story__grid">
           <div class="cc-story__prose">
             <p class="cc-story__lede">

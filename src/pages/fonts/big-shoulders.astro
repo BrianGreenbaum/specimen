@@ -2,6 +2,7 @@
 // BIG SHOULDERS — new edition. Chicago after dark: a theatre marquee, a
 // scoreboard, a platform sign. Every example on this page is new.
 import '../../styles/edition.css';
+import PosterWall from '../../components/edition/PosterWall.astro';
 import Layout from '../../layouts/Layout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
@@ -129,8 +130,9 @@ const stops = [
       </section>
 
       <!-- ============ TESTER ============ -->
+      <PosterWall slug="big-shoulders" n="05" kicker="ed-kicker" />
       <section class="ed-sec">
-        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <div class="ed-kicker"><span>06</span> Your turn</div>
         <h2 class="ed-h2">Put <em>your name</em> in lights.</h2>
         <div class="ed-body">
           <EditionTester
@@ -149,7 +151,7 @@ const stops = [
         </div>
       </section>
 
-      <EditionTail entry={entry} from={6} />
+      <EditionTail entry={entry} from={7} />
     </main>
   </div>
 
