@@ -1,0 +1,309 @@
+---
+// BITTER — new edition. Coffee: pull a shot, roast a bean, read on a screen,
+// collect your order. Every example on this page is new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('bitter');
+const pages = [
+  'The café opened at six, which was too early for the town and exactly right for the baker, the night nurse and the woman who ran the ferry. They came for the same thing: a small cup, a quiet table, and ten minutes before the day began asking for things.',
+  'The owner never wrote the prices down. He said a menu was a promise, and he preferred to make promises in person. If you asked what the coffee cost, he would ask how your morning was going, and charge accordingly.',
+  'In winter the windows fogged so thickly that the street disappeared, and the café became a small warm boat drifting through a white sea. Nobody minded. The coffee was strong, the radio was low, and the bread was still warm.',
+  'On the last day before the café closed for good, everybody came at once. They stood in the street with their cups and did not say much. Then the ferry horn sounded, and they went to work, the way they always had.',
+];
+---
+<Layout title="Bitter — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Bitter" showToggle={false} />
+  <div class="ed bt" data-bt>
+    <header class="ed-hero bt-hero" data-hero>
+      <div class="bt-steam" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="ed-hero__top"><span>Bitter · {font.designer} · {font.year}</span><span>Thin 100 to Black 900, roman & italic</span></div>
+      <h1 class="ed-hero__word bt-hero__word" data-word aria-label="Bitter">{[...'Bitter'].map((c) => <span data-l aria-hidden="true">{c}</span>)}</h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A slab serif drawn for reading on screens, <em>strong and dark</em>.
+          <span class="ed-hero__hint" data-fine>Hold the pointer over a letter to let it steep. The longer it sits, the darker it gets.</span>
+          <span class="ed-hero__hint" data-coarse>Hold a finger on a letter to let it steep darker.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>strength</dt><dd data-hud="w">100</dd></div><div><dt>steeped</dt><dd data-hud="n">0/6</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-shot>
+        <div class="ed-kicker"><span>01</span> Pull a shot</div>
+        <h2 class="ed-h2">Hold the button.<br />Stop at <em>the right moment</em>.</h2>
+        <div class="ed-body bt-shot">
+          <div class="bt-mach">
+            <div class="bt-mach__head"><span class="bt-mach__gauge"><i data-shot-needle></i></span><b>BITTER & CO.</b></div>
+            <div class="bt-mach__group"><span class="bt-mach__stream" data-shot-stream></span></div>
+            <div class="bt-cup"><span class="bt-cup__fill" data-shot-fill></span><span class="bt-cup__crema" data-shot-crema></span></div>
+            <div class="bt-mach__tray"></div>
+          </div>
+          <div class="bt-shot__side">
+            <button type="button" class="bt-btn bt-btn--big" data-shot-btn>Hold to brew</button>
+            <p class="bt-shot__t"><b data-shot-t>0.0</b> s</p>
+            <p class="bt-shot__name" data-shot-name>—</p>
+            <p class="bt-shot__note" data-shot-note>A ristretto is about 15 seconds, an espresso about 25, a lungo about 40.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-roast>
+        <div class="ed-kicker"><span>02</span> The roast</div>
+        <h2 class="ed-h2">Lighter is brighter.<br />Darker is <em>bitter</em>.</h2>
+        <div class="ed-body bt-roast">
+          <div class="bt-card" data-roast-card>
+            <p class="bt-card__k">Single origin · Lot 07</p>
+            <p class="bt-card__name" data-roast-name>Medium</p>
+            <div class="bt-card__beans" aria-hidden="true">{Array.from({ length: 14 }, (_, i) => <i style={`--i:${i}`}></i>)}</div>
+            <p class="bt-card__notes" data-roast-notes>caramel · hazelnut · red apple</p>
+            <dl class="bt-card__meter"><div><dt>Acidity</dt><dd><i data-roast-acid></i></dd></div><div><dt>Body</dt><dd><i data-roast-body></i></dd></div><div><dt>Bitterness</dt><dd><i data-roast-bitter></i></dd></div></dl>
+          </div>
+          <label class="ed-slider"><span>Roast <b data-roast-v>50</b></span><input type="range" min="0" max="100" value="50" data-roast-in /></label>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-reader>
+        <div class="ed-kicker"><span>03</span> What it was made for</div>
+        <h2 class="ed-h2">Long reading,<br /><em>on a screen</em>.</h2>
+        <div class="ed-body bt-reader">
+          <div class="bt-ereader" data-er>
+            <div class="bt-ereader__screen" data-er-screen>
+              <p class="bt-ereader__ch">Chapter <span data-er-n>1</span></p>
+              <p class="bt-ereader__text" data-er-text></p>
+              <p class="bt-ereader__foot"><span data-er-pct>25%</span><span class="bt-ereader__bar"><i data-er-bar></i></span></p>
+            </div>
+            <div class="bt-ereader__nav"><button type="button" data-er-go="-1" aria-label="Previous page">‹</button><button type="button" data-er-go="1" aria-label="Next page">›</button></div>
+          </div>
+          <div class="bt-reader__ctl">
+            <label class="ed-slider"><span>Size <b data-er-sv>20</b> px</span><input type="range" min="14" max="30" value="20" data-er-size /></label>
+            <label class="ed-slider"><span>Weight <b data-er-wv>400</b></span><input type="range" min="200" max="700" value="400" data-er-wt /></label>
+            <label class="ed-slider"><span>Line height <b data-er-lv>1.55</b></span><input type="range" min="1.2" max="2" step="0.05" value="1.55" data-er-lh /></label>
+            <div class="bt-reader__themes" role="radiogroup" aria-label="Screen theme">{['Day', 'Sepia', 'Night'].map((t, i) => <button type="button" role="radio" aria-checked={i === 1 ? 'true' : 'false'} data-er-theme={t.toLowerCase()}>{t}</button>)}</div>
+          </div>
+        </div>
+        <script type="application/json" data-er-data set:html={JSON.stringify(pages)} />
+      </section>
+
+      <section class="ed-sec" data-pickup>
+        <div class="ed-kicker"><span>04</span> Order up</div>
+        <h2 class="ed-h2">Your name, on <em>the big board</em>.</h2>
+        <div class="ed-body bt-pick">
+          <div class="bt-board">
+            <div class="bt-board__col"><p class="bt-board__h">Preparing</p><ul data-pk-prep></ul></div>
+            <div class="bt-board__col is-ready"><p class="bt-board__h">Ready</p><ul data-pk-ready></ul></div>
+          </div>
+          <form class="bt-pick__form" data-pk-form>
+            <label><span>Name for the order</span><input type="text" maxlength="14" placeholder="Your name" data-pk-in /></label>
+            <select data-pk-drink aria-label="Drink"><option>Flat white</option><option>Cortado</option><option>Long black</option><option>Mocha</option><option>Iced latte</option></select>
+            <button type="submit" class="bt-btn">Place order</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the menu</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Bitter Variable" sample="Fresh roasted, served strong" italic axes={[{ tag: 'wght', name: 'Weight', min: 100, max: 900 }]}
+            presets={[{ name: 'Thin', v: [100] }, { name: 'Regular', v: [400] }, { name: 'Bold', v: [700] }, { name: 'Black', v: [900] }, { name: 'Italic', v: [400], italic: true }]} start={2} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Roman and italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero, clamp } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-bt]');
+  if (page) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!);
+
+    // ---------- Hero: letters steep darker under the pointer, slowly cool when left ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!;
+    const letters = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    const hud = Object.fromEntries(Array.from(hero.querySelectorAll<HTMLElement>('[data-hud]')).map((e) => [e.dataset.hud!, e]));
+    const steep = letters.map(() => 0);
+    runHero(hero, (f) => {
+      const r = hero.getBoundingClientRect(); let n = 0, sum = 0;
+      letters.forEach((l, i) => {
+        const b = l.getBoundingClientRect();
+        const over = f.live && f.px * r.width + r.left > b.left && f.px * r.width + r.left < b.right;
+        const idle = !f.live && !f.reduce && Math.floor(f.t / 1.2) % letters.length === i;
+        steep[i] = clamp(steep[i] + (over || idle ? 0.018 : -0.004), 0, 1);
+        const w = 100 + steep[i] * 800; sum += w; if (steep[i] > 0.95) n++;
+        l.style.fontVariationSettings = `'wght' ${w.toFixed(0)}`;
+        l.style.color = `color-mix(in oklab, #a8865f, #22201b ${(steep[i] * 100).toFixed(0)}%)`;
+      });
+      hud.w.textContent = String(Math.round(sum / letters.length)); hud.n.textContent = `${n}/${letters.length}`;
+    });
+
+    // ---------- Espresso ----------
+    const shot = page.querySelector<HTMLElement>('[data-shot]')!, btn = shot.querySelector<HTMLButtonElement>('[data-shot-btn]')!;
+    const fill = shot.querySelector<HTMLElement>('[data-shot-fill]')!, crema = shot.querySelector<HTMLElement>('[data-shot-crema]')!, stream = shot.querySelector<HTMLElement>('[data-shot-stream]')!, needle = shot.querySelector<HTMLElement>('[data-shot-needle]')!;
+    const tOut = shot.querySelector<HTMLElement>('[data-shot-t]')!, nameOut = shot.querySelector<HTMLElement>('[data-shot-name]')!, noteOut = shot.querySelector<HTMLElement>('[data-shot-note]')!;
+    let t = 0, brewing = false, last = 0;
+    const verdict = () => {
+      const [n, w, note] = t < 8 ? ['Under-extracted', 200, 'Sour and thin. Hold it longer.'] : t < 19 ? ['Ristretto', 900, 'Short, syrupy, intense.'] : t < 31 ? ['Espresso', 700, 'Balanced. That is the one.'] : t < 48 ? ['Lungo', 450, 'Longer and milder.'] : ['Over-extracted', 100, 'Bitter and watery. Let go sooner.'];
+      nameOut.textContent = n as string; nameOut.style.fontVariationSettings = `'wght' ${w}`; noteOut.textContent = note as string;
+      nameOut.classList.remove('is-new'); void nameOut.offsetWidth; nameOut.classList.add('is-new');
+    };
+    const start = () => { if (brewing) return; brewing = true; t = 0; last = performance.now(); shot.classList.add('is-brew'); nameOut.textContent = 'Brewing…'; nameOut.style.fontVariationSettings = `'wght' 400`; requestAnimationFrame(loop); };
+    const stop = () => { if (!brewing) return; brewing = false; shot.classList.remove('is-brew'); verdict(); };
+    const loop = (now: number) => {
+      if (!brewing) return; const dt = (now - last) / 1000; last = now; t += dt * 6; // 6× speed so a 25s shot takes ~4s
+      tOut.textContent = t.toFixed(1);
+      fill.style.height = `${clamp(t / 55, 0, 1) * 82}%`; crema.style.bottom = `${clamp(t / 55, 0, 1) * 82}%`;
+      needle.style.transform = `rotate(${-60 + clamp(t / 10, 0, 1) * 110 + Math.sin(now / 90) * 3}deg)`;
+      if (t > 60) { stop(); return; }
+      requestAnimationFrame(loop);
+    };
+    btn.addEventListener('pointerdown', (e) => { e.preventDefault(); btn.setPointerCapture(e.pointerId); start(); });
+    btn.addEventListener('pointerup', stop); btn.addEventListener('pointercancel', stop);
+    btn.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); start(); } });
+    btn.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') stop(); });
+    void stream;
+
+    // ---------- Roast ----------
+    const ro = page.querySelector<HTMLElement>('[data-roast]')!, rin = ro.querySelector<HTMLInputElement>('[data-roast-in]')!, card = ro.querySelector<HTMLElement>('[data-roast-card]')!;
+    const STAGES: [number, string, string][] = [[0, 'Cinnamon', 'lemon · jasmine · black tea'], [20, 'Light', 'peach · honey · bergamot'], [40, 'Medium', 'caramel · hazelnut · red apple'], [60, 'Full city', 'chocolate · toffee · plum'], [78, 'Dark', 'cocoa · molasses · smoke'], [92, 'French', 'charcoal · tar · bitter'] ];
+    const paintR = () => {
+      const v = +rin.value, k = v / 100, s = [...STAGES].reverse().find(([at]) => v >= at)!;
+      ro.querySelector('[data-roast-v]')!.textContent = String(v);
+      ro.querySelector('[data-roast-name]')!.textContent = s[1]; ro.querySelector('[data-roast-notes]')!.textContent = s[2];
+      card.style.setProperty('--bean', `color-mix(in oklab, #c9a26a, #1b0f08 ${(k * 100).toFixed(0)}%)`);
+      (ro.querySelector('[data-roast-name]') as HTMLElement).style.fontVariationSettings = `'wght' ${Math.round(200 + k * 700)}`;
+      (ro.querySelector('[data-roast-acid]') as HTMLElement).style.width = `${(1 - k) * 100}%`;
+      (ro.querySelector('[data-roast-body]') as HTMLElement).style.width = `${(0.35 + Math.sin(k * Math.PI) * 0.6) * 100}%`;
+      (ro.querySelector('[data-roast-bitter]') as HTMLElement).style.width = `${(0.05 + k * 0.95) * 100}%`;
+    };
+    rin.addEventListener('input', paintR); paintR();
+
+    // ---------- E-reader ----------
+    const er = page.querySelector<HTMLElement>('[data-reader]')!, P: string[] = JSON.parse(er.querySelector('[data-er-data]')!.textContent!);
+    const screen = er.querySelector<HTMLElement>('[data-er-screen]')!, text = er.querySelector<HTMLElement>('[data-er-text]')!;
+    let pi = 0;
+    const show = (d: number) => { pi = (pi + d + P.length) % P.length; text.textContent = P[pi]; er.querySelector('[data-er-n]')!.textContent = String(pi + 1); er.querySelector('[data-er-pct]')!.textContent = `${Math.round(((pi + 1) / P.length) * 100)}%`; (er.querySelector('[data-er-bar]') as HTMLElement).style.width = `${((pi + 1) / P.length) * 100}%`; if (d) { screen.classList.remove('is-turn'); void screen.offsetWidth; screen.classList.add('is-turn'); } };
+    er.querySelectorAll<HTMLElement>('[data-er-go]').forEach((b) => b.addEventListener('click', () => show(+b.dataset.erGo!)));
+    let sx = 0; screen.addEventListener('pointerdown', (e) => (sx = e.clientX)); screen.addEventListener('pointerup', (e) => { const dx = e.clientX - sx; if (Math.abs(dx) > 30) show(dx < 0 ? 1 : -1); });
+    const bind = (sel: string, out: string, f: (v: string) => void) => { const i = er.querySelector<HTMLInputElement>(sel)!; const go = () => { er.querySelector(out)!.textContent = i.value; f(i.value); }; i.addEventListener('input', go); go(); };
+    bind('[data-er-size]', '[data-er-sv]', (v) => (text.style.fontSize = `${v}px`));
+    bind('[data-er-wt]', '[data-er-wv]', (v) => (text.style.fontVariationSettings = `'wght' ${v}`));
+    bind('[data-er-lh]', '[data-er-lv]', (v) => (text.style.lineHeight = v));
+    const th = Array.from(er.querySelectorAll<HTMLElement>('[data-er-theme]'));
+    th.forEach((b) => b.addEventListener('click', () => { screen.dataset.theme = b.dataset.erTheme; th.forEach((o) => o.setAttribute('aria-checked', String(o === b))); }));
+    screen.dataset.theme = 'sepia'; show(0);
+
+    // ---------- Pickup board ----------
+    const pk = page.querySelector<HTMLElement>('[data-pickup]')!, prep = pk.querySelector<HTMLElement>('[data-pk-prep]')!, ready = pk.querySelector<HTMLElement>('[data-pk-ready]')!, pin = pk.querySelector<HTMLInputElement>('[data-pk-in]')!;
+    const add = (name: string, drink: string) => {
+      const li = document.createElement('li'); li.innerHTML = `<b>${esc(name)}</b><span>${esc(drink)}</span>`; prep.appendChild(li);
+      setTimeout(() => { li.remove(); const r = document.createElement('li'); r.className = 'is-called'; r.innerHTML = `<b>${esc(name)}</b><span>${esc(drink)}</span>`; ready.prepend(r); while (ready.children.length > 4) ready.lastElementChild!.remove(); }, reduce ? 300 : 2600 + Math.random() * 1500);
+    };
+    ['Mira', 'Tomás', 'Jun'].forEach((n, i) => setTimeout(() => add(n, ['Cortado', 'Flat white', 'Mocha'][i]), i * 900));
+    pin.addEventListener('keydown', (e) => e.stopPropagation());
+    pk.querySelector<HTMLFormElement>('[data-pk-form]')!.addEventListener('submit', (e) => { e.preventDefault(); add(pin.value.trim() || 'Guest', pk.querySelector<HTMLSelectElement>('[data-pk-drink]')!.value); pin.value = ''; });
+  }
+</script>
+
+<style is:global>
+  .bt { --ed-head: 'Bitter Variable', 'Rockwell', serif; --ed-head-vf: 'wght' 800; --ed-em-vf: 'wght' 300; --ed-lede-vf: 'wght' 600; --ed-radius: 6px; --coffee: #3a2418; --crema: #c9915a; }
+  .bt em { font-style: italic; } .bt .ed-h2 { letter-spacing: -0.02em; line-height: 1; }
+  .bt .ed-story__prose { font-family: 'Bitter Variable', serif; font-variation-settings: 'wght' 380; }
+  .bt .ed-story__prose em { font-style: italic; } .bt .ed-story__prose strong { font-weight: 400; font-variation-settings: 'wght' 700; }
+  .bt-btn { padding: 0.8rem 1.3rem; border-radius: 100px; background: var(--coffee); color: #f2efe8; font: 400 1rem/1 'Bitter Variable', serif; font-variation-settings: 'wght' 700; transition: background 0.2s, transform 0.1s; touch-action: none; user-select: none; }
+  .bt-btn:hover { background: var(--accent); } .bt-btn:active { transform: scale(0.97); }
+  .bt-btn--big { font-size: 1.3rem; padding: 1.2rem 2rem; }
+
+  .bt-hero { background: radial-gradient(70% 60% at 50% 55%, #fffaf0, transparent 70%), var(--bg); }
+  .bt-hero__word { display: flex; font-family: 'Bitter Variable', serif; font-size: min(22vw, 50svh); line-height: 1.05; letter-spacing: -0.03em; }
+  .bt-steam { position: absolute; left: 50%; top: 8%; width: 30vw; height: 30%; transform: translateX(-50%); z-index: -1; pointer-events: none; }
+  .bt-steam i { position: absolute; bottom: 0; width: 22%; height: 100%; border-radius: 50%; background: radial-gradient(closest-side, #22201b14, transparent); filter: blur(12px); animation: bt-steam 6s ease-in-out infinite; }
+  .bt-steam i:nth-child(1) { left: 10%; } .bt-steam i:nth-child(2) { left: 40%; animation-delay: -2s; } .bt-steam i:nth-child(3) { left: 70%; animation-delay: -4s; }
+  @keyframes bt-steam { 0% { transform: translateY(30%) scaleX(0.6); opacity: 0; } 40% { opacity: 1; } 100% { transform: translateY(-60%) scaleX(1.3) rotate(8deg); opacity: 0; } }
+
+  /* espresso */
+  .bt-shot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .bt-mach { position: relative; justify-self: center; width: min(100%, 22rem); height: 26rem; }
+  .bt-mach__head { position: absolute; left: 0; right: 0; top: 0; height: 8rem; border-radius: 18px 18px 6px 6px; background: linear-gradient(180deg, #c9c4ba, #8d877c 60%, #6f6a62); display: flex; align-items: center; justify-content: space-between; padding: 0 1.4rem; box-shadow: inset 0 2px 0 #fff8, 0 20px 30px -20px #0008; }
+  .bt-mach__head b { font: 400 1rem/1 'Bitter Variable', serif; font-variation-settings: 'wght' 900; letter-spacing: 0.14em; color: #2a2520; }
+  .bt-mach__gauge { position: relative; width: 4.4rem; height: 4.4rem; border-radius: 50%; background: radial-gradient(circle, #fffaf0 60%, #2a2520 62%); box-shadow: inset 0 0 0 3px #2a2520; }
+  .bt-mach__gauge i { position: absolute; left: 50%; bottom: 50%; width: 3px; height: 40%; margin-left: -1.5px; background: #b0301c; transform-origin: 50% 100%; transform: rotate(-60deg); }
+  .bt-mach__group { position: absolute; left: 50%; top: 8rem; width: 6rem; height: 2.4rem; transform: translateX(-50%); background: linear-gradient(90deg, #5a554c, #a49e92, #5a554c); border-radius: 0 0 10px 10px; }
+  .bt-mach__stream { position: absolute; left: 50%; top: 100%; width: 6px; height: 0; margin-left: -3px; background: linear-gradient(#3a2418, #6b3f24); border-radius: 3px; transition: height 0.3s; }
+  [data-shot].is-brew .bt-mach__stream { height: 7.4rem; animation: bt-pour 0.2s linear infinite; }
+  @keyframes bt-pour { 50% { width: 5px; margin-left: -2.5px; } }
+  .bt-cup { position: absolute; left: 50%; bottom: 2.6rem; width: 7.4rem; height: 6rem; transform: translateX(-50%); border-radius: 0 0 40% 40% / 0 0 60% 60%; background: #fbf8f2; box-shadow: inset 0 0 0 3px #e5ded0, 0 10px 20px -10px #0006; overflow: hidden; }
+  .bt-cup__fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: linear-gradient(#5a3420, #2a160b); }
+  .bt-cup__crema { position: absolute; left: 0; right: 0; bottom: 0; height: 8%; background: linear-gradient(var(--crema), #a8723f); border-radius: 50%; }
+  .bt-mach__tray { position: absolute; left: 5%; right: 5%; bottom: 1.6rem; height: 1rem; background: repeating-linear-gradient(90deg, #3a3631 0 6px, #6f6a62 6px 10px); border-radius: 3px; }
+  .bt-shot__side { display: grid; gap: 1rem; justify-items: start; }
+  .bt-shot__t { font: 400 1rem/1 var(--font-mono); color: var(--fg-3); } .bt-shot__t b { font-family: 'Bitter Variable', serif; font-variation-settings: 'wght' 200; font-size: 4.4rem; color: var(--fg); font-weight: 400; font-feature-settings: 'tnum'; }
+  .bt-shot__name { font-family: 'Bitter Variable', serif; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1; color: var(--accent); }
+  .bt-shot__name.is-new { animation: bt-pop 0.5s cubic-bezier(0.34, 1.6, 0.64, 1); }
+  @keyframes bt-pop { from { transform: scale(0.7); opacity: 0; } }
+  .bt-shot__note { color: var(--fg-2); max-width: 30ch; }
+
+  /* roast */
+  .bt-roast { display: grid; gap: 1.4rem; }
+  .bt-card { --bean: #8a5a30; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem 3rem; align-items: center; padding: clamp(1.6rem, 4vw, 3rem); background: #fbf8f2; border: 1px solid var(--line); border-radius: 14px; }
+  .bt-card__k { grid-column: 1 / -1; font: 400 0.72rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-3); }
+  .bt-card__name { font-family: 'Bitter Variable', serif; font-size: clamp(3rem, 8vw, 6.4rem); line-height: 1; color: var(--bean); transition: color 0.3s; }
+  .bt-card__beans { grid-row: span 3; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .bt-card__beans i { width: 2.6rem; height: 3.4rem; border-radius: 50%; background: var(--bean); transform: rotate(calc(var(--i) * 37deg)); box-shadow: inset -4px -4px 8px #0004, inset 3px 3px 6px #fff2; position: relative; transition: background 0.3s; }
+  .bt-card__beans i::after { content: ''; position: absolute; left: 50%; top: 12%; bottom: 12%; width: 3px; margin-left: -1.5px; border-radius: 50%; background: #0006; transform: rotate(8deg); }
+  .bt-card__notes { font-family: 'Bitter Variable', serif; font-style: italic; font-size: 1.4rem; color: var(--fg-2); }
+  .bt-card__meter { display: grid; gap: 0.5rem; }
+  .bt-card__meter div { display: grid; grid-template-columns: 6rem 1fr; align-items: center; gap: 0.8rem; }
+  .bt-card__meter dt { font: 400 0.7rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
+  .bt-card__meter dd { height: 8px; border-radius: 8px; background: var(--line); overflow: hidden; } .bt-card__meter i { display: block; height: 100%; background: var(--bean); transition: width 0.3s; }
+
+  /* e-reader */
+  .bt-reader { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
+  .bt-ereader { justify-self: center; width: min(100%, 26rem); padding: 1.4rem 1.2rem 1rem; border-radius: 26px; background: #2a2724; box-shadow: 0 40px 60px -40px #000a; }
+  .bt-ereader__screen { aspect-ratio: 0.74; padding: 1.6rem 1.4rem; border-radius: 6px; display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; touch-action: pan-y; user-select: none; transition: background 0.3s, color 0.3s; }
+  .bt-ereader__screen[data-theme='day'] { background: #fdfdfb; color: #1c1c1a; } .bt-ereader__screen[data-theme='sepia'] { background: #f3e7cf; color: #3a2c1a; } .bt-ereader__screen[data-theme='night'] { background: #15140f; color: #cfc8b8; }
+  .bt-ereader__screen.is-turn .bt-ereader__text { animation: bt-turn 0.35s var(--ease); }
+  @keyframes bt-turn { from { opacity: 0; transform: translateX(12px); } }
+  .bt-ereader__ch { text-align: center; font: italic 400 0.9rem/1 'Bitter Variable', serif; opacity: 0.6; margin-bottom: 1rem; }
+  .bt-ereader__text { font-family: 'Bitter Variable', serif; overflow: hidden; }
+  .bt-ereader__foot { display: flex; align-items: center; gap: 0.8rem; font: 400 0.68rem/1 var(--font-mono); opacity: 0.7; margin-top: 0.6rem; }
+  .bt-ereader__bar { flex: 1; height: 3px; background: currentColor; opacity: 0.25; position: relative; } .bt-ereader__bar i { position: absolute; left: 0; top: 0; bottom: 0; background: currentColor; }
+  .bt-ereader__nav { display: flex; justify-content: space-between; padding-top: 0.6rem; }
+  .bt-ereader__nav button { width: 2.6rem; height: 2.6rem; border-radius: 50%; color: #cfc8b8; font-size: 1.6rem; line-height: 1; }
+  .bt-ereader__nav button:hover { background: #ffffff14; }
+  .bt-reader__ctl { display: grid; gap: 1rem; }
+  .bt-reader__themes { display: flex; gap: 0.5rem; }
+  .bt-reader__themes button { padding: 0.55rem 1rem; border: 1px solid var(--line); border-radius: 100px; font: 400 0.9rem/1 'Bitter Variable', serif; }
+  .bt-reader__themes button[aria-checked='true'] { background: var(--coffee); color: #f2efe8; border-color: var(--coffee); }
+
+  /* pickup */
+  .bt-pick { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+  .bt-board { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 30px 50px -30px #000a; min-height: 18rem; }
+  .bt-board__col { background: #1a1612; padding: 1.2rem; }
+  .bt-board__col.is-ready { background: #102318; }
+  .bt-board__h { font: 400 0.75rem/1 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #9a8e7c; padding-bottom: 0.8rem; margin-bottom: 0.6rem; border-bottom: 1px solid #ffffff1a; }
+  .bt-board__col.is-ready .bt-board__h { color: #8fe0a8; }
+  .bt-board li { display: grid; padding: 0.5rem 0; animation: bt-in 0.5s var(--ease); }
+  .bt-board li b { font-family: 'Bitter Variable', serif; font-weight: 400; font-variation-settings: 'wght' 500; font-size: 1.6rem; line-height: 1.1; color: #e8dfcf; }
+  .bt-board li span { font: italic 400 0.9rem/1.3 'Bitter Variable', serif; color: #9a8e7c; }
+  .bt-board .is-ready li b { font-variation-settings: 'wght' 900; font-size: 2.2rem; color: #c8ffd6; }
+  .bt-board li.is-called { animation: bt-call 1.6s var(--ease); }
+  @keyframes bt-in { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes bt-call { 0%, 30% { background: #8fe0a833; } }
+  .bt-pick__form { display: grid; gap: 0.9rem; }
+  .bt-pick__form label { display: grid; gap: 0.4rem; font: 400 0.7rem/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); }
+  .bt input[type='text'], .bt select { font: 500 1.3rem/1.2 'Bitter Variable', serif; padding: 0.4rem 0; background: none; border: 0; border-bottom: 2px solid var(--fg-3); color: var(--fg); outline: none; text-transform: none; letter-spacing: 0; }
+  .bt-pick__form button { justify-self: start; }
+
+  @media (max-width: 900px) { .bt-shot, .bt-reader, .bt-pick, .bt-card { grid-template-columns: minmax(0, 1fr); } .bt-card__beans { grid-row: auto; } }
+</style>
