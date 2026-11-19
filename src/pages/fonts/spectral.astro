@@ -1,0 +1,267 @@
+---
+// SPECTRAL — new edition. The document: a selectable title, a little word
+// processor, tracked changes, margin notes and a pixel loupe. All new.
+import '../../styles/edition.css';
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import EditionTester from '../../components/edition/EditionTester.astro';
+import EditionTail from '../../components/edition/EditionTail.astro';
+import { getEdition } from '../../lib/edition';
+
+const { entry, font, prev, next, themeStyle } = await getEdition('spectral');
+const tracked = 'The committee met on <ins data-t="0">Tuesday</ins><del data-t="0">Monday</del> to review the <del data-t="1">very </del>final draft. After <ins data-t="2">a long and occasionally heated</ins><del data-t="2">some</del> discussion, the proposal was approved<ins data-t="3">, with one abstention</ins>. The <del data-t="4">new </del>budget takes effect in <ins data-t="5">April</ins><del data-t="5">the spring</del>.';
+const notes = [
+  { q: 'the river had changed its course', c: 'Is this literal? The map in chapter two says otherwise.', who: 'Ana' },
+  { q: 'nobody could remember', c: 'Lovely. Keep this line exactly as it is.', who: 'Theo' },
+  { q: 'a single lamp', c: 'We used “one lamp” on page 4. Pick one.', who: 'Ana' },
+];
+---
+<Layout title="Spectral — Specimen" description={font.blurb} themeStyle={themeStyle} mode={font.theme.mode} fixedTheme>
+  <SiteHeader current="Spectral" showToggle={false} />
+  <div class="ed sp" data-sp>
+    <header class="ed-hero sp-hero" data-hero>
+      <div class="ed-hero__top"><span>Spectral · {font.designer} · {font.year}</span><span>Light, Regular, SemiBold & Italic</span></div>
+      <h1 class="ed-hero__word sp-hero__word" data-word aria-label="Spectral">{[...'Spectral'].map((c) => <span data-l aria-hidden="true">{c}</span>)}<i class="sp-caret" data-caret aria-hidden="true"></i></h1>
+      <div class="ed-hero__foot">
+        <p class="ed-hero__lede">
+          A screen-first serif, made for <em>documents you write in</em>.
+          <span class="ed-hero__hint" data-fine>The cursor follows you. Click and drag across the word to select; the selection turns SemiBold.</span>
+          <span class="ed-hero__hint" data-coarse>Drag across the word to select it.</span>
+        </p>
+        <dl class="ed-readout"><div><dt>selected</dt><dd data-hud="s">0</dd></div></dl>
+      </div>
+    </header>
+
+    <main>
+      <section class="ed-sec" data-wp>
+        <div class="ed-kicker"><span>01</span> The page</div>
+        <h2 class="ed-h2">Start <em>writing</em>.</h2>
+        <div class="ed-body">
+          <div class="sp-doc">
+            <div class="sp-doc__bar">
+              <div class="sp-doc__tools" role="toolbar" aria-label="Style">{[['Light', '300'], ['Regular', '400'], ['SemiBold', '600']].map(([n, w], i) => <button type="button" aria-pressed={i === 1 ? 'true' : 'false'} data-wp-w={w} style={`font-weight:${w}`}>{n}</button>)}<button type="button" aria-pressed="false" data-wp-i><em>Italic</em></button></div>
+              <div class="sp-doc__size"><button type="button" data-wp-s="-1" aria-label="Smaller">A−</button><button type="button" data-wp-s="1" aria-label="Larger">A+</button></div>
+            </div>
+            <div class="sp-doc__page" contenteditable="true" spellcheck="false" data-wp-page>
+              <h3>A letter to the future</h3>
+              <p>Dear reader, if you are reading this, the page has done its job. It has held these words still for long enough that you could find them.</p>
+              <p>Click anywhere and keep writing. Make it yours.</p>
+            </div>
+            <div class="sp-doc__status"><span><b data-wp-words>0</b> words</span><span><b data-wp-chars>0</b> characters</span><span><b data-wp-read>1</b> min read</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-tc>
+        <div class="ed-kicker"><span>02</span> Track changes</div>
+        <h2 class="ed-h2">Accept. Reject.<br /><em>Argue.</em></h2>
+        <div class="ed-body sp-tc">
+          <p class="sp-tc__p" data-tc-p set:html={tracked} />
+          <div class="sp-tc__bar"><span data-tc-n>6 changes</span><button type="button" data-tc-all="1">Accept all</button><button type="button" data-tc-all="0">Reject all</button><button type="button" data-tc-reset>Reset</button></div>
+          <p class="ed-cap">Click any green insertion or red deletion to accept or reject it.</p>
+          <div class="sp-pop" data-tc-pop hidden><button type="button" data-tc-ok>✓ Accept</button><button type="button" data-tc-no>✕ Reject</button></div>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-mn>
+        <div class="ed-kicker"><span>03</span> In the margin</div>
+        <h2 class="ed-h2">Notes from <em>your editor</em>.</h2>
+        <div class="ed-body sp-mn">
+          <div class="sp-mn__text" data-mn-text>
+            <p>By the time the village was rebuilt, <mark data-n="0">the river had changed its course</mark> and the old mill stood a quarter of a mile from the water. Why they built it there <mark data-n="1">nobody could remember</mark>, and nobody asked.</p>
+            <p>In the evenings the miller’s daughter sat at the window with <mark data-n="2">a single lamp</mark> and wrote letters to a cousin in the city, describing a river that no longer reached the wheel.</p>
+          </div>
+          <aside class="sp-mn__side" data-mn-side>{notes.map((n, i) => <div class="sp-note" data-note={i}><p class="sp-note__who">{n.who}</p><p class="sp-note__c">{n.c}</p></div>)}</aside>
+          <svg class="sp-mn__wire" data-mn-wire aria-hidden="true"><path data-mn-path /></svg>
+        </div>
+      </section>
+
+      <section class="ed-sec" data-px>
+        <div class="ed-kicker"><span>04</span> Made for screens</div>
+        <h2 class="ed-h2">Down to <em>the pixel</em>.</h2>
+        <div class="ed-body sp-px">
+          <canvas class="sp-px__cv" data-px-cv aria-label="Spectral rendered at a small pixel size and enlarged"></canvas>
+          <div class="sp-px__ctl">
+            <label class="ed-slider"><span>Text size <b data-px-v>12</b> px</span><input type="range" min="6" max="28" value="12" data-px-in /></label>
+            <div class="sp-px__w" role="radiogroup" aria-label="Weight">{[['Light', '300'], ['Regular', '400'], ['SemiBold', '600']].map(([n, w], i) => <button type="button" role="radio" aria-checked={i === 1 ? 'true' : 'false'} data-px-w={w}>{n}</button>)}</div>
+            <p class="ed-cap">Each square is one real pixel. Spectral was drawn for Google with screens in mind: sturdy serifs and open counters that hold together even at twelve pixels.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-sec">
+        <div class="ed-kicker"><span>05</span> Your turn</div>
+        <h2 class="ed-h2">Write <em>the opening line</em>.</h2>
+        <div class="ed-body">
+          <EditionTester family="Spectral" sample="Chapter One, in which nothing happens" italic axes={[]} presets={[{ name: 'Regular', v: [] }, { name: 'Italic', v: [], italic: true }]} start={0} />
+        </div>
+      </section>
+      <EditionTail entry={entry} from={6} extra={[{ k: 'Styles', v: 'Light, Regular, SemiBold, Italic' }]} />
+    </main>
+  </div>
+  <SiteFooter prev={prev} next={next} />
+</Layout>
+
+<script>
+  import { runHero } from '../../lib/hero';
+  const page = document.querySelector<HTMLElement>('[data-sp]');
+  if (page) {
+    // ---------- Hero: caret and selection ----------
+    const hero = page.querySelector<HTMLElement>('[data-hero]')!, word = hero.querySelector<HTMLElement>('[data-word]')!, caret = hero.querySelector<HTMLElement>('[data-caret]')!;
+    const ls = Array.from(hero.querySelectorAll<HTMLElement>('[data-l]'));
+    let a = -1, b = -1, dragging = false;
+    const idxAt = (x: number) => { let k = ls.length; for (let i = 0; i < ls.length; i++) { const r = ls[i].getBoundingClientRect(); if (x < r.left + r.width / 2) { k = i; break; } } return k; };
+    const paintSel = () => { const lo = Math.min(a, b), hi = Math.max(a, b); let n = 0; ls.forEach((l, i) => { const on = a >= 0 && i >= lo && i < hi; l.classList.toggle('is-sel', on); if (on) n++; }); hero.querySelector('[data-hud="s"]')!.textContent = String(n); };
+    hero.addEventListener('pointerdown', (e) => { dragging = true; a = b = idxAt(e.clientX); paintSel(); });
+    window.addEventListener('pointerup', () => (dragging = false));
+    runHero(hero, (f) => {
+      const r = word.getBoundingClientRect(), hr = hero.getBoundingClientRect();
+      const x = f.live ? hr.left + f.px * hr.width : r.left + ((Math.sin(f.t * 0.6) + 1) / 2) * r.width;
+      const k = idxAt(x); const ref = ls[Math.min(k, ls.length - 1)].getBoundingClientRect();
+      const cx = k >= ls.length ? ref.right : ref.left;
+      caret.style.transform = `translateX(${(cx - r.left).toFixed(1)}px)`;
+      if (dragging) { b = k; paintSel(); }
+      else if (!f.live && !f.reduce) { const t = (f.t * 0.5) % 4; if (t < 2) { a = 1; b = 1 + Math.round(t * 2.5); } else { a = b = -1; } paintSel(); }
+    });
+
+    // ---------- Word processor ----------
+    const wp = page.querySelector<HTMLElement>('[data-wp]')!, pg = wp.querySelector<HTMLElement>('[data-wp-page]')!;
+    pg.addEventListener('keydown', (e) => e.stopPropagation());
+    let size = 1.25;
+    const count = () => { const t = pg.innerText.trim(), w = t ? t.split(/\s+/).length : 0; wp.querySelector('[data-wp-words]')!.textContent = String(w); wp.querySelector('[data-wp-chars]')!.textContent = String(t.length); wp.querySelector('[data-wp-read]')!.textContent = String(Math.max(1, Math.round(w / 230))); };
+    pg.addEventListener('input', count); count();
+    const ws = Array.from(wp.querySelectorAll<HTMLElement>('[data-wp-w]'));
+    ws.forEach((btn) => btn.addEventListener('click', () => { pg.style.fontWeight = btn.dataset.wpW!; ws.forEach((o) => o.setAttribute('aria-pressed', String(o === btn))); }));
+    const it = wp.querySelector<HTMLElement>('[data-wp-i]')!; it.addEventListener('click', () => { const on = it.getAttribute('aria-pressed') !== 'true'; it.setAttribute('aria-pressed', String(on)); pg.style.fontStyle = on ? 'italic' : 'normal'; });
+    wp.querySelectorAll<HTMLElement>('[data-wp-s]').forEach((btn) => btn.addEventListener('click', () => { size = Math.min(2, Math.max(0.9, size + +btn.dataset.wpS! * 0.125)); pg.style.fontSize = `${size}rem`; }));
+
+    // ---------- Tracked changes ----------
+    const tc = page.querySelector<HTMLElement>('[data-tc]')!, tp = tc.querySelector<HTMLElement>('[data-tc-p]')!, pop = tc.querySelector<HTMLElement>('[data-tc-pop]')!;
+    const orig = tp.innerHTML; let cur: string | null = null;
+    const left = () => { const n = new Set(Array.from(tp.querySelectorAll<HTMLElement>('[data-t]')).map((e) => e.dataset.t)).size; tc.querySelector('[data-tc-n]')!.textContent = n ? `${n} change${n > 1 ? 's' : ''}` : 'Clean copy'; tc.classList.toggle('is-clean', !n); };
+    const resolve = (t: string, ok: boolean) => {
+      tp.querySelectorAll<HTMLElement>(`[data-t="${t}"]`).forEach((el) => {
+        const keep = (el.tagName === 'INS') === ok;
+        el.classList.add(keep ? 'is-keep' : 'is-gone');
+        setTimeout(() => { if (keep) el.replaceWith(document.createTextNode(el.textContent!)); else el.remove(); tp.normalize(); left(); }, 380);
+      });
+      pop.hidden = true;
+    };
+    tp.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>('[data-t]'); if (!el) { pop.hidden = true; return; }
+      cur = el.dataset.t!; const r = el.getBoundingClientRect(), pr = pop.parentElement!.getBoundingClientRect();
+      pop.hidden = false; pop.style.left = `${r.left - pr.left}px`; pop.style.top = `${r.bottom - pr.top + 8}px`;
+      tp.querySelectorAll('[data-t]').forEach((x) => x.classList.toggle('is-focus', (x as HTMLElement).dataset.t === cur));
+    });
+    tc.querySelector('[data-tc-ok]')!.addEventListener('click', () => cur && resolve(cur, true));
+    tc.querySelector('[data-tc-no]')!.addEventListener('click', () => cur && resolve(cur, false));
+    tc.querySelectorAll<HTMLElement>('[data-tc-all]').forEach((btn) => btn.addEventListener('click', () => { const ts = new Set(Array.from(tp.querySelectorAll<HTMLElement>('[data-t]')).map((e) => e.dataset.t!)); ts.forEach((t) => resolve(t, btn.dataset.tcAll === '1')); }));
+    document.addEventListener('scroll', () => (pop.hidden = true), { passive: true });
+    tc.querySelector('[data-tc-reset]')!.addEventListener('click', () => { tp.innerHTML = orig; pop.hidden = true; left(); });
+    left();
+
+    // ---------- Margin notes ----------
+    const mn = page.querySelector<HTMLElement>('[data-mn]')!, marks = Array.from(mn.querySelectorAll<HTMLElement>('mark')), nts = Array.from(mn.querySelectorAll<HTMLElement>('[data-note]'));
+    const wire = mn.querySelector<SVGSVGElement>('[data-mn-wire]')!, wpath = mn.querySelector<SVGPathElement>('[data-mn-path]')!;
+    let on = 0;
+    const draw = () => {
+      marks.forEach((m, i) => m.classList.toggle('is-on', i === on)); nts.forEach((n, i) => n.classList.toggle('is-on', i === on));
+      const br = wire.parentElement!.getBoundingClientRect(), mr = marks[on].getClientRects(), last = mr[mr.length - 1], nr = nts[on].getBoundingClientRect();
+      wire.setAttribute('width', String(br.width)); wire.setAttribute('height', String(br.height));
+      if (nr.left > last.right) { const x1 = last.right - br.left, y1 = last.bottom - br.top - 4, x2 = nr.left - br.left, y2 = nr.top - br.top + 18; wpath.setAttribute('d', `M${x1} ${y1} C ${x1 + 60} ${y1}, ${x2 - 60} ${y2}, ${x2} ${y2}`); }
+      else wpath.setAttribute('d', '');
+    };
+    marks.forEach((m, i) => { m.addEventListener('click', () => { on = i; draw(); }); m.addEventListener('mouseenter', () => { on = i; draw(); }); });
+    nts.forEach((n, i) => n.addEventListener('mouseenter', () => { on = i; draw(); }));
+    new ResizeObserver(draw).observe(mn); document.fonts.ready.then(draw);
+
+    // ---------- Pixel loupe ----------
+    const px = page.querySelector<HTMLElement>('[data-px]')!, cv = px.querySelector<HTMLCanvasElement>('[data-px-cv]')!, ctx = cv.getContext('2d')!, pin = px.querySelector<HTMLInputElement>('[data-px-in]')!;
+    const off = document.createElement('canvas'), octx = off.getContext('2d')!; let wt = '400';
+    const render = () => {
+      const s = +pin.value; px.querySelector('[data-px-v]')!.textContent = String(s);
+      off.width = Math.ceil(s * 5.6); off.height = Math.ceil(s * 1.6);
+      octx.fillStyle = '#f5f2ea'; octx.fillRect(0, 0, off.width, off.height);
+      octx.fillStyle = '#191813'; octx.font = `${wt} ${s}px Spectral`; octx.textBaseline = 'alphabetic'; octx.fillText('Hamburg', Math.round(s * 0.3), Math.round(s * 1.15));
+      const box = cv.parentElement!.getBoundingClientRect(), W = Math.floor(Math.min(box.width, 900)), cell = Math.max(2, Math.floor(W / off.width));
+      cv.width = off.width * cell; cv.height = off.height * cell; cv.style.width = `${cv.width}px`;
+      ctx.imageSmoothingEnabled = false; ctx.drawImage(off, 0, 0, cv.width, cv.height);
+      if (cell >= 6) { ctx.strokeStyle = '#19181312'; ctx.lineWidth = 1; ctx.beginPath(); for (let x = 0; x <= off.width; x++) { ctx.moveTo(x * cell + 0.5, 0); ctx.lineTo(x * cell + 0.5, cv.height); } for (let y = 0; y <= off.height; y++) { ctx.moveTo(0, y * cell + 0.5); ctx.lineTo(cv.width, y * cell + 0.5); } ctx.stroke(); }
+    };
+    pin.addEventListener('input', render);
+    const pws = Array.from(px.querySelectorAll<HTMLElement>('[data-px-w]'));
+    pws.forEach((btn) => btn.addEventListener('click', () => { wt = btn.dataset.pxW!; pws.forEach((o) => o.setAttribute('aria-checked', String(o === btn))); render(); }));
+    new ResizeObserver(render).observe(px); document.fonts.load('300 12px Spectral').then(() => document.fonts.load('600 12px Spectral')).then(render);
+  }
+</script>
+
+<style is:global>
+  .sp { --ed-head: 'Spectral', Georgia, serif; --ed-head-vf: normal; --ed-em-vf: normal; --ed-lede-vf: normal; --ed-radius: 4px; }
+  .sp em { font-style: italic; } .sp .ed-h2 { font-weight: 300; letter-spacing: -0.02em; line-height: 1; } .sp .ed-h2 em { font-weight: 400; }
+  .sp .ed-story__prose { font-family: 'Spectral', serif; font-weight: 300; font-size: 1.22rem; line-height: 1.65; } .sp .ed-story__prose em { font-style: italic; font-weight: 400; } .sp .ed-story__prose strong { font-weight: 600; }
+
+  .sp-hero { user-select: none; cursor: text; touch-action: none; }
+  .sp-hero__word { position: relative; display: flex; font-family: 'Spectral', serif; font-weight: 300; font-size: min(17vw, 40svh); line-height: 1.1; letter-spacing: -0.02em; width: fit-content; }
+  .sp-hero__word [data-l] { transition: color 0.15s; }
+  .sp-hero__word [data-l].is-sel { font-weight: 600; background: #2f5d4f33; color: var(--accent); }
+  .sp-caret { position: absolute; left: 0; top: 0.12em; bottom: 0.1em; width: 3px; background: var(--accent); animation: sp-blink 1s steps(2) infinite; }
+  @keyframes sp-blink { 50% { opacity: 0; } }
+
+  /* word processor */
+  .sp-doc { max-width: 52rem; margin: 0 auto; background: #e6e2d8; border-radius: 10px; padding: 0 0 0; overflow: hidden; box-shadow: 0 30px 60px -40px #0008; }
+  .sp-doc__bar { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: space-between; padding: 0.7rem 1rem; background: #f8f6f0; border-bottom: 1px solid #0000001a; }
+  .sp-doc__tools, .sp-doc__size { display: flex; gap: 0.25rem; }
+  .sp-doc__bar button { padding: 0.45rem 0.8rem; border-radius: 6px; font: 400 0.95rem/1 'Spectral', serif; color: var(--fg-2); }
+  .sp-doc__bar button[aria-pressed='true'] { background: var(--accent); color: #fff; }
+  .sp-doc__bar button:hover:not([aria-pressed='true']) { background: #0000000d; }
+  .sp-doc__page { margin: clamp(1rem, 4vw, 2.4rem) auto; width: min(calc(100% - 2rem), 40rem); min-height: 22rem; padding: clamp(1.6rem, 5vw, 3.6rem); background: #fff; box-shadow: 0 6px 20px -10px #0004; font: 400 1.25rem/1.6 'Spectral', serif; outline: none; transition: font-size 0.2s; }
+  .sp-doc__page h3 { font-weight: 600; font-size: 1.6em; line-height: 1.15; margin-bottom: 0.6em; }
+  .sp-doc__page p + p { margin-top: 0.8em; }
+  .sp-doc__page:focus { box-shadow: 0 6px 20px -10px #0004, 0 0 0 2px #2f5d4f55; }
+  .sp-doc__status { display: flex; gap: 1.6rem; padding: 0.6rem 1rem; background: #f8f6f0; border-top: 1px solid #0000001a; font: 400 0.75rem/1 var(--font-mono); color: var(--fg-3); }
+  .sp-doc__status b { color: var(--fg); font-weight: 400; }
+
+  /* tracked changes */
+  .sp-tc { position: relative; display: grid; gap: 1rem; }
+  .sp-tc__p { font: 300 clamp(1.4rem, 2.6vw, 2.1rem)/1.6 'Spectral', serif; max-width: 34em; }
+  .sp-tc__p ins, .sp-tc__p del { cursor: pointer; border-radius: 3px; padding: 0 0.08em; transition: all 0.35s; }
+  .sp-tc__p ins { text-decoration: underline 2px #2f8f5f; color: #1f6e46; background: #2f8f5f14; font-weight: 400; }
+  .sp-tc__p del { text-decoration: line-through 2px #b8432f; color: #a3402e; background: #b8432f12; }
+  .sp-tc__p .is-focus { outline: 2px solid currentColor; outline-offset: 2px; }
+  .sp-tc__p .is-gone { opacity: 0; font-size: 0.01em; }
+  .sp-tc__p .is-keep { background: transparent; color: var(--fg); text-decoration-color: transparent; font-weight: 300; }
+  .sp-tc__bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .sp-tc__bar span { font: 400 0.75rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); margin-right: 1rem; min-width: 7rem; }
+  .sp-tc.is-clean .sp-tc__bar span { color: var(--accent); }
+  .sp-tc__bar button, .sp-pop button { padding: 0.5rem 1rem; border-radius: 100px; border: 1px solid var(--line); font: 400 1rem/1 'Spectral', serif; }
+  .sp-tc__bar button:hover { background: var(--fg); color: var(--bg); }
+  .sp-pop { position: absolute; z-index: 3; display: flex; gap: 0.3rem; padding: 0.3rem; background: var(--fg); border-radius: 100px; box-shadow: 0 10px 20px -8px #0008; animation: sp-pop 0.2s var(--ease); }
+  .sp-pop[hidden] { display: none; }
+  .sp-pop button { border: 0; color: var(--bg); } .sp-pop button:first-child:hover { background: #2f8f5f; } .sp-pop button:last-child:hover { background: #b8432f; }
+  @keyframes sp-pop { from { opacity: 0; transform: translateY(-4px); } }
+
+  /* margin notes */
+  .sp-mn { position: relative; display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(1.5rem, 6vw, 6rem); }
+  .sp-mn__text { font: 300 clamp(1.25rem, 2vw, 1.6rem)/1.7 'Spectral', serif; display: grid; gap: 1em; }
+  .sp-mn__text mark { background: #e8d98a55; color: inherit; cursor: pointer; border-radius: 2px; transition: background 0.25s; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .sp-mn__text mark.is-on { background: #e8c94a; }
+  .sp-mn__side { display: grid; gap: 1rem; align-content: start; }
+  .sp-note { padding: 1rem 1.2rem; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px var(--line); opacity: 0.55; transform: translateX(10px); transition: all 0.35s var(--ease); }
+  .sp-note.is-on { opacity: 1; transform: none; box-shadow: 0 0 0 2px #e8c94a, 0 16px 30px -18px #0007; }
+  .sp-note__who { font: 600 0.9rem/1 'Spectral', serif; color: var(--accent); margin-bottom: 0.4rem; }
+  .sp-note__c { font: italic 400 1.05rem/1.45 'Spectral', serif; }
+  .sp-mn__wire { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+  .sp-mn__wire path { fill: none; stroke: #c9a92a; stroke-width: 1.5; stroke-dasharray: 4 4; }
+
+  /* pixel */
+  .sp-px { display: grid; gap: 1.4rem; }
+  .sp-px__cv { display: block; max-width: 100%; margin: 0 auto; border-radius: 6px; box-shadow: 0 0 0 1px var(--line); image-rendering: pixelated; }
+  .sp-px__ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem 2rem; align-items: center; }
+  .sp-px__ctl .ed-cap { grid-column: 1 / -1; }
+  .sp-px__w { display: flex; gap: 0.3rem; }
+  .sp-px__w button { padding: 0.5rem 1rem; border-radius: 100px; border: 1px solid var(--line); font: 400 0.95rem/1 'Spectral', serif; }
+  .sp-px__w button[aria-checked='true'] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  @media (max-width: 900px) { .sp-mn, .sp-px__ctl { grid-template-columns: minmax(0, 1fr); } .sp-mn__wire { display: none; } .sp-note { transform: none; } }
+</style>
